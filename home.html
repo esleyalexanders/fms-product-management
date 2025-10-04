@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Management System - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="home-styles.css">
+</head>
+<body>
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">An update from system</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="home.html" class="nav-item active" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Schedule</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-inbox"></i>
+                    <span>Requests</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Quotes</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Invoices</span>
+                </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title">Good afternoon, John</h1>
+                    <p class="page-subtitle">Tuesday, October 3</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search" class="search-input">
+                        <kbd class="keyboard-shortcut">Ctrl K</kbd>
+                    </div>
+                    <button class="icon-btn notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="icon-btn help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button class="icon-btn settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="User Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-card">
+                        <h2 class="section-title">
+                            <i class="fas fa-rocket"></i>
+                            Welcome to Franchise Management System
+                        </h2>
+                        <p class="welcome-subtitle">Let's get you up and running</p>
+                    </div>
+                </section>
+
+                <!-- Quick Actions Grid -->
+                <section class="quick-actions-section">
+                    <div class="section-header">
+                        <h3 class="section-title-small">Quick Actions</h3>
+                    </div>
+                    <div class="actions-grid">
+                        <div class="action-card">
+                            <div class="action-icon product">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Add your first product</h4>
+                                <p>Start by adding a product and a few key details. Not ready? Start with a sample product</p>
+                                <div class="card-actions">
+                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Add product</button></a>
+                                    <button class="btn-secondary">Import</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-card">
+                            <div class="action-icon design">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Design your store</h4>
+                                <p>Describe your business to generate custom themes or browse pre-designed themes</p>
+                                <div class="theme-input-group">
+                                    <input type="text" placeholder="Modern handmade jewelry" class="theme-input">
+                                    <button class="btn-generate">
+                                        <i class="fas fa-magic"></i>
+                                        Generate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payment, Shipping & Domain Section -->
+                <section class="setup-options-section">
+                    <div class="setup-grid">
+                        <div class="setup-card">
+                            <div class="setup-header">
+                                <div class="setup-icon-wrapper">
+                                    <i class="fas fa-check-circle success-icon"></i>
+                                </div>
+                                <div>
+                                    <h4>Payment options</h4>
+                                </div>
+                            </div>
+                            <div class="payment-methods">
+                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paypal.svg" alt="PayPal" class="payment-icon">
+                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" class="payment-icon">
+                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" class="payment-icon">
+                            </div>
+                            <p class="setup-description">Domestic and more</p>
+                            <button class="btn-link">Edit</button>
+                        </div>
+
+                        <div class="setup-card">
+                            <div class="setup-header">
+                                <div class="setup-icon-wrapper">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div>
+                                    <h4>Customize your domain</h4>
+                                </div>
+                            </div>
+                            <div class="domain-info">
+                                <code class="domain-name">vxiadu-wt.myshopify.com</code>
+                                <button class="btn-copy">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <button class="btn-link">Customize</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Service-Based Business Setup -->
+                <section class="service-setup-section">
+                    <div class="service-card">
+                        <div class="service-content">
+                            <div class="service-badge">
+                                <span class="progress-indicator">0 of 3 tasks complete</span>
+                            </div>
+                            <h3 class="service-title">Set up your service-based business</h3>
+                            <p class="service-description">Follow these tasks to efficiently manage bookings, payments, and offer a seamless experience for your customers.</p>
+                            
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-checkbox">
+                                        <input type="checkbox" id="task1">
+                                        <label for="task1"></label>
+                                    </div>
+                                    <div class="task-content">
+                                        <h5>First task: Add your first service</h5>
+                                    </div>
+                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-task-action">Get started</button></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-illustration">
+                            <div class="illustration-box">
+                                <i class="fas fa-calendar-check"></i>
+                                <i class="fas fa-comments"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Today's Appointments Section -->
+                <section class="appointments-section">
+                    <div class="appointments-header">
+                        <h3 class="section-title-small">Today's appointments</h3>
+                    </div>
+                    <div class="appointments-card">
+                        <div class="appointment-tabs">
+                            <button class="tab-btn active">Total <span class="tab-count">0</span></button>
+                            <button class="tab-btn">Active <span class="tab-count">0</span></button>
+                            <button class="tab-btn">Completed <span class="tab-count">0</span></button>
+                            <button class="tab-btn">Overdue <span class="tab-count">0</span></button>
+                            <button class="tab-btn">Remaining <span class="tab-count">0</span></button>
+                        </div>
+                        
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <p class="empty-message">This is where you will get an overview of your appointments for today once they are scheduled.</p>
+                            <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Schedule a Job</button></a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Caught Up -->
+                <section class="caught-up-section">
+                    <div class="caught-up-card">
+                        <i class="fas fa-check-circle"></i>
+                        <span>All caught up</span>
+                    </div>
+                </section>
+
+                <!-- Helpful Resources Section -->
+                <section class="resources-section">
+                    <h3 class="section-title-small">Is this helpful so far?</h3>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn">
+                            <i class="fas fa-thumbs-up"></i>
+                        </button>
+                        <button class="feedback-btn">
+                            <i class="fas fa-thumbs-down"></i>
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="home-script.js"></script>
+</body>
+</html>
