@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Editor - Franchise Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="layout-editor-styles.css">
+</head>
+<body>
+    <!-- Top Header Bar -->
+    <header class="top-header">
+        <div class="header-left">
+            <button class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-info">
+                <span class="store-name">Horizon</span>
+                <span class="status-badge live">
+                    <i class="fas fa-circle"></i> Live
+                </span>
+            </div>
+            <button class="more-btn">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+        </div>
+        <div class="header-center">
+            <button class="nav-tab active">
+                <i class="fas fa-home"></i> Home page
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="header-right">
+            <button class="exit-btn">Exit</button>
+            <button class="undo-btn" title="Undo (Ctrl+Z)">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="redo-btn" title="Redo (Ctrl+Y)">
+                <i class="fas fa-redo"></i>
+            </button>
+            <button class="icon-btn preview-mode-btn active" data-mode="desktop" title="Enable desktop preview mode">
+                <i class="fas fa-desktop"></i>
+            </button>
+            <button class="icon-btn preview-mode-btn" data-mode="mobile" title="Enable mobile preview mode">
+                <i class="fas fa-mobile-alt"></i>
+            </button>
+            <button class="icon-btn preview-mode-btn" data-mode="fullscreen" title="Enable fullscreen preview mode">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button class="save-btn">Save</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Sidebar - Components Tree -->
+        <aside class="left-sidebar">
+            <div class="sidebar-header">
+                <h3>Home page</h3>
+            </div>
+            <div class="components-tree">
+                <!-- Header Section -->
+                <div class="tree-item">
+                    <div class="tree-item-header">
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                        <i class="fas fa-bars grip-icon"></i>
+                        <span>Header</span>
+                    </div>
+                    <div class="tree-item-children">
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-bullhorn item-icon"></i>
+                                <span>Announcement bar</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-bars item-icon"></i>
+                                <span>Header</span>
+                            </div>
+                            <div class="tree-item-children">
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-image item-icon"></i>
+                                        <span>Logo</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-bars item-icon"></i>
+                                        <span>Menu - Main menu</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-search item-icon"></i>
+                                        <span>Search</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-shopping-cart item-icon"></i>
+                                        <span>Cart</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-user item-icon"></i>
+                                        <span>Account</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-mobile item-icon"></i>
+                                <span>Mobile menu</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <button class="add-section-btn">
+                                    <i class="fas fa-plus"></i> Add section
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Section -->
+                <div class="tree-item">
+                    <div class="tree-item-header">
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                        <i class="fas fa-bars grip-icon"></i>
+                        <span>Template</span>
+                    </div>
+                    <div class="tree-item-children">
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-image item-icon"></i>
+                                <span>Hero</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-th-large item-icon"></i>
+                                <span>Featured collection</span>
+                            </div>
+                            <div class="tree-item-children">
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-chevron-right toggle-icon"></i>
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-bars item-icon"></i>
+                                        <span>Header</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-align-left item-icon"></i>
+                                        <span>View all button</span>
+                                    </div>
+                                </div>
+                                <div class="tree-item nested-2 active">
+                                    <div class="tree-item-header">
+                                        <i class="fas fa-chevron-right toggle-icon"></i>
+                                        <i class="fas fa-grip-vertical grip-icon"></i>
+                                        <i class="fas fa-eye item-icon"></i>
+                                        <i class="fas fa-shopping-bag item-icon"></i>
+                                        <span>Product card</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-list item-icon"></i>
+                                <span>Collection list</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-images item-icon"></i>
+                                <span>Image with text</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-quote-left item-icon"></i>
+                                <span>Testimonials</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-envelope item-icon"></i>
+                                <span>Newsletter</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-map item-icon"></i>
+                                <span>Map</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-video item-icon"></i>
+                                <span>Video</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-code item-icon"></i>
+                                <span>Rich text</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-columns item-icon"></i>
+                                <span>Multi-column</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-gift item-icon"></i>
+                                <span>Featured product</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-blog item-icon"></i>
+                                <span>Blog posts</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-sliders-h item-icon"></i>
+                                <span>Slideshow</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-users item-icon"></i>
+                                <span>Team</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-chart-line item-icon"></i>
+                                <span>Stats</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-question-circle item-icon"></i>
+                                <span>FAQ</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <button class="add-section-btn">
+                                    <i class="fas fa-plus"></i> Add section
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Section -->
+                <div class="tree-item">
+                    <div class="tree-item-header">
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                        <i class="fas fa-bars grip-icon"></i>
+                        <span>Footer</span>
+                    </div>
+                    <div class="tree-item-children">
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-bars item-icon"></i>
+                                <span>Footer</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-link item-icon"></i>
+                                <span>Footer menu</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-envelope item-icon"></i>
+                                <span>Newsletter signup</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-share-alt item-icon"></i>
+                                <span>Social media</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                                <i class="fas fa-bars grip-icon"></i>
+                                <i class="fas fa-credit-card item-icon"></i>
+                                <span>Payment methods</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <button class="add-section-btn">
+                                    <i class="fas fa-plus"></i> Add section
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Utilities Section -->
+                <div class="tree-item">
+                    <div class="tree-item-header">
+                        <i class="fas fa-chevron-right toggle-icon"></i>
+                        <i class="fas fa-tools grip-icon"></i>
+                        <span>Utilities</span>
+                    </div>
+                    <div class="tree-item-children">
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-arrows-alt-v item-icon"></i>
+                                <span>Spacer</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-minus item-icon"></i>
+                                <span>Divider</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-sticky-note item-icon"></i>
+                                <span>Sticky note</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-clock item-icon"></i>
+                                <span>Countdown</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-share item-icon"></i>
+                                <span>Social share</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-language item-icon"></i>
+                                <span>Language selector</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-globe item-icon"></i>
+                                <span>Currency selector</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-star item-icon"></i>
+                                <span>Rating</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-tags item-icon"></i>
+                                <span>Tags</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-filter item-icon"></i>
+                                <span>Filters</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-sort item-icon"></i>
+                                <span>Sort</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-search-plus item-icon"></i>
+                                <span>Search bar</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-shopping-bag item-icon"></i>
+                                <span>Wishlist</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-heart item-icon"></i>
+                                <span>Favorites</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-bell item-icon"></i>
+                                <span>Notifications</span>
+                            </div>
+                        </div>
+                        <div class="tree-item nested">
+                            <div class="tree-item-header">
+                                <i class="fas fa-grip-vertical grip-icon"></i>
+                                <i class="fas fa-cog item-icon"></i>
+                                <span>Settings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Preview Area -->
+        <main class="preview-area">
+            <div class="preview-container">
+                <!-- Hero Section -->
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h1>Welcome to Horizon</h1>
+                        <p>Discover amazing products for your lifestyle</p>
+                        <button class="hero-btn">Shop Now</button>
+                    </div>
+                    <div class="hero-image">
+                        <img src="https://via.placeholder.com/600x400/4f46e5/ffffff?text=Hero+Image" alt="Hero">
+                    </div>
+                </div>
+
+                <!-- Featured Collection Section -->
+                <div class="featured-section">
+                    <h2 class="section-title">Featured Collection</h2>
+                    <div class="products-grid">
+                        <!-- Product Cards -->
+                        <div class="product-card">
+                            <div class="product-image">
+                                <div class="tshirt-preview" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);">
+                                    <div class="tshirt-shape"></div>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Classic T-Shirt</h3>
+                                <p class="product-price">$25.00</p>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <div class="tshirt-preview" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                                    <div class="tshirt-shape"></div>
+                                    <div class="tshirt-stripes"></div>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Striped Polo</h3>
+                                <p class="product-price">$35.00</p>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <div class="tshirt-preview" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                                    <div class="tshirt-shape"></div>
+                                    <div class="tshirt-circle"></div>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Graphic Tee</h3>
+                                <p class="product-price">$30.00</p>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-image">
+                                <div class="tshirt-preview" style="background: linear-gradient(135deg, #ff8c6b 0%, #ff7052 100%);">
+                                    <div class="tshirt-shape"></div>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-title">Vintage Style</h3>
+                                <p class="product-price">$40.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="view-all-btn">View All Products</button>
+                </div>
+
+                <!-- Testimonials Section -->
+                <div class="testimonials-section">
+                    <h2 class="section-title">What Our Customers Say</h2>
+                    <div class="testimonials-grid">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"Amazing quality and fast shipping! Highly recommend."</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <span class="author-name">Sarah Johnson</span>
+                                <span class="author-role">Verified Buyer</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"Love the design and fit. Will definitely buy again."</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <span class="author-name">Mike Chen</span>
+                                <span class="author-role">Verified Buyer</span>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"Great customer service and unique products."</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <span class="author-name">Emma Davis</span>
+                                <span class="author-role">Verified Buyer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newsletter Section -->
+                <div class="newsletter-section">
+                    <h2>Stay Updated</h2>
+                    <p>Get the latest news and exclusive offers</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button>Subscribe</button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="site-footer">
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>Company</h3>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">Careers</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Support</h3>
+                            <ul>
+                                <li><a href="#">Help Center</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                                <li><a href="#">Returns</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Follow Us</h3>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-facebook"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>&copy; 2025 Horizon. All rights reserved.</p>
+                    </div>
+                </footer>
+            </div>
+        </main>
+
+        <!-- Right Sidebar - Settings Panel -->
+        <aside class="right-sidebar">
+            <div class="sidebar-header">
+                <h3>Block settings</h3>
+                <button class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="settings-panel">
+                <!-- Layout Section -->
+                <div class="settings-section">
+                    <label class="settings-label">Layout</label>
+                    <div class="layout-controls">
+                        <div class="layout-row">
+                            <label>Width</label>
+                            <select class="settings-select">
+                                <option>Fit</option>
+                                <option>Fill</option>
+                            </select>
+                        </div>
+                        <div class="layout-row">
+                            <label>Max width</label>
+                            <select class="settings-select">
+                                <option>Normal</option>
+                                <option>Wide</option>
+                                <option>Full</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography Section -->
+                <div class="settings-section">
+                    <label class="settings-label">Typography</label>
+                    <div class="typography-controls">
+                        <div class="typography-row">
+                            <label>Preset</label>
+                            <select class="settings-select">
+                                <option>Default</option>
+                                <option>Heading</option>
+                                <option>Body</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Section -->
+                <div class="settings-section">
+                    <label class="settings-label">Appearance</label>
+                    <div class="appearance-controls">
+                        <div class="appearance-row">
+                            <label>Background</label>
+                            <input type="color" class="settings-color" value="#ffffff">
+                        </div>
+                        <div class="appearance-row">
+                            <label>Padding</label>
+                            <div class="padding-controls">
+                                <div class="padding-group">
+                                    <label class="sub-label">Top</label>
+                                    <input type="number" value="0" class="padding-input">
+                                    <span class="unit">px</span>
+                                </div>
+                                <div class="padding-group">
+                                    <label class="sub-label">Bottom</label>
+                                    <input type="number" value="0" class="padding-input">
+                                    <span class="unit">px</span>
+                                </div>
+                                <div class="padding-group">
+                                    <label class="sub-label">Left</label>
+                                    <input type="number" value="0" class="padding-input">
+                                    <span class="unit">px</span>
+                                </div>
+                                <div class="padding-group">
+                                    <label class="sub-label">Right</label>
+                                    <input type="number" value="0" class="padding-input">
+                                    <span class="unit">px</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remove block -->
+                <div class="settings-section">
+                    <button class="remove-section-btn">
+                        <i class="fas fa-trash"></i> Remove block
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="layout-editor-script.js"></script>
+</body>
+</html>
