@@ -1,0 +1,59 @@
+/* Additional Custom Styles for Payment Failure Page */
+/* Most styling is handled by Tailwind CSS utility classes */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ant-card {
+    border: 1px solid #f0f0f0;
+}
+
+.ant-card-body {
+    padding: 32px;
+}
+
+.ant-btn {
+    transition: all 0.3s ease;
+}
+
+.ant-btn:hover {
+    transform: translateY(-2px);
+}
+
+.ant-btn:active {
+    transform: translateY(0);
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.ant-card-body > div:first-child span {
+    display: inline-block;
+    animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@media (max-width: 640px) {
+    .ant-card-body {
+        padding: 24px 16px;
+    }
+}
