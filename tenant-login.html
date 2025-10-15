@@ -8,30 +8,380 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="tenant-login-styles.css">
+    <style>
+        .fade-in {
+            animation: fadeInCard 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        .divider-icon {
+            color: var(--primary);
+            font-size: 18px;
+            margin: 0 8px;
+            vertical-align: middle;
+        }
+        .login-footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 32px;
+        }
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 6px;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        .form-message {
+            margin-bottom: 16px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 15px;
+            text-align: center;
+        }
+        .form-message.error {
+            background: #ffeaea;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+        .form-message.success {
+            background: #e6f9f0;
+            color: #047857;
+            border: 1px solid #6ee7b7;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #0b69ff;
+            --primary-dark: #0056b3;
+            --secondary: #6c757d;
+            --success: #10b981;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --border: #dee2e6;
+            --muted: #6b7280;
+        }
+
+        body {
+            font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+        }
+
+        .login-background {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+        }
+        .background-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            z-index: 1;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-card {
+            display: flex;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(11, 105, 255, 0.08), 0 1.5px 6px rgba(33,37,41,0.04);
+            overflow: hidden;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+        }
+        .login-card .vertical-divider {
+            width: 1px;
+            background: var(--border);
+            min-height: 320px;
+            align-self: stretch;
+            margin: 32px 0;
+        }
+
+        .tenant-branding-section {
+            flex: 1;
+            background: white;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 48px 32px 32px 32px;
+            min-width: 260px;
+            position: relative;
+        }
+        .tenant-logo {
+            font-size: 4.5rem;
+            margin-bottom: 32px;
+            opacity: 0.18;
+            color: var(--primary);
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .tenant-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--dark);
+            text-align: center;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .tenant-tagline {
+            font-size: 1.08rem;
+            opacity: 0.85;
+            margin-bottom: 0;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .login-form-section {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+            background: white;
+        }
+        .login-hello-message {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-hello-message h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        .login-hello-message p {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .social-login-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .social-login-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .social-login-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .social-login-btn .social-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .microsoft-btn {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .microsoft-btn:hover {
+            background: white;
+            border-color: var(--border);
+            color: var(--secondary);
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 28px 0;
+            position: relative;
+        }
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+        }
+        .divider-text {
+            margin: 0 20px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            background: white;
+            padding: 0 12px;
+            text-transform: lowercase;
+            letter-spacing: 0.3px;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto 0 auto;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11, 105, 255, 0.1);
+        }
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+        .password-input-container {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+        .password-toggle:hover {
+            color: var(--dark);
+        }
+        .login-button {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+        .login-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(11, 105, 255, 0.18);
+        }
+        .form-footer {
+            text-align: right;
+            margin-top: 10px;
+        }
+        .forgot-password-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .forgot-password-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 968px) {
+            .login-container {
+                padding: 24px 0;
+            }
+            .login-card {
+                flex-direction: column;
+                max-width: 98vw;
+            }
+            .login-card .vertical-divider {
+                display: none;
+            }
+            .tenant-branding-section {
+                min-height: 180px;
+                padding: 32px 12px 16px 12px;
+            }
+            .login-form-section {
+                padding: 24px 12px;
+            }
+        }
+        @media (max-width: 480px) {
+            .login-form-section {
+                padding: 16px 4px;
+            }
+            .login-form {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Customizable Background -->
     <div class="login-background">
-        <!-- Optional background image or pattern overlay -->
         <div class="background-overlay"></div>
     </div>
 
-    <!-- Login Container -->
     <div class="login-container">
-        <!-- Main Login Card -->
-        <div class="login-card">
+    <div class="login-card fade-in">
             <!-- Left Panel - Tenant Branding -->
             <div class="tenant-branding-section">
                 <div class="tenant-logo" id="tenantLogo">
-                    <i class="fas fa-store"></i>
+                    <img src="https://placehold.co/80x80/0b69ff/fff?text=LOGO" alt="Business Logo" style="width: 80px; height: 80px; border-radius: 18px; opacity: 0.95; box-shadow: 0 2px 8px rgba(11,105,255,0.08); object-fit: cover;" />
                 </div>
-                <h1 class="tenant-name" id="tenantName">Your Business Name</h1>
-                <p class="tenant-tagline" id="tenantTagline">Franchise Management System</p>
+                <div style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                    <h1 class="tenant-name" id="tenantName">Your Business Name</h1>
+                    <p class="tenant-tagline" id="tenantTagline">Franchise Management System</p>
+                    <p style="margin-top:18px;font-size:1rem;color:var(--primary);font-weight:500;">Welcome to your business portal</p>
+                </div>
             </div>
-
+            <div class="vertical-divider"></div>
             <!-- Right Panel - Login Form -->
             <div class="login-form-section">
+                <div class="login-hello-message">
+                    <h2>Hello!</h2>
+                    <p>Welcome, please sign in to continue.</p>
+                </div>
                 <!-- Social Login Options -->
                 <div class="social-login-container">
                     <button type="button" class="social-login-btn google-btn" id="googleLogin">
@@ -43,8 +393,7 @@
                         </svg>
                         <span>Continue with Google</span>
                     </button>
-                    
-                    <button type="button" class="social-login-btn microsoft-btn" id="microsoftLogin">
+                    <button type="button" class="social-login-btn microsoft-btn" id="microsoftLogin" disabled>
                         <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#f25022" d="M1 1h10v10H1z"/>
                             <path fill="#00a4ef" d="M13 1h10v10H13z"/>
@@ -54,16 +403,13 @@
                         <span>Continue with Microsoft</span>
                     </button>
                 </div>
-
-                <!-- Divider -->
                 <div class="login-divider">
                     <span class="divider-line"></span>
-                    <span class="divider-text">Or</span>
+                    <span class="divider-text">or continue with email</span>
                     <span class="divider-line"></span>
                 </div>
-
-                <!-- Login Form -->
                 <form class="login-form" id="loginForm">
+                    <div id="formMessage" class="form-message" style="display:none;"></div>
                     <div class="form-group">
                         <label for="email" class="form-label">Email</label>
                         <input 
@@ -75,7 +421,6 @@
                             required
                         >
                     </div>
-
                     <div class="form-group">
                         <label for="password" class="form-label">Password</label>
                         <div class="password-input-container">
@@ -92,77 +437,95 @@
                             </button>
                         </div>
                     </div>
-
-                    <button type="submit" class="login-button">
-                        <span class="button-text">Login</span>
-                    </button>
-
-                    <div class="form-footer">
-                        <a href="#" class="forgot-password-link">Forgot your password?</a>
+                    <div class="form-options" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+                        <label class="remember-me" style="display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;">
+                            <input type="checkbox" id="rememberMe" name="rememberMe" style="width:16px;height:16px;"> Remember me
+                        </label>
+                        <a href="#" class="forgot-password-link" id="forgotPasswordLink">Forgot your password?</a>
                     </div>
+                    <button type="submit" class="login-button">
+                        <span class="button-text" id="loginBtnText">Login</span>
+                        <span id="loginBtnSpinner" style="display:none;margin-left:8px;vertical-align:middle;"><i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- Customization Panel (Hidden by default, for admin use) -->
-    <div class="customization-panel" id="customizationPanel">
-        <div class="customization-header">
-            <h4>Tenant Customization</h4>
-            <button class="close-customization" id="closeCustomization">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="customization-content">
-            <div class="customization-section">
-                <h5>Branding</h5>
-                <div class="customization-group">
-                    <label>Business Name:</label>
-                    <input type="text" id="customTenantName" placeholder="Enter business name">
-                </div>
-                <div class="customization-group">
-                    <label>Tagline:</label>
-                    <input type="text" id="customTenantTagline" placeholder="Enter tagline">
-                </div>
-                <div class="customization-group">
-                    <label>Logo Icon:</label>
-                    <select id="customLogoIcon">
-                        <option value="fas fa-store">Store</option>
-                        <option value="fas fa-building">Building</option>
-                        <option value="fas fa-home">Home</option>
-                        <option value="fas fa-industry">Industry</option>
-                        <option value="fas fa-leaf">Leaf</option>
-                        <option value="fas fa-heart">Heart</option>
-                        <option value="fas fa-star">Star</option>
-                    </select>
-                </div>
-            </div>
+    <div class="customization-panel" id="customizationPanel" style="display:none;"></div>
 
-            <div class="customization-section">
-                <h5>Colors</h5>
-                <div class="customization-group">
-                    <label>Primary Color:</label>
-                    <input type="color" id="customPrimaryColor" value="#3b82f6">
-                </div>
-                <div class="customization-group">
-                    <label>Secondary Color:</label>
-                    <input type="color" id="customSecondaryColor" value="#10b981">
-                </div>
-                <div class="customization-group">
-                    <label>Background Color:</label>
-                    <input type="color" id="customBackgroundColor" value="#f9fafb">
-                </div>
-            </div>
-
-            <div class="customization-actions">
-                <button class="apply-customization" id="applyCustomization">Apply Changes</button>
-                <button class="reset-customization" id="resetCustomization">Reset to Default</button>
-            </div>
-        </div>
+    <div class="login-footer">
+        &copy; 2025 Your Business. <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Support</a>
     </div>
 
 
     <script src="tenant-login-script.js"></script>
+</script>
+<script>
+// Accessibility: focus first input
+document.addEventListener('DOMContentLoaded', function() {
+    var emailInput = document.getElementById('email');
+    if(emailInput) emailInput.focus();
+});
+
+// Button loading animation and error/success message
+const loginForm = document.getElementById('loginForm');
+const loginBtn = loginForm.querySelector('button[type="submit"]');
+const loginBtnText = document.getElementById('loginBtnText');
+const loginBtnSpinner = document.getElementById('loginBtnSpinner');
+const formMessage = document.getElementById('formMessage');
+
+loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    formMessage.style.display = 'none';
+    loginBtn.disabled = true;
+    loginBtnSpinner.style.display = 'inline-block';
+    loginBtnText.textContent = 'Signing in...';
+
+    // Simulate async login
+    setTimeout(function() {
+        const email = loginForm.email.value.trim();
+        const password = loginForm.password.value.trim();
+        if(email === '' || password === '') {
+            showFormMessage('Please fill in all required fields.', 'error');
+            resetLoginBtn();
+            return;
+        }
+        if(email === 'demo@tenant.com' && password === 'password') {
+            showFormMessage('Login successful! Redirecting...', 'success');
+            setTimeout(() => window.location.href = 'tenant_dashboard.html', 1200);
+        } else {
+            showFormMessage('Invalid email or password.', 'error');
+            resetLoginBtn();
+        }
+    }, 1200);
+});
+
+function showFormMessage(msg, type) {
+    formMessage.textContent = msg;
+    formMessage.className = 'form-message ' + type;
+    formMessage.style.display = 'block';
+}
+function resetLoginBtn() {
+    loginBtn.disabled = false;
+    loginBtnSpinner.style.display = 'none';
+    loginBtnText.textContent = 'Login';
+}
+
+// Forgot password dialog
+document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    const email = prompt('Please enter your email address to reset your password:');
+    if(email) {
+        showFormMessage('Password reset instructions have been sent to ' + email, 'success');
+    }
+});
+
+// Accessibility: ARIA attributes for form
+loginForm.setAttribute('aria-label', 'Tenant Login Form');
+loginForm.email.setAttribute('aria-required', 'true');
+loginForm.password.setAttribute('aria-required', 'true');
+</script>
 </body>
 </html>

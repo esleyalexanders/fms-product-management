@@ -1,4 +1,21 @@
 /* ========================================
+   HELLO MESSAGE
+   ======================================== */
+.login-hello-message {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+.login-hello-message h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--tenant-primary-color);
+    margin-bottom: var(--spacing-xs);
+}
+.login-hello-message p {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+}
+/* ========================================
    TENANT LOGIN PAGE STYLES
    ======================================== */
 

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Owner Login — Franchise v2</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #0b69ff;
+            --primary-dark: #0056b3;
+            --secondary: #6c757d;
+            --success: #10b981;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --border: #dee2e6;
+            --muted: #6b7280;
+        }
+
+        body {
+            font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Left side - Image */
+        .login-image {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+        }
+
+        .image-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            max-width: 500px;
+            padding: 40px;
+        }
+
+        .image-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .image-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .franchise-icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Right side - Login Form */
+        .login-form-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: white;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .login-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(11, 105, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .password-toggle:hover {
+            color: var(--dark);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(11, 105, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--secondary);
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-outline:hover {
+            background: var(--light);
+            border-color: var(--secondary);
+        }
+
+        .btn-outline.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .btn-outline.coming-soon:hover {
+            background: white;
+            border-color: var(--border);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-login {
+            margin-bottom: 30px;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 968px) {
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .login-image {
+                min-height: 200px;
+                flex: none;
+            }
+            
+            .image-content h1 {
+                font-size: 2rem;
+            }
+            
+            .franchise-icon {
+                font-size: 4rem;
+                margin-bottom: 15px;
+            }
+            
+            .login-form-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-form-section {
+                padding: 20px 15px;
+            }
+            
+            .login-form-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left side - Image/Branding -->
+        <div class="login-image">
+            <div class="image-content">
+                <h1>Welcome Back</h1>
+                <p>Manage your franchise empire with ease. Access your dashboard and oversee all your franchise locations.</p>
+            </div>
+        </div>
+
+        <!-- Right side - Login Form -->
+        <div class="login-form-section">
+            <div class="login-form-container">
+                <div class="login-header">
+                    <h2>Hello!</h2>
+                    <p>Sign in to access your franchise management dashboard</p>
+                </div>
+
+                <!-- Social Login Options -->
+                <div class="social-login">
+                    <button type="button" class="btn btn-outline" onclick="loginWithGoogle()">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Continue with Google
+                    </button>
+                    
+                    <button type="button" class="btn btn-outline coming-soon" onclick="loginWithMicrosoft()">
+                        <span class="coming-soon-badge">Soon</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path fill="#f25022" d="M0 0h11v11H0z"/>
+                            <path fill="#00a4ef" d="M13 0h11v11H13z"/>
+                            <path fill="#7fba00" d="M0 13h11v11H0z"/>
+                            <path fill="#ffb900" d="M13 13h11v11H13z"/>
+                        </svg>
+                        Continue with Microsoft
+                    </button>
+                </div>
+
+                <div class="divider">
+                    <span>or continue with email</span>
+                </div>
+
+                <!-- Login Form -->
+                <form class="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email or Username</label>
+                        <input 
+                            type="text" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="Enter your email or username"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Enter your password"
+                                required
+                            >
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <span id="toggleIcon">👁️</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password" onclick="forgotPassword()">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="footer-text">
+                    Don't have an account? <a href="tenant_create_screen.html">Create one here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = formData.get('email');
+            const password = formData.get('password');
+            const remember = formData.get('remember');
+            
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // For demo purposes - replace with actual authentication
+            console.log('Login attempt:', { email, password, remember });
+            
+            // Simulate login process
+            const button = event.target.querySelector('button[type="submit"]');
+            button.textContent = 'Signing in...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                // Replace with actual authentication logic
+                alert('Login successful! Redirecting to dashboard...');
+                window.location.href = 'Franchise_Home.html';
+            }, 1500);
+        }
+
+        function loginWithGoogle() {
+            // Implement Google OAuth login
+            console.log('Google login initiated');
+            alert('Google login will be implemented here');
+            // For demo, redirect to home page
+            // window.location.href = 'Franchise_Home.html';
+        }
+
+        function loginWithMicrosoft() {
+            // Microsoft OAuth login - Coming Soon
+            console.log('Microsoft login - Coming Soon');
+            alert('🚀 Microsoft login is coming soon! Stay tuned for updates.\n\nFor now, please use Google login or email/password to sign in.');
+            // Future implementation will go here
+        }
+
+        function forgotPassword() {
+            const email = prompt('Please enter your email address to reset your password:');
+            if (email) {
+                alert(`Password reset instructions have been sent to ${email}`);
+            }
+        }
+
+        // Form enhancement - auto-focus first input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('email').focus();
+        });
+
+        // Enter key handling for better UX
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                const form = document.querySelector('.login-form');
+                const formData = new FormData(form);
+                if (formData.get('email') && formData.get('password')) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
