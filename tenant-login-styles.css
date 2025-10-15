@@ -1,0 +1,693 @@
+/* ========================================
+   TENANT LOGIN PAGE STYLES
+   ======================================== */
+
+/* ========================================
+   CUSTOMIZABLE CSS VARIABLES
+   ======================================== */
+:root {
+    /* Tenant Customizable Colors */
+    --tenant-primary-color: #3b82f6;
+    --tenant-primary-hover: #2563eb;
+    --tenant-secondary-color: #10b981;
+    --tenant-background-color: #f9fafb;
+    --tenant-accent-color: #f59e0b;
+    
+    /* Base Colors */
+    --white: #ffffff;
+    --black: #000000;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Text Colors */
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --text-light: #ffffff;
+    
+    /* Background Colors */
+    --bg-primary: var(--white);
+    --bg-secondary: var(--gray-50);
+    --bg-overlay: rgba(0, 0, 0, 0.4);
+    
+    /* Border & Shadow */
+    --border-color: #e5e7eb;
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    --spacing-3xl: 4rem;
+    
+    /* Typography */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-base: 0.2s ease-in-out;
+    --transition-slow: 0.3s ease-in-out;
+}
+
+/* ========================================
+   BASE RESET & TYPOGRAPHY
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--tenant-background-color);
+    overflow-x: hidden;
+}
+
+/* ========================================
+   LOGIN LAYOUT
+   ======================================== */
+.login-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--tenant-primary-color) 0%, var(--tenant-secondary-color) 100%);
+    z-index: -2;
+}
+
+.background-overlay {
+    display: none;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+/* Main Login Card */
+.login-card {
+    display: flex;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+    min-height: 550px;
+}
+
+/* ========================================
+   LEFT PANEL - TENANT BRANDING
+   ======================================== */
+.tenant-branding-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.tenant-logo {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--tenant-primary-color), var(--tenant-secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    color: var(--text-light);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-base);
+}
+
+.tenant-logo:hover {
+    transform: scale(1.05);
+}
+
+.tenant-name {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
+}
+
+.tenant-tagline {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* ========================================
+   RIGHT PANEL - LOGIN FORM
+   ======================================== */
+.login-form-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    background: var(--bg-primary);
+}
+
+/* ========================================
+   SOCIAL LOGIN BUTTONS
+   ======================================== */
+.social-login-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.social-login-btn {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    transition: all var(--transition-base);
+}
+
+.social-login-btn:hover {
+    border-color: var(--gray-300);
+    background: var(--gray-50);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.social-login-btn:active {
+    transform: translateY(0);
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Login Divider */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+.divider-text {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: all var(--transition-base);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--tenant-primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Password Input Container */
+.password-input-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    transition: color var(--transition-base);
+}
+
+.password-toggle:hover {
+    color: var(--tenant-primary-color);
+}
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--tenant-primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    margin-top: var(--spacing-sm);
+}
+
+.login-button:hover {
+    background: var(--tenant-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+/* Form Footer */
+.form-footer {
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+.forgot-password-link {
+    font-size: var(--font-size-sm);
+    color: var(--tenant-primary-color);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+.forgot-password-link:hover {
+    color: var(--tenant-primary-hover);
+    text-decoration: underline;
+}
+
+/* ========================================
+   CUSTOMIZATION PANEL
+   ======================================== */
+.customization-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-xl);
+    z-index: 1000;
+    transition: right var(--transition-slow);
+    overflow-y: auto;
+}
+
+.customization-panel.open {
+    right: 0;
+}
+
+.customization-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-secondary);
+}
+
+.customization-header h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.close-customization {
+    background: none;
+    border: none;
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-base);
+}
+
+.close-customization:hover {
+    background: var(--gray-200);
+    color: var(--text-primary);
+}
+
+.customization-content {
+    padding: var(--spacing-lg);
+}
+
+.customization-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.customization-section h5 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.customization-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.customization-group label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.customization-group input,
+.customization-group select {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    background: var(--bg-primary);
+}
+
+.customization-group input[type="color"] {
+    height: 40px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.customization-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.apply-customization,
+.reset-customization {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.apply-customization {
+    background: var(--tenant-primary-color);
+    color: var(--text-light);
+}
+
+.apply-customization:hover {
+    background: var(--tenant-primary-hover);
+}
+
+.reset-customization {
+    background: var(--gray-200);
+    color: var(--text-primary);
+}
+
+.reset-customization:hover {
+    background: var(--gray-300);
+}
+
+/* Toggle Customization Button */
+.toggle-customization {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 50px;
+    height: 50px;
+    background: var(--tenant-primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 50%;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-base);
+    z-index: 999;
+}
+
+.toggle-customization:hover {
+    background: var(--tenant-primary-hover);
+    transform: scale(1.1);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1024px) {
+    .login-card {
+        flex-direction: column;
+        max-width: 500px;
+    }
+    
+    .tenant-branding-section {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: var(--spacing-2xl);
+    }
+
+    .tenant-logo {
+        width: 100px;
+        height: 100px;
+        font-size: 3rem;
+    }
+
+    .login-form-section {
+        padding: var(--spacing-2xl);
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: var(--spacing-sm);
+    }
+
+    .login-card {
+        min-height: auto;
+    }
+
+    .tenant-branding-section {
+        padding: var(--spacing-xl);
+    }
+
+    .tenant-logo {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .tenant-name {
+        font-size: var(--font-size-xl);
+    }
+
+    .tenant-tagline {
+        font-size: var(--font-size-sm);
+    }
+
+    .login-form-section {
+        padding: var(--spacing-xl);
+    }
+
+    .social-login-btn {
+        font-size: var(--font-size-sm);
+    }
+
+    .customization-panel {
+        width: 100%;
+        right: -100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .tenant-branding-section {
+        padding: var(--spacing-lg);
+    }
+
+    .tenant-logo {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+
+    .tenant-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .login-form-section {
+        padding: var(--spacing-lg);
+    }
+
+    .social-login-btn span {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* ========================================
+   LOADING & ERROR STATES
+   ======================================== */
+.form-input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.login-button.loading {
+    pointer-events: none;
+}
+
+.login-button.loading .button-text {
+    opacity: 0;
+}
+
+.login-button.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+.login-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.tenant-logo {
+    animation: scaleIn 0.6s ease-out;
+}
+
+.login-form-section > * {
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

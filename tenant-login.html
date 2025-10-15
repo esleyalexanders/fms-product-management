@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tenant Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="tenant-login-styles.css">
+</head>
+<body>
+    <!-- Customizable Background -->
+    <div class="login-background">
+        <!-- Optional background image or pattern overlay -->
+        <div class="background-overlay"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Main Login Card -->
+        <div class="login-card">
+            <!-- Left Panel - Tenant Branding -->
+            <div class="tenant-branding-section">
+                <div class="tenant-logo" id="tenantLogo">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h1 class="tenant-name" id="tenantName">Your Business Name</h1>
+                <p class="tenant-tagline" id="tenantTagline">Franchise Management System</p>
+            </div>
+
+            <!-- Right Panel - Login Form -->
+            <div class="login-form-section">
+                <!-- Social Login Options -->
+                <div class="social-login-container">
+                    <button type="button" class="social-login-btn google-btn" id="googleLogin">
+                        <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+                    
+                    <button type="button" class="social-login-btn microsoft-btn" id="microsoftLogin">
+                        <svg class="social-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#f25022" d="M1 1h10v10H1z"/>
+                            <path fill="#00a4ef" d="M13 1h10v10H13z"/>
+                            <path fill="#7fba00" d="M1 13h10v10H1z"/>
+                            <path fill="#ffb900" d="M13 13h10v10H13z"/>
+                        </svg>
+                        <span>Continue with Microsoft</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="login-divider">
+                    <span class="divider-line"></span>
+                    <span class="divider-text">Or</span>
+                    <span class="divider-line"></span>
+                </div>
+
+                <!-- Login Form -->
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="user@franchisebase.co.uk"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="password-input-container">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="••••••••••••"
+                                required
+                            >
+                            <button type="button" class="password-toggle" id="passwordToggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-button">
+                        <span class="button-text">Login</span>
+                    </button>
+
+                    <div class="form-footer">
+                        <a href="#" class="forgot-password-link">Forgot your password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization Panel (Hidden by default, for admin use) -->
+    <div class="customization-panel" id="customizationPanel">
+        <div class="customization-header">
+            <h4>Tenant Customization</h4>
+            <button class="close-customization" id="closeCustomization">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="customization-content">
+            <div class="customization-section">
+                <h5>Branding</h5>
+                <div class="customization-group">
+                    <label>Business Name:</label>
+                    <input type="text" id="customTenantName" placeholder="Enter business name">
+                </div>
+                <div class="customization-group">
+                    <label>Tagline:</label>
+                    <input type="text" id="customTenantTagline" placeholder="Enter tagline">
+                </div>
+                <div class="customization-group">
+                    <label>Logo Icon:</label>
+                    <select id="customLogoIcon">
+                        <option value="fas fa-store">Store</option>
+                        <option value="fas fa-building">Building</option>
+                        <option value="fas fa-home">Home</option>
+                        <option value="fas fa-industry">Industry</option>
+                        <option value="fas fa-leaf">Leaf</option>
+                        <option value="fas fa-heart">Heart</option>
+                        <option value="fas fa-star">Star</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="customization-section">
+                <h5>Colors</h5>
+                <div class="customization-group">
+                    <label>Primary Color:</label>
+                    <input type="color" id="customPrimaryColor" value="#3b82f6">
+                </div>
+                <div class="customization-group">
+                    <label>Secondary Color:</label>
+                    <input type="color" id="customSecondaryColor" value="#10b981">
+                </div>
+                <div class="customization-group">
+                    <label>Background Color:</label>
+                    <input type="color" id="customBackgroundColor" value="#f9fafb">
+                </div>
+            </div>
+
+            <div class="customization-actions">
+                <button class="apply-customization" id="applyCustomization">Apply Changes</button>
+                <button class="reset-customization" id="resetCustomization">Reset to Default</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="tenant-login-script.js"></script>
+</body>
+</html>
