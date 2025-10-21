@@ -9,6 +9,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="home-styles.css">
+    <style>
+        /* Design card small styles */
+        .design-form { padding:8px 0 }
+        .logo-upload-wrap { display:flex; gap:12px; align-items:center }
+        .logo-preview { width:72px; height:72px; border:1px dashed #e6e9ee; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff }
+        .logo-preview img{ max-width:100%; max-height:100% }
+        .color-pickers { display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+        .color-pickers .picker { display:flex; flex-direction:column; gap:6px }
+        .design-actions { display:flex; gap:8px; align-items:center }
+        .design-action-row { display:flex; gap:12px; align-items:center; margin-top:12px }
+        .design-note { color:#6b7280; font-size:13px; margin-top:8px }
+        input[type="color"] { width:48px; height:32px; border:none; padding:0; }
+    </style>
 </head>
 <body>
     <!-- System Update Banner -->
@@ -38,30 +51,11 @@
 
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="home.html" class="nav-item active" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Schedule</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-inbox"></i>
-                    <span>Requests</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-file-contract"></i>
-                    <span>Quotes</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Jobs</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <span>Invoices</span>
-                </div>
+                <a href="home.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
 
             <div class="sidebar-footer">
                 <div class="nav-item">
@@ -120,6 +114,8 @@
                     </div>
                 </section>
 
+                                
+
                 <!-- Quick Actions Grid -->
                 <section class="quick-actions-section">
                     <div class="section-header">
@@ -131,10 +127,10 @@
                                 <i class="fas fa-box"></i>
                             </div>
                             <div class="action-content">
-                                <h4>Add your first product</h4>
-                                <p>Start by adding a product and a few key details. Not ready? Start with a sample product</p>
+                                <h4>Add your first service</h4>
+                                <p>Start by adding a service to your pricebook and a few key details. Not ready? Start with a sample one.</p>
                                 <div class="card-actions">
-                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Add product</button></a>
+                                    <a href="admin/pricebook-create.html" style="text-decoration: none;"><button class="btn-primary">Add service</button></a>
                                     <button class="btn-secondary">Import</button>
                                 </div>
                             </div>
@@ -146,13 +142,12 @@
                             </div>
                             <div class="action-content">
                                 <h4>Design your store</h4>
-                                <p>Describe your business to generate custom themes or browse pre-designed themes</p>
-                                <div class="theme-input-group">
-                                    <input type="text" placeholder="Modern handmade jewelry" class="theme-input">
-                                    <button class="btn-generate">
-                                        <i class="fas fa-magic"></i>
-                                        Generate
-                                    </button>
+                                <p>Customize logo and colours for your admin screens.</p>
+
+                                        <div style="display:flex;gap:12px;align-items:center;margin-top:12px;">
+                                    <div style="flex:1;">
+                                        <a href="design-settings.html" class="btn-secondary" style="text-decoration:none;display:inline-block;padding:8px 12px;border-radius:6px;">Customize</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -165,19 +160,15 @@
                         <div class="setup-card">
                             <div class="setup-header">
                                 <div class="setup-icon-wrapper">
-                                    <i class="fas fa-check-circle success-icon"></i>
+                                    <i class="fas fa-users"></i>
                                 </div>
                                 <div>
-                                    <h4>Payment options</h4>
+                                    <h4>Manage your team</h4>
                                 </div>
                             </div>
-                            <div class="payment-methods">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paypal.svg" alt="PayPal" class="payment-icon">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" class="payment-icon">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" class="payment-icon">
-                            </div>
-                            <p class="setup-description">Domestic and more</p>
-                            <button class="btn-link">Edit</button>
+                            <div style="padding:12px 0;color:#6b7280">Invite team members, manage roles and permissions.</div>
+                            <p class="setup-description">Coming soon</p>
+                            <button class="btn-link" disabled style="opacity:0.6;cursor:not-allowed;">Coming soon</button>
                         </div>
 
                         <div class="setup-card">
@@ -189,13 +180,16 @@
                                     <h4>Customize your domain</h4>
                                 </div>
                             </div>
-                            <div class="domain-info">
-                                <code class="domain-name">vxiadu-wt.myshopify.com</code>
-                                <button class="btn-copy">
-                                    <i class="fas fa-copy"></i>
-                                </button>
+                            <div class="domain-info" style="display:flex;gap:12px;align-items:center;">
+                                <label style="display:flex;align-items:center;gap:6px;">
+                                    <input type="text" id="subdomainInput" value="goodsoftware" style="padding:6px 8px;border:1px solid #e5e7eb;border-radius:6px;width:160px;">
+                                    <span id="domainSuffix" style="color:#374151">.mydomain.com</span>
+                                </label>
+                                <div style="margin-left:auto;">
+                                    <button id="publishDomainBtn" class="btn-primary">Publish</button>
+                                </div>
                             </div>
-                            <button class="btn-link">Customize</button>
+                            
                         </div>
                     </div>
                 </section>
@@ -282,5 +276,28 @@
     </div>
 
     <script src="home-script.js"></script>
+        <script>
+            // design settings moved to a separate page: design-settings.html
+            
+            // Domain publish handler
+            (function(){
+                const publishBtn = document.getElementById('publishDomainBtn');
+                const subdomainInput = document.getElementById('subdomainInput');
+                const suffix = document.getElementById('domainSuffix');
+                if (!publishBtn || !subdomainInput || !suffix) return;
+
+                publishBtn.addEventListener('click', ()=>{
+                    const name = subdomainInput.value.trim();
+                    if (!name) { alert('Please enter a subdomain.'); return; }
+                    const full = `${name}${suffix.textContent}`;
+                    localStorage.setItem('fms_domain', full);
+                    // quick visual feedback
+                    publishBtn.textContent = 'Published';
+                    publishBtn.disabled = true;
+                    setTimeout(()=>{ publishBtn.textContent = 'Publish'; publishBtn.disabled = false; }, 1500);
+                    alert('Domain published: ' + full);
+                });
+            })();
+        </script>
 </body>
 </html>

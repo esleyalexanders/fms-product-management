@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Settings - Franchise Management System</title>
+    <link rel="stylesheet" href="home-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .design-page { max-width:820px;margin:28px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,0.06) }
+        .logo-preview { width:92px; height:92px; border:1px dashed #e6e9ee; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff }
+        .logo-preview img{ max-width:100%; max-height:100% }
+        .controls-row { display:flex;gap:12px;align-items:center;margin-top:12px }
+        .btn-row { display:flex; gap:8px; margin-top:16px }
+        input[type="color"] { width:48px; height:32px; border:none; padding:0; }
+    </style>
+</head>
+<body>
+    <div class="design-page">
+        <h2>Customize logo & colours</h2>
+        <div style="display:flex;gap:16px;align-items:center;margin-top:12px;">
+            <div class="logo-preview"><img id="logoPreviewPage" src="https://placehold.co/64x64?text=Logo" alt="logo"></div>
+            <div style="flex:1">
+                <label style="display:block;margin-bottom:6px">Upload store logo</label>
+                <input type="file" id="logoInputPage" accept="image/*">
+                <div class="btn-row"><button class="btn-secondary" id="resetLogoBtnPage">Reset</button></div>
+            </div>
+        </div>
+
+        <div class="controls-row">
+            <div class="picker"><label>Login colour</label><input type="color" id="loginColorPickerPage" value="#4f46e5"></div>
+            <div class="picker"><label>Dashboard colour</label><input type="color" id="dashboardColorPickerPage" value="#2563eb"></div>
+        </div>
+
+        <div class="btn-row" style="margin-top:20px">
+            <a href="home.html" class="btn-ghost" style="padding:8px 12px;border-radius:6px;border:1px solid #e5e7eb;text-decoration:none;color:inherit;">Cancel</a>
+            <button class="btn-primary" id="applyDesignBtnPage">Apply</button>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const logoPreviewPage = document.getElementById('logoPreviewPage');
+            const logoInputPage = document.getElementById('logoInputPage');
+            const resetLogoBtnPage = document.getElementById('resetLogoBtnPage');
+            const loginColorPickerPage = document.getElementById('loginColorPickerPage');
+            const dashboardColorPickerPage = document.getElementById('dashboardColorPickerPage');
+            const applyDesignBtnPage = document.getElementById('applyDesignBtnPage');
+
+            const saved = JSON.parse(localStorage.getItem('fms_design') || '{}');
+            if (saved.logo) logoPreviewPage.src = saved.logo;
+            if (saved.loginColor) loginColorPickerPage.value = saved.loginColor;
+            if (saved.dashboardColor) dashboardColorPickerPage.value = saved.dashboardColor;
+
+            logoInputPage.addEventListener('change', function(){
+                const file = this.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e){ logoPreviewPage.src = e.target.result; };
+                reader.readAsDataURL(file);
+            });
+
+            resetLogoBtnPage.addEventListener('click', ()=>{
+                logoPreviewPage.src = 'https://placehold.co/64x64?text=Logo';
+                const cur = JSON.parse(localStorage.getItem('fms_design')||'{}'); delete cur.logo; localStorage.setItem('fms_design', JSON.stringify(cur));
+            });
+
+            applyDesignBtnPage.addEventListener('click', ()=>{
+                const config = { loginColor: loginColorPickerPage.value, dashboardColor: dashboardColorPickerPage.value };
+                if (logoPreviewPage.src && logoPreviewPage.src.indexOf('data:')===0) config.logo = logoPreviewPage.src;
+                localStorage.setItem('fms_design', JSON.stringify(config));
+                alert('Design saved.');
+                window.location.href = 'home.html';
+            });
+        })();
+    </script>
+</body>
+</html>

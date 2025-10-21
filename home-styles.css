@@ -133,6 +133,9 @@ body {
     overflow: hidden;
 }
 
+/* DEBUG: CSS load detection - will show a magenta outline when 'css-check' class is added to body */
+/* debug outline removed */
+
 /* ========================================
    SIDEBAR
    ======================================== */

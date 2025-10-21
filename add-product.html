@@ -3,24 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product - Franchise Management System</title>
+    <title>Add Service - Franchise Management System</title>
     <link rel="stylesheet" href="add-product-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./home-styles.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">An update from system</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="home.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                    <a href="quotes.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Quotes</span>
+                    </a>
+                    <a href="tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule</span>
+                    </a>
+                    <a href="manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-users"></i>
+                        <span>Manage team</span>
+                    </a>
+                    <a href="admin/pricebook-create.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-book"></i>
+                        <span>My pricebook</span>
+                    </a>
+
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-header">
             <div class="header-left">
                 <a href="index.html" style="text-decoration: none; color: inherit;">
                     <button class="back-btn">
                         <i class="fas fa-arrow-left"></i>
                     </button>
                 </a>
-                <h1 class="page-title">Add product</h1>
+                <h1 class="page-title">Add service</h1>
             </div>
             <div class="header-right">
                 <button class="discard-btn">Discard</button>
@@ -29,11 +94,8 @@
                 </button>
                 <button class="save-btn">Save</button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
         <div class="content-wrapper">
             <!-- Left Column -->
             <div class="left-column">
@@ -41,11 +103,11 @@
                 <div class="card">
                     <div class="title-type-row">
                         <div class="form-group title-group">
-                            <label for="productTitle">Title</label>
-                            <input type="text" id="productTitle" class="form-input" placeholder="e.g., Premium Spa Package">
+                            <label for="productTitle">Service name</label>
+                            <input type="text" id="productTitle" class="form-input" placeholder="e.g., Deep Tissue Massage">
                         </div>
                         <div class="form-group type-group">
-                            <label for="productType">Type</label>
+                            <label for="productType">Service type</label>
                             <input type="text" id="productType" class="form-input" placeholder="e.g., Wellness & Spa">
                         </div>
                     </div>
@@ -89,7 +151,7 @@
                             <button class="toolbar-btn" title="View code"><i class="fas fa-brackets-curly"></i></button>
                         </div>
                     </div>
-                    <textarea id="productDescription" class="form-textarea" placeholder="Enter product description..."></textarea>
+                    <textarea id="productDescription" class="form-textarea" placeholder="Describe the service, what's included, and any requirements..."></textarea>
                 </div>
 
                 <!-- Media Section -->
@@ -108,7 +170,6 @@
                                     <i class="fas fa-upload"></i>
                                     Upload new
                                 </button>
-                                <button class="upload-btn secondary-upload">Select existing</button>
                             </div>
                         </div>
                     </div>
@@ -124,28 +185,17 @@
                     </div>
                     <div class="form-group">
                         <select id="categorySelect" class="form-select">
-                            <option value="">Choose a product category</option>
-                            <option value="Animals & Pet Supplies">Animals & Pet Supplies</option>
-                            <option value="Apparel & Accessories">Apparel & Accessories</option>
-                            <option value="Arts & Entertainment">Arts & Entertainment</option>
-                            <option value="Baby & Toddler">Baby & Toddler</option>
-                            <option value="Business & Industrial">Business & Industrial</option>
-                            <option value="Cameras & Optics">Cameras & Optics</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Food, Beverages & Tobacco">Food, Beverages & Tobacco</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Hardware">Hardware</option>
-                            <option value="Health & Beauty">Health & Beauty</option>
-                            <option value="Home & Garden">Home & Garden</option>
-                            <option value="Luggage & Bags">Luggage & Bags</option>
-                            <option value="Mature">Mature</option>
-                            <option value="Media">Media</option>
-                            <option value="Office Supplies">Office Supplies</option>
-                            <option value="Religious & Ceremonial">Religious & Ceremonial</option>
-                            <option value="Software">Software</option>
-                            <option value="Sporting Goods">Sporting Goods</option>
-                            <option value="Toys & Games">Toys & Games</option>
-                            <option value="Vehicles & Parts">Vehicles & Parts</option>
+                            <option value="">Choose a service category</option>
+                            <option value="Wellness & Spa">Wellness & Spa</option>
+                            <option value="Beauty & Grooming">Beauty & Grooming</option>
+                            <option value="Home Services">Home Services</option>
+                            <option value="Professional Services">Professional Services</option>
+                            <option value="Consulting">Consulting</option>
+                            <option value="Repairs & Maintenance">Repairs & Maintenance</option>
+                            <option value="Education & Training">Education & Training</option>
+                            <option value="Events & Catering">Events & Catering</option>
+                            <option value="Delivery & Logistics">Delivery & Logistics</option>
+                            <option value="IT & Tech Support">IT & Tech Support</option>
                         </select>
                     </div>
                     <p class="field-help-text">Determine tax rates and create product-specific rules</p>
@@ -154,10 +204,10 @@
                 <!-- Price Section -->
                 <div class="card">
                     <div class="card-header">
-                        <label class="card-label">Price</label>
+                        <label class="card-label">Rate</label>
                     </div>
                     <div class="form-group">
-                        <label for="productPrice">Price</label>
+                        <label for="productPrice">Rate (per session)</label>
                         <div class="price-input-wrapper">
                             <span class="currency-symbol">$</span>
                             <input type="number" id="productPrice" class="form-input price-input" placeholder="0.00" step="0.01" min="0">
@@ -168,11 +218,11 @@
                 <!-- Inventory Section -->
                 <div class="card">
                     <div class="card-header">
-                        <label class="card-label">Inventory</label>
+                        <label class="card-label">Duration</label>
                     </div>
                     <div class="form-group">
-                        <label for="inventoryQuantity">Quantity</label>
-                        <input type="number" id="inventoryQuantity" class="form-input" placeholder="0" min="0">
+                        <label for="inventoryQuantity">Duration (minutes)</label>
+                        <input type="number" id="inventoryQuantity" class="form-input" placeholder="60" min="0">
                     </div>
                 </div>
 
@@ -194,11 +244,43 @@
 
             <!-- Right Column -->
             <div class="right-column">
-                <!-- Empty for now - can add cards later if needed -->
+                    <div class="card preview-card">
+                    <h4 class="card-title">Service preview</h4>
+                    <div class="preview-image">
+                        <img src="https://placehold.co/400x250?text=Product+Image" alt="Product preview">
+                    </div>
+                    <div class="preview-details">
+                        <h5 class="preview-name">Service name</h5>
+                        <p class="preview-price">$0.00 per session</p>
+                        <div class="preview-actions">
+                            <button class="btn-secondary">Preview</button>
+                            <button class="btn-primary">Publish Service</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
+    </div>
 
     <script src="add-product-script.js"></script>
+    <script>
+        // small helpers: mark Add product nav as active and improve focus outline
+        (function(){
+            try{
+                // mark nav
+                document.querySelectorAll('.sidebar .nav-item').forEach(function(n){ n.classList.remove('active'); });
+                var link = document.querySelector('.sidebar a[href="add-product.html"]');
+                if(link){ link.classList.add('active'); }
+
+                // add focus style to inputs for keyboard users
+                document.querySelectorAll('input, select, textarea, button').forEach(function(el){
+                    el.addEventListener('focus', function(){ el.classList.add('focus-visible'); });
+                    el.addEventListener('blur', function(){ el.classList.remove('focus-visible'); });
+                });
+                // init script ran
+            }catch(e){ console.warn('Init script failed', e); }
+        })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit Pricebook Item — Admin</title>
+  <link rel="stylesheet" href="../add-product-styles.css">
+  <link rel="stylesheet" href="../home-styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .card{padding:14px;border-radius:8px;background:#fff;border:1px solid #eef2f6;margin-bottom:12px}
+    .version-list{margin-top:8px}
+    .version-item{padding:8px;border-radius:6px;border:1px solid #f1f5f9;margin-bottom:8px;background:#fbfdff}
+    .version-ts{font-weight:600;margin-bottom:4px}
+    /* modal/backdrop styles (ensure publish modal centers correctly) */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:1200}
+    .modal{background:#fff;padding:18px;border-radius:10px;max-width:520px;width:92%;box-shadow:0 10px 30px rgba(2,6,23,0.2);border:1px solid rgba(15,23,42,0.06)}
+    .modal h3{margin:0 0 8px;font-size:18px}
+    .modal .small{color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="limited-offer-banner">
+    <div class="banner-content"><i class="fas fa-info-circle"></i><span class="banner-text">Admin: Edit Pricebook Item</span></div>
+  </div>
+
+  <div class="app-container">
+  <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-store"></i>
+          <div class="logo-text-wrapper">
+            <span class="logo-text" id="storeName">My Store</span>
+            <button class="edit-store-btn" title="Edit store name">
+              <i class="fas fa-pencil-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-section-label">MAIN</div>
+        <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+        <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+        <a href="../manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+        <a href="pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+
+      <div class="sidebar-footer">
+        <div class="nav-item">
+          <i class="fas fa-question-circle"></i>
+          <span>Get Set Up</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <header class="top-header">
+  <div class="header-left"><a href="../home.html"><button class="back-btn"><i class="fas fa-arrow-left"></i></button></a><h1 class="page-title">Edit Pricebook Item</h1></div>
+        <div class="header-right"><button class="discard-btn">Discard</button><button class="status-toggle-btn" id="statusToggleBtn"><i class="fas fa-toggle-on"></i> Published</button><button class="save-btn">Save</button></div>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="left-column">
+          <div class="card">
+            <label class="card-label">Code</label>
+            <input id="code" class="form-input" type="text" value="CLEAN-001" disabled>
+          </div>
+
+          <div class="card">
+            <label class="card-label">Name</label>
+            <input id="name" class="form-input" type="text" value="Standard Home Cleaning">
+          </div>
+
+          <div class="card">
+            <label class="card-label">Description</label>
+            <textarea id="description" class="form-textarea">A standard interior cleaning package for homes up to 2,000 sq ft.</textarea>
+          </div>
+
+          <div class="card" id="serviceFields">
+            <label class="card-label">Service details</label>
+            <div class="form-group"><label>Default duration (minutes)</label><input id="duration" class="form-input" type="number" value="60"></div>
+            <div class="form-group" style="margin-top:8px"><label>Unit</label><select id="unit" class="form-select"><option>each</option><option>hour</option><option>sq ft</option></select></div>
+          </div>
+
+          <div class="card">
+            <label class="card-label">Pricing</label>
+            <div class="form-group"><label>Base price</label><div class="price-input-wrapper"><span class="currency-symbol">$</span><input id="price" class="form-input" type="number" value="79.00"></div></div>
+            <div class="form-group" style="margin-top:8px">
+              <label>Tax category (Australia)</label>
+              <select id="tax" class="form-select">
+                <option value="taxable_gst">Taxable — GST applies (standard 10%)</option>
+                <option value="gst_free">GST-free — 0% (e.g., some health, basic food)</option>
+                <option value="input_taxed">Input-taxed — no GST charged but special reporting</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="actions"><button class="btn-ghost" id="rollbackBtn">Rollback</button><button class="btn-secondary" id="saveChanges">Save Changes</button><button class="btn-primary" id="publishChanges">Publish</button></div>
+          </div>
+        </div>
+
+        <aside class="right-column">
+          <div class="card preview-card">
+            <h4 class="card-title">Item preview</h4>
+            <div class="preview-image" style="position:relative;width:100%;max-width:400px;margin:auto;">
+              <img id="previewImg" src="https://placehold.co/400x250?text=Image" style="width:100%;height:auto;border-radius:6px;cursor:pointer;">
+            </div>
+            <!-- full preview modal -->
+            <div id="imgPreviewModalEdit" class="modal-backdrop" style="z-index:1300;display:none;align-items:center;justify-content:center;">
+              <div class="modal" style="max-width:960px;width:94%;display:flex;gap:18px;align-items:flex-start;">
+                <div style="flex:1;min-width:280px;"><img id="imgPreviewLargeEdit" src="" alt="Preview" style="width:100%;height:auto;border-radius:8px;object-fit:cover;max-height:72vh;display:block;background:#fff;"></div>
+                <div style="flex:1;min-width:260px;max-height:72vh;overflow:auto;padding-right:6px;">
+                  <button id="closeImgPreviewEdit" style="float:right;background:transparent;border:none;color:#374151;font-size:20px;cursor:pointer;margin-bottom:6px;"><i class="fas fa-times"></i></button>
+                  <h3 id="modalTitleNameEdit" style="margin-top:6px;margin-bottom:6px">Item name</h3>
+                  <div id="modalPriceEdit" style="font-weight:700;color:#1e40af;margin-bottom:8px">$0.00</div>
+                  <div id="modalDescriptionEdit" class="small" style="color:#374151;margin-bottom:12px"></div>
+                  <div id="modalExtraDetailsEdit" style="color:#374151;font-size:14px;line-height:1.4;margin-bottom:12px"></div>
+                  <div style="margin-top:6px;color:#374151;font-size:13px;line-height:1.4">
+                    <div><strong>Code:</strong> <span id="modalCodeEdit">—</span></div>
+                    <div><strong>Tax:</strong> <span id="modalTaxEdit">—</span></div>
+                    <div><strong>Status:</strong> <span id="modalStatusEdit">Published</span></div>
+                  </div>
+                  <div id="modalTagsEdit" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px"></div>
+                  <div style="margin-top:14px"><button class="btn-primary" id="modalCloseBtnEdit">Close</button></div>
+                </div>
+              </div>
+            </div>
+            <div class="preview-details"><h5 id="previewName">Standard Home Cleaning</h5><p id="previewPrice">$79.00</p><div class="preview-actions"><button class="btn-secondary" id="openImgPreviewBtnEdit">Preview</button><button class="btn-primary">Publish</button></div></div>
+          </div>
+
+          <div class="card">
+            <strong>Version History</strong>
+            <div class="version-list">
+              <div class="version-item">
+                <div class="version-ts">2025-10-15</div>
+                <div class="version-change">Published by Admin Jane — Price changed from $75 → $79</div>
+              </div>
+              <div class="version-item">
+                <div class="version-ts">2025-09-02</div>
+                <div class="version-change">Draft by Admin Joe — Minor copy edits</div>
+              </div>
+              <div class="version-item">
+                <div class="version-ts">2025-06-01</div>
+                <div class="version-change">Initial publish — Initial item created</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal" class="modal-backdrop">
+    <div class="modal">
+      <h3 id="modalTitle">Publish Item</h3>
+      <p id="modalBody" class="small">Publishing will create a new version and make the item available to franchisees. Optionally notify franchisees now.</p>
+      <div style="margin-top:12px"><label class="inline"><input type="checkbox" id="notifyFranchisees" checked> Notify franchisees</label></div>
+      <div style="margin-top:18px; margin-bottom:10px">
+        <label style="font-weight:500;display:block;margin-bottom:6px">Update preview image</label>
+        <div style="display:flex;align-items:center;gap:12px">
+          <img id="modalPreviewImg" src="https://placehold.co/120x80?text=Image" alt="preview" style="width:120px;height:80px;object-fit:cover;border-radius:5px;border:1px solid #e5e7eb;">
+          <input type="file" id="modalImgInput" accept="image/*" style="display:none">
+          <button type="button" class="btn-secondary" id="modalImgBtn">Choose Image</button>
+        </div>
+      </div>
+      <div class="actions"><button class="btn-ghost" id="cancelModal">Cancel</button><button class="btn-primary" id="confirmModal">Confirm & Publish</button></div>
+    </div>
+  </div>
+
+  <script src="../add-product-script.js"></script>
+  <script>
+    const publishBtn = document.getElementById('publishChanges');
+    const modal = document.getElementById('modal');
+    const cancelModal = document.getElementById('cancelModal');
+    const confirmModal = document.getElementById('confirmModal');
+    // full preview modal elements
+    const previewImg = document.getElementById('previewImg');
+    const openImgPreviewBtnEdit = document.getElementById('openImgPreviewBtnEdit');
+    const imgPreviewModalEdit = document.getElementById('imgPreviewModalEdit');
+    const imgPreviewLargeEdit = document.getElementById('imgPreviewLargeEdit');
+    const closeImgPreviewEdit = document.getElementById('closeImgPreviewEdit');
+  // Modal image update
+  const modalImgBtn = document.getElementById('modalImgBtn');
+  const modalImgInput = document.getElementById('modalImgInput');
+  const modalPreviewImg = document.getElementById('modalPreviewImg');
+
+    // Sync modal preview image with main preview
+    function syncModalPreviewImg() {
+      modalPreviewImg.src = previewImg.src;
+    }
+
+    function openFullPreviewEdit() {
+      imgPreviewLargeEdit.src = previewImg.src;
+  document.getElementById('modalTitleNameEdit').textContent = document.getElementById('name').value || 'Item name';
+  document.getElementById('modalPriceEdit').textContent = document.getElementById('price').value ? `$${Number(document.getElementById('price').value).toFixed(2)}` : '$0.00';
+  document.getElementById('modalDescriptionEdit').textContent = document.getElementById('description').value || '';
+      const extra = [];
+      if (document.getElementById('serviceFields')) {
+        const dur = document.getElementById('duration').value;
+        const unit = document.getElementById('unit').value;
+        if (dur) extra.push(`Duration: ${dur} ${unit}`);
+      }
+      document.getElementById('modalExtraDetailsEdit').textContent = extra.join(' • ');
+      // metadata
+      document.getElementById('modalCodeEdit').textContent = document.getElementById('code').value || '—';
+      const taxSel = document.getElementById('tax');
+      document.getElementById('modalTaxEdit').textContent = taxSel.options[taxSel.selectedIndex].text || '—';
+      document.getElementById('modalStatusEdit').textContent = document.getElementById('statusToggleBtn').textContent.trim() || 'Published';
+  // version removed by request
+      imgPreviewModalEdit.style.display = 'flex';
+    }
+
+    previewImg.addEventListener('click', () => openFullPreviewEdit());
+    openImgPreviewBtnEdit.addEventListener('click', () => openFullPreviewEdit());
+    closeImgPreviewEdit.addEventListener('click', () => { imgPreviewModalEdit.style.display = 'none'; });
+    imgPreviewModalEdit.addEventListener('click', (e) => { if (e.target === imgPreviewModalEdit) imgPreviewModalEdit.style.display = 'none'; });
+
+    publishBtn && publishBtn.addEventListener('click', ()=>{ syncModalPreviewImg(); modal.style.display='flex'; });
+    cancelModal && cancelModal.addEventListener('click', ()=>{ modal.style.display='none'; });
+    confirmModal && confirmModal.addEventListener('click', ()=>{
+      // When publishing, update main preview image if changed in modal
+      if (modalPreviewImg.src !== previewImg.src) {
+        previewImg.src = modalPreviewImg.src;
+      }
+      modal.style.display='none';
+      alert('Published (demo)');
+    });
+
+    modalImgBtn.addEventListener('click', ()=> modalImgInput.click());
+    modalImgInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          modalPreviewImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+      // reset input so same file can be reselected
+      this.value = '';
+    });
+  </script>
+</body>
+</html>
