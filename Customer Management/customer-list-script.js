@@ -26,27 +26,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderCustomers() {
         const query = searchInput.value.trim();
         const customers = customersAPI.getCustomers({ q: query });
-        tableBody.innerHTML = '';
-        if (customers.length === 0) {
-            emptyState.style.display = 'block';
-            return;
+        if (customers.length > 0) {
+            tableBody.innerHTML = '';
+            emptyState.style.display = 'none';
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.firstName} ${customer.lastName}</td>
+                    <td>${customer.company || '-'}</td>
+                    <td>${customer.email || '-'}</td>
+                    <td>${customer.phone || '-'}</td>
+                    <td>${customer.address?.city || '-'}</td>
+                    <td class="customer-actions">
+                        <button class="btn-link edit-btn" data-id="${customer.id}">Edit</button>
+                        <button class="btn-link delete-btn" data-id="${customer.id}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            // If no customers, show the static sample rows (already in HTML)
+            emptyState.style.display = 'none';
         }
-        emptyState.style.display = 'none';
-        customers.forEach(customer => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${customer.firstName} ${customer.lastName}</td>
-                <td>${customer.company || '-'}</td>
-                <td>${customer.email || '-'}</td>
-                <td>${customer.phone || '-'}</td>
-                <td>${customer.address?.city || '-'}</td>
-                <td class="customer-actions">
-                    <button class="btn-link edit-btn" data-id="${customer.id}">Edit</button>
-                    <button class="btn-link delete-btn" data-id="${customer.id}">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
     }
 
     // Open modal for edit

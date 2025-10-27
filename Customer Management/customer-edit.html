@@ -185,6 +185,60 @@
       editingCustomerId = editId;
     }
 
+    // Sample data for hard-coded customers
+    const sampleCustomers = {
+      sample1: {
+        firstName: 'John',
+        lastName: 'Doe',
+        company: 'ABC Corp',
+        email: 'john.doe@abc.com',
+        phone: '+1 234 567 8901',
+        address: { street: '123 Main St', city: 'New York', state: 'NY', postalCode: '10001', country: 'USA' },
+        preferredContactMethod: 'email',
+        notes: 'Regular customer, prefers email communication'
+      },
+      sample2: {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        company: '',
+        email: 'jane.smith@email.com',
+        phone: '+61 400 123 456',
+        address: { street: '456 Oak Avenue', city: 'Sydney', state: 'NSW', postalCode: '2000', country: 'Australia' },
+        preferredContactMethod: 'phone',
+        notes: 'New customer, interested in home cleaning services'
+      },
+      sample3: {
+        firstName: 'Mike',
+        lastName: 'Johnson',
+        company: 'XYZ Services',
+        email: 'mike@xyzservices.com',
+        phone: '+1 987 654 3210',
+        address: { street: '789 Pine Road', city: 'Los Angeles', state: 'CA', postalCode: '90210', country: 'USA' },
+        preferredContactMethod: 'email',
+        notes: 'Business client, needs commercial cleaning quote'
+      },
+      sample4: {
+        firstName: 'Sarah',
+        lastName: 'Williams',
+        company: '',
+        email: 'sarah.williams@gmail.com',
+        phone: '+61 411 222 333',
+        address: { street: '321 Beach Boulevard', city: 'Melbourne', state: 'VIC', postalCode: '3000', country: 'Australia' },
+        preferredContactMethod: 'whatsapp',
+        notes: 'Residential customer, prefers WhatsApp for updates'
+      },
+      sample5: {
+        firstName: 'David',
+        lastName: 'Brown',
+        company: 'Brown Enterprises',
+        email: 'david@brownent.com',
+        phone: '+1 555 123 4567',
+        address: { street: '654 Elm Street', city: 'Chicago', state: 'IL', postalCode: '60601', country: 'USA' },
+        preferredContactMethod: 'phone',
+        notes: 'Enterprise client, multiple locations'
+      }
+    };
+
     // Update preview on input
     const firstNameInput = document.getElementById('firstName');
     const lastNameInput = document.getElementById('lastName');
@@ -232,7 +286,10 @@
       window.location.href = 'customer-list.html';
       return;
     }
-    const customer = customersAPI.getCustomerById(editingCustomerId);
+    let customer = customersAPI.getCustomerById(editingCustomerId);
+    if (!customer) {
+      customer = sampleCustomers[editingCustomerId];
+    }
     if (customer) {
       firstNameInput.value = customer.firstName || '';
       lastNameInput.value = customer.lastName || '';
@@ -276,8 +333,15 @@
         return;
       }
 
-      customersAPI.updateCustomer(editingCustomerId, customerData);
-      alert('Customer updated successfully!');
+      if (editingCustomerId.startsWith('sample')) {
+        // For samples, create a new customer
+        customersAPI.createCustomer(customerData);
+        alert('Sample customer saved as new customer!');
+      } else {
+        // Update existing
+        customersAPI.updateCustomer(editingCustomerId, customerData);
+        alert('Customer updated successfully!');
+      }
       window.location.href = 'customer-list.html';
     });
 

@@ -109,6 +109,87 @@ function permanentlyDeleteCustomer(id) {
     return true;
 }
 
+// Seed sample customers for demo
+function seedSampleCustomers() {
+    // Clear existing for demo
+    localStorage.removeItem(STORAGE_KEY);
+
+    const samples = [
+        {
+            firstName: 'John',
+            lastName: 'Doe',
+            company: 'ABC Corp',
+            email: 'john.doe@abc.com',
+            phone: '+1 234 567 8901',
+            street: '123 Main St',
+            city: 'New York',
+            state: 'NY',
+            postalCode: '10001',
+            country: 'USA',
+            preferredContactMethod: 'email',
+            notes: 'Regular customer, prefers email communication'
+        },
+        {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            company: '',
+            email: 'jane.smith@email.com',
+            phone: '+61 400 123 456',
+            street: '456 Oak Avenue',
+            city: 'Sydney',
+            state: 'NSW',
+            postalCode: '2000',
+            country: 'Australia',
+            preferredContactMethod: 'phone',
+            notes: 'New customer, interested in home cleaning services'
+        },
+        {
+            firstName: 'Mike',
+            lastName: 'Johnson',
+            company: 'XYZ Services',
+            email: 'mike@xyzservices.com',
+            phone: '+1 987 654 3210',
+            street: '789 Pine Road',
+            city: 'Los Angeles',
+            state: 'CA',
+            postalCode: '90210',
+            country: 'USA',
+            preferredContactMethod: 'email',
+            notes: 'Business client, needs commercial cleaning quote'
+        },
+        {
+            firstName: 'Sarah',
+            lastName: 'Williams',
+            company: '',
+            email: 'sarah.williams@gmail.com',
+            phone: '+61 411 222 333',
+            street: '321 Beach Boulevard',
+            city: 'Melbourne',
+            state: 'VIC',
+            postalCode: '3000',
+            country: 'Australia',
+            preferredContactMethod: 'whatsapp',
+            notes: 'Residential customer, prefers WhatsApp for updates'
+        },
+        {
+            firstName: 'David',
+            lastName: 'Brown',
+            company: 'Brown Enterprises',
+            email: 'david@brownent.com',
+            phone: '+1 555 123 4567',
+            street: '654 Elm Street',
+            city: 'Chicago',
+            state: 'IL',
+            postalCode: '60601',
+            country: 'USA',
+            preferredContactMethod: 'phone',
+            notes: 'Enterprise client, multiple locations'
+        }
+    ];
+
+    samples.forEach(sample => createCustomer(sample));
+}
+
 // Export for use in other scripts
 window.customersAPI = {
     getCustomers,
@@ -116,5 +197,6 @@ window.customersAPI = {
     createCustomer,
     updateCustomer,
     softDeleteCustomer,
-    permanentlyDeleteCustomer
+    permanentlyDeleteCustomer,
+    seedSampleCustomers
 };
