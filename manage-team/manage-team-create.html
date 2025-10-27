@@ -118,7 +118,6 @@
                 <div class="form-container">
                     <div class="form-tabs">
                         <button class="tab-btn active" data-tab="personal">Personal Info</button>
-                        <button class="tab-btn" data-tab="employment">Employment & Scheduling</button>
                     </div>
 
                     <form id="staffForm">
@@ -140,14 +139,32 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group">
-                                        <label for="firstName">First Name <span class="required">*</span></label>
-                                        <input type="text" id="firstName" required>
-                                        <div class="error-message" id="firstNameError"></div>
+                                        <label for="fullName">Full Name <span class="required">*</span></label>
+                                        <input type="text" id="fullName" required>
+                                        <div class="error-message" id="fullNameError"></div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="lastName">Last Name <span class="required">*</span></label>
-                                        <input type="text" id="lastName" required>
-                                        <div class="error-message" id="lastNameError"></div>
+                                        <label for="staffId">Staff ID</label>
+                                        <input type="text" id="staffId">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="role">Role <span class="required">*</span></label>
+                                        <select id="role" required>
+                                            <option value="">Select Role</option>
+                                            <option value="Manager">Manager</option>
+                                            <option value="Staff">Staff</option>
+                                        </select>
+                                        <div class="error-message" id="roleError"></div>
+                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">
+                                            <i class="fas fa-info-circle"></i> Need to add or edit roles? Go to <a href="manage-team-roles.html" style="color:#6366f1; text-decoration:underline;">Manage Roles</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="jobTitle">Job Title</label>
+                                        <input type="text" id="jobTitle" placeholder="e.g. Senior Technician, Lead Installer">
+                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Specific job title for this staff member</div>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -167,177 +184,6 @@
                                         <label for="dateOfBirth">Date of Birth</label>
                                         <input type="date" id="dateOfBirth">
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Employment Information Tab -->
-                        <div class="tab-content" id="employment-tab">
-                            <div class="form-section">
-                                <h3>Employment Information</h3>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="employeeId">Employee ID</label>
-                                        <input type="text" id="employeeId">
-                                        <div class="error-message" id="employeeIdError"></div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="startDate">Start Date <span class="required">*</span></label>
-                                        <input type="date" id="startDate" required>
-                                        <div class="error-message" id="startDateError"></div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="employmentType">Employment Type <span class="required">*</span></label>
-                                        <select id="employmentType" required>
-                                            <option value="">Select Type</option>
-                                            <option value="full-time">Full-time</option>
-                                            <option value="part-time">Part-time</option>
-                                            <option value="contractor">Contractor</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="hourlyRate">Hourly Rate/Salary</label>
-                                        <input type="number" id="hourlyRate" step="0.01" min="0">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="role">Role <span class="required">*</span></label>
-                                        <select id="role" required>
-                                            <option value="">Select Role</option>
-                                            <option value="Manager">Manager</option>
-                                            <option value="Staff">Staff</option>
-                                        </select>
-                                        <div class="error-message" id="roleError"></div>
-                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">
-                                            <i class="fas fa-info-circle"></i> Need to add or edit roles? Go to <a href="manage-team-roles.html" style="color:#6366f1; text-decoration:underline;">Manage Roles</a>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="jobTitle">Job Title (Optional)</label>
-                                        <input type="text" id="jobTitle" placeholder="e.g. Senior HVAC Technician, Lead Installer">
-                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Specific job title for this staff member</div>
-                                    </div>
-                                </div>
-
-                                <!-- Scheduling & Availability -->
-                                <div class="form-section">
-                                    <h3><i class="fas fa-calendar-check"></i> Scheduling & Availability</h3>
-                                    <div class="subsection-description">Configure staff member's work schedule, availability, and scheduling preferences</div>
-
-                                    <div class="scheduling-section">
-                                        <!-- Basic Info -->
-                                        <div class="scheduling-subsection">
-                                            <div class="subsection-header">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                                <h4>Basic Information</h4>
-                                            </div>
-                                            <div class="form-grid-2">
-                                                <div class="form-group">
-                                                    <label for="locations"><i class="fas fa-building"></i> Assigned Locations</label>
-                                                    <input type="text" id="locations" placeholder="e.g. Main St, East Branch, Downtown">
-                                                    <div style="font-size:12px; color:#6b7280; margin-top:4px;">Separate multiple locations with commas</div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="skills"><i class="fas fa-tools"></i> Skills & Certifications</label>
-                                                    <input type="text" id="skills" placeholder="e.g. HVAC, Electrical, Plumbing">
-                                                    <div style="font-size:12px; color:#6b7280; margin-top:4px;">Separate multiple skills with commas</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Weekly Availability -->
-                                        <div class="scheduling-subsection">
-                                            <div class="subsection-header">
-                                                <i class="fas fa-clock"></i>
-                                                <h4>Weekly Availability</h4>
-                                                <span class="info-badge"><i class="fas fa-info-circle"></i> Define when this staff member is available to work</span>
-                                            </div>
-                                            
-                                            <div class="preset-card">
-                                                <div class="preset-card-header"><i class="fas fa-magic"></i> Quick Setup - Weekday Preset</div>
-                                                <div class="preset-inputs">
-                                                    <input type="time" id="weekdayPresetStart" value="09:00">
-                                                    <span class="range-to">to</span>
-                                                    <input type="time" id="weekdayPresetEnd" value="17:00">
-                                                    <button type="button" id="applyWeekdayPreset" class="btn-secondary"><i class="fas fa-bolt"></i> Apply to Mon–Fri</button>
-                                                </div>
-                                                <div style="font-size:12px; color:#6b7280; margin-top:8px;">Set a standard time range and apply it to all weekdays at once</div>
-                                            </div>
-
-                                            <div id="availabilityContainer">
-                                                <!-- per-day availability lists inserted here by JS -->
-                                            </div>
-                                        </div>
-
-                                        <!-- Time Off & Constraints -->
-                                        <div class="scheduling-subsection">
-                                            <div class="subsection-header">
-                                                <i class="fas fa-ban"></i>
-                                                <h4>Time Off & Work Constraints</h4>
-                                            </div>
-                                            
-                                            <div style="margin-bottom:16px;">
-                                                <label style="font-weight:500; margin-bottom:8px; display:block;"><i class="fas fa-umbrella-beach"></i> Blocked Date Ranges (vacation / leave)</label>
-                                                <div id="blockedContainer"></div>
-                                                <button type="button" id="addBlockedBtn" class="btn-secondary" style="margin-top:8px;"><i class="fas fa-plus"></i> Add blocked date range</button>
-                                            </div>
-
-                                            <div class="constraint-group">
-                                                <label style="font-weight:500; margin-bottom:12px; display:block;"><i class="fas fa-sliders-h"></i> Work Hour Constraints</label>
-                                                <div class="form-grid-2">
-                                                    <div class="form-group">
-                                                        <label for="maxHoursPerWeek">Maximum hours per week</label>
-                                                        <input type="number" id="maxHoursPerWeek" min="0" placeholder="e.g. 40">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="maxConsecutiveDays">Maximum consecutive days</label>
-                                                        <input type="number" id="maxConsecutiveDays" min="0" placeholder="e.g. 5">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="minShiftLengthMins">Minimum shift length (minutes)</label>
-                                                        <input type="number" id="minShiftLengthMins" min="0" placeholder="e.g. 120">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="shiftPaddingMins">Shift padding / travel buffer (minutes)</label>
-                                                        <input type="number" id="shiftPaddingMins" min="0" placeholder="e.g. 30">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Preferences & Settings -->
-                                        <div class="scheduling-subsection">
-                                            <div class="subsection-header">
-                                                <i class="fas fa-cog"></i>
-                                                <h4>Scheduling Preferences</h4>
-                                            </div>
-                                            
-                                            <div class="form-row">
-                                                <div class="form-group">
-                                                    <label for="homeBaseType"><i class="fas fa-home"></i> Home Base Location</label>
-                                                    <select id="homeBaseType" style="margin-bottom:8px;">
-                                                        <option value="store">Use Store Address</option>
-                                                        <option value="custom">Custom Address</option>
-                                                    </select>
-                                                    <input type="text" id="homeBase" placeholder="Enter custom address" style="display:none;">
-                                                    <div id="storeAddressDisplay" style="font-size:13px; color:#374151; padding:8px; background:#f3f4f6; border-radius:4px; margin-top:4px;">
-                                                        <strong>Store Address:</strong><br>
-                                                        <span id="storeAddressText">123 Main Street, Springfield, IL 62701</span>
-                                                    </div>
-                                                    <div style="font-size:12px; color:#6b7280; margin-top:4px;">Starting location for route planning and job assignments</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="margin-top:16px;">
-                                    <label style="display:flex; align-items:center; gap:8px; font-weight:500;">
-                                        <input type="checkbox" id="sendInvite" checked>
-                                        Send invitation email to staff member
-                                    </label>
                                 </div>
                             </div>
                         </div>
