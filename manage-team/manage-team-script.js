@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Sample staff data
     let staffData = [
-        { id: 1, firstName: 'John', lastName: 'Smith', role: 'Manager', jobTitle: 'Store Manager', email: 'john.smith@store.com', phone: '+1 234 567 8901', status: 'active' },
+        { id: 0, firstName: 'Robert', lastName: 'Anderson', role: 'Franchise Owner', jobTitle: 'Franchise Owner', email: 'robert.anderson@store.com', phone: '+1 234 567 8900', status: 'active', isOwner: true },
+        { id: 1, firstName: 'John', lastName: 'Smith', role: 'Manager', jobTitle: 'Store Manager', email: 'john.smith@store.com', phone: '+1 234 567 8901', status: 'active', isCurrentUser: true },
         { id: 2, firstName: 'Sarah', lastName: 'Johnson', role: 'Staff', jobTitle: 'Senior HVAC Technician', email: 'sarah.johnson@store.com', phone: '+1 234 567 8902', status: 'active' },
         { id: 3, firstName: 'Mike', lastName: 'Davis', role: 'Staff', jobTitle: 'HVAC Technician', email: 'mike.davis@store.com', phone: '+1 234 567 8903', status: 'active' },
         { id: 4, firstName: 'Emily', lastName: 'Wilson', role: 'Staff', jobTitle: 'Lead Receptionist', email: 'emily.wilson@store.com', phone: '+1 234 567 8904', status: 'inactive' }
@@ -52,24 +53,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const actionBtn = staff.status === 'active' ? 'delete-btn' : 'activate-btn';
             const actionText = staff.status === 'active' ? 'Deactivate' : 'Reactivate';
             const isCurrentUser = staff.id === currentUserId;
+            const isOwner = staff.isOwner || staff.role === 'Franchise Owner';
             
-            // Apply grey background to current user's row
-            if (isCurrentUser) {
+            // Apply grey background to current user's row and owner's row
+            if (isCurrentUser || isOwner) {
                 row.style.backgroundColor = '#f9fafb';
             }
             
             // Role badge styling
-            const roleBadgeStyle = staff.role === 'Manager' 
-                ? 'background:#dbeafe; color:#1e40af;' 
-                : 'background:#f3f4f6; color:#374151;';
+            let roleBadgeStyle;
+            if (staff.role === 'Franchise Owner') {
+                roleBadgeStyle = 'background:#e9d5ff; color:#6b21a8;';
+            } else if (staff.role === 'Manager') {
+                roleBadgeStyle = 'background:#dbeafe; color:#1e40af;';
+            } else {
+                roleBadgeStyle = 'background:#f3f4f6; color:#374151;';
+            }
             
             // Current user indicator
             const userIndicator = isCurrentUser 
                 ? '<span style="background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600; margin-left:8px;">YOU</span>' 
                 : '';
             
-            // Action buttons - show nothing for current user, full actions for others
-            const actionButtons = isCurrentUser 
+            // Action buttons - show nothing for current user and owner, full actions for others
+            const actionButtons = (isCurrentUser || isOwner)
                 ? '<span style="color:#9ca3af; font-size:13px; font-style:italic;">—</span>' 
                 : `<button class="btn-link" onclick="window.location.href='manage-team-detail.html?id=${staff.id}'">View</button><button class="btn-link" onclick="window.location.href='manage-team-edit.html?id=${staff.id}'">Edit</button><button class="btn-link ${actionBtn}" data-id="${staff.id}">${actionText}</button>`;
 

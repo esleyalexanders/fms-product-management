@@ -36,7 +36,20 @@
         .permission-group h4 { margin:0 0 12px 0; font-size:16px; color:#374151; }
         .permission-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
         .permission-item:last-child { margin-bottom:0; }
+        .permission-item label { cursor:pointer; }
+        .permission-item input[type="checkbox"] { cursor:pointer; }
         .sidebar .nav-item.manage-team-link { background:#eef2ff; color:#6366f1; font-weight:600; }
+        .tab-container { border-bottom:1px solid #e5e7eb; margin-bottom:24px; }
+        .tab-buttons { display:flex; gap:8px; }
+        .tab-button { padding:12px 24px; border:none; background:none; cursor:pointer; font-size:15px; font-weight:500; color:#6b7280; border-bottom:2px solid transparent; position:relative; bottom:-1px; }
+        .tab-button.active { color:#6366f1; border-bottom-color:#6366f1; }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+        .config-permissions-btn { font-size:13px; padding:4px 10px; margin-left:8px; }
+        .staff-assign-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
+        .staff-assign-table th, .staff-assign-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
+        .staff-assign-table th { background:#f3f4f6; font-weight:500; color:#374151; }
+        .staff-assign-table tr:last-child td { border-bottom:none; }
     </style>
 </head>
 <body>
@@ -60,6 +73,10 @@
                 <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
                 <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
             <div class="sidebar-footer">
+                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
                 <div class="nav-item">
                     <i class="fas fa-question-circle"></i>
                     <span>Get Set Up</span>
@@ -83,21 +100,27 @@
             </header>
             <div class="content-wrapper">
                 <div class="roles-container">
-                    <div class="roles-header">
-                        <div>
-                            <h2 style="margin:0; font-size:24px;">Team Roles</h2>
-                            <p style="margin:4px 0 0 0; color:#6b7280;">Define roles and assign permissions to control access</p>
+                    <div class="tab-container" style="display: none;">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" data-tab="roles">Role Management</button>
                         </div>
-                        <button class="btn-primary" id="addRoleBtn"><i class="fas fa-plus"></i> Add Role</button>
                     </div>
 
-                    <table class="roles-table" id="rolesTable">
+                    <!-- Role Management Tab -->
+                    <div class="tab-content active" id="roles-tab">
+                        <div class="roles-header">
+                            <div>
+                                <h2 style="margin:0; font-size:24px;">Team Roles</h2>
+                                <p style="margin:4px 0 0 0; color:#6b7280;">Define roles and assign permissions to control access</p>
+                            </div>
+                            <button class="btn-primary" id="addRoleBtn"><i class="fas fa-plus"></i> Add Role</button>
+                        </div>
+
+                        <table class="roles-table" id="rolesTable">
                         <thead>
                             <tr>
                                 <th>Role Name</th>
                                 <th>Description</th>
-                                <th>Permissions</th>
-                                <th>Staff Count</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -110,13 +133,9 @@
                                     <div class="role-description">Full system access and management capabilities</div>
                                 </td>
                                 <td>
-                                    <div class="permissions-list">
-                                        <span class="permission-tag">All Access</span>
+                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                        <a href="manage-team-permission.html?role=Manager" style="text-decoration:none;"><button class="btn-secondary" style="font-size:14px; padding:6px 12px;"><i class="fas fa-edit"></i> Edit</button></a>
                                     </div>
-                                </td>
-                                <td>3</td>
-                                <td>
-                                    <button class="btn-secondary" style="font-size:14px; padding:6px 12px;" onclick="editRole('manager')">Edit</button>
                                 </td>
                             </tr>
                             <tr>
@@ -127,19 +146,14 @@
                                     <div class="role-description">General staff members including technicians, receptionists, and field workers</div>
                                 </td>
                                 <td>
-                                    <div class="permissions-list">
-                                        <span class="permission-tag">View Jobs</span>
-                                        <span class="permission-tag">Update Status</span>
-                                        <span class="permission-tag">View Schedule</span>
+                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                        <a href="manage-team-permission.html?role=Staff" style="text-decoration:none;"><button class="btn-secondary" style="font-size:14px; padding:6px 12px;"><i class="fas fa-edit"></i> Edit</button></a>
                                     </div>
-                                </td>
-                                <td>8</td>
-                                <td>
-                                    <button class="btn-secondary" style="font-size:14px; padding:6px 12px;" onclick="editRole('staff')">Edit</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -159,103 +173,6 @@
                     <textarea id="roleDescription" rows="3"></textarea>
                 </div>
 
-                <div style="margin-top:24px;">
-                    <h3 style="margin:0 0 16px 0; font-size:18px;">Permissions</h3>
-                    <div class="permissions-grid">
-                        <div class="permission-group">
-                            <h4>Staff Management</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_view_staff" checked>
-                                <label for="perm_view_staff">View Staff</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_create_staff">
-                                <label for="perm_create_staff">Create Staff</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_edit_staff">
-                                <label for="perm_edit_staff">Edit Staff</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_delete_staff">
-                                <label for="perm_delete_staff">Delete Staff</label>
-                            </div>
-                        </div>
-
-                        <div class="permission-group">
-                            <h4>Schedule Management</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_view_schedule" checked>
-                                <label for="perm_view_schedule">View Schedule</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_edit_schedule">
-                                <label for="perm_edit_schedule">Edit Schedule</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_assign_jobs">
-                                <label for="perm_assign_jobs">Assign Jobs</label>
-                            </div>
-                        </div>
-
-                        <div class="permission-group">
-                            <h4>Quote Management</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_view_quotes" checked>
-                                <label for="perm_view_quotes">View Quotes</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_create_quotes">
-                                <label for="perm_create_quotes">Create Quotes</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_edit_quotes">
-                                <label for="perm_edit_quotes">Edit Quotes</label>
-                            </div>
-                        </div>
-
-                        <div class="permission-group">
-                            <h4>Customer Management</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_view_customers" checked>
-                                <label for="perm_view_customers">View Customers</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_create_customers">
-                                <label for="perm_create_customers">Create Customers</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_edit_customers">
-                                <label for="perm_edit_customers">Edit Customers</label>
-                            </div>
-                        </div>
-
-                        <div class="permission-group">
-                            <h4>Reports & Analytics</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_view_reports">
-                                <label for="perm_view_reports">View Reports</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_export_data">
-                                <label for="perm_export_data">Export Data</label>
-                            </div>
-                        </div>
-
-                        <div class="permission-group">
-                            <h4>System Administration</h4>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_manage_roles">
-                                <label for="perm_manage_roles">Manage Roles</label>
-                            </div>
-                            <div class="permission-item">
-                                <input type="checkbox" id="perm_system_settings">
-                                <label for="perm_system_settings">System Settings</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" id="cancelRoleBtn">Cancel</button>
                     <button type="submit" class="btn-primary" id="saveRoleBtn">Save Role</button>
@@ -264,6 +181,228 @@
         </div>
     </div>
 
+    <!-- Configure Permissions Modal -->
+    <div class="modal" id="permissionsModal">
+        <div class="modal-content" style="min-width:700px;">
+            <div class="modal-header" id="permissionsModalTitle">Configure Permissions</div>
+            <form id="permissionsForm">
+                <div style="margin-bottom:16px;">
+                    <p style="color:#6b7280; font-size:14px;">Select permissions for this role</p>
+                </div>
+
+                <div class="permissions-grid">
+                    <div class="permission-group">
+                        <h4>Staff Management</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_view_staff" class="perm-checkbox">
+                            <label for="perm_view_staff">View Staff</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_create_staff" class="perm-checkbox">
+                            <label for="perm_create_staff">Create Staff</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_edit_staff" class="perm-checkbox">
+                            <label for="perm_edit_staff">Edit Staff</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_delete_staff" class="perm-checkbox">
+                            <label for="perm_delete_staff">Delete Staff</label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h4>Schedule Management</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_view_schedule" class="perm-checkbox">
+                            <label for="perm_view_schedule">View Schedule</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_edit_schedule" class="perm-checkbox">
+                            <label for="perm_edit_schedule">Edit Schedule</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_assign_jobs" class="perm-checkbox">
+                            <label for="perm_assign_jobs">Assign Jobs</label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h4>Quote Management</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_view_quotes" class="perm-checkbox">
+                            <label for="perm_view_quotes">View Quotes</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_create_quotes" class="perm-checkbox">
+                            <label for="perm_create_quotes">Create Quotes</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_edit_quotes" class="perm-checkbox">
+                            <label for="perm_edit_quotes">Edit Quotes</label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h4>Customer Management</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_view_customers" class="perm-checkbox">
+                            <label for="perm_view_customers">View Customers</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_create_customers" class="perm-checkbox">
+                            <label for="perm_create_customers">Create Customers</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_edit_customers" class="perm-checkbox">
+                            <label for="perm_edit_customers">Edit Customers</label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h4>Reports & Analytics</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_view_reports" class="perm-checkbox">
+                            <label for="perm_view_reports">View Reports</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_export_data" class="perm-checkbox">
+                            <label for="perm_export_data">Export Data</label>
+                        </div>
+                    </div>
+
+                    <div class="permission-group">
+                        <h4>System Administration</h4>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_manage_roles" class="perm-checkbox">
+                            <label for="perm_manage_roles">Manage Roles</label>
+                        </div>
+                        <div class="permission-item">
+                            <input type="checkbox" id="perm_system_settings" class="perm-checkbox">
+                            <label for="perm_system_settings">System Settings</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelPermissionsBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="savePermissionsBtn">Save Permissions</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="manage-team-roles-script.js"></script>
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.add('active');
+                });
+            });
+
+            // Configure Permissions modal
+            window.configurePermissions = function(roleName) {
+                const modal = document.getElementById('permissionsModal');
+                document.getElementById('permissionsModalTitle').textContent = `Configure Permissions: ${roleName.charAt(0).toUpperCase() + roleName.slice(1)}`;
+                
+                // Set permissions based on role
+                if (roleName === 'manager') {
+                    // Manager gets all permissions
+                    document.querySelectorAll('.perm-checkbox').forEach(cb => cb.checked = true);
+                } else if (roleName === 'staff') {
+                    // Staff gets limited permissions
+                    document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                        const permId = cb.id;
+                        if (permId.includes('view')) {
+                            cb.checked = true;
+                        } else {
+                            cb.checked = false;
+                        }
+                    });
+                    // Also check specific permissions
+                    document.getElementById('perm_view_schedule').checked = true;
+                    document.getElementById('perm_assign_jobs').checked = true;
+                }
+                
+                modal.classList.add('active');
+            };
+
+            document.getElementById('cancelPermissionsBtn').addEventListener('click', function() {
+                document.getElementById('permissionsModal').classList.remove('active');
+            });
+
+            document.getElementById('savePermissionsBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Permissions saved successfully!');
+                document.getElementById('permissionsModal').classList.remove('active');
+            });
+
+            // Permission checkbox labels click handlers
+            document.querySelectorAll('.permission-item label').forEach(label => {
+                label.addEventListener('click', function() {
+                    const checkbox = this.previousElementSibling;
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+
+            // Add Role modal functionality
+            const addRoleBtn = document.getElementById('addRoleBtn');
+            const roleModal = document.getElementById('roleModal');
+            const roleForm = document.getElementById('roleForm');
+            const cancelRoleBtn = document.getElementById('cancelRoleBtn');
+            const modalTitle = document.getElementById('modalTitle');
+            const roleNameInput = document.getElementById('roleName');
+            const roleDescriptionInput = document.getElementById('roleDescription');
+
+            // Open modal when Add Role button is clicked
+            addRoleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                modalTitle.textContent = 'Add New Role';
+                roleNameInput.value = '';
+                roleDescriptionInput.value = '';
+                roleModal.classList.add('active');
+            });
+
+            // Close modal when Cancel is clicked
+            cancelRoleBtn.addEventListener('click', function() {
+                roleModal.classList.remove('active');
+            });
+
+            // Handle form submission
+            roleForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const roleName = roleNameInput.value.trim();
+                const roleDescription = roleDescriptionInput.value.trim();
+                
+                if (!roleName) {
+                    alert('Please enter a role name');
+                    return;
+                }
+                
+                // Redirect to permission page with the role name
+                window.location.href = `manage-team-permission.html?role=${encodeURIComponent(roleName)}`;
+            });
+
+            // Close modal when clicking outside
+            roleModal.addEventListener('click', function(e) {
+                if (e.target === roleModal) {
+                    roleModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

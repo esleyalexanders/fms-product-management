@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Role & Permissions - Manage Team</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        .form-container { max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 24px; }
+        .form-section { margin-bottom: 32px; }
+        .form-section h3 { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #374151; }
+        .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+        .form-row .form-group { flex: 1; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: #374151; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .required { color: #dc2626; }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 24px; border-top: 1px solid #e5e7eb; margin-top: 24px; }
+        .btn-primary, .btn-secondary { font-family: inherit; font-size: 15px; border-radius: 6px; padding: 10px 20px; border: none; cursor: pointer; }
+        .btn-primary { background: #6366f1; color: #fff; }
+        .btn-secondary { background: #e5e7eb; color: #374151; }
+        .permissions-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
+        .permission-group { border: 1px solid #e5e7eb; border-radius: 6px; padding: 16px; background: #f9fafb; }
+        .permission-group h4 { margin: 0 0 12px 0; font-size: 16px; color: #374151; }
+        .permission-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .permission-item:last-child { margin-bottom: 0; }
+        .permission-item label { cursor: pointer; }
+        .permission-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .section-divider { border-top: 2px solid #e5e7eb; margin: 32px 0; }
+        .error-message { color: #dc2626; font-size: 14px; margin-top: 4px; }
+        .sidebar .nav-item.manage-team-link { background: #eef2ff; color: #6366f1; font-weight: 600; }
+        .role-header { background: #f3f4f6; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+        .role-header h2 { margin: 0 0 8px 0; font-size: 20px; color: #111827; }
+        .role-header p { margin: 0; color: #6b7280; font-size: 14px; }
+        .tab-container { border-bottom: 1px solid #e5e7eb; margin-bottom: 24px; }
+        .tab-buttons { display: flex; gap: 8px; }
+        .tab-button { padding: 12px 24px; border: none; background: none; cursor: pointer; font-size: 15px; font-weight: 500; color: #6b7280; border-bottom: 2px solid transparent; position: relative; bottom: -1px; }
+        .tab-button.active { color: #6366f1; border-bottom-color: #6366f1; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .staff-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .staff-table th, .staff-table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        .staff-table th { background: #f3f4f6; font-weight: 500; color: #374151; }
+        .staff-table tr:last-child td { border-bottom: none; }
+        .remove-staff-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 20px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .remove-staff-btn:hover { background: #dc2626; color: white; }
+        .autocomplete-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #e5e7eb; }
+        .autocomplete-item:hover { background: #f3f4f6; }
+        .autocomplete-item:last-child { border-bottom: none; }
+        .autocomplete-item-name { font-weight: 600; color: #111827; }
+        .autocomplete-item-email { font-size: 13px; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item manage-team-link" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+            <div class="sidebar-footer">
+                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title">Edit Role & Permissions</h1>
+                    <p class="page-subtitle">Update role details and configure access permissions</p>
+                </div>
+                <div class="header-right">
+                    <a href="manage-team-roles.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Roles</button></a>
+                </div>
+            </header>
+            <div class="content-wrapper">
+                <div class="form-container">
+                    <form id="rolePermissionForm">
+                        <!-- Role Details Section -->
+                        <div class="form-section">
+                            <h3>Role Details</h3>
+                            
+                            <div class="form-group">
+                                <label for="roleName">Role Name <span class="required">*</span></label>
+                                <input type="text" id="roleName" value="Manager" required>
+                                <div class="error-message" id="roleNameError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="roleDescription">Description</label>
+                                <textarea id="roleDescription" rows="3">Full system access and management capabilities</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Tabs Container -->
+                        <div class="section-divider"></div>
+                        <div class="tab-container" style="margin-top: 24px;">
+                            <div class="tab-buttons">
+                                <button class="tab-button active" data-tab="permissions">Permissions</button>
+                                <button class="tab-button" data-tab="assign-staff">Users</button>
+                            </div>
+                        </div>
+
+                        <!-- Permissions Tab -->
+                        <div class="tab-content active" id="permissions-tab">
+                            <div class="form-section">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                    <div>
+                                        <h3 style="margin: 0 0 4px 0; font-size: 18px; color: #111827;">Permissions</h3>
+                                        <p style="margin: 0; color: #6b7280; font-size: 14px;">Select the permissions that users with this role should have</p>
+                                        <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 12px; font-style: italic;">
+                                            <i class="fas fa-info-circle" style="margin-right: 4px;"></i>
+                                            Dữ liệu bên dưới chỉ để tham khảo, hãy direct tới LINK: 
+                                            <a href="https://docs.google.com/spreadsheets/d/1xhTq7LWqrWBGs-tv_cjMSzcYmLxAA0MX/edit?gid=1434039830#gid=1434039830" target="_blank" style="color: #6366f1; text-decoration: underline;">
+                                                Permissions Reference Sheet
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 24px; font-weight: 600; color: #6366f1;" id="permissionsCount">0</div>
+                                        <div style="font-size: 13px; color: #6b7280;">permissions selected</div>
+                                    </div>
+                                </div>
+
+                                <!-- Search bar for permissions -->
+                                <div style="margin-bottom: 20px;">
+                                    <div style="position: relative;">
+                                        <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                                        <input 
+                                            type="text" 
+                                            id="permissionSearchInput" 
+                                            placeholder="Search permissions..." 
+                                            style="padding-left: 40px; width: 100%; padding: 10px 12px 10px 40px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px;"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="permissions-grid" id="permissionsGrid">
+                                <div class="permission-group" data-group="staff">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h4 style="margin: 0;">Staff Management</h4>
+                                        <button type="button" class="select-group-btn" data-group="staff" style="background: #f3f4f6; border: none; color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: 500;">Select All</button>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_view_staff" checked>
+                                        <label for="perm_view_staff">View Staff</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_create_staff">
+                                        <label for="perm_create_staff">Create Staff</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_edit_staff">
+                                        <label for="perm_edit_staff">Edit Staff</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_delete_staff">
+                                        <label for="perm_delete_staff">Delete Staff</label>
+                                    </div>
+                                </div>
+
+                                <div class="permission-group" data-group="schedule">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h4 style="margin: 0;">Schedule Management</h4>
+                                        <button type="button" class="select-group-btn" data-group="schedule" style="background: #f3f4f6; border: none; color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: 500;">Select All</button>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_view_schedule" checked>
+                                        <label for="perm_view_schedule">View Schedule</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_edit_schedule">
+                                        <label for="perm_edit_schedule">Edit Schedule</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_assign_jobs">
+                                        <label for="perm_assign_jobs">Assign Jobs</label>
+                                    </div>
+                                </div>
+
+                                <div class="permission-group" data-group="quote">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h4 style="margin: 0;">Quote Management</h4>
+                                        <button type="button" class="select-group-btn" data-group="quote" style="background: #f3f4f6; border: none; color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: 500;">Select All</button>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_view_quotes" checked>
+                                        <label for="perm_view_quotes">View Quotes</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_create_quotes">
+                                        <label for="perm_create_quotes">Create Quotes</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_edit_quotes">
+                                        <label for="perm_edit_quotes">Edit Quotes</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_delete_quotes">
+                                        <label for="perm_delete_quotes">Delete Quotes</label>
+                                    </div>
+                                </div>
+
+                                <div class="permission-group" data-group="customer">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h4 style="margin: 0;">Customer Management</h4>
+                                        <button type="button" class="select-group-btn" data-group="customer" style="background: #f3f4f6; border: none; color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: 500;">Select All</button>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_view_customers" checked>
+                                        <label for="perm_view_customers">View Customers</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_create_customers">
+                                        <label for="perm_create_customers">Create Customers</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_edit_customers">
+                                        <label for="perm_edit_customers">Edit Customers</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_delete_customers">
+                                        <label for="perm_delete_customers">Delete Customers</label>
+                                    </div>
+                                </div>
+
+                                <div class="permission-group" data-group="pricebook">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h4 style="margin: 0;">Pricebook Management</h4>
+                                        <button type="button" class="select-group-btn" data-group="pricebook" style="background: #f3f4f6; border: none; color: #6366f1; padding: 4px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; font-weight: 500;">Select All</button>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_view_pricebook" checked>
+                                        <label for="perm_view_pricebook">View Pricebook</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_create_pricebook">
+                                        <label for="perm_create_pricebook">Create Items</label>
+                                    </div>
+                                    <div class="permission-item">
+                                        <input type="checkbox" id="perm_edit_pricebook">
+                                        <label for="perm_edit_pricebook">Edit Items</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- Assign to Staff Tab -->
+                        <div class="tab-content" id="assign-staff-tab">
+                            <div class="form-section">
+                                <h3>Manage Staff Assignments</h3>
+                                <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">View staff members who have this role assigned, and select those who should keep this role</p>
+
+                                <!-- Search Bar -->
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <div style="position: relative;">
+                                        <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                                        <input 
+                                            type="text" 
+                                            id="staffSearchInput" 
+                                            placeholder="Search and add staff by name or email..." 
+                                            style="padding-left: 40px; width: 100%; padding: 10px 12px 10px 40px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px;"
+                                            autocomplete="off"
+                                        >
+                                        <!-- Autocomplete Dropdown -->
+                                        <div id="autocompleteDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #d1d5db; border-radius: 6px; margin-top: 4px; max-height: 250px; overflow-y: auto; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Selected Users Preview -->
+                                <div class="form-group" style="margin-bottom: 20px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 16px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                        <i class="fas fa-check-circle" style="color: #0284c7;"></i>
+                                        <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #0c4a6e;">Selected Staff Members</h4>
+                                    </div>
+                                    <div id="selectedStaffPreview" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px;">
+                                        <p style="color: #6b7280; margin: 0; font-size: 14px;">No staff members selected</p>
+                                    </div>
+                                </div>
+
+                                <!-- Staff List -->
+                                <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; background: #f9fafb;">
+                                    <table class="staff-table" style="background: white; width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding: 12px 16px; background: #f3f4f6; font-weight: 500; color: #374151;">Staff Member</th>
+                                                <th style="padding: 12px 16px; background: #f3f4f6; font-weight: 500; color: #374151;">Email</th>
+                                                <th style="padding: 12px 16px; background: #f3f4f6; font-weight: 500; color: #374151;">Current Role</th>
+                                                <th style="padding: 12px 16px; background: #f3f4f6; font-weight: 500; color: #374151;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="staffListContainer">
+                                            <tr class="staff-row" data-name="John Doe" data-email="john.doe@example.com" data-current-role="staff" data-id="1">
+                                                <td>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #e0e7ff; display: flex; align-items: center; justify-content: center; color: #6366f1; font-weight: 600;">JD</div>
+                                                        <div><strong>John Doe</strong></div>
+                                                    </div>
+                                                </td>
+                                                <td>john.doe@example.com</td>
+                                                <td><span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;">Staff</span></td>
+                                                <td>
+                                                    <button class="switch-role-btn" data-staff-id="1" data-staff-name="John Doe" data-current-role="staff" style="background: #f3f4f6; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: #6366f1;" title="Switch Role">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="staff-row" data-name="Jane Smith" data-email="jane.smith@example.com" data-current-role="manager" data-id="2">
+                                                <td>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; color: #16a34a; font-weight: 600;">JS</div>
+                                                        <div><strong>Jane Smith</strong></div>
+                                                    </div>
+                                                </td>
+                                                <td>jane.smith@example.com</td>
+                                                <td><span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;">Manager</span></td>
+                                                <td>
+                                                    <button class="switch-role-btn" data-staff-id="2" data-staff-name="Jane Smith" data-current-role="manager" style="background: #f3f4f6; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: #6366f1;" title="Switch Role">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="staff-row" data-name="Mike Johnson" data-email="mike.johnson@example.com" data-current-role="staff" data-id="3">
+                                                <td>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fef3c7; display: flex; align-items: center; justify-content: center; color: #d97706; font-weight: 600;">MJ</div>
+                                                        <div><strong>Mike Johnson</strong></div>
+                                                    </div>
+                                                </td>
+                                                <td>mike.johnson@example.com</td>
+                                                <td><span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;">Staff</span></td>
+                                                <td>
+                                                    <button class="switch-role-btn" data-staff-id="3" data-staff-name="Mike Johnson" data-current-role="staff" style="background: #f3f4f6; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: #6366f1;" title="Switch Role">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="staff-row" data-name="Anna Brown" data-email="anna.brown@example.com" data-current-role="staff" data-id="4">
+                                                <td>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #fce7f3; display: flex; align-items: center; justify-content: center; color: #ec4899; font-weight: 600;">AB</div>
+                                                        <div><strong>Anna Brown</strong></div>
+                                                    </div>
+                                                </td>
+                                                <td>anna.brown@example.com</td>
+                                                <td><span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;">Staff</span></td>
+                                                <td>
+                                                    <button class="switch-role-btn" data-staff-id="4" data-staff-name="Anna Brown" data-current-role="staff" style="background: #f3f4f6; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: #6366f1;" title="Switch Role">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="staff-row" data-name="Chris Wilson" data-email="chris.wilson@example.com" data-current-role="manager" data-id="5">
+                                                <td>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #e0e7ff; display: flex; align-items: center; justify-content: center; color: #6366f1; font-weight: 600;">CW</div>
+                                                        <div><strong>Chris Wilson</strong></div>
+                                                    </div>
+                                                </td>
+                                                <td>chris.wilson@example.com</td>
+                                                <td><span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 500;">Manager</span></td>
+                                                <td>
+                                                    <button class="switch-role-btn" data-staff-id="5" data-staff-name="Chris Wilson" data-current-role="manager" style="background: #f3f4f6; border: none; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 16px; color: #6366f1;" title="Switch Role">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="window.location.href='manage-team-roles.html'">Cancel</button>
+                            <button type="button" class="btn-secondary" id="saveDraftBtn">Save as Draft</button>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Switch Role Modal -->
+    <div id="switchRoleModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+        <div id="switchRoleModalContent" style="background: white; border-radius: 8px; padding: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); margin: auto; position: relative; top: 50%; transform: translateY(-50%);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #111827;">Switch Role</h3>
+                <button id="closeSwitchRoleModal" style="background: none; border: none; font-size: 24px; color: #6b7280; cursor: pointer;">&times;</button>
+            </div>
+            
+            <p style="margin: 0 0 16px 0; color: #6b7280; font-size: 14px;">Switch <strong id="modalStaffName"></strong>'s role to:</p>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #374151;">Select New Role</label>
+                <select id="newRoleSelect" style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px;">
+                    <option value="staff">Staff</option>
+                    <option value="manager">Manager</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button class="btn-secondary" id="cancelSwitchRoleBtn">Cancel</button>
+                <button class="btn-primary" id="confirmSwitchRoleBtn">Switch Role</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleNameInput = document.getElementById('roleName');
+            const roleDescInput = document.getElementById('roleDescription');
+
+            // Note: Role details are now managed in the form only
+
+            // Form submission
+            document.getElementById('rolePermissionForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const roleName = roleNameInput.value.trim();
+                const roleDesc = roleDescInput.value.trim();
+                
+                // Validate role details
+                if (!roleName) {
+                    alert('Please enter a role name');
+                    return;
+                }
+                
+                // Collect all checked permissions (exclude staff checkboxes)
+                const permissions = [];
+                document.querySelectorAll('.permission-item input[type="checkbox"]:checked').forEach(cb => {
+                    permissions.push({
+                        id: cb.id,
+                        label: cb.parentElement.querySelector('label').textContent.trim()
+                    });
+                });
+
+                // Collect assigned staff members from selectedStaffSet
+                const assignedStaff = [];
+                selectedStaffSet.forEach(staffId => {
+                    const staff = allStaffDatabase.find(s => s.id === staffId);
+                    if (staff) {
+                        assignedStaff.push({ id: staff.id, name: staff.name, email: staff.email });
+                    }
+                });
+
+                // Prepare data to save
+                const roleData = {
+                    name: roleName,
+                    description: roleDesc,
+                    permissions: permissions,
+                    assignedStaff: assignedStaff
+                };
+
+                console.log('Saving role:', roleData);
+                
+                // In real implementation, send data to server
+                // fetch('/api/roles/update', { method: 'POST', body: JSON.stringify(roleData) })
+                
+                // Update the table to show selected users
+                updateStaffTable();
+                
+                alert(`Role "${roleName}" saved successfully!`);
+            });
+
+            // Save draft
+            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+                alert('Draft saved successfully!');
+            });
+
+            // Function to update staff table based on selected staff
+            function updateStaffTable() {
+                const currentRole = roleParam.toLowerCase();
+                
+                document.querySelectorAll('.staff-row').forEach(row => {
+                    const staffId = parseInt(row.getAttribute('data-id'));
+                    const currentRoleFromData = row.getAttribute('data-current-role');
+                    
+                    // Show the row if:
+                    // 1. The user is in selectedStaffSet (selected users)
+                    // 2. OR the user already has this role (existing users)
+                    const isSelected = selectedStaffSet.has(staffId);
+                    const hasCurrentRole = currentRoleFromData === currentRole;
+                    
+                    if (isSelected || hasCurrentRole) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                updateStaffCount();
+            }
+
+            // Load role data (in real implementation, this would load from server)
+            function loadRoleData(roleName) {
+                // Simulate loading role data
+                if (roleName === 'Manager') {
+                    roleNameInput.value = 'Manager';
+                    roleDescInput.value = 'Full system access and management capabilities';
+                    // Check all permissions (only permission checkboxes, not staff checkboxes)
+                    document.querySelectorAll('.permission-item input[type="checkbox"]').forEach(cb => cb.checked = true);
+                } else if (roleName === 'Staff') {
+                    roleNameInput.value = 'Staff';
+                    roleDescInput.value = 'General staff members including technicians, receptionists, and field workers';
+                    // Check only view permissions (only permission checkboxes)
+                    document.querySelectorAll('.permission-item input[type="checkbox"]').forEach(cb => {
+                        if (cb.id.includes('view') || cb.id.includes('perm_view')) {
+                            cb.checked = true;
+                        } else {
+                            cb.checked = false;
+                        }
+                    });
+                    document.getElementById('perm_assign_jobs').checked = true;
+                }
+            }
+
+            // Load role based on URL parameter or default
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role') || 'Manager';
+            loadRoleData(roleParam);
+
+            // Tab switching functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(`${targetTab}-tab`).classList.add('active');
+                });
+            });
+
+            // All staff members database (would come from backend in real app)
+            const allStaffDatabase = [
+                { id: 1, name: 'John Doe', email: 'john.doe@example.com', role: 'staff' },
+                { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', role: 'manager' },
+                { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', role: 'staff' },
+                { id: 4, name: 'Anna Brown', email: 'anna.brown@example.com', role: 'staff' },
+                { id: 5, name: 'Chris Wilson', email: 'chris.wilson@example.com', role: 'manager' }
+            ];
+
+            // Selected staff set to track who's been added
+            const selectedStaffSet = new Set();
+
+            // Autocomplete functionality
+            const staffSearchInput = document.getElementById('staffSearchInput');
+            const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+            
+            staffSearchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                if (searchTerm.length === 0) {
+                    autocompleteDropdown.style.display = 'none';
+                    return;
+                }
+                
+                // Filter from database
+                const matches = allStaffDatabase.filter(staff => 
+                    staff.name.toLowerCase().includes(searchTerm) || 
+                    staff.email.toLowerCase().includes(searchTerm)
+                ).filter(staff => !selectedStaffSet.has(staff.id));
+                
+                if (matches.length === 0) {
+                    autocompleteDropdown.style.display = 'none';
+                    return;
+                }
+                
+                // Show autocomplete dropdown
+                autocompleteDropdown.innerHTML = '';
+                matches.forEach(staff => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.innerHTML = `
+                        <div class="autocomplete-item-name">${staff.name}</div>
+                        <div class="autocomplete-item-email">${staff.email}</div>
+                    `;
+                    item.addEventListener('click', () => {
+                        addStaffToPreview(staff);
+                        staffSearchInput.value = '';
+                        autocompleteDropdown.style.display = 'none';
+                    });
+                    autocompleteDropdown.appendChild(item);
+                });
+                autocompleteDropdown.style.display = 'block';
+            });
+
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#staffSearchInput') && !e.target.closest('#autocompleteDropdown')) {
+                    autocompleteDropdown.style.display = 'none';
+                }
+            });
+
+            // Function to add staff to preview
+            function addStaffToPreview(staff) {
+                if (selectedStaffSet.has(staff.id)) return;
+                
+                selectedStaffSet.add(staff.id);
+                updateSelectedPreview();
+            }
+
+            // Function to remove staff from preview
+            function removeStaffFromPreview(staffId) {
+                selectedStaffSet.delete(staffId);
+                updateSelectedPreview();
+            }
+
+            // Update selected staff preview
+            function updateSelectedPreview() {
+                const preview = document.getElementById('selectedStaffPreview');
+                
+                if (selectedStaffSet.size === 0) {
+                    preview.innerHTML = '<p style="color: #6b7280; margin: 0; font-size: 14px;">No staff members selected</p>';
+                    return;
+                }
+                
+                preview.innerHTML = '';
+                selectedStaffSet.forEach(staffId => {
+                    const staff = allStaffDatabase.find(s => s.id === staffId);
+                    if (!staff) return;
+                    
+                    const badge = document.createElement('div');
+                    badge.style.cssText = 'display: flex; align-items: center; gap: 8px; background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 14px;';
+                    
+                    const avatarDiv = document.createElement('div');
+                    avatarDiv.style.cssText = 'width: 32px; height: 32px; border-radius: 50%; background: #e0e7ff; display: flex; align-items: center; justify-content: center; color: #6366f1; font-weight: 600; font-size: 12px;';
+                    avatarDiv.textContent = staff.name.split(' ').map(n => n[0]).join('');
+                    
+                    const textDiv = document.createElement('div');
+                    textDiv.style.cssText = 'flex: 1;';
+                    textDiv.innerHTML = `<div style="font-weight: 600; color: #111827;">${staff.name}</div><div style="font-size: 12px; color: #6b7280;">${staff.email}</div>`;
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.style.cssText = 'background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px; padding: 0;';
+                    removeBtn.textContent = '×';
+                    removeBtn.addEventListener('click', () => {
+                        removeStaffFromPreview(staff.id);
+                    });
+                    
+                    badge.appendChild(avatarDiv);
+                    badge.appendChild(textDiv);
+                    badge.appendChild(removeBtn);
+                    
+                    preview.appendChild(badge);
+                });
+            }
+
+
+            // Filter staff to show only those who already have this role
+            function filterStaffByRole(roleName) {
+                const targetRole = roleName.toLowerCase();
+                let visibleCount = 0;
+                
+                document.querySelectorAll('.staff-row').forEach(row => {
+                    const currentRole = row.getAttribute('data-current-role');
+                    const hasRole = currentRole === targetRole;
+                    
+                    // Only show users who already have this role
+                    if (hasRole) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Update staff count
+                document.getElementById('staffCount').textContent = `${visibleCount} staff member${visibleCount !== 1 ? 's' : ''}`;
+                updateStaffCount();
+            }
+
+            // Update staff count
+            function updateStaffCount() {
+                const visibleRows = Array.from(document.querySelectorAll('.staff-row')).filter(row => {
+                    return row.style.display !== 'none';
+                });
+                const count = visibleRows.length;
+                document.getElementById('staffCount').textContent = `${count} staff member${count !== 1 ? 's' : ''}`;
+            }
+
+            // Call filter when role data is loaded
+            filterStaffByRole(roleParam);
+            
+            // Initialize staff who already have this role in the selected set
+            const targetRole = roleParam.toLowerCase();
+            allStaffDatabase.forEach(staff => {
+                if (staff.role === targetRole) {
+                    selectedStaffSet.add(staff.id);
+                }
+            });
+            updateSelectedPreview();
+            
+            // Initialize the table to show existing users with this role
+            updateStaffTable();
+
+            // ===== PERMISSIONS ENHANCEMENTS =====
+            
+            // Update permissions count
+            function updatePermissionsCount() {
+                const checkedBoxes = document.querySelectorAll('.permission-item input[type="checkbox"]:checked');
+                document.getElementById('permissionsCount').textContent = checkedBoxes.length;
+            }
+
+            // Update count when checkboxes change
+            document.querySelectorAll('.permission-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updatePermissionsCount);
+            });
+
+            // Search permissions functionality
+            document.getElementById('permissionSearchInput').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('.permission-item').forEach(item => {
+                    const label = item.querySelector('label');
+                    const text = label.textContent.toLowerCase();
+                    const matches = text.includes(searchTerm);
+                    item.style.display = matches ? 'flex' : 'none';
+                });
+
+                // Hide empty groups
+                document.querySelectorAll('.permission-group').forEach(group => {
+                    const visibleItems = Array.from(group.querySelectorAll('.permission-item')).filter(item => item.style.display !== 'none');
+                    const groupHeader = group.querySelector('h4').parentElement;
+                    groupHeader.style.display = visibleItems.length === 0 && searchTerm !== '' ? 'none' : 'flex';
+                });
+            });
+
+            // Select All buttons for each group
+            document.querySelectorAll('.select-group-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const groupName = this.getAttribute('data-group');
+                    const group = document.querySelector(`.permission-group[data-group="${groupName}"]`);
+                    const checkboxes = group.querySelectorAll('input[type="checkbox"]');
+                    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                    
+                    // Toggle all checkboxes in this group
+                    checkboxes.forEach(cb => {
+                        cb.checked = !allChecked;
+                    });
+                    
+                    updatePermissionsCount();
+                });
+            });
+
+            // Initialize permissions count
+            updatePermissionsCount();
+
+            // ===== SWITCH ROLE FUNCTIONALITY =====
+            
+            const switchRoleModal = document.getElementById('switchRoleModal');
+            const closeSwitchRoleModal = document.getElementById('closeSwitchRoleModal');
+            const cancelSwitchRoleBtn = document.getElementById('cancelSwitchRoleBtn');
+            const confirmSwitchRoleBtn = document.getElementById('confirmSwitchRoleBtn');
+            const modalStaffName = document.getElementById('modalStaffName');
+            const newRoleSelect = document.getElementById('newRoleSelect');
+            let currentStaffId = null;
+            let currentStaffName = null;
+            let currentRole = null;
+
+            // Debug: Check if modal elements exist
+            console.log('switchRoleModal:', switchRoleModal);
+            console.log('closeSwitchRoleModal:', closeSwitchRoleModal);
+            console.log('modalStaffName:', modalStaffName);
+            console.log('newRoleSelect:', newRoleSelect);
+            
+            if (!switchRoleModal) {
+                console.error('CRITICAL: switchRoleModal element not found!');
+            }
+
+            // Function to open modal
+            function openSwitchRoleModal(staffId, staffName, currentRoleValue) {
+                console.log('openSwitchRoleModal called with:', {staffId, staffName, currentRoleValue});
+                console.log('switchRoleModal element:', switchRoleModal);
+                
+                currentStaffId = staffId;
+                currentStaffName = staffName;
+                currentRole = currentRoleValue;
+                
+                modalStaffName.textContent = staffName;
+                newRoleSelect.value = currentRoleValue === 'manager' ? 'staff' : 'manager';
+                
+                console.log('Setting modal display to block');
+                switchRoleModal.style.display = 'block';
+                console.log('Modal display after setting:', switchRoleModal.style.display);
+            }
+
+            // Function to close modal
+            function closeModal() {
+                switchRoleModal.style.display = 'none';
+            }
+
+            // Debug: List all switch role buttons
+            console.log('All switch role buttons:', document.querySelectorAll('.switch-role-btn'));
+            
+            // Handle switch button clicks using event delegation
+            document.addEventListener('click', function(e) {
+                console.log('Click detected on:', e.target);
+                
+                // Check if click is on the button or its child elements (like the icon)
+                const btn = e.target.closest('.switch-role-btn');
+                
+                if (btn) {
+                    console.log('Switch button clicked! Button found:', btn);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const staffId = btn.getAttribute('data-staff-id');
+                    const staffName = btn.getAttribute('data-staff-name');
+                    const currentRoleValue = btn.getAttribute('data-current-role');
+                    
+                    console.log('Opening modal for:', {staffId, staffName, currentRoleValue});
+                    openSwitchRoleModal(staffId, staffName, currentRoleValue);
+                } else {
+                    console.log('Click not on switch button, element:', e.target);
+                }
+            });
+
+            // Close modal handlers
+            closeSwitchRoleModal.addEventListener('click', closeModal);
+            cancelSwitchRoleBtn.addEventListener('click', closeModal);
+            
+            // Confirm switch role
+            confirmSwitchRoleBtn.addEventListener('click', function() {
+                const newRole = newRoleSelect.value;
+                const staffRow = document.querySelector(`.switch-role-btn[data-staff-id="${currentStaffId}"]`).closest('tr');
+                
+                // Update the data attribute
+                staffRow.setAttribute('data-current-role', newRole);
+                
+                // Update the button data attribute
+                const btn = document.querySelector(`.switch-role-btn[data-staff-id="${currentStaffId}"]`);
+                btn.setAttribute('data-current-role', newRole);
+                
+                // Update the role badge in the table
+                const roleBadge = staffRow.querySelector('td:nth-child(3) span');
+                roleBadge.textContent = newRole === 'manager' ? 'Manager' : 'Staff';
+                
+                if (newRole === 'manager') {
+                    roleBadge.style.background = '#dcfce7';
+                    roleBadge.style.color = '#166534';
+                } else {
+                    roleBadge.style.background = '#dbeafe';
+                    roleBadge.style.color = '#1e40af';
+                }
+                
+                alert(`Successfully switched ${currentStaffName}'s role to ${newRole.charAt(0).toUpperCase() + newRole.slice(1)}`);
+                closeModal();
+            });
+
+            // Close modal when clicking outside
+            const modalContent = document.getElementById('switchRoleModalContent');
+            switchRoleModal.addEventListener('click', function(e) {
+                if (e.target === switchRoleModal && !modalContent.contains(e.target)) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
