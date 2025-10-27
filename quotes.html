@@ -1,32 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Quotes - Franchise Management System</title>
-  <link rel="stylesheet" href="home-styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>.content{max-width:980px;margin:28px auto;padding:18px;background:#fff;border-radius:8px}</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Management System - Quotes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="home-styles.css">
+    <style>
+        .quotes-table { width:100%; border-collapse:collapse; margin-top:20px; }
+        .quotes-table th, .quotes-table td { padding:12px; text-align:left; border-bottom:1px solid #e5e7eb; }
+        .quotes-table th { background:#f9fafb; font-weight:600; }
+        .status-badge { padding:4px 8px; border-radius:12px; font-size:12px; font-weight:500; }
+        .status-draft { background:#fef3c7; color:#d97706; }
+        .status-sent { background:#dbeafe; color:#2563eb; }
+        .status-approved { background:#d1fae5; color:#065f46; }
+        .status-rejected { background:#fee2e2; color:#dc2626; }
+        .action-btn { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-size:14px; margin-right:8px; }
+        .btn-edit { background:#f3f4f6; color:#374151; }
+        .btn-send { background:#3b82f6; color:white; }
+        .btn-delete { background:#dc2626; color:white; }
+        .search-filter { display:flex; gap:12px; align-items:center; margin-bottom:20px; }
+        .search-input { padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; width:300px; }
+        .filter-select { padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; }
+        .create-quote-btn { background:#10b981; color:white; padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-weight:500; }
+        .create-quote-btn:hover { background:#059669; }
+    </style>
 </head>
 <body>
-  <div class="app-container">
-    <nav class="sidebar">
-      <div class="sidebar-header"><div class="logo"><i class="fas fa-store"></i><div class="logo-text-wrapper"><span class="logo-text">My Store</span></div></div></div>
-      <div class="sidebar-nav">
-        <div class="nav-section-label">MAIN</div>
-        <a href="home.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="quotes.html" class="nav-item active"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-        <a href="tenant_schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-        <a href="manage-team.html" class="nav-item"><i class="fas fa-users"></i><span>Manage team</span></a>
-        <a href="admin/pricebook-create.html" class="nav-item"><i class="fas fa-book"></i><span>My pricebook</span></a>
-      </div>
-    </nav>
-    <main class="main-content">
-      <div class="content">
-        <h1>Quotes</h1>
-        <p>Placeholder for Quotes area. You can wire list/create quote UI here.</p>
-      </div>
-    </main>
-  </div>
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">An update from system</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="quotes.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title">Quotes</h1>
+                    <p class="page-subtitle">Manage your quotes and track customer responses</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search quotes" class="search-input">
+                        <kbd class="keyboard-shortcut">Ctrl K</kbd>
+                    </div>
+                    <button class="icon-btn notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="icon-btn help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button class="icon-btn settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="User Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                <!-- Quotes Management Section -->
+                <section class="quotes-section">
+                    <div class="section-header">
+                        <h3 class="section-title-small">All Quotes</h3>
+                        <a href="quote-create-edit.html" style="text-decoration: none;"><button class="create-quote-btn"><i class="fas fa-plus"></i> Create Quote</button></a>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="search-filter">
+                        <input type="text" id="searchInput" placeholder="Search by customer or quote ID" class="search-input">
+                        <select id="filterStatus" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="sent">Sent</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+
+                    <!-- Quotes Table -->
+                    <table class="quotes-table">
+                        <thead>
+                            <tr>
+                                <th>Quote ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Date Created</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotesTableBody">
+                            <!-- Quotes will be loaded here -->
+                        </tbody>
+                    </table>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="empty-state" style="display:none;">
+                        <div class="empty-icon">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <p class="empty-message">No quotes found. Create your first quote to get started.</p>
+                        <a href="quote-create-edit.html" style="text-decoration: none;"><button class="btn-primary">Create Quote</button></a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="home-script.js"></script>
+    <script>
+        // Load quotes from localStorage
+        function loadQuotes() {
+            const quotes = JSON.parse(localStorage.getItem('fms_quotes') || '[]');
+            const tbody = document.getElementById('quotesTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (quotes.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tbody.innerHTML = quotes.map(quote => `
+                <tr>
+                    <td>${quote.id}</td>
+                    <td>${quote.customerName}</td>
+                    <td><span class="status-badge status-${quote.status}">${quote.status}</span></td>
+                    <td>${new Date(quote.createdAt).toLocaleDateString()}</td>
+                    <td>$${quote.total?.toFixed(2) || '0.00'}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editQuote('${quote.id}')"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="action-btn btn-send" onclick="sendQuote('${quote.id}')"><i class="fas fa-paper-plane"></i> Send</button>
+                        <button class="action-btn btn-delete" onclick="deleteQuote('${quote.id}')"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editQuote(id) {
+            window.location.href = `quote-create-edit.html?id=${id}`;
+        }
+
+        function sendQuote(id) {
+            // Placeholder for send functionality
+            alert('Send quote functionality - would integrate with email/WhatsApp API');
+        }
+
+        function deleteQuote(id) {
+            if (confirm('Are you sure you want to delete this quote?')) {
+                const quotes = JSON.parse(localStorage.getItem('fms_quotes') || '[]');
+                const updatedQuotes = quotes.filter(q => q.id !== id);
+                localStorage.setItem('fms_quotes', JSON.stringify(updatedQuotes));
+                loadQuotes();
+            }
+        }
+
+        // Search and filter
+        document.getElementById('searchInput').addEventListener('input', loadQuotes);
+        document.getElementById('filterStatus').addEventListener('change', loadQuotes);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadQuotes);
+    </script>
 </body>
 </html>

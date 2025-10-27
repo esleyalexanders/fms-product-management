@@ -7,16 +7,16 @@ This document describes the proposed "To-Be" flow for the Franchise ERP system. 
 ```mermaid
 flowchart TD
   %% Quote-to-Cash + Field Service To-Be Flow
-  A[Lead / Service Request] --> B[Create Quote - Pricebook]
+  A[Admin Creates Quote] --> B[Send to Customer]
   B --> C{Customer Review}
   C -->|Approve via franchise| D[Convert to Work Order]
-  C -->|Request Changes via franchise| B
+  C -->|Request Changes via franchise| A
   C -->|No Response| R[Franchise follows up manually / Automated Reminder]
   R --> C
 
   D --> E[Scheduling & Dispatch]
   E --> F[Assign Technician / Create Route]
-  F --> G[Technician Mobile App - On-site Execution]
+  F --> G[Technician Web Dashboard - On-site Execution]
   G --> H{Work Completed?}
   H -->|Yes| I[Generate Invoice]
   H -->|Partial / Rework| F
@@ -42,21 +42,19 @@ flowchart TD
 
 ```mermaid
 sequenceDiagram
-  participant Customer
-  participant Sales as Franchisee Sales
+  participant Admin as Franchisee Admin
   participant System as Platform (API/Services)
   participant Scheduler
-  participant Tech as Technician (Mobile App)
+  participant Tech as Technician (Web Dashboard)
   participant Billing as Payment Gateway & Accounting
   participant Franchisor
 
-  Customer->>Sales: Request service / Discuss requirements
-  Sales->>System: Create Quote (use Pricebook)
-  Sales->>Customer: Send Quote via Email or Phone
-  Customer->>Sales: Approve or request changes (via phone/email)
-  Sales->>System: Record approval -> Convert to Work Order
+  Admin->>System: Create Quote (use Pricebook)
+  Admin->>Customer: Send Quote via Email or Phone
+  Customer->>Admin: Approve or request changes (via phone/email)
+  Admin->>System: Record approval -> Convert to Work Order
   Scheduler->>Tech: Assign job & route
-  Tech->>System: Update job status / upload proof (photos, signature)
+  Tech->>System: Update job status / upload proof (photos, signature) via Web Dashboard
   System->>Billing: Generate Invoice and send to Customer
   Customer->>Billing: Pay invoice
   Billing->>System: Confirm payment -> mark invoice paid

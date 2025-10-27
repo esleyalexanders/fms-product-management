@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        .customer-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
+        .customer-table th, .customer-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
+        .customer-table th { background:#f3f4f6; font-weight:500; color:#374151; }
+        .customer-table tr:last-child td { border-bottom:none; }
+        .customer-actions { display:flex; gap:8px; }
+        .btn-primary, .btn-secondary, .btn-link { font-family:inherit; font-size:15px; border-radius:6px; padding:8px 16px; border:none; cursor:pointer; }
+        .btn-primary { background:#6366f1; color:#fff; }
+        .btn-secondary { background:#e5e7eb; color:#374151; }
+        .btn-link { background:none; color:#6366f1; text-decoration:underline; padding:0; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); align-items:center; justify-content:center; z-index:1000; }
+        .modal.active { display:flex; }
+        .modal-content { background:#fff; border-radius:10px; padding:32px 24px; min-width:340px; max-width:96vw; box-shadow:0 4px 24px rgba(0,0,0,0.08); }
+        .modal-header { font-size:20px; font-weight:600; margin-bottom:18px; }
+        .modal-actions { display:flex; gap:12px; margin-top:18px; }
+        .form-group { margin-bottom:14px; }
+        .form-group label { display:block; font-size:15px; margin-bottom:6px; color:#374151; }
+        .form-group input, .form-group select { width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px; font-size:15px; }
+        .form-group textarea { width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px; font-size:15px; min-height:60px; }
+        .sidebar .nav-item.customers-link { background:#eef2ff; color:#6366f1; font-weight:600; }
+        @media (max-width:900px) { .modal-content { min-width:90vw; } }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="../manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title">Customer Management</h1>
+                    <p class="page-subtitle">Manage your customers for quotes and jobs</p>
+                </div>
+                <div class="header-right">
+                    <a href="customer-create.html" style="text-decoration:none;"><button class="btn-primary" id="addCustomerBtn"><i class="fas fa-user-plus"></i> Add Customer</button></a>
+                </div>
+            </header>
+            <div class="content-wrapper">
+                <section>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                        <div>
+                            <input type="text" id="searchInput" placeholder="Search customers by name, company, email, phone" style="padding:8px 14px;border-radius:6px;border:1px solid #e5e7eb;width:260px;">
+                        </div>
+                        <div>
+                            <button class="btn-secondary" id="importBtn"><i class="fas fa-upload"></i> Import</button>
+                            <button class="btn-secondary" id="exportBtn"><i class="fas fa-download"></i> Export</button>
+                        </div>
+                    </div>
+                    <table class="customer-table" id="customerTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Company</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>City</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Customer rows will be injected here -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" style="display:none;text-align:center;padding:32px 0;color:#6b7280;">
+                        <i class="fas fa-users" style="font-size:32px;margin-bottom:12px;"></i>
+                        <div>No customers found. Click "Add Customer" to create your first one.</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <!-- Import Modal -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">Import Customers</div>
+            <div style="margin-bottom:12px;">Upload a CSV file with customer data. Expected columns: First Name, Last Name, Company, Email, Phone, Street, City, State, Postal Code, Country, Notes</div>
+            <input type="file" id="importFile" accept=".csv" style="margin-bottom:12px;">
+            <div class="modal-actions">
+                <button class="btn-primary" id="confirmImportBtn">Import</button>
+                <button class="btn-secondary" id="cancelImportBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="customers.js"></script>
+    <script src="customer-list-script.js"></script>
+</body>
+</html>

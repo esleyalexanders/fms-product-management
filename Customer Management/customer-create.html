@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Customer</title>
+    <link rel="stylesheet" href="../add-product-styles.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      /* small local adjustments to integrate with existing styles */
+      .card{padding:14px;border-radius:8px;background:#fff;border:1px solid #eef2f6;margin-bottom:12px}
+      .form-input, .form-select, .form-textarea{width:100%;padding:10px;border:1px solid #e6e9ee;border-radius:6px}
+      .preview-card .preview-summary {padding:12px;}
+      .preview-card .preview-name {font-size:18px;font-weight:600;margin-bottom:8px;}
+      .preview-card .preview-detail {margin-bottom:4px;font-size:14px;color:#374151;}
+      .preview-card .preview-detail strong {color:#1e40af;}
+      .btn-primary, .btn-secondary {font-family:inherit;font-size:15px;border-radius:6px;padding:8px 16px;border:none;cursor:pointer;}
+      .btn-primary {background:#6366f1;color:#fff;}
+      .btn-secondary {background:#e5e7eb;color:#374151;}
+      .back-btn {background:none;border:none;font-size:18px;cursor:pointer;margin-right:12px;}
+      .discard-btn {background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-right:8px;}
+      .save-btn {background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;}
+    </style>
+</head>
+<body>
+  <div class="limited-offer-banner">
+      <div class="banner-content">
+          <i class="fas fa-info-circle"></i>
+          <span class="banner-text">Create Customer</span>
+      </div>
+  </div>
+
+  <div class="app-container">
+  <!-- Sidebar (same structure as home.html) -->
+  <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-store"></i>
+          <div class="logo-text-wrapper">
+            <span class="logo-text" id="storeName">My Store</span>
+            <button class="edit-store-btn" title="Edit store name">
+              <i class="fas fa-pencil-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-section-label">MAIN</div>
+        <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+        <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+        <a href="../manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+        <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+        <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+
+      <div class="sidebar-footer">
+        <div class="nav-item">
+          <i class="fas fa-question-circle"></i>
+          <span>Get Set Up</span>
+        </div>
+        <div class="nav-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <a href="customer-list.html" style="text-decoration:none;color:inherit;"><button class="back-btn"><i class="fas fa-arrow-left"></i></button></a>
+          <h1 class="page-title">Create Customer</h1>
+        </div>
+        <div class="header-right">
+          <button class="discard-btn" id="discardBtn">Discard</button>
+          <button class="save-btn" id="saveBtn">Save</button>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="left-column">
+          <div class="card">
+            <div class="title-type-row">
+              <div class="form-group title-group">
+                <label for="firstName">First Name *</label>
+                <input id="firstName" name="firstName" type="text" class="form-input" placeholder="John" required>
+              </div>
+              <div class="form-group type-group">
+                <label for="lastName">Last Name *</label>
+                <input id="lastName" name="lastName" type="text" class="form-input" placeholder="Doe" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><label class="card-label">Company</label></div>
+            <input id="company" type="text" class="form-input" placeholder="ABC Corp">
+          </div>
+
+          <div class="card">
+            <div class="card-header"><label class="card-label">Contact Information</label></div>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input id="email" type="email" class="form-input" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="phone">Phone</label>
+              <input id="phone" type="text" class="form-input" placeholder="+1 234 567 8900">
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="preferredContactMethod">Preferred Contact Method</label>
+              <select id="preferredContactMethod" class="form-select">
+                <option value="email">Email</option>
+                <option value="phone">Phone</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><label class="card-label">Address</label></div>
+            <div class="form-group">
+              <label for="street">Street</label>
+              <input id="street" type="text" class="form-input" placeholder="123 Main St">
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="city">City</label>
+              <input id="city" type="text" class="form-input" placeholder="New York">
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="state">State</label>
+              <input id="state" type="text" class="form-input" placeholder="NY">
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="postalCode">Postal Code</label>
+              <input id="postalCode" type="text" class="form-input" placeholder="10001">
+            </div>
+            <div class="form-group" style="margin-top:8px">
+              <label for="country">Country</label>
+              <input id="country" type="text" class="form-input" placeholder="Australia" value="Australia">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><label class="card-label">Notes</label></div>
+            <textarea id="notes" class="form-textarea" placeholder="Additional notes about the customer"></textarea>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="card preview-card">
+            <h4 class="card-title">Customer Preview</h4>
+            <div class="preview-summary">
+              <div class="preview-name" id="previewName">John Doe</div>
+              <div class="preview-detail"><strong>Company:</strong> <span id="previewCompany">ABC Corp</span></div>
+              <div class="preview-detail"><strong>Email:</strong> <span id="previewEmail">john@example.com</span></div>
+              <div class="preview-detail"><strong>Phone:</strong> <span id="previewPhone">+1 234 567 8900</span></div>
+              <div class="preview-detail"><strong>Preferred Contact:</strong> <span id="previewContactMethod">Email</span></div>
+              <div class="preview-detail"><strong>Address:</strong> <span id="previewAddress">123 Main St, New York, NY 10001, USA</span></div>
+              <div class="preview-detail"><strong>Notes:</strong> <span id="previewNotes">Additional notes...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="customers.js"></script>
+  <script>
+    let editingCustomerId = null;
+
+    // Check for edit param
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    if (editId) {
+      editingCustomerId = editId;
+      document.querySelector('.banner-text').textContent = 'Edit Customer';
+      document.querySelector('.page-title').textContent = 'Edit Customer';
+    }
+
+    // Update preview on input
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const companyInput = document.getElementById('company');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const preferredContactMethodSelect = document.getElementById('preferredContactMethod');
+    const streetInput = document.getElementById('street');
+    const cityInput = document.getElementById('city');
+    const stateInput = document.getElementById('state');
+    const postalCodeInput = document.getElementById('postalCode');
+    const countryInput = document.getElementById('country');
+    const notesTextarea = document.getElementById('notes');
+
+    const previewName = document.getElementById('previewName');
+    const previewCompany = document.getElementById('previewCompany');
+    const previewEmail = document.getElementById('previewEmail');
+    const previewPhone = document.getElementById('previewPhone');
+    const previewContactMethod = document.getElementById('previewContactMethod');
+    const previewAddress = document.getElementById('previewAddress');
+    const previewNotes = document.getElementById('previewNotes');
+
+    function updatePreview() {
+      const firstName = firstNameInput.value || '';
+      const lastName = lastNameInput.value || '';
+      previewName.textContent = `${firstName} ${lastName}`.trim() || 'Customer Name';
+      previewCompany.textContent = companyInput.value || '—';
+      previewEmail.textContent = emailInput.value || '—';
+      previewPhone.textContent = phoneInput.value || '—';
+      previewContactMethod.textContent = preferredContactMethodSelect.options[preferredContactMethodSelect.selectedIndex].text;
+      const addressParts = [streetInput.value, cityInput.value, stateInput.value, postalCodeInput.value, countryInput.value].filter(p => p);
+      previewAddress.textContent = addressParts.join(', ') || '—';
+      previewNotes.textContent = notesTextarea.value || '—';
+    }
+
+    [firstNameInput, lastNameInput, companyInput, emailInput, phoneInput, preferredContactMethodSelect, streetInput, cityInput, stateInput, postalCodeInput, countryInput, notesTextarea].forEach(el => {
+      el.addEventListener('input', updatePreview);
+      el.addEventListener('change', updatePreview);
+    });
+
+    // Load customer if editing
+    if (editingCustomerId) {
+      const { customersAPI } = window;
+      if (!customersAPI) {
+        alert('Error: customersAPI not loaded.');
+        window.location.href = 'customer-list.html';
+        return;
+      }
+      const customer = customersAPI.getCustomerById(editingCustomerId);
+      if (customer) {
+        firstNameInput.value = customer.firstName || '';
+        lastNameInput.value = customer.lastName || '';
+        companyInput.value = customer.company || '';
+        emailInput.value = customer.email || '';
+        phoneInput.value = customer.phone || '';
+        preferredContactMethodSelect.value = customer.preferredContactMethod || 'email';
+        streetInput.value = customer.address?.street || '';
+        cityInput.value = customer.address?.city || '';
+        stateInput.value = customer.address?.state || '';
+        postalCodeInput.value = customer.address?.postalCode || '';
+        countryInput.value = customer.address?.country || '';
+        notesTextarea.value = customer.notes || '';
+        updatePreview();
+      } else {
+        alert('Customer not found.');
+        window.location.href = 'customer-list.html';
+      }
+    } else {
+      // Initial preview
+      updatePreview();
+    }
+
+    // Save button
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.addEventListener('click', () => {
+      const customerData = {
+        firstName: firstNameInput.value.trim(),
+        lastName: lastNameInput.value.trim(),
+        company: companyInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        street: streetInput.value.trim(),
+        city: cityInput.value.trim(),
+        state: stateInput.value.trim(),
+        postalCode: postalCodeInput.value.trim(),
+        country: countryInput.value.trim(),
+        preferredContactMethod: preferredContactMethodSelect.value,
+        notes: notesTextarea.value.trim()
+      };
+
+      // Basic validation (HTML required handles most, but double-check)
+      if (!customerData.firstName || !customerData.lastName || !customerData.email) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      const { customersAPI } = window;
+      if (!customersAPI) {
+        alert('Error: customersAPI not loaded.');
+        return;
+      }
+
+      if (editingCustomerId) {
+        customersAPI.updateCustomer(editingCustomerId, customerData);
+        alert('Customer updated successfully!');
+      } else {
+        customersAPI.createCustomer(customerData);
+        alert('Customer created successfully!');
+      }
+      window.location.href = 'customer-list.html';
+    });
+
+    // Discard button
+    const discardBtn = document.getElementById('discardBtn');
+    discardBtn.addEventListener('click', () => {
+      if (confirm('Discard changes?')) {
+        window.location.href = 'customer-list.html';
+      }
+    });
+  </script>
+</body>
+</html>

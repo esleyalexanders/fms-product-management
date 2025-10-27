@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Management System - Create/Edit Quote</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="home-styles.css">
+    <style>
+        .form-section { background:#fff; padding:24px; border-radius:8px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-weight:500; margin-bottom:8px; }
+        .form-input { width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; }
+        .form-row { display:flex; gap:12px; }
+        .form-row .form-group { flex:1; }
+        .line-items { margin-top:20px; }
+        .line-item { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+        .line-item select, .line-item input { flex:1; padding:8px; border:1px solid #d1d5db; border-radius:6px; }
+        .line-item .remove-btn { background:#dc2626; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; }
+        .add-item-btn { background:#10b981; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; margin-top:12px; }
+        .totals { text-align:right; margin-top:20px; }
+        .total-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e5e7eb; }
+        .total-row.total { font-weight:600; border-bottom:2px solid #374151; }
+        .actions { display:flex; gap:12px; justify-content:flex-end; margin-top:24px; }
+        .btn-secondary { background:#f3f4f6; color:#374151; border:1px solid #d1d5db; padding:10px 20px; border-radius:6px; cursor:pointer; }
+        .btn-primary { background:#3b82f6; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; }
+        .btn-success { background:#10b981; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">An update from system</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="quotes.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 class="page-title" id="pageTitle">Create Quote</h1>
+                    <p class="page-subtitle">Create a new quote for a customer</p>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button class="icon-btn settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="User Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                <form id="quoteForm">
+                    <!-- Customer Details -->
+                    <div class="form-section">
+                        <h3>Customer Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customerName">Customer Name</label>
+                                <input type="text" id="customerName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerEmail">Email</label>
+                                <input type="email" id="customerEmail" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customerWhatsApp">WhatsApp Number</label>
+                                <input type="tel" id="customerWhatsApp" class="form-input" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Line Items -->
+                    <div class="form-section">
+                        <h3>Line Items</h3>
+                        <div id="lineItemsContainer">
+                            <!-- Line items will be added here -->
+                        </div>
+                        <button type="button" class="add-item-btn" onclick="addLineItem()"><i class="fas fa-plus"></i> Add Item</button>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="form-section">
+                        <div class="totals">
+                            <div class="total-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="total-row">
+                                <span>GST (10%):</span>
+                                <span id="gst">$0.00</span>
+                            </div>
+                            <div class="total-row total">
+                                <span>Total:</span>
+                                <span id="total">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="actions">
+                        <button type="button" class="btn-secondary" onclick="window.location.href='quotes.html'">Cancel</button>
+                        <button type="button" class="btn-secondary" onclick="previewQuote()">Preview</button>
+                        <button type="submit" class="btn-primary">Save Quote</button>
+                        <button type="button" class="btn-success" onclick="saveAndSend()">Save & Send</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="home-script.js"></script>
+    <script>
+        let quoteItems = [];
+        let pricebookItems = [];
+
+        // Load pricebook items
+        function loadPricebook() {
+            pricebookItems = JSON.parse(localStorage.getItem('fms_pricebook') || '[]');
+        }
+
+        // Add line item
+        function addLineItem(item = null) {
+            const container = document.getElementById('lineItemsContainer');
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'line-item';
+            itemDiv.innerHTML = `
+                <select class="item-select" required>
+                    <option value="">Select Item</option>
+                    ${pricebookItems.map(pb => `<option value="${pb.id}" data-price="${pb.price}">${pb.name} - $${pb.price}</option>`).join('')}
+                </select>
+                <input type="number" class="quantity-input" placeholder="Qty" min="1" value="${item?.quantity || 1}" required>
+                <input type="number" class="price-input" placeholder="Price" step="0.01" value="${item?.price || 0}" readonly required>
+                <input type="number" class="total-input" placeholder="Total" value="${item?.total || 0}" readonly>
+                <button type="button" class="remove-btn" onclick="removeLineItem(this)">Remove</button>
+            `;
+            container.appendChild(itemDiv);
+
+            // Event listeners
+            const select = itemDiv.querySelector('.item-select');
+            const qty = itemDiv.querySelector('.quantity-input');
+            const price = itemDiv.querySelector('.price-input');
+            const total = itemDiv.querySelector('.total-input');
+
+            select.addEventListener('change', () => {
+                const selected = pricebookItems.find(pb => pb.id === select.value);
+                if (selected) {
+                    price.value = selected.price;
+                    updateItemTotal(qty, price, total);
+                }
+            });
+
+            qty.addEventListener('input', () => updateItemTotal(qty, price, total));
+
+            if (item) {
+                select.value = item.id;
+                select.dispatchEvent(new Event('change'));
+            }
+
+            updateTotals();
+        }
+
+        function updateItemTotal(qty, price, total) {
+            const quantity = parseFloat(qty.value) || 0;
+            const unitPrice = parseFloat(price.value) || 0;
+            total.value = (quantity * unitPrice).toFixed(2);
+            updateTotals();
+        }
+
+        function removeLineItem(btn) {
+            btn.parentElement.remove();
+            updateTotals();
+        }
+
+        function updateTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('.line-item').forEach(item => {
+                const total = parseFloat(item.querySelector('.total-input').value) || 0;
+                subtotal += total;
+            });
+
+            const gst = subtotal * 0.1;
+            const total = subtotal + gst;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('gst').textContent = `$${gst.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function previewQuote() {
+            // Placeholder for preview functionality
+            alert('Preview functionality - would open modal with quote PDF preview');
+        }
+
+        function saveQuote(sendAfterSave = false) {
+            const form = document.getElementById('quoteForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const quote = {
+                id: getUrlParam('id') || Date.now().toString(),
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerWhatsApp: document.getElementById('customerWhatsApp').value,
+                items: Array.from(document.querySelectorAll('.line-item')).map(item => ({
+                    id: item.querySelector('.item-select').value,
+                    name: item.querySelector('.item-select option:checked').text.split(' - ')[0],
+                    quantity: parseInt(item.querySelector('.quantity-input').value),
+                    price: parseFloat(item.querySelector('.price-input').value),
+                    total: parseFloat(item.querySelector('.total-input').value)
+                })),
+                subtotal: parseFloat(document.getElementById('subtotal').textContent.replace('$', '')),
+                gst: parseFloat(document.getElementById('gst').textContent.replace('$', '')),
+                total: parseFloat(document.getElementById('total').textContent.replace('$', '')),
+                status: 'draft',
+                createdAt: new Date().toISOString().split('T')[0]
+            };
+
+            const quotes = JSON.parse(localStorage.getItem('fms_quotes') || '[]');
+            const existingIndex = quotes.findIndex(q => q.id === quote.id);
+            if (existingIndex >= 0) {
+                quotes[existingIndex] = quote;
+            } else {
+                quotes.push(quote);
+            }
+            localStorage.setItem('fms_quotes', JSON.stringify(quotes));
+
+            if (sendAfterSave) {
+                // Placeholder for send functionality
+                alert('Quote saved and sent (demo)');
+            } else {
+                alert('Quote saved successfully');
+            }
+
+            window.location.href = 'quotes.html';
+        }
+
+        function saveAndSend() {
+            saveQuote(true);
+        }
+
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function loadQuote() {
+            const id = getUrlParam('id');
+            if (!id) return;
+
+            document.getElementById('pageTitle').textContent = 'Edit Quote';
+            document.querySelector('.page-subtitle').textContent = 'Edit existing quote';
+
+            const quotes = JSON.parse(localStorage.getItem('fms_quotes') || '[]');
+            const quote = quotes.find(q => q.id === id);
+            if (!quote) return;
+
+            document.getElementById('customerName').value = quote.customerName;
+            document.getElementById('customerEmail').value = quote.customerEmail;
+            document.getElementById('customerWhatsApp').value = quote.customerWhatsApp;
+
+            quote.items.forEach(item => addLineItem(item));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPricebook();
+            loadQuote();
+            if (document.querySelectorAll('.line-item').length === 0) {
+                addLineItem();
+            }
+        });
+
+        document.getElementById('quoteForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveQuote();
+        });
+    </script>
+</body>
+</html>
