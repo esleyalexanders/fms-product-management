@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Team - Business Requirements Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            line-height: 1.6; 
+            color: #1f2937; 
+            background: #f9fafb;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: #fff; 
+            padding: 40px; 
+            text-align: center;
+        }
+        .header h1 { font-size: 36px; margin-bottom: 10px; font-weight: 700; }
+        .header p { font-size: 18px; opacity: 0.95; }
+        .nav-tabs {
+            display: flex;
+            background: #f3f4f6;
+            border-bottom: 2px solid #e5e7eb;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6b7280;
+            white-space: nowrap;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-tab:hover { background: #e5e7eb; }
+        .nav-tab.active { 
+            color: #6366f1; 
+            background: #fff;
+            border-bottom-color: #6366f1;
+        }
+        .content { padding: 40px; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        
+        h2 { 
+            font-size: 28px; 
+            margin-bottom: 20px; 
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h3 { 
+            font-size: 22px; 
+            margin: 30px 0 15px 0; 
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h4 { 
+            font-size: 18px; 
+            margin: 20px 0 10px 0; 
+            color: #4b5563;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .badge-primary { background: #dbeafe; color: #1e40af; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .feature-card h4 {
+            margin: 0 0 10px 0;
+            color: #6366f1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        tr:last-child td { border-bottom: none; }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        li { margin: 8px 0; }
+        
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #db2777;
+        }
+        pre {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .screenshot-placeholder {
+            background: #e5e7eb;
+            border: 2px dashed #9ca3af;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            color: #6b7280;
+            margin: 20px 0;
+        }
+        
+        .user-story {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .user-story-header {
+            font-weight: 600;
+            color: #6366f1;
+            margin-bottom: 8px;
+        }
+        
+        .workflow-step {
+            display: flex;
+            gap: 16px;
+            margin: 20px 0;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        .workflow-number {
+            background: #6366f1;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .tech-item {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media print {
+            body { background: #fff; }
+            .container { box-shadow: none; }
+            .nav-tabs { display: none; }
+            .tab-panel { display: block !important; page-break-after: always; }
+        }
+        
+        @media (max-width: 768px) {
+            .content { padding: 20px; }
+            .header { padding: 30px 20px; }
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Manage Team Module</h1>
+            <p>Business Requirements Document</p>
+            <div style="margin-top: 15px; opacity: 0.9;">
+                <span class="badge badge-primary">Version 1.0</span>
+                <span class="badge badge-success">Ready for Development</span>
+            </div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="features"><i class="fas fa-list-check"></i> Features</button>
+            <button class="nav-tab" data-tab="user-flows"><i class="fas fa-route"></i> User Flows</button>
+            <button class="nav-tab" data-tab="ui-specs"><i class="fas fa-palette"></i> UI Specs</button>
+            <button class="nav-tab" data-tab="validation"><i class="fas fa-shield-alt"></i> Validation</button>
+        </div>
+        
+        <div class="content">
+            <!-- FEATURES TAB -->
+            <div class="tab-panel active" id="features">
+                <h2><i class="fas fa-list-check"></i> Feature Requirements</h2>
+                
+                <h3><i class="fas fa-plus-circle"></i> 1. Staff Management (CRUD)</h3>
+                
+                <h4>1.1 Create Staff</h4>
+                <div class="user-story">
+                    <div class="user-story-header">User Story:</div>
+                    As a Manager, I want to add new staff members with their personal information, employment details, and scheduling preferences so that they can be assigned to jobs and shifts.
+                </div>
+                
+                <strong>Requirements:</strong>
+                <ul>
+                    <li>Multi-tab form interface (Personal Info, Employment & Scheduling)</li>
+                    <li>Profile photo upload (optional, max 5MB, JPG/PNG)</li>
+                    <li>Real-time form validation</li>
+                    <li>Option to send invitation email to staff member</li>
+                    <li>Auto-save functionality (future enhancement)</li>
+                </ul>
+                
+                <h4>1.2 View Staff</h4>
+                <div class="user-story">
+                    <div class="user-story-header">User Story:</div>
+                    As a Manager, I want to view a list of all active staff with search and filter capabilities so that I can quickly find and manage team members.
+                </div>
+                
+                <strong>Features:</strong>
+                <ul>
+                    <li>Table view with key information (Name, Role, Email, Phone, Status)</li>
+                    <li>Real-time search by name, email, phone</li>
+                    <li>Filter by role and status (active/inactive)</li>
+                    <li>Pagination (if list exceeds 50 items)</li>
+                    <li>Export to CSV functionality</li>
+                    <li>Detailed staff profile view</li>
+                </ul>
+                
+                <h4>1.3 Edit Staff</h4>
+                <div class="user-story">
+                    <div class="user-story-header">User Story:</div>
+                    As a Manager, I want to update staff information, roles, and scheduling preferences so that records stay current and accurate.
+                </div>
+                
+                <strong>Features:</strong>
+                <ul>
+                    <li>Pre-populated form with existing data</li>
+                    <li>Same validation rules as create</li>
+                    <li>Option to send update notification</li>
+                    <li>Audit trail of changes (backend)</li>
+                </ul>
+                
+                <h4>1.4 Deactivate/Reactivate Staff</h4>
+                <div class="user-story">
+                    <div class="user-story-header">User Story:</div>
+                    As a Manager, I want to deactivate staff accounts when employees leave while maintaining historical data for compliance and reporting.
+                </div>
+                
+                <strong>Features:</strong>
+                <ul>
+                    <li>Soft delete (status change, not physical deletion)</li>
+                    <li>Confirmation dialog before deactivation</li>
+                    <li>Prevent deactivated staff from being assigned to new jobs</li>
+                    <li>Ability to reactivate staff</li>
+                    <li>Visual distinction (red for deactivate, green for reactivate)</li>
+                </ul>
+                
+                <h3><i class="fas fa-shield-alt"></i> 2. Role and Permission Management</h3>
+                
+                <h4>2.1 Predefined Roles</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Role</th>
+                            <th>Description</th>
+                            <th>Key Permissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Manager</strong></td>
+                            <td>Full system access</td>
+                            <td>All features, manage roles, system settings, manage staff</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Staff</strong></td>
+                            <td>General team members (technicians, receptionists, field workers)</td>
+                            <td>View/update assigned jobs, view schedule, manage bookings, view customers</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="warning-box">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Important:</strong> Staff members have both a <strong>Role</strong> (determines permissions) and an optional <strong>Job Title</strong> (display name). Example: Role = "Staff", Job Title = "Senior HVAC Technician" or "Lead Receptionist"
+                </div>
+                
+                <h4>2.2 Permission Matrix</h4>
+                <p>Six permission groups control access:</p>
+                <ol>
+                    <li><strong>Staff Management:</strong> View, Create, Edit, Delete staff</li>
+                    <li><strong>Schedule Management:</strong> View, Edit schedules, Assign jobs</li>
+                    <li><strong>Quote Management:</strong> View, Create, Edit quotes</li>
+                    <li><strong>Customer Management:</strong> View, Create, Edit customers</li>
+                    <li><strong>Reports & Analytics:</strong> View reports, Export data</li>
+                    <li><strong>System Administration:</strong> Manage roles, System settings</li>
+                </ol>
+                
+                <h3><i class="fas fa-calendar-check"></i> 3. Scheduling & Availability</h3>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><i class="fas fa-clock"></i> Weekly Availability</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Per-day time ranges</li>
+                            <li>Multiple ranges per day</li>
+                            <li>Weekday preset (9-5 Mon-Fri)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-umbrella-beach"></i> Time Off</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Blocked date ranges</li>
+                            <li>Vacation/leave tracking</li>
+                            <li>Multiple blocked periods</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-sliders-h"></i> Work Constraints</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Max hours per week</li>
+                            <li>Max consecutive days</li>
+                            <li>Min shift length</li>
+                            <li>Shift padding/buffer</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-home"></i> Home Base</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Use store address (default)</li>
+                            <li>Custom address option</li>
+                            <li>For route planning</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4><i class="fas fa-map-marker-alt"></i> Locations & Skills</h4>
+                        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Assigned locations</li>
+                            <li>Skills/specializations</li>
+                            <li>Comma-separated values</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- USER FLOWS TAB -->
+            <div class="tab-panel" id="user-flows">
+                <h2><i class="fas fa-route"></i> User Workflows</h2>
+                
+                <h3><i class="fas fa-user-plus"></i> Staff Creation Workflow</h3>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">1</div>
+                    <div>
+                        <strong>Navigate to Team List</strong>
+                        <p>User clicks "Manage Team" in sidebar → Sees staff list page</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">2</div>
+                    <div>
+                        <strong>Click "Add Staff" Button</strong>
+                        <p>User clicks primary action button → Navigates to create form</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">3</div>
+                    <div>
+                        <strong>Fill Personal Information Tab</strong>
+                        <p>Required: First Name, Last Name, Email, Phone<br>
+                        Optional: Profile Photo, Date of Birth</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">4</div>
+                    <div>
+                        <strong>Switch to Employment & Scheduling Tab</strong>
+                        <p>User clicks tab → Sees employment and scheduling sections</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">5</div>
+                    <div>
+                        <strong>Fill Employment Information</strong>
+                        <p>Required: Start Date, Employment Type, Role<br>
+                        Optional: Employee ID, Hourly Rate, Job Title</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">6</div>
+                    <div>
+                        <strong>Configure Scheduling (Optional)</strong>
+                        <p>Set weekly availability, time off, work constraints, home base</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">7</div>
+                    <div>
+                        <strong>Submit Form</strong>
+                        <p>Validation runs → Success: Save & redirect to list → Error: Show inline errors</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">8</div>
+                    <div>
+                        <strong>Send Invitation (Optional)</strong>
+                        <p>If checkbox checked → System sends invitation email to staff member</p>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <strong><i class="fas fa-check-circle"></i> Success Criteria:</strong> Staff member is created, appears in list, can be assigned to schedules and jobs
+                </div>
+                
+                <h3><i class="fas fa-edit"></i> Staff Edit Workflow</h3>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">1</div>
+                    <div>
+                        <strong>Navigate to Edit</strong>
+                        <p>From list: Click "Edit" button → Or from detail view: Click "Edit Staff"</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">2</div>
+                    <div>
+                        <strong>Form Pre-populated</strong>
+                        <p>System loads existing staff data → All fields filled with current values</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">3</div>
+                    <div>
+                        <strong>Make Changes</strong>
+                        <p>User modifies any fields → Can deactivate staff via button at top</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">4</div>
+                    <div>
+                        <strong>Save Updates</strong>
+                        <p>Validation runs → Success: Save & redirect → Notification sent if checkbox checked</p>
+                    </div>
+                </div>
+                
+                <h3><i class="fas fa-search"></i> Search & Filter Workflow</h3>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">1</div>
+                    <div>
+                        <strong>Enter Search Term</strong>
+                        <p>User types in search box → Real-time filtering by name, email, phone</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">2</div>
+                    <div>
+                        <strong>Apply Filters</strong>
+                        <p>Select role filter → Select status filter → Combination filtering applied</p>
+                    </div>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="workflow-number">3</div>
+                    <div>
+                        <strong>View Results</strong>
+                        <p>Table updates instantly → Shows matching staff only → Empty state if no matches</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- UI SPECS TAB -->
+            <div class="tab-panel" id="ui-specs">
+                <h2><i class="fas fa-palette"></i> UI Specifications</h2>
+                
+                <h3><i class="fas fa-list"></i> Staff List Page</h3>
+                
+                <div class="feature-card" style="margin: 20px 0;">
+                    <h4>Layout Components:</h4>
+                    <ul>
+                        <li><strong>Header:</strong> Page title, subtitle, "Add Staff" and "Manage Roles" buttons</li>
+                        <li><strong>Filter Bar:</strong> Search input, role filter, status dropdown, export button</li>
+                        <li><strong>Data Table:</strong> Name, Role, Email, Phone, Status, Actions columns</li>
+                        <li><strong>Empty State:</strong> Message with "Add Staff" prompt when no staff exist</li>
+                    </ul>
+                </div>
+                
+                <h4>Table Actions:</h4>
+                <ul>
+                    <li><strong>View</strong> (Blue) - Navigate to detail page</li>
+                    <li><strong>Edit</strong> (Blue) - Navigate to edit form</li>
+                    <li><strong>Deactivate</strong> (Red) - Show confirmation, soft delete</li>
+                    <li><strong>Reactivate</strong> (Green) - Restore active status</li>
+                </ul>
+                
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i>
+                    <p><strong>Screenshot: Staff List Page</strong></p>
+                    <p>File: manage-team.html</p>
+                </div>
+                
+                <h3><i class="fas fa-plus-square"></i> Create/Edit Staff Form</h3>
+                
+                <h4>Tab 1: Personal Info</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Profile Photo</td>
+                            <td>File Upload</td>
+                            <td>No</td>
+                            <td>Max 5MB, JPG/PNG</td>
+                        </tr>
+                        <tr>
+                            <td>First Name</td>
+                            <td>Text</td>
+                            <td>Yes</td>
+                            <td>Not empty</td>
+                        </tr>
+                        <tr>
+                            <td>Last Name</td>
+                            <td>Text</td>
+                            <td>Yes</td>
+                            <td>Not empty</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>Email</td>
+                            <td>Yes</td>
+                            <td>Valid format, unique</td>
+                        </tr>
+                        <tr>
+                            <td>Phone Number</td>
+                            <td>Tel</td>
+                            <td>Yes</td>
+                            <td>Valid phone format</td>
+                        </tr>
+                        <tr>
+                            <td>Date of Birth</td>
+                            <td>Date</td>
+                            <td>No</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>Tab 2: Employment & Scheduling</h4>
+                
+                <strong>Employment Section:</strong>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Validation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Employee ID</td>
+                            <td>Text</td>
+                            <td>No</td>
+                            <td>Unique per location</td>
+                        </tr>
+                        <tr>
+                            <td>Start Date</td>
+                            <td>Date</td>
+                            <td>Yes</td>
+                            <td>Not in future</td>
+                        </tr>
+                        <tr>
+                            <td>Employment Type</td>
+                            <td>Dropdown</td>
+                            <td>Yes</td>
+                            <td>Must select option</td>
+                        </tr>
+                        <tr>
+                            <td>Hourly Rate/Salary</td>
+                            <td>Number</td>
+                            <td>No</td>
+                            <td>Min 0</td>
+                        </tr>
+                        <tr>
+                            <td>Role</td>
+                            <td>Dropdown</td>
+                            <td>Yes</td>
+                            <td>Must select option</td>
+                        </tr>
+                        <tr>
+                            <td>Job Title</td>
+                            <td>Text</td>
+                            <td>No</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <strong>Scheduling Sections:</strong>
+                <ol>
+                    <li><strong>Basic Information:</strong> Locations, Skills (comma-separated)</li>
+                    <li><strong>Weekly Availability:</strong> Per-day time ranges with preset option</li>
+                    <li><strong>Time Off & Constraints:</strong> Blocked dates, max hours, consecutive days, shift length</li>
+                    <li><strong>Scheduling Preferences:</strong> Home base (store/custom)</li>
+                </ol>
+                
+                <div class="screenshot-placeholder">
+                    <i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i>
+                    <p><strong>Screenshot: Create Staff Form</strong></p>
+                    <p>Files: manage-team-create.html, manage-team-edit.html</p>
+                </div>
+                
+                <h3><i class="fas fa-eye"></i> Staff Detail Page</h3>
+                
+                <ul>
+                    <li>Header with profile photo, name, role, status badge</li>
+                    <li>Action buttons: Edit, Print, Export</li>
+                    <li>Sections: Personal Information, Employment Information</li>
+                    <li>Clean, read-only display of all staff data</li>
+                </ul>
+                
+                <h3><i class="fas fa-shield-alt"></i> Manage Roles Page</h3>
+                
+                <ul>
+                    <li>Table of existing roles with name, description, permissions, staff count</li>
+                    <li>"Add Role" button opens modal</li>
+                    <li>Edit button per role opens pre-populated modal</li>
+                    <li>Modal contains role form with permission checkboxes grouped by category</li>
+                    <li>"Select All" checkbox per permission group</li>
+                </ul>
+                
+                <h3><i class="fas fa-paint-brush"></i> Design System</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Color/Style</th>
+                            <th>Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Primary Color</td>
+                            <td>#6366f1 (Indigo)</td>
+                            <td>Buttons, links, active states</td>
+                        </tr>
+                        <tr>
+                            <td>Success Color</td>
+                            <td>#059669 (Green)</td>
+                            <td>Active status, reactivate button</td>
+                        </tr>
+                        <tr>
+                            <td>Danger Color</td>
+                            <td>#dc2626 (Red)</td>
+                            <td>Inactive status, deactivate button, errors</td>
+                        </tr>
+                        <tr>
+                            <td>Background</td>
+                            <td>#f9fafb (Light Gray)</td>
+                            <td>Page background, cards</td>
+                        </tr>
+                        <tr>
+                            <td>Font</td>
+                            <td>Inter (Google Fonts)</td>
+                            <td>All text</td>
+                        </tr>
+                        <tr>
+                            <td>Border Radius</td>
+                            <td>6-8px</td>
+                            <td>Cards, buttons, inputs</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- VALIDATION TAB -->
+            <div class="tab-panel" id="validation">
+                <h2><i class="fas fa-shield-alt"></i> Validation Rules</h2>
+                
+                <h3><i class="fas fa-check-circle"></i> Form Validation</h3>
+                
+                <h4>Client-Side Validation (Immediate Feedback)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Rule</th>
+                            <th>Error Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>First Name</td>
+                            <td>Required, not empty</td>
+                            <td>"First name is required"</td>
+                        </tr>
+                        <tr>
+                            <td>Last Name</td>
+                            <td>Required, not empty</td>
+                            <td>"Last name is required"</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>Required, valid format</td>
+                            <td>"Please enter a valid email address"</td>
+                        </tr>
+                        <tr>
+                            <td>Phone</td>
+                            <td>Required, valid format</td>
+                            <td>"Please enter a valid phone number"</td>
+                        </tr>
+                        <tr>
+                            <td>Start Date</td>
+                            <td>Required, not future</td>
+                            <td>"Start date cannot be in the future"</td>
+                        </tr>
+                        <tr>
+                            <td>Employment Type</td>
+                            <td>Required selection</td>
+                            <td>"Employment type is required"</td>
+                        </tr>
+                        <tr>
+                            <td>Role</td>
+                            <td>Required selection</td>
+                            <td>"Role is required"</td>
+                        </tr>
+                        <tr>
+                            <td>Profile Photo</td>
+                            <td>Max 5MB, JPG/PNG</td>
+                            <td>"File must be under 5MB and JPG/PNG format"</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4>Server-Side Validation (Data Integrity)</h4>
+                <ul>
+                    <li><strong>Email Uniqueness:</strong> Check against existing staff, return error if duplicate</li>
+                    <li><strong>Employee ID Uniqueness:</strong> Unique per location (if provided)</li>
+                    <li><strong>Role Existence:</strong> Verify role ID exists in roles table</li>
+                    <li><strong>Location Access:</strong> Verify user has permission to create staff in specified location</li>
+                    <li><strong>Date Validation:</strong> Start date not in future, blocked dates valid ranges</li>
+                </ul>
+                
+                <h3><i class="fas fa-lock"></i> Business Rules</h3>
+                
+                <div class="info-box">
+                    <h4>Rule 1: Email Uniqueness</h4>
+                    <p>Email addresses must be unique across all staff members in the system. This ensures each staff member can be uniquely identified and prevents authentication conflicts.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>Rule 2: Employee ID Uniqueness</h4>
+                    <p>If provided, employee IDs must be unique per location. Multi-location franchises may reuse IDs across locations, but not within the same location.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>Rule 3: Start Date Validation</h4>
+                    <p>Start date cannot be in the future. This prevents scheduling conflicts and ensures accurate record-keeping.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>Rule 4: Deactivated Staff Restrictions</h4>
+                    <p>Deactivated staff cannot be assigned to new jobs or shifts. Existing assignments remain for historical purposes but cannot be modified.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4>Rule 5: Role Assignment</h4>
+                    <p>Only managers can change staff roles. Role changes should trigger audit log entries and require confirmation.</p>
+                </div>
+                
+                <h3><i class="fas fa-exclamation-triangle"></i> Error Handling</h3>
+                
+                <strong>Form Errors:</strong>
+                <ul>
+                    <li>Display inline error messages below each field</li>
+                    <li>Scroll to first error on submission</li>
+                    <li>Highlight invalid fields with red border</li>
+                    <li>Show error icon next to field label</li>
+                </ul>
+                
+                <strong>Server Errors:</strong>
+                <ul>
+                    <li>Display toast notification at top of page</li>
+                    <li>Show user-friendly message (hide technical details)</li>
+                    <li>Provide retry option for transient errors</li>
+                    <li>Log detailed error to backend for debugging</li>
+                </ul>
+                
+                <strong>Network Errors:</strong>
+                <ul>
+                    <li>Show "Connection lost" message</li>
+                    <li>Auto-retry with exponential backoff</li>
+                    <li>Save form data to localStorage to prevent data loss</li>
+                    <li>Offer manual retry button</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show target panel
+                document.querySelectorAll('.tab-panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(targetTab).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // Print functionality
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
