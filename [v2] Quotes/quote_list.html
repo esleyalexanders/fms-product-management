@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes Management - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Quotes Management</h1>
+                        <p class="text-gray-600 mt-1 font-medium">Sunshine Tutoring - Melbourne East</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            id="exportBtn"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Export
+                        </button>
+                        <button 
+                            id="createQuoteBtn"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                            onclick="window.location.href='quote_create.html'"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Create New Quote
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Quotes</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalQuotes">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Pending Approval</p>
+                            <p class="text-2xl font-bold text-yellow-600" id="pendingApproval">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Sent</p>
+                            <p class="text-2xl font-bold text-blue-600" id="sentQuotes">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Converted to Jobs</p>
+                            <p class="text-2xl font-bold text-purple-600" id="convertedQuotes">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex flex-wrap gap-3">
+                    <!-- Search -->
+                    <div class="flex-1 min-w-64 relative">
+                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search by customer name, email, quote ID..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                    </div>
+
+                    <!-- Status Filter -->
+                    <select 
+                        id="statusFilter"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">Active Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="sent">Sent / Pending Approval</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="converted">Archived (Converted)</option>
+                    </select>
+
+                    <!-- Date Range Filter -->
+                    <select 
+                        id="dateRangeFilter"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">All Time</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+
+                    <!-- Sort -->
+                    <select 
+                        id="sortBy"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="amount_high">Amount: High to Low</option>
+                        <option value="amount_low">Amount: Low to High</option>
+                        <option value="customer">Customer A-Z</option>
+                    </select>
+
+                    <!-- Clear Filters -->
+                    <button 
+                        id="clearFiltersBtn"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm"
+                    >
+                        Clear Filters
+                    </button>
+                </div>
+
+                <!-- Custom Date Range (hidden by default) -->
+                <div id="customDateRange" class="hidden mt-3 grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">From</label>
+                        <input 
+                            type="date" 
+                            id="dateFrom"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">To</label>
+                        <input 
+                            type="date" 
+                            id="dateTo"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quotes Table -->
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-900">Quotes</h2>
+                    <div class="text-sm text-gray-600" id="resultsCount">
+                        Showing 0 quotes
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="text-center py-12 text-gray-500">
+                    <svg class="mx-auto mb-3 text-gray-300 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <p class="text-sm mb-2">No quotes found</p>
+                    <button 
+                        onclick="window.location.href='quote_create.html'"
+                        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                    >
+                        Create Your First Quote
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div id="quotesTable" class="hidden overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th class="text-left p-3 font-medium text-gray-700">Quote ID</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Customer</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Date Created</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Valid Until</th>
+                                <th class="text-right p-3 font-medium text-gray-700">Total Price</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Status</th>
+                                <th class="text-center p-3 font-medium text-gray-700">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotesTableBody" class="divide-y divide-gray-200">
+                            <!-- Quotes will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="hidden mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
+                    <div class="text-sm text-gray-600">
+                        Showing <span id="paginationStart">0</span> to <span id="paginationEnd">0</span> of <span id="paginationTotal">0</span> quotes
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            id="prevBtn"
+                            class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Previous
+                        </button>
+                        <button 
+                            id="nextBtn"
+                            class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Quote Details Modal -->
+    <div id="viewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Quote Details</h3>
+                    <button id="closeViewModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="viewModalContent" class="space-y-4">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+                
+                <div class="flex gap-3 mt-6 border-t border-gray-200 pt-4">
+                    <button id="closeViewModalBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                        Close
+                    </button>
+                    <button id="editFromViewBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                        Edit Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview PDF Modal -->
+    <div id="previewPDFModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
+                    <button id="closePreviewModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="previewPDFContent" class="bg-white p-8" style="font-family: 'Helvetica', 'Arial', sans-serif;">
+                    <!-- PDF-like content will be populated here -->
+                </div>
+                
+                <div class="flex gap-3 mt-6 border-t border-gray-200 pt-4">
+                    <button id="closePreviewBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                        Close
+                    </button>
+                    <button id="downloadPDFBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Quote Modal -->
+    <div id="sendModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Resend Quote</h3>
+                    <button id="closeSendModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-3">Select send method(s):</p>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="sendMethodModal" value="email" checked id="sendEmail" />
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <span>Email</span>
+                        </label>
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="sendMethodModal" value="sms" id="sendWhatsApp" />
+                            <span>WhatsApp with Portal Link</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Add a note (optional)</label>
+                    <textarea 
+                        id="sendNote"
+                        rows="3"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Add a personal message to the customer..."
+                    ></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button id="cancelSendBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                        Cancel
+                    </button>
+                    <button id="confirmSendBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                        Send Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Delete Quote</h3>
+                    <button id="closeDeleteModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <p class="text-gray-600 mb-4">Are you sure you want to delete this quote? This action cannot be undone.</p>
+                
+                <div class="flex gap-3">
+                    <button id="cancelDeleteBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                        Cancel
+                    </button>
+                    <button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            quotes: [],
+            filteredQuotes: [],
+            currentPage: 1,
+            itemsPerPage: 10,
+            searchTerm: '',
+            statusFilter: '',
+            dateRangeFilter: '',
+            sortBy: 'newest',
+            quoteToDelete: null,
+            currentQuoteForAction: null
+        };
+
+        // Sample data
+        const quotes = [
+            {
+                id: 'Q-2024-001',
+                customerId: 1,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                dateCreated: '2024-10-20',
+                validUntil: '2024-11-03',
+                status: 'sent',
+                total: 412.50,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-002',
+                customerId: 2,
+                customerName: 'Michael Chen',
+                customerEmail: 'm.chen@email.com',
+                customerPhone: '0423 456 789',
+                dateCreated: '2024-10-19',
+                validUntil: '2024-11-02',
+                status: 'converted',
+                total: 1125.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-003',
+                customerId: 3,
+                customerName: 'Emma Wilson',
+                customerEmail: 'emma.w@email.com',
+                customerPhone: '0434 567 890',
+                dateCreated: '2024-10-18',
+                validUntil: '2024-11-01',
+                status: 'pending_approval',
+                total: 3250.00,
+                approvalRequired: true
+            },
+            {
+                id: 'Q-2024-004',
+                customerId: 1,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                dateCreated: '2024-10-17',
+                validUntil: '2024-11-17',
+                status: 'sent',
+                total: 850.50,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-005',
+                customerId: 2,
+                customerName: 'Michael Chen',
+                customerEmail: 'm.chen@email.com',
+                customerPhone: '0423 456 789',
+                dateCreated: '2024-10-16',
+                validUntil: '2024-10-30',
+                status: 'draft',
+                total: 750.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-006',
+                customerId: 4,
+                customerName: 'David Brown',
+                customerEmail: 'david.b@email.com',
+                customerPhone: '0445 678 901',
+                dateCreated: '2024-10-15',
+                validUntil: '2024-10-29',
+                status: 'rejected',
+                total: 920.75,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-007',
+                customerId: 1,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                dateCreated: '2024-09-20',
+                validUntil: '2024-10-05',
+                status: 'converted',
+                total: 525.00,
+                approvalRequired: false
+            }
+        ];
+
+        // Helper functions
+        function getStatusBadge(status) {
+            const badges = {
+                draft: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">✏️ Draft</span>',
+                sent: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">⏳ Waiting for Approval</span>',
+                pending_approval: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">⏳ Waiting for Approval</span>',
+                approved: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">✓ Approved</span>',
+                rejected: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">✕ Rejected</span>',
+                converted: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">✓ Converted to Job</span>'
+            };
+            return badges[status] || badges.draft;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function calculateDaysUntil(validUntil) {
+            const today = new Date();
+            const valid = new Date(validUntil);
+            const diffTime = valid - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        function getExpiryIndicator(validUntil) {
+            const daysUntil = calculateDaysUntil(validUntil);
+            if (daysUntil < 0) {
+                return '<span class="text-red-600 text-xs">⚠️ Expired</span>';
+            } else if (daysUntil <= 3) {
+                return '<span class="text-orange-600 text-xs">⏰ Expiring Soon</span>';
+            }
+            return '';
+        }
+
+        // Filter and sort functions
+        function filterQuotes() {
+            let filtered = [...quotes];
+
+            // Search filter
+            if (state.searchTerm) {
+                const search = state.searchTerm.toLowerCase();
+                filtered = filtered.filter(q => 
+                    q.customerName.toLowerCase().includes(search) ||
+                    q.customerEmail.toLowerCase().includes(search) ||
+                    q.id.toLowerCase().includes(search)
+                );
+            }
+
+            // Status filter - "sent" filter matches both "sent" and "pending_approval"
+            if (state.statusFilter) {
+                if (state.statusFilter === 'sent') {
+                    filtered = filtered.filter(q => q.status === 'sent' || q.status === 'pending_approval');
+                } else if (state.statusFilter === 'converted') {
+                    filtered = filtered.filter(q => q.status === 'converted');
+                } else {
+                    filtered = filtered.filter(q => q.status === state.statusFilter);
+                }
+            } else {
+                // By default, hide converted quotes from active list
+                filtered = filtered.filter(q => q.status !== 'converted');
+            }
+
+            // Date range filter
+            if (state.dateRangeFilter) {
+                const today = new Date();
+                if (state.dateRangeFilter === '7') {
+                    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filtered = filtered.filter(q => new Date(q.dateCreated) >= sevenDaysAgo);
+                } else if (state.dateRangeFilter === '30') {
+                    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    filtered = filtered.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
+                } else if (state.dateRangeFilter === '90') {
+                    const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
+                    filtered = filtered.filter(q => new Date(q.dateCreated) >= ninetyDaysAgo);
+                } else if (state.dateRangeFilter === 'custom') {
+                    const dateFrom = document.getElementById('dateFrom').value;
+                    const dateTo = document.getElementById('dateTo').value;
+                    if (dateFrom && dateTo) {
+                        filtered = filtered.filter(q => q.dateCreated >= dateFrom && q.dateCreated <= dateTo);
+                    }
+                }
+            }
+
+            state.filteredQuotes = filtered;
+        }
+
+        function sortQuotes() {
+            const quotes = [...state.filteredQuotes];
+            
+            switch (state.sortBy) {
+                case 'newest':
+                    quotes.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+                    break;
+                case 'oldest':
+                    quotes.sort((a, b) => new Date(a.dateCreated) - new Date(b.dateCreated));
+                    break;
+                case 'amount_high':
+                    quotes.sort((a, b) => b.total - a.total);
+                    break;
+                case 'amount_low':
+                    quotes.sort((a, b) => a.total - b.total);
+                    break;
+                case 'customer':
+                    quotes.sort((a, b) => a.customerName.localeCompare(b.customerName));
+                    break;
+            }
+            
+            state.filteredQuotes = quotes;
+        }
+
+        // Render functions
+        function renderQuotes() {
+            filterQuotes();
+            sortQuotes();
+            
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+            const pageQuotes = state.filteredQuotes.slice(startIndex, endIndex);
+
+            updateStats();
+            updateResultsCount();
+            
+            if (state.filteredQuotes.length === 0) {
+                document.getElementById('emptyState').classList.remove('hidden');
+                document.getElementById('quotesTable').classList.add('hidden');
+                document.getElementById('pagination').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('quotesTable').classList.remove('hidden');
+            
+            const tbody = document.getElementById('quotesTableBody');
+            tbody.innerHTML = pageQuotes.map(quote => {
+                const expiryIndicator = getExpiryIndicator(quote.validUntil);
+                const isWaitingForApproval = quote.status === 'sent' || quote.status === 'pending_approval';
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">
+                            <a href="quote_create.html?id=${quote.id}" class="text-blue-600 hover:underline font-medium">
+                                ${quote.id}
+                            </a>
+                        </td>
+                        <td class="p-3">
+                            <p class="font-medium text-gray-900">${quote.customerName}</p>
+                            <p class="text-xs text-gray-600">${quote.customerEmail}</p>
+                        </td>
+                        <td class="p-3 text-gray-700">
+                            ${formatDate(quote.dateCreated)}
+                        </td>
+                        <td class="p-3 text-gray-700">
+                            <div>${formatDate(quote.validUntil)}</div>
+                            ${expiryIndicator}
+                        </td>
+                        <td class="p-3 text-right font-semibold">
+                            $${quote.total.toFixed(2)}
+                        </td>
+                        <td class="p-3">
+                            ${getStatusBadge(quote.status)}
+                        </td>
+                        <td class="p-3">
+                            <div class="flex items-center justify-center gap-2">
+                                ${quote.status === 'converted' ? `
+                                    <button 
+                                        onclick="viewJob('${quote.id}')"
+                                        class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 flex items-center gap-1"
+                                    >
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                        View Job
+                                    </button>
+                                ` : ''}
+                                ${isWaitingForApproval ? `
+                                    <button 
+                                        onclick="convertToWorkOrder('${quote.id}')"
+                                        class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700"
+                                    >
+                                        Convert to Job
+                                    </button>
+                                ` : ''}
+                                ${quote.status !== 'converted' ? `
+                                    <div class="relative">
+                                        <button 
+                                            onclick="toggleActionsMenu('${quote.id}')"
+                                            class="p-1 text-gray-600 hover:text-gray-900"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                            </svg>
+                                        </button>
+                                        <div id="actionsMenu-${quote.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+                                            <button onclick="viewQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</button>
+                                            <button onclick="editQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</button>
+                                            <button onclick="previewPDF('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Preview PDF</button>
+                                            <button onclick="sendQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resend</button>
+                                            <button onclick="cloneQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Clone</button>
+                                            <button onclick="showDeleteModal('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderPagination();
+        }
+
+        function updateStats() {
+            const stats = {
+                total: quotes.filter(q => q.status !== 'converted').length, // Only count active quotes (not converted)
+                pendingApproval: quotes.filter(q => q.status === 'pending_approval' || q.status === 'sent').length,
+                sent: quotes.filter(q => q.status === 'sent').length,
+                converted: quotes.filter(q => q.status === 'converted').length
+            };
+
+            document.getElementById('totalQuotes').textContent = stats.total;
+            document.getElementById('pendingApproval').textContent = stats.pendingApproval;
+            document.getElementById('sentQuotes').textContent = stats.sent;
+            document.getElementById('convertedQuotes').textContent = stats.converted;
+        }
+
+        function updateResultsCount() {
+            const total = state.filteredQuotes.length;
+            const start = total === 0 ? 0 : (state.currentPage - 1) * state.itemsPerPage + 1;
+            const end = Math.min(state.currentPage * state.itemsPerPage, total);
+            
+            document.getElementById('resultsCount').textContent = `Showing ${start}-${end} of ${total} quotes`;
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
+            
+            if (totalPages <= 1) {
+                document.getElementById('pagination').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('pagination').classList.remove('hidden');
+            document.getElementById('paginationStart').textContent = (state.currentPage - 1) * state.itemsPerPage + 1;
+            document.getElementById('paginationEnd').textContent = Math.min(state.currentPage * state.itemsPerPage, state.filteredQuotes.length);
+            document.getElementById('paginationTotal').textContent = state.filteredQuotes.length;
+
+            document.getElementById('prevBtn').disabled = state.currentPage === 1;
+            document.getElementById('nextBtn').disabled = state.currentPage === totalPages;
+        }
+
+        // Action handlers
+        function viewQuote(quoteId) {
+            const quote = quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+            
+            state.currentQuoteForAction = quoteId;
+            const quoteDetails = quote;
+            
+            // Populate modal content
+            document.getElementById('viewModalContent').innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 mb-1">Quote ID</p>
+                        <p class="text-sm font-semibold text-gray-900">${quoteDetails.id}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 mb-1">Status</p>
+                        <p class="text-sm">${getStatusBadge(quoteDetails.status)}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 mb-1">Date Created</p>
+                        <p class="text-sm text-gray-900">${formatDate(quoteDetails.dateCreated)}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 mb-1">Valid Until</p>
+                        <p class="text-sm text-gray-900">${formatDate(quoteDetails.validUntil)}</p>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <p class="text-xs font-medium text-gray-500 mb-2">Customer</p>
+                    <p class="text-sm font-medium text-gray-900">${quoteDetails.customerName}</p>
+                    <p class="text-xs text-gray-600">${quoteDetails.customerEmail}</p>
+                    <p class="text-xs text-gray-600">${quoteDetails.customerPhone}</p>
+                </div>
+                
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <p class="text-xs font-medium text-gray-500 mb-2">Total Amount</p>
+                    <p class="text-lg font-bold text-gray-900">$${quoteDetails.total.toFixed(2)}</p>
+                </div>
+            `;
+            
+            // Show modal
+            document.getElementById('viewModal').classList.remove('hidden');
+        }
+
+        function editQuote(quoteId) {
+            window.location.href = `quote_edit.html?id=${quoteId}`;
+        }
+
+        function previewPDF(quoteId) {
+            const quote = quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+            
+            state.currentQuoteForAction = quoteId;
+            
+            // Get current date
+            const currentDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            const validUntil = new Date(quote.validUntil).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Sample line items (in real app, these would come from the quote data)
+            const sampleItems = [
+                { name: 'One-on-One Tutoring - Math', id: 't1', quantity: 2, unit: 'hour', price: 75.00, notes: '' },
+                { name: 'Assessment & Report', id: 't4', quantity: 1, unit: 'each', price: 120.00, notes: '' }
+            ];
+            
+            const lineItemsHTML = sampleItems.map(item => `
+                <tr class="border-b border-gray-200">
+                    <td class="py-2 px-1" style="width: 35%;">
+                        <div class="font-medium text-gray-900">${item.name}</div>
+                        <div class="text-xs text-gray-600 mt-1">${item.id}</div>
+                        ${item.notes ? `<div class="text-xs text-gray-500 italic mt-1">${item.notes}</div>` : ''}
+                    </td>
+                    <td class="py-2 px-1 text-center text-gray-700">${item.quantity} ${item.unit}</td>
+                    <td class="py-2 px-1 text-right text-gray-700">$${item.price.toFixed(2)}</td>
+                    <td class="py-2 px-1 text-right font-medium">$${(item.price * item.quantity).toFixed(2)}</td>
+                </tr>
+            `).join('');
+            
+            const subtotal = sampleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            
+            // Build preview HTML (similar to create/edit screens)
+            const previewHTML = `
+                <!-- Company Header -->
+                <div class="border-b-2 border-gray-800 pb-4 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 mb-1">SUNSHINE TUTORING</h1>
+                            <p class="text-sm text-gray-600">Tutoring Excellence Since 2015</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold">QUOTE</p>
+                            <p class="text-sm text-gray-600">Date: ${currentDate}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Details -->
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Bill To:</h3>
+                        <div class="text-sm text-gray-700">
+                            <p class="font-medium">${quote.customerName}</p>
+                            <p>${quote.customerEmail}</p>
+                            <p>${quote.customerPhone}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Quote Details:</h3>
+                        <div class="text-sm text-gray-700">
+                            <p><span class="font-medium">Quote ID:</span> ${quote.id}</p>
+                            <p><span class="font-medium">Valid Until:</span> ${validUntil}</p>
+                            <p class="mt-2 text-xs text-gray-500">Melbourne East Branch</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Line Items Table -->
+                <div class="mb-6">
+                    <table class="w-full text-sm" style="min-width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr class="bg-gray-100 border-b-2 border-gray-800">
+                                <th class="text-left py-2 px-1 font-semibold text-gray-900" style="width: 35%;">Description</th>
+                                <th class="text-center py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Quantity</th>
+                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Unit Price</th>
+                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 25%;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${lineItemsHTML}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="flex justify-end mb-6">
+                    <div class="w-64">
+                        <div class="border-t border-gray-300 pt-3">
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-700">Subtotal:</span>
+                                <span class="font-medium">$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="border-t border-gray-300 mt-2 pt-2">
+                                <div class="flex justify-between text-sm py-1">
+                                    <span>GST (10%):</span>
+                                    <span>$${tax.toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
+                                    <span class="text-sm font-semibold">Total Tax:</span>
+                                    <span class="text-sm font-semibold">$${tax.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="border-t-2 border-gray-800 mt-2 pt-2">
+                                <div class="flex justify-between">
+                                    <span class="text-lg font-bold text-gray-900">TOTAL:</span>
+                                    <span class="text-lg font-bold text-gray-900">$${total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="border-t-2 border-gray-800 pt-4 mt-6">
+                    <div class="grid grid-cols-2 gap-6 text-xs text-gray-600">
+                        <div>
+                            <p class="font-semibold text-gray-900 mb-1">Sunshine Tutoring - Melbourne East</p>
+                            <p>123 Education Street, Melbourne VIC 3000</p>
+                            <p>Phone: (03) 1234 5678</p>
+                            <p>Email: melbourne@sunshinetutoring.com.au</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900 mb-1">Payment Information</p>
+                            <p>ABN: 12 345 678 901</p>
+                            <p>Valid for 30 days from date of issue</p>
+                            <p class="mt-2 text-gray-500">Terms and conditions apply</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('previewPDFContent').innerHTML = previewHTML;
+            document.getElementById('previewPDFModal').classList.remove('hidden');
+        }
+
+        function sendQuote(quoteId) {
+            const quote = quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+            
+            state.currentQuoteForAction = quoteId;
+            document.getElementById('sendModal').classList.remove('hidden');
+        }
+
+        function cloneQuote(quoteId) {
+            // Navigate to quote_create.html with the quote ID to clone
+            window.location.href = `quote_create.html?clone=${quoteId}`;
+        }
+
+        function viewJob(quoteId) {
+            // Convert quote ID to job ID (in real app, this would fetch the job ID from the quote)
+            const jobId = quoteId.replace('Q-', 'J-');
+            // Navigate to the job details page
+            window.location.href = `../Jobs/job_detail.html?id=${jobId}`;
+        }
+
+        function convertToWorkOrder(quoteId) {
+            if (confirm('Are you sure you want to convert this quote to a job?')) {
+                console.log('Convert to job:', quoteId);
+                
+                // Find and update the quote status to 'converted'
+                const quote = quotes.find(q => q.id === quoteId);
+                if (quote) {
+                    quote.status = 'converted';
+                }
+                
+                alert('Quote converted to job successfully! The quote has been archived.');
+                // Update the quotes list (will hide converted quotes by default)
+                renderQuotes();
+            }
+        }
+
+        function showDeleteModal(quoteId) {
+            state.quoteToDelete = quoteId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function hideDeleteModal() {
+            state.quoteToDelete = null;
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        function deleteQuote() {
+            if (state.quoteToDelete) {
+                console.log('Delete quote:', state.quoteToDelete);
+                alert('Quote deleted successfully!');
+                hideDeleteModal();
+                renderQuotes();
+            }
+        }
+
+        function toggleActionsMenu(quoteId) {
+            // Close all menus first
+            document.querySelectorAll('[id^="actionsMenu-"]').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+
+            // Toggle target menu
+            const menu = document.getElementById(`actionsMenu-${quoteId}`);
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('[id^="actionsMenu-"]') && !e.target.closest('button[onclick*="toggleActionsMenu"]')) {
+                document.querySelectorAll('[id^="actionsMenu-"]').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                state.searchTerm = e.target.value;
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            // Status filter - treat "sent" filter as matching both "sent" and "pending_approval"
+            document.getElementById('statusFilter').addEventListener('change', function(e) {
+                state.statusFilter = e.target.value;
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            // Date range filter
+            document.getElementById('dateRangeFilter').addEventListener('change', function(e) {
+                state.dateRangeFilter = e.target.value;
+                
+                const customRange = document.getElementById('customDateRange');
+                if (e.target.value === 'custom') {
+                    customRange.classList.remove('hidden');
+                } else {
+                    customRange.classList.add('hidden');
+                }
+                
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            document.getElementById('dateFrom').addEventListener('change', function() {
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            document.getElementById('dateTo').addEventListener('change', function() {
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            // Sort
+            document.getElementById('sortBy').addEventListener('change', function(e) {
+                state.sortBy = e.target.value;
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
+            // Clear filters
+            document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('dateRangeFilter').value = '';
+                document.getElementById('dateFrom').value = '';
+                document.getElementById('dateTo').value = '';
+                document.getElementById('customDateRange').classList.add('hidden');
+                document.getElementById('sortBy').value = 'newest';
+                
+                state.searchTerm = '';
+                state.statusFilter = '';
+                state.dateRangeFilter = '';
+                state.sortBy = 'newest';
+                state.currentPage = 1;
+                
+                renderQuotes();
+            });
+
+            // Pagination
+            document.getElementById('prevBtn').addEventListener('click', function() {
+                if (state.currentPage > 1) {
+                    state.currentPage--;
+                    renderQuotes();
+                }
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', function() {
+                const totalPages = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
+                if (state.currentPage < totalPages) {
+                    state.currentPage++;
+                    renderQuotes();
+                }
+            });
+
+            // Delete modal
+            document.getElementById('closeDeleteModal').addEventListener('click', hideDeleteModal);
+            document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteModal);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteQuote);
+
+            // View modal
+            document.getElementById('closeViewModal').addEventListener('click', function() {
+                document.getElementById('viewModal').classList.add('hidden');
+            });
+            document.getElementById('closeViewModalBtn').addEventListener('click', function() {
+                document.getElementById('viewModal').classList.add('hidden');
+            });
+            document.getElementById('editFromViewBtn').addEventListener('click', function() {
+                if (state.currentQuoteForAction) {
+                    editQuote(state.currentQuoteForAction);
+                }
+            });
+
+            // Preview PDF modal
+            document.getElementById('closePreviewModal').addEventListener('click', function() {
+                document.getElementById('previewPDFModal').classList.add('hidden');
+            });
+            document.getElementById('closePreviewBtn').addEventListener('click', function() {
+                document.getElementById('previewPDFModal').classList.add('hidden');
+            });
+            document.getElementById('downloadPDFBtn').addEventListener('click', function() {
+                console.log('Download PDF for quote:', state.currentQuoteForAction);
+                alert('PDF download started!');
+            });
+
+            // Send modal
+            document.getElementById('closeSendModal').addEventListener('click', function() {
+                document.getElementById('sendModal').classList.add('hidden');
+            });
+            document.getElementById('cancelSendBtn').addEventListener('click', function() {
+                document.getElementById('sendModal').classList.add('hidden');
+            });
+            document.getElementById('confirmSendBtn').addEventListener('click', function() {
+                const selectedMethods = Array.from(document.querySelectorAll('input[name="sendMethodModal"]:checked')).map(cb => cb.value);
+                const note = document.getElementById('sendNote').value.trim();
+                
+                if (selectedMethods.length === 0) {
+                    alert('Please select at least one send method');
+                    return;
+                }
+                
+                console.log('Send quote:', state.currentQuoteForAction, 'via', selectedMethods.join(', '), note);
+                alert(`Quote sent successfully via ${selectedMethods.join(', ')}!`);
+                
+                document.getElementById('sendModal').classList.add('hidden');
+                document.getElementById('sendNote').value = '';
+                renderQuotes();
+            });
+
+            // Export
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                console.log('Export quotes');
+                alert('Export functionality');
+            });
+
+            // Initial render
+            state.quotes = quotes;
+            renderQuotes();
+        });
+    </script>
+</body>
+</html>

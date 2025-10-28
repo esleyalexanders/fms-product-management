@@ -169,17 +169,17 @@
                             </div>
                             <input type="file" id="imageInput" class="file-input" accept="image/*">
                             <div class="info-text">Optional. Display image for this item</div>
-          </div>
+                        </div>
 
                         <!-- Service-Specific Fields -->
                         <div id="serviceFields" style="display: block;">
                             <div class="section-title">Service Details</div>
                             
                             <div class="form-row">
-                                <div class="form-group">
-                                    <label for="duration">Default Duration (hours)</label>
-                                    <input type="number" id="duration" value="1" min="0" step="0.5">
-                                </div>
+                            <div class="form-group">
+                                <label for="duration">MOQ</label>
+                                <input type="number" id="duration" value="1" min="0" step="0.5">
+                            </div>
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
                                     <select id="unit">
@@ -187,15 +187,44 @@
                                         <option value="each">Each</option>
                                         <option value="sqft">Square Foot</option>
                                         <option value="sqm">Square Meter</option>
-              </select>
+                                        <option value="custom">Add Custom Unit</option>
+                                    </select>
                                 </div>
-            </div>
-          </div>
+                            </div>
+
+                            <div class="form-group" id="serviceCustomUnitGroup" style="display: none;">
+                                <label for="serviceCustomUnit">Custom Unit <span class="required">*</span></label>
+                                <input type="text" id="serviceCustomUnit" placeholder="e.g., kg, liter, piece" style="text-transform: lowercase;">
+                                <div class="info-text">Enter a custom unit name</div>
+                            </div>
+                        </div>
 
                         <!-- Product-Specific Fields -->
                         <div id="productFields" style="display: none;">
-                            <!-- No additional fields needed for products -->
-        </div>
+                            <div class="section-title">Product Details</div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="productUnit">Unit</label>
+                                    <select id="productUnit">
+                                        <option value="each">Each</option>
+                                        <option value="piece">Piece</option>
+                                        <option value="box">Box</option>
+                                        <option value="kg">Kg</option>
+                                        <option value="lb">Lb</option>
+                                        <option value="liter">Liter</option>
+                                        <option value="gallon">Gallon</option>
+                                        <option value="custom">Add Custom Unit</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="productCustomUnitGroup" style="display: none;">
+                                <label for="productCustomUnit">Custom Unit <span class="required">*</span></label>
+                                <input type="text" id="productCustomUnit" placeholder="e.g., set, pair, case" style="text-transform: lowercase;">
+                                <div class="info-text">Enter a custom unit name</div>
+                            </div>
+                        </div>
 
                         <!-- Pricing -->
                         <div class="section-title">Pricing</div>
@@ -288,6 +317,44 @@
                 }
                 updatePreview();
             });
+
+            // Service unit selection (including custom)
+            const unitSelect = document.getElementById('unit');
+            const serviceCustomUnitGroup = document.getElementById('serviceCustomUnitGroup');
+            const serviceCustomUnitInput = document.getElementById('serviceCustomUnit');
+
+            if (unitSelect) {
+                unitSelect.addEventListener('change', function() {
+                    if (unitSelect.value === 'custom') {
+                        serviceCustomUnitGroup.style.display = 'block';
+                        serviceCustomUnitInput.required = true;
+                    } else {
+                        serviceCustomUnitGroup.style.display = 'none';
+                        serviceCustomUnitInput.required = false;
+                        serviceCustomUnitInput.value = '';
+                    }
+                    updatePreview();
+                });
+            }
+
+            // Product unit selection (including custom)
+            const productUnitSelect = document.getElementById('productUnit');
+            const productCustomUnitGroup = document.getElementById('productCustomUnitGroup');
+            const productCustomUnitInput = document.getElementById('productCustomUnit');
+
+            if (productUnitSelect) {
+                productUnitSelect.addEventListener('change', function() {
+                    if (productUnitSelect.value === 'custom') {
+                        productCustomUnitGroup.style.display = 'block';
+                        productCustomUnitInput.required = true;
+                    } else {
+                        productCustomUnitGroup.style.display = 'none';
+                        productCustomUnitInput.required = false;
+                        productCustomUnitInput.value = '';
+                    }
+                    updatePreview();
+                });
+            }
 
             // Image upload
             imageUploadArea.addEventListener('click', function() {

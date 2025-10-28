@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <button 
+                                onclick="window.location.href='job_list.html'"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Back to Jobs
+                            </button>
+                            <div>
+                                <h1 class="text-2xl font-bold text-gray-900">Job Details</h1>
+                                <p class="text-gray-600 mt-1 font-medium">Sunshine Tutoring - Melbourne East</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            onclick="editJob()"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit Job
+                        </button>
+                        <button 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Complete Job
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Left Column - Main Content -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Job Overview -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900" id="jobTitle">Job J-2024-001</h2>
+                                <p class="text-sm text-gray-600 mt-1" id="jobDescription">Initial tutoring session for Math and Science</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Status</p>
+                                <div id="statusBadge" class="mt-1">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                        📅 Scheduled
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">Priority</p>
+                                <div id="priorityBadge" class="mt-1">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                        🔴 High
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-4 mt-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-1">Schedule Date</p>
+                                    <p class="text-sm font-semibold text-gray-900" id="scheduleDate">28 Oct 2024</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-1">Schedule Time</p>
+                                    <p class="text-sm font-semibold text-gray-900" id="scheduleTime">10:00 AM</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-1">Estimated Duration</p>
+                                    <p class="text-sm font-semibold text-gray-900">2 hours</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-500 mb-1">Total Amount</p>
+                                    <p class="text-lg font-bold text-blue-600" id="totalAmount">$412.50</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Customer Information</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Name</p>
+                                <p class="text-sm font-semibold text-gray-900" id="customerName">Sarah Johnson</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Email</p>
+                                <p class="text-sm text-gray-900" id="customerEmail">sarah.j@email.com</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Phone</p>
+                                <p class="text-sm text-gray-900" id="customerPhone">0412 345 678</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Location</p>
+                                <p class="text-sm text-gray-900" id="location">123 Main St, Melbourne VIC 3000</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Assignment -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Team Assignment</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Assigned Team</p>
+                                <p class="text-sm font-semibold text-gray-900" id="assignedTeam">Team 1 - Primary</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Team Members</p>
+                                <div id="teamMembers" class="flex flex-wrap gap-2 mt-2">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700">
+                                        John Smith
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700">
+                                        Jane Doe
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Line Items -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Services & Products</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="text-left py-2 px-3 font-medium text-gray-700">Description</th>
+                                        <th class="text-center py-2 px-3 font-medium text-gray-700">Quantity</th>
+                                        <th class="text-right py-2 px-3 font-medium text-gray-700">Unit Price</th>
+                                        <th class="text-right py-2 px-3 font-medium text-gray-700">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lineItemsBody" class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="py-3 px-3">
+                                            <div class="font-medium text-gray-900">One-on-One Tutoring - Math</div>
+                                            <div class="text-xs text-gray-600 mt-1">TUT001</div>
+                                        </td>
+                                        <td class="py-3 px-3 text-center text-gray-700">2 hour</td>
+                                        <td class="py-3 px-3 text-right text-gray-700">$75.00</td>
+                                        <td class="py-3 px-3 text-right font-semibold">$150.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3">
+                                            <div class="font-medium text-gray-900">Assessment & Report</div>
+                                            <div class="text-xs text-gray-600 mt-1">RPT002</div>
+                                        </td>
+                                        <td class="py-3 px-3 text-center text-gray-700">1 each</td>
+                                        <td class="py-3 px-3 text-right text-gray-700">$120.00</td>
+                                        <td class="py-3 px-3 text-right font-semibold">$120.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Summary -->
+                        <div class="mt-4 flex justify-end">
+                            <div class="w-64">
+                                <div class="border-t border-gray-300 pt-3 space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Subtotal:</span>
+                                        <span class="font-medium">$270.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span>GST (10%):</span>
+                                        <span>$27.00</span>
+                                    </div>
+                                    <div class="border-t-2 border-gray-800 pt-2 flex justify-between">
+                                        <span class="font-semibold text-lg text-gray-900">TOTAL:</span>
+                                        <span class="font-bold text-lg text-gray-900">$412.50</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline & Activity -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Timeline & Activity</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Job scheduled</p>
+                                    <p class="text-xs text-gray-600">20 Oct 2024 at 2:30 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Quote approved by customer</p>
+                                    <p class="text-xs text-gray-600">19 Oct 2024 at 4:15 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-gray-400 mt-2"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Quote created</p>
+                                    <p class="text-xs text-gray-600">19 Oct 2024 at 2:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column - Quick Actions -->
+                <div class="space-y-4">
+                    
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                        <div class="space-y-2">
+                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                                </svg>
+                                Add Note
+                            </button>
+                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Take Photo
+                            </button>
+                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                View Quote
+                            </button>
+                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Generate Invoice
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Related Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Related Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Source Quote</p>
+                                <a href="#" class="text-sm text-blue-600 hover:underline">Q-2024-001</a>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Created</p>
+                                <p class="text-sm text-gray-900">20 Oct 2024</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Last Updated</p>
+                                <p class="text-sm text-gray-900">20 Oct 2024 at 2:30 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get job ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('id');
+
+        function editJob() {
+            if (jobId) {
+                window.location.href = `job_edit.html?id=${jobId}`;
+            }
+        }
+
+        // Sample job data - in a real app, this would be fetched from an API
+        const jobs = {
+            'J-2024-001': {
+                id: 'J-2024-001',
+                quoteId: 'Q-2024-001',
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                location: '123 Main St, Melbourne VIC 3000',
+                scheduleDate: '2024-10-28',
+                scheduleTime: '10:00 AM',
+                assignedTeam: 'Team 1 - Primary',
+                assignedMembers: ['John Smith', 'Jane Doe'],
+                status: 'scheduled',
+                priority: 'high',
+                total: 412.50,
+                description: 'Initial tutoring session for Math and Science',
+                lineItems: [
+                    { name: 'One-on-One Tutoring - Math', id: 'TUT001', quantity: 2, unit: 'hour', price: 75.00 },
+                    { name: 'Assessment & Report', id: 'RPT002', quantity: 1, unit: 'each', price: 120.00 }
+                ]
+            }
+        };
+
+        // Populate job data if ID is found
+        document.addEventListener('DOMContentLoaded', function() {
+            if (jobId && jobs[jobId]) {
+                const job = jobs[jobId];
+                // Populate job details
+                document.getElementById('jobTitle').textContent = `Job ${job.id}`;
+                document.getElementById('jobDescription').textContent = job.description;
+                document.getElementById('scheduleDate').textContent = new Date(job.scheduleDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+                document.getElementById('scheduleTime').textContent = job.scheduleTime;
+                document.getElementById('totalAmount').textContent = `$${job.total.toFixed(2)}`;
+                document.getElementById('customerName').textContent = job.customerName;
+                document.getElementById('customerEmail').textContent = job.customerEmail;
+                document.getElementById('customerPhone').textContent = job.customerPhone;
+                document.getElementById('location').textContent = job.location;
+                document.getElementById('assignedTeam').textContent = job.assignedTeam;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
