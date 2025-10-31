@@ -51,16 +51,21 @@ I've implemented a complete job management system based on industry best practic
 ## Job Status Workflow
 
 ```
-Quote Approved → Convert to Job → Scheduled → In Progress → Completed → Invoiced → Paid
+Quote Approved → Convert to Job → Created (Unscheduled) → Scheduled → In Progress → Completed → Invoiced → Paid
 ```
 
 **Status Definitions:**
-1. **Scheduled** - Job is booked and ready to start
-2. **In Progress** - Work has begun on the job
-3. **On Hold** - Job temporarily paused
-4. **Completed** - All work finished
-5. **Invoiced** - Invoice sent to customer
-6. **Cancelled** - Job not completed
+1. **Created (Unscheduled)** - Job created from approved quote (or manually) but not yet scheduled; pending admin confirmation
+2. **Scheduled** - Date/time and assignee confirmed (auto-proposed by system, confirmed/modified by admin)
+3. **In Progress** - Work has begun on the job
+4. **On Hold** - Job temporarily paused
+5. **Completed** - All work finished
+6. **Invoiced** - Invoice sent to customer
+7. **Cancelled** - Job not completed
+
+### Auto-Schedule & Assignment (System + Admin Confirmation)
+- System proposes schedule/assignee based on skills, availability, and travel.
+- Admin can confirm or modify before the job moves from Created → Scheduled.
 
 ## Sample Job Data Structure
 
@@ -153,5 +158,8 @@ The job management screens follow the same design patterns as:
 - Responsive design
 
 All screens maintain visual consistency with the FMS system.
+
+
+
 
 

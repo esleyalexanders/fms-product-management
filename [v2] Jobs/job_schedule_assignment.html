@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Scheduling & Assignment - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <button onclick="window.location.href='job_list.html'" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Jobs
+                        </button>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Job Scheduling & Assignment</h1>
+                            <p class="text-gray-600 mt-1 font-medium">Sunshine Tutoring - Melbourne East</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Left: Overview + Proposal -->
+                <div class="lg:col-span-2 space-y-4">
+                    <!-- Job Overview -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900" id="jobTitle">Job J-2024-010</h2>
+                                <p class="text-sm text-gray-600 mt-1" id="jobDescription">Initial tutoring session for Math and Science</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Status</p>
+                                <div id="statusBadge" class="mt-1">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                                        🆕 Created (Unscheduled)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Customer</p>
+                                <p class="text-sm font-semibold text-gray-900">Sarah Johnson</p>
+                                <p class="text-xs text-gray-600">123 Main St, Melbourne VIC 3000</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Quote</p>
+                                <p class="text-sm font-semibold text-gray-900">Q-2024-001 (Approved)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Proposal -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Auto-Schedule Proposal</h3>
+                            <span id="proposalBadge" class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-indigo-100 text-indigo-800">Proposed</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Proposed Date</p>
+                                <p class="text-sm font-semibold text-gray-900" id="propDate">2024-11-05</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Proposed Time</p>
+                                <p class="text-sm font-semibold text-gray-900" id="propTime">10:00 AM</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Proposed Team</p>
+                                <p class="text-sm font-semibold text-gray-900" id="propTeam">Team 1 - Primary (John Smith, Jane Doe)</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex gap-3">
+                            <button id="confirmProposalBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Confirm Proposal</button>
+                            <button id="modifyBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Modify Schedule & Assignment</button>
+                        </div>
+                    </div>
+
+                    <!-- Modify Form -->
+                    <div id="modifyForm" class="bg-white rounded-lg shadow-sm p-6 hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Modify Schedule & Assignment</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Date</label>
+                                <input type="date" id="dateInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Time</label>
+                                <input type="time" id="timeInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Team</label>
+                                <select id="teamInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="team1">Team 1 - Primary</option>
+                                    <option value="team2">Team 2 - Support</option>
+                                    <option value="team3">Team 3 - Specialized</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Members</label>
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="John Smith" checked> John Smith</label>
+                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Jane Doe" checked> Jane Doe</label>
+                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Alice Brown"> Alice Brown</label>
+                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Bob Taylor"> Bob Taylor</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="formError" class="hidden mt-3 text-sm text-red-600">Please fill date, time and select at least one member.</div>
+
+                        <div class="mt-6 flex gap-3">
+                            <button id="saveChangesBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Changes</button>
+                            <button id="cancelModifyBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Timeline -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Timeline & Activity</h3>
+                        <div id="timeline" class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-gray-400 mt-2"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Job created (Unscheduled)</p>
+                                    <p class="text-xs text-gray-600">Just now</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-2 h-2 rounded-full bg-indigo-500 mt-2"></div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-900">Auto-schedule proposal generated</p>
+                                    <p class="text-xs text-gray-600">Just now</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hints -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">What happens next?</h3>
+                        <ul class="list-disc pl-5 text-sm text-gray-700 space-y-2">
+                            <li>Confirm the proposed schedule/assignment or modify it.</li>
+                            <li>Upon confirmation, the job status moves to <span class="font-semibold">Scheduled</span> and staff are notified.</li>
+                            <li>You can reschedule or reassign later from the job detail.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const proposal = {
+            date: document.getElementById('propDate').textContent,
+            time: document.getElementById('propTime').textContent,
+            team: 'team1',
+            members: ['John Smith', 'Jane Doe']
+        };
+
+        const statusBadge = document.getElementById('statusBadge');
+        const timeline = document.getElementById('timeline');
+        const modifyForm = document.getElementById('modifyForm');
+        const dateInput = document.getElementById('dateInput');
+        const timeInput = document.getElementById('timeInput');
+        const teamInput = document.getElementById('teamInput');
+        const formError = document.getElementById('formError');
+
+        document.getElementById('modifyBtn').addEventListener('click', () => {
+            // prefill with proposal
+            dateInput.value = proposal.date;
+            timeInput.value = '10:00';
+            teamInput.value = proposal.team;
+            modifyForm.classList.remove('hidden');
+            window.scrollTo({ top: modifyForm.offsetTop - 20, behavior: 'smooth' });
+        });
+
+        document.getElementById('cancelModifyBtn').addEventListener('click', () => {
+            modifyForm.classList.add('hidden');
+        });
+
+        document.getElementById('confirmProposalBtn').addEventListener('click', () => {
+            // Confirm the proposal -> Scheduled
+            setScheduledUI(proposal.date, proposal.time, proposal.members);
+            appendTimeline('bg-blue-600', 'Schedule confirmed by admin');
+        });
+
+        document.getElementById('saveChangesBtn').addEventListener('click', () => {
+            const pickedDate = dateInput.value;
+            const pickedTime = timeInput.value;
+            const pickedMembers = Array.from(document.querySelectorAll('.memberCheck:checked')).map(i => i.value);
+
+            if (!pickedDate || !pickedTime || pickedMembers.length === 0) {
+                formError.classList.remove('hidden');
+                return;
+            }
+            formError.classList.add('hidden');
+
+            modifyForm.classList.add('hidden');
+            setScheduledUI(pickedDate, pickedTime, pickedMembers);
+            appendTimeline('bg-blue-500', 'Schedule updated manually by admin');
+        });
+
+        function setScheduledUI(date, time, members) {
+            statusBadge.innerHTML = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">📅 Scheduled</span>';
+            appendTimeline('bg-blue-500', `Job scheduled on ${formatDate(date)} at ${formatTime(time)} (Members: ${members.join(', ')})`);
+        }
+
+        function appendTimeline(colorClass, text) {
+            const container = document.createElement('div');
+            container.className = 'flex items-start gap-3';
+            container.innerHTML = `
+                <div class="w-2 h-2 rounded-full ${colorClass} mt-2"></div>
+                <div class="flex-1">
+                    <p class="text-sm text-gray-900">${text}</p>
+                    <p class="text-xs text-gray-600">Just now</p>
+                </div>
+            `;
+            timeline.appendChild(container);
+        }
+
+        function formatDate(dateStr) {
+            try {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+            } catch { return dateStr; }
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr.includes(':')) return timeStr;
+            const [h, m] = timeStr.split(':').map(Number);
+            const date = new Date();
+            date.setHours(h, m);
+            return date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
+        }
+    </script>
+</body>
+</html>
+
+
