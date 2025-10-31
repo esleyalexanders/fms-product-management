@@ -18,17 +18,37 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: 4, firstName: 'Emily', lastName: 'Wilson', role: 'Staff', jobTitle: 'Lead Receptionist', email: 'emily.wilson@store.com', phone: '+1 234 567 8904', status: 'inactive' }
     ];
 
+    // Mask email function
+    function maskEmail(email) {
+        const [username, domain] = email.split('@');
+        if (username.length <= 2) return email;
+        const visibleChars = 2;
+        const masked = username.substring(0, visibleChars) + '*'.repeat(username.length - visibleChars);
+        return masked + '@' + domain;
+    }
+
+    // Mask phone function
+    function maskPhone(phone) {
+        // Keep first 3 and last 4 digits, mask the rest
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length <= 7) return phone;
+        const masked = phone.substring(0, 6) + '*'.repeat(digits.length - 7) + phone.substring(phone.length - 4);
+        return masked;
+    }
+
     // Filter staff based on search and filters
     function filterStaff() {
         const searchTerm = searchInput.value.toLowerCase();
-        const roleValue = roleFilter.value;
+        const contactValue = roleFilter.value.toLowerCase();
         const statusValue = statusFilter.value;
 
         const filteredData = staffData.filter(staff => {
-            const matchesSearch = `${staff.firstName} ${staff.lastName} ${staff.email} ${staff.phone}`.toLowerCase().includes(searchTerm);
-            const matchesRole = !roleValue || staff.role.toLowerCase().includes(roleValue.toLowerCase()) || (staff.jobTitle && staff.jobTitle.toLowerCase().includes(roleValue.toLowerCase()));
+            // Search by name, role, and status
+            const matchesSearch = `${staff.firstName} ${staff.lastName} ${staff.role} ${staff.status}`.toLowerCase().includes(searchTerm);
+            // Search by contact (email and phone)
+            const matchesContact = !contactValue || staff.email.toLowerCase().includes(contactValue) || staff.phone.toLowerCase().includes(contactValue);
             const matchesStatus = !statusValue || staff.status === statusValue;
-            return matchesSearch && matchesRole && matchesStatus;
+            return matchesSearch && matchesContact && matchesStatus;
         });
 
         renderStaffTable(filteredData);
@@ -84,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${staff.firstName} ${staff.lastName}${userIndicator}</td>
                 <td><span style="${roleBadgeStyle} padding:4px 8px; border-radius:4px; font-size:13px; font-weight:500;">${staff.role}</span></td>
                 <td>${staff.jobTitle || '-'}</td>
-                <td>${staff.email}</td>
-                <td>${staff.phone}</td>
+                <td>${maskEmail(staff.email)}</td>
+                <td>${maskPhone(staff.phone)}</td>
                 <td><span class="${statusClass}">${statusText}</span></td>
                 <td class="staff-actions">
                     ${actionButtons}
@@ -135,6 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initial render
-    renderStaffTable(staffData);
+    // Set default status filter to active
+    statusFilter.value = 'active';
+    
+    // Initial render with active filter
+    filterStaff();
 });
