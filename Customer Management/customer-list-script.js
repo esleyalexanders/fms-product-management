@@ -57,9 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close modal
     function closeModal() {
-        deleteModal.classList.remove('active');
-        importModal.classList.remove('active');
+        deleteModal.classList.add('hidden');
+        importModal.classList.add('hidden');
         deletingCustomerId = null;
+    }
+
+    // Handle delete
+    function handleDelete(customerId) {
+        deletingCustomerId = customerId;
+        deleteModal.classList.remove('hidden');
     }
 
     // Handle import
@@ -205,9 +211,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     searchInput.addEventListener('input', renderCustomers);
     exportBtn.addEventListener('click', exportCustomers);
-    importBtn.addEventListener('click', () => importModal.classList.add('active'));
+    importBtn.addEventListener('click', () => importModal.classList.remove('hidden'));
     confirmImportBtn.addEventListener('click', handleImport);
-    cancelImportBtn.addEventListener('click', () => importModal.classList.remove('active'));
+    cancelImportBtn.addEventListener('click', () => importModal.classList.add('hidden'));
     confirmDeleteBtn.addEventListener('click', confirmDelete);
     cancelDeleteBtn.addEventListener('click', closeModal);
 

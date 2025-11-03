@@ -4,36 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Customer</title>
-    <link rel="stylesheet" href="../add-product-styles.css">
     <link rel="stylesheet" href="../home-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* small local adjustments to integrate with existing styles */
-      .card{padding:14px;border-radius:8px;background:#fff;border:1px solid #eef2f6;margin-bottom:12px}
-      .form-input, .form-select, .form-textarea{width:100%;padding:10px;border:1px solid #e6e9ee;border-radius:6px}
-      .preview-card .preview-summary {padding:12px;}
-      .preview-card .preview-name {font-size:18px;font-weight:600;margin-bottom:8px;}
-      .preview-card .preview-detail {margin-bottom:4px;font-size:14px;color:#374151;}
-      .preview-card .preview-detail strong {color:#1e40af;}
-      .btn-primary, .btn-secondary {font-family:inherit;font-size:15px;border-radius:6px;padding:8px 16px;border:none;cursor:pointer;}
-      .btn-primary {background:#6366f1;color:#fff;}
-      .btn-secondary {background:#e5e7eb;color:#374151;}
-      .back-btn {background:none;border:none;font-size:18px;cursor:pointer;margin-right:12px;}
-      .discard-btn {background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-right:8px;}
-      .save-btn {background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;}
+      /* Custom scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+      
+      /* Override home-styles.css to allow scrolling */
+      .main-content {
+        overflow: visible !important;
+        overflow-y: auto !important;
+        padding: 1.5rem;
+      }
     </style>
 </head>
-<body>
-  <div class="limited-offer-banner">
-      <div class="banner-content">
-          <i class="fas fa-info-circle"></i>
-          <span class="banner-text">Edit Customer</span>
-      </div>
-  </div>
-
+<body class="bg-gray-50">
   <div class="app-container">
   <!-- Sidebar (same structure as home.html) -->
   <nav class="sidebar">
@@ -57,6 +60,7 @@
         <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
         <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
         <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+      </div>
 
       <div class="sidebar-footer">
         <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
@@ -75,99 +79,170 @@
     </nav>
 
     <main class="main-content">
-      <header class="top-header">
-        <div class="header-left">
-          <a href="customer-list.html" style="text-decoration:none;color:inherit;"><button class="back-btn"><i class="fas fa-arrow-left"></i></button></a>
-          <h1 class="page-title">Edit Customer</h1>
+      <!-- Header -->
+      <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <a href="customer-list.html" class="text-gray-600 hover:text-gray-900">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+            </a>
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">Edit Customer</h1>
+              <p class="text-gray-600 text-sm mt-1">Update customer information</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button id="discardBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+              Discard
+            </button>
+            <button id="saveBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              Save Changes
+            </button>
+          </div>
         </div>
-        <div class="header-right">
-          <button class="discard-btn" id="discardBtn">Discard</button>
-          <button class="save-btn" id="saveBtn">Save</button>
-        </div>
-      </header>
+      </div>
 
-      <div class="content-wrapper">
-        <div class="left-column">
-          <div class="card">
-            <div class="title-type-row">
-              <div class="form-group title-group">
-                <label for="firstName">First Name *</label>
-                <input id="firstName" name="firstName" type="text" class="form-input" placeholder="John" required>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="lg:col-span-2 space-y-4">
+          <!-- Basic Information -->
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                <input id="firstName" name="firstName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John" required>
               </div>
-              <div class="form-group type-group">
-                <label for="lastName">Last Name *</label>
-                <input id="lastName" name="lastName" type="text" class="form-input" placeholder="Doe" required>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                <input id="lastName" name="lastName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Doe" required>
               </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header"><label class="card-label">Company</label></div>
-            <input id="company" type="text" class="form-input" placeholder="ABC Corp">
-          </div>
-
-          <div class="card">
-            <div class="card-header"><label class="card-label">Contact Information</label></div>
-            <div class="form-group">
-              <label for="email">Email *</label>
-              <input id="email" type="email" class="form-input" placeholder="john@example.com" required>
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="phone">Phone</label>
-              <input id="phone" type="text" class="form-input" placeholder="+1 234 567 8900">
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="preferredContactMethod">Preferred Contact Method</label>
-              <select id="preferredContactMethod" class="form-select">
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="none">None</option>
-              </select>
+          <!-- Company -->
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Company</h2>
+            <div>
+              <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+              <input id="company" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ABC Corp">
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header"><label class="card-label">Address</label></div>
-            <div class="form-group">
-              <label for="street">Street</label>
-              <input id="street" type="text" class="form-input" placeholder="123 Main St">
+          <!-- Contact Information -->
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-semibold text-gray-900">Contact Information</h2>
+              <button type="button" id="addSecondaryContactBtn" class="px-3 py-2 border border-blue-600 text-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 flex items-center gap-2 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Secondary Contact
+              </button>
             </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="city">City</label>
-              <input id="city" type="text" class="form-input" placeholder="New York">
+            
+            <!-- Primary Contact -->
+            <div class="space-y-3">
+              <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Primary Contact</div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                <input id="email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="john@example.com" required>
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input id="phone" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900">
+              </div>
+              <div>
+                <label for="preferredContactMethod" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
+                <select id="preferredContactMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="email">Email</option>
+                  <option value="phone">Phone</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="none">None</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="state">State</label>
-              <input id="state" type="text" class="form-input" placeholder="NY">
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="postalCode">Postal Code</label>
-              <input id="postalCode" type="text" class="form-input" placeholder="10001">
-            </div>
-            <div class="form-group" style="margin-top:8px">
-              <label for="country">Country</label>
-              <input id="country" type="text" class="form-input" placeholder="Australia" value="Australia">
+
+            <!-- Secondary Contacts Container -->
+            <div id="secondaryContactsContainer" class="mt-4 space-y-4"></div>
+          </div>
+
+          <!-- Address -->
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Address</h2>
+            <div class="space-y-3">
+              <div>
+                <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Street</label>
+                <input id="street" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 Main St">
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input id="city" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New York">
+                </div>
+                <div>
+                  <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                  <input id="state" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="NY">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                  <input id="postalCode" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10001">
+                </div>
+                <div>
+                  <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <input id="country" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Australia" value="Australia">
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header"><label class="card-label">Notes</label></div>
-            <textarea id="notes" class="form-textarea" placeholder="Additional notes about the customer"></textarea>
+          <!-- Notes -->
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+            <div>
+              <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
+              <textarea id="notes" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional notes about the customer"></textarea>
+            </div>
           </div>
         </div>
 
-        <div class="right-column">
-          <div class="card preview-card">
-            <h4 class="card-title">Customer Preview</h4>
-            <div class="preview-summary">
-              <div class="preview-name" id="previewName">John Doe</div>
-              <div class="preview-detail"><strong>Company:</strong> <span id="previewCompany">ABC Corp</span></div>
-              <div class="preview-detail"><strong>Email:</strong> <span id="previewEmail">john@example.com</span></div>
-              <div class="preview-detail"><strong>Phone:</strong> <span id="previewPhone">+1 234 567 8900</span></div>
-              <div class="preview-detail"><strong>Preferred Contact:</strong> <span id="previewContactMethod">Email</span></div>
-              <div class="preview-detail"><strong>Address:</strong> <span id="previewAddress">123 Main St, New York, NY 10001, USA</span></div>
-              <div class="preview-detail"><strong>Notes:</strong> <span id="previewNotes">Additional notes...</span></div>
+        <!-- Right Column - Preview -->
+        <div class="space-y-4">
+          <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Customer Preview</h2>
+            <div class="space-y-3">
+              <div>
+                <div class="text-xl font-bold text-gray-900" id="previewName">John Doe</div>
+              </div>
+              <div class="border-t border-gray-200 pt-3 space-y-2 text-sm">
+                <div class="flex justify-between gap-2">
+                  <span class="text-gray-600 font-medium">Company:</span>
+                  <span class="text-gray-900 text-right" id="previewCompany">ABC Corp</span>
+                </div>
+                <div class="flex justify-between gap-2">
+                  <span class="text-gray-600 font-medium">Email:</span>
+                  <span class="text-gray-900 text-right break-all" id="previewEmail">john@example.com</span>
+                </div>
+                <div class="flex justify-between gap-2">
+                  <span class="text-gray-600 font-medium">Phone:</span>
+                  <span class="text-gray-900 text-right" id="previewPhone">+1 234 567 8900</span>
+                </div>
+                <div class="flex justify-between gap-2">
+                  <span class="text-gray-600 font-medium">Contact Method:</span>
+                  <span class="text-gray-900 text-right" id="previewContactMethod">Email</span>
+                </div>
+              </div>
+              <div class="border-t border-gray-200 pt-3">
+                <div class="text-xs font-medium text-gray-600 mb-1">Address</div>
+                <div class="text-sm text-gray-900" id="previewAddress">123 Main St, New York, NY 10001, USA</div>
+              </div>
+              <div class="border-t border-gray-200 pt-3">
+                <div class="text-xs font-medium text-gray-600 mb-1">Notes</div>
+                <div class="text-sm text-gray-900" id="previewNotes">Additional notes...</div>
+              </div>
             </div>
           </div>
         </div>
@@ -178,6 +253,8 @@
   <script src="customers.js"></script>
   <script>
     let editingCustomerId = null;
+    let secondaryContactCounter = 0;
+    let secondaryContacts = [];
 
     // Get customer ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -187,6 +264,81 @@
       window.location.href = 'customer-list.html';
     } else {
       editingCustomerId = editId;
+    }
+
+    // Secondary Contact Functions
+    window.addSecondaryContact = function(data = {}) {
+      console.log('Adding secondary contact...', data);
+      const contactId = `secondary-${secondaryContactCounter++}`;
+      const container = document.getElementById('secondaryContactsContainer');
+      
+      if (!container) {
+        console.error('Secondary contacts container not found!');
+        return;
+      }
+      
+      const contactDiv = document.createElement('div');
+      contactDiv.className = 'border-t border-gray-200 pt-4';
+      contactDiv.id = contactId;
+      contactDiv.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Secondary Contact ${secondaryContactCounter}</div>
+          <button type="button" class="text-red-600 text-sm hover:text-red-800 flex items-center gap-1" onclick="removeSecondaryContact('${contactId}')">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Remove
+          </button>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
+            <input type="text" class="secondary-contact-name w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contact person name" value="${data.name || ''}">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" class="secondary-contact-email w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="contact@example.com" value="${data.email || ''}">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input type="text" class="secondary-contact-phone w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900" value="${data.phone || ''}">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Role/Relationship</label>
+            <input type="text" class="secondary-contact-role w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Spouse, Assistant, Manager" value="${data.role || ''}">
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(contactDiv);
+      secondaryContacts.push(contactId);
+      console.log('Secondary contact added successfully!', contactId);
+    }
+
+    window.removeSecondaryContact = function(contactId) {
+      console.log('Removing secondary contact...', contactId);
+      const element = document.getElementById(contactId);
+      if (element) {
+        element.remove();
+        secondaryContacts = secondaryContacts.filter(id => id !== contactId);
+        console.log('Secondary contact removed!');
+      }
+    }
+
+    function getSecondaryContactsData() {
+      const contacts = [];
+      secondaryContacts.forEach(contactId => {
+        const element = document.getElementById(contactId);
+        if (element) {
+          contacts.push({
+            name: element.querySelector('.secondary-contact-name').value.trim(),
+            email: element.querySelector('.secondary-contact-email').value.trim(),
+            phone: element.querySelector('.secondary-contact-phone').value.trim(),
+            role: element.querySelector('.secondary-contact-role').value.trim()
+          });
+        }
+      });
+      return contacts;
     }
 
     // Sample data for hard-coded customers
@@ -307,7 +459,20 @@
       postalCodeInput.value = customer.address?.postalCode || '';
       countryInput.value = customer.address?.country || '';
       notesTextarea.value = customer.notes || '';
+      
+      // Load secondary contacts if they exist
+      if (customer.secondaryContacts && Array.isArray(customer.secondaryContacts)) {
+        customer.secondaryContacts.forEach(contact => {
+          addSecondaryContact(contact);
+        });
+      }
+      
       updatePreview();
+      
+      // Add one secondary contact by default if none exist
+      if (!customer.secondaryContacts || customer.secondaryContacts.length === 0) {
+        addSecondaryContact();
+      }
     } else {
       alert('Customer not found.');
       window.location.href = 'customer-list.html';
@@ -328,7 +493,8 @@
         postalCode: postalCodeInput.value.trim(),
         country: countryInput.value.trim(),
         preferredContactMethod: preferredContactMethodSelect.value,
-        notes: notesTextarea.value.trim()
+        notes: notesTextarea.value.trim(),
+        secondaryContacts: getSecondaryContactsData()
       };
 
       // Basic validation
@@ -356,6 +522,19 @@
         window.location.href = 'customer-list.html';
       }
     });
+
+    // Add event listener for secondary contact button
+    const addSecondaryContactBtn = document.getElementById('addSecondaryContactBtn');
+    console.log('Secondary contact button:', addSecondaryContactBtn);
+    if (addSecondaryContactBtn) {
+      addSecondaryContactBtn.addEventListener('click', () => {
+        console.log('Add secondary contact button clicked!');
+        addSecondaryContact();
+      });
+      console.log('Event listener attached successfully!');
+    } else {
+      console.error('Add secondary contact button not found!');
+    }
   </script>
 </body>
 </html>

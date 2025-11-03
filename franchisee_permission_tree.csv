@@ -1,0 +1,92 @@
+Function Group,Text,Permission ID,Parent-ID,Level,Note
+STAFF & ROLES,Role & Permission,1000,0,0,Root category for user and role management
+STAFF & ROLES,User Management,1001,1000,1,Staff/user management module
+STAFF & ROLES,View Staff,1010,1001,2,View all staff members
+STAFF & ROLES,Create Staff,1011,1001,2,Add new staff members
+STAFF & ROLES,Edit Staff,1012,1001,2,Update staff information
+STAFF & ROLES,Delete Staff,1013,1001,2,Deactivate staff accounts (soft delete)
+STAFF & ROLES,View Employee Data,1014,1001,2,"Access employment info, schedules, performance"
+STAFF & ROLES,Role,1002,1000,1,Role and permission management
+STAFF & ROLES,Manage Roles,1020,1002,2,"Create, edit, delete custom roles"
+STAFF & ROLES,Assign Roles,1021,1002,2,Assign and modify staff roles
+STAFF & ROLES,Set Permissions,1022,1002,2,Configure granular permissions
+
+SCHEDULING,Service Management,2000,0,0,Root category for service operations
+SCHEDULING,Schedule Management,2001,2000,1,Job scheduling and assignments
+SCHEDULING,View Schedule,2010,2001,2,See all scheduled jobs and appointments
+SCHEDULING,Create Schedule,2011,2001,2,Add new appointments and job assignments
+SCHEDULING,Edit Schedule,2012,2001,2,"Modify job assignments, times, dates"
+SCHEDULING,Assign Jobs,2013,2001,2,Assign jobs to specific staff
+SCHEDULING,Reassign Jobs,2014,2001,2,Reassign jobs between staff
+SCHEDULING,View Staff Availability,2015,2001,2,Check staff availability
+SCHEDULING,Cancel/Reschedule Jobs,2016,2001,2,Cancel or reschedule appointments
+SCHEDULING,Bulk Schedule Operations,2017,2001,2,Perform bulk scheduling operations
+
+QUOTES,Quote Management,2002,2000,1,Quote creation and management
+QUOTES,View Quotes,2020,2002,2,Access all quotes
+QUOTES,Create Quotes,2021,2002,2,Generate new quotes
+QUOTES,Edit Quotes,2022,2002,2,Modify existing quotes
+QUOTES,Delete Quotes,2023,2002,2,Remove quotes from system
+QUOTES,Send Quotes,2024,2002,2,Send quotes via email/SMS
+QUOTES,Convert Quotes,2025,2002,2,Convert quotes to work ordersmé
+QUOTES,Approve Quotes,2026,2002,2,Approve quotes for conversion
+QUOTES,Manage Quote Templates,2027,2002,2,Create and manage templates
+QUOTES,View Quote History,2028,2002,2,Access version history and audit logs
+QUOTES,Generate Quote PDFs,2029,2002,2,Export quotes to PDF
+
+JOBS,Job Management,2003,2000,1,Work order and job execution
+JOBS,View All Jobs,2030,2003,2,View all jobs across all staff
+JOBS,Reassign Jobs,2031,2003,2,Reassign jobs between staff
+JOBS,Mark Jobs Complete,2032,2003,2,Mark jobs as complete
+JOBS,Review Job Documentation,2033,2003,2,Review job photos and docs
+JOBS,Approve Additional Work,2034,2003,2,Approve additional work requests
+JOBS,Close Jobs,2035,2003,2,Close jobs and generate invoices
+
+CUSTOMERS,Customer Management,2004,2000,1,Customer records and relationships
+CUSTOMERS,View Customers,2040,2004,2,Access all customer records
+CUSTOMERS,Create Customers,2041,2004,2,Add new customers
+CUSTOMERS,Edit Customers,2042,2004,2,Update customer information
+CUSTOMERS,Delete Customers,2043,2004,2,Remove customer records
+CUSTOMERS,View Customer History,2044,2004,2,Access complete interaction history
+CUSTOMERS,Manage Customer Notes,2045,2004,2,Add and edit customer notes
+CUSTOMERS,Customer Communication,2046,2004,2,Send messages to customers
+CUSTOMERS,Customer Segmentation,2047,2004,2,Create and manage customer groups
+CUSTOMERS,Import/Export Customers,2048,2004,2,Bulk import and export customer data
+
+PRICEBOOK,Pricebook,2005,2000,1,Service and product pricing
+PRICEBOOK,View Pricebook,2050,2005,2,Access all service and product items
+PRICEBOOK,Create Items,2051,2005,2,Add new services and products
+PRICEBOOK,Edit Items,2052,2005,2,Update pricing and descriptions
+PRICEBOOK,Delete Items,2053,2005,2,Remove items from pricebook
+PRICEBOOK,Manage Pricing,2054,2005,2,Set and modify pricing
+PRICEBOOK,Tax Categories,2055,2005,2,Configure tax categories and rates
+PRICEBOOK,Manage Units,2056,2005,2,Define units of measurement
+PRICEBOOK,Image Management,2057,2005,2,Upload and manage item images
+PRICEBOOK,Pricebook Versioning,2058,2005,2,Access version history
+PRICEBOOK,Import/Export Pricebook,2059,2005,2,Bulk operations for pricebook
+PRICEBOOK,Publish/Unpublish Items,2060,2005,2,Control item visibility
+
+FINANCIAL,Financial Management,3000,0,0,Root category for financial operations
+FINANCIAL,Receivables,3001,3000,1,Accounts receivable management
+FINANCIAL,Track Receivables,3010,3001,2,Track receivables and aging
+FINANCIAL,Process Payments,3011,3001,2,Process payments and record transactions
+FINANCIAL,Generate Statements,3012,3001,2,Generate financial statements
+FINANCIAL,View Payment History,3013,3001,2,View payment history
+FINANCIAL,Manage Deposits,3014,3001,2,Manage deposits and retainers
+FINANCIAL,Invoicing,3002,3000,1,Invoice generation and management
+FINANCIAL,Generate Invoices,3020,3002,2,Generate invoices from jobs
+FINANCIAL,Process Refunds,3021,3002,2,Process refunds and adjustments
+
+COMMUNICATION,Communication,4000,0,0,Root category for communication
+COMMUNICATION,Customer Communication,4001,4000,1,Customer messaging and notifications
+COMMUNICATION,Send Communications,4010,4001,2,Send automated and manual communications
+COMMUNICATION,Manage Templates,4011,4001,2,Manage SMS and email templates
+COMMUNICATION,Access Communication History,4012,4001,2,Access communication history
+COMMUNICATION,Configure Notifications,4013,4001,2,Configure notification triggers
+COMMUNICATION,Contact Support,4014,4001,2,Contact customer support/franchisor
+
+SYSTEM,System,5000,0,0,Root category for system settings
+SYSTEM,Site Configuration,5001,5000,1,Store/location settings
+SYSTEM,Upload Logo,5010,5001,2,Upload and manage store logo
+SYSTEM,Theme Colors,5011,5001,2,Configure theme colors
+SYSTEM,Store Settings,5012,5001,2,Configure store information and settings

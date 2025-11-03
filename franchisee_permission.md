@@ -276,3 +276,129 @@ The appointed administrator for a franchise/single store location. Typically ass
 - `[v2] Quotes/user_stories.md`: User stories and requirements
 - `manage-team/manage-team-roles.html`: Role management UI
 
+---
+
+## Permission Tree Structure
+
+This section defines the hierarchical permission tree for **Franchisee**, **Single Store Owner**, and **Manager** roles.
+
+| Text | Permission ID | Parent-ID | Level | Note |
+|------|---------------|-----------|-------|------|
+| **Role & Permission** | 1000 | 0 | 0 | Root category for user and role management |
+| User Management | 1001 | 1000 | 1 | Staff/user management module |
+| View Staff | 1010 | 1001 | 2 | View all staff members |
+| Create Staff | 1011 | 1001 | 2 | Add new staff members |
+| Edit Staff | 1012 | 1001 | 2 | Update staff information |
+| Delete Staff | 1013 | 1001 | 2 | Deactivate staff accounts (soft delete) |
+| View Employee Data | 1014 | 1001 | 2 | Access employment info, schedules, performance |
+| Role | 1002 | 1000 | 1 | Role and permission management |
+| Manage Roles | 1020 | 1002 | 2 | Create, edit, delete custom roles |
+| Assign Roles | 1021 | 1002 | 2 | Assign and modify staff roles |
+| Set Permissions | 1022 | 1002 | 2 | Configure granular permissions |
+| **Service Management** | 2000 | 0 | 0 | Root category for service operations |
+| Schedule Management | 2001 | 2000 | 1 | Job scheduling and assignments |
+| View Schedule | 2010 | 2001 | 2 | See all scheduled jobs and appointments |
+| Create Schedule | 2011 | 2001 | 2 | Add new appointments and job assignments |
+| Edit Schedule | 2012 | 2001 | 2 | Modify job assignments, times, dates |
+| Assign Jobs | 2013 | 2001 | 2 | Assign jobs to specific staff |
+| Reassign Jobs | 2014 | 2001 | 2 | Reassign jobs between staff |
+| View Staff Availability | 2015 | 2001 | 2 | Check staff availability |
+| Cancel/Reschedule Jobs | 2016 | 2001 | 2 | Cancel or reschedule appointments |
+| Bulk Schedule Operations | 2017 | 2001 | 2 | Perform bulk scheduling operations |
+| Quote Management | 2002 | 2000 | 1 | Quote creation and management |
+| View Quotes | 2020 | 2002 | 2 | Access all quotes |
+| Create Quotes | 2021 | 2002 | 2 | Generate new quotes |
+| Edit Quotes | 2022 | 2002 | 2 | Modify existing quotes |
+| Delete Quotes | 2023 | 2002 | 2 | Remove quotes from system |
+| Send Quotes | 2024 | 2002 | 2 | Send quotes via email/SMS |
+| Convert Quotes | 2025 | 2002 | 2 | Convert quotes to work orders |
+| Approve Quotes | 2026 | 2002 | 2 | Approve quotes for conversion |
+| Manage Quote Templates | 2027 | 2002 | 2 | Create and manage templates |
+| View Quote History | 2028 | 2002 | 2 | Access version history and audit logs |
+| Generate Quote PDFs | 2029 | 2002 | 2 | Export quotes to PDF |
+| Job Management | 2003 | 2000 | 1 | Work order and job execution |
+| View All Jobs | 2030 | 2003 | 2 | View all jobs across all staff |
+| Reassign Jobs | 2031 | 2003 | 2 | Reassign jobs between staff |
+| Mark Jobs Complete | 2032 | 2003 | 2 | Mark jobs as complete |
+| Review Job Documentation | 2033 | 2003 | 2 | Review job photos and docs |
+| Approve Additional Work | 2034 | 2003 | 2 | Approve additional work requests |
+| Close Jobs | 2035 | 2003 | 2 | Close jobs and generate invoices |
+| Customer Management | 2004 | 2000 | 1 | Customer records and relationships |
+| View Customers | 2040 | 2004 | 2 | Access all customer records |
+| Create Customers | 2041 | 2004 | 2 | Add new customers |
+| Edit Customers | 2042 | 2004 | 2 | Update customer information |
+| Delete Customers | 2043 | 2004 | 2 | Remove customer records |
+| View Customer History | 2044 | 2004 | 2 | Access complete interaction history |
+| Manage Customer Notes | 2045 | 2004 | 2 | Add and edit customer notes |
+| Customer Communication | 2046 | 2004 | 2 | Send messages to customers |
+| Customer Segmentation | 2047 | 2004 | 2 | Create and manage customer groups |
+| Import/Export Customers | 2048 | 2004 | 2 | Bulk import and export customer data |
+| Pricebook | 2005 | 2000 | 1 | Service and product pricing |
+| View Pricebook | 2050 | 2005 | 2 | Access all service and product items |
+| Create Items | 2051 | 2005 | 2 | Add new services and products |
+| Edit Items | 2052 | 2005 | 2 | Update pricing and descriptions |
+| Delete Items | 2053 | 2005 | 2 | Remove items from pricebook |
+| Manage Pricing | 2054 | 2005 | 2 | Set and modify pricing |
+| Tax Categories | 2055 | 2005 | 2 | Configure tax categories and rates |
+| Manage Units | 2056 | 2005 | 2 | Define units of measurement |
+| Image Management | 2057 | 2005 | 2 | Upload and manage item images |
+| Pricebook Versioning | 2058 | 2005 | 2 | Access version history |
+| Import/Export Pricebook | 2059 | 2005 | 2 | Bulk operations for pricebook |
+| Publish/Unpublish Items | 2060 | 2005 | 2 | Control item visibility |
+| **Financial Management** | 3000 | 0 | 0 | Root category for financial operations |
+| Receivables | 3001 | 3000 | 1 | Accounts receivable management |
+| Track Receivables | 3010 | 3001 | 2 | Track receivables and aging |
+| Process Payments | 3011 | 3001 | 2 | Process payments and record transactions |
+| Generate Statements | 3012 | 3001 | 2 | Generate financial statements |
+| View Payment History | 3013 | 3001 | 2 | View payment history |
+| Manage Deposits | 3014 | 3001 | 2 | Manage deposits and retainers |
+| Invoicing | 3002 | 3000 | 1 | Invoice generation and management |
+| Generate Invoices | 3020 | 3002 | 2 | Generate invoices from jobs |
+| Process Refunds | 3021 | 3002 | 2 | Process refunds and adjustments |
+| **Communication** | 4000 | 0 | 0 | Root category for communication |
+| Customer Communication | 4001 | 4000 | 1 | Customer messaging and notifications |
+| Send Communications | 4010 | 4001 | 2 | Send automated and manual communications |
+| Manage Templates | 4011 | 4001 | 2 | Manage SMS and email templates |
+| Access Communication History | 4012 | 4001 | 2 | Access communication history |
+| Configure Notifications | 4013 | 4001 | 2 | Configure notification triggers |
+| Contact Support | 4014 | 4001 | 2 | Contact customer support/franchisor |
+| **System** | 5000 | 0 | 0 | Root category for system settings |
+| Site Configuration | 5001 | 5000 | 1 | Store/location settings |
+| Upload Logo | 5010 | 5001 | 2 | Upload and manage store logo |
+| Theme Colors | 5011 | 5001 | 2 | Configure theme colors |
+| Store Settings | 5012 | 5001 | 2 | Configure store information and settings |
+
+### Permission Levels Explained
+
+#### Level 0 (Root Categories)
+Top-level permission groups that organize all permissions:
+- **Role & Permission** (1000): User and role management
+- **Service Management** (2000): Core business operations
+- **Financial Management** (3000): Financial operations
+- **Communication** (4000): Customer and internal communications
+- **System** (5000): System and store configuration
+
+#### Level 1 (Main Modules)
+Major functional areas within each root category:
+- User Management, Role, Schedule Management, Quote Management, Job Management, Customer Management, Pricebook, etc.
+
+#### Level 2 (Specific Actions)
+Granular permissions for specific operations (CRUD and specialized actions):
+- View, Create, Edit, Delete, and other specific actions
+
+### Permission ID Ranges
+- **1000-1999**: Role & Permission management
+- **2000-2999**: Service Management operations
+- **3000-3999**: Financial Management
+- **4000-4999**: Communication
+- **5000-5999**: System configuration
+
+### Parent-Child Relationships
+- Each permission has a `Parent-ID` that links it to its parent
+- Level 0 permissions have `Parent-ID = 0` (root level)
+- Level 1 permissions have a Level 0 parent
+- Level 2 permissions have a Level 1 parent
+
+### For Franchisee/Store Owner/Manager Role
+**ALL permissions in this tree are granted** to these roles, providing complete operational control.
+

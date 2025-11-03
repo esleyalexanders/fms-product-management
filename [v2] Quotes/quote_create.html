@@ -85,41 +85,107 @@
                             </button>
                         </div>
 
-                        <!-- Customer Search -->
+                        <!-- Customer Search with Autocomplete -->
                         <div id="customerSearchSection">
-                            <div class="relative mb-3">
+                            <div class="relative">
                                 <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                                 <input
                                     type="text"
                                     id="customerSearchInput"
-                                    placeholder="Search customer by name, email, or phone..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Type to search customer by name, email, or phone..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    autocomplete="off"
                                 />
-                            </div>
-                            <div id="customerResultsList" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                <!-- Customer results will be populated here -->
-                            </div>
-                        </div>
-
-                        <!-- Selected Customer -->
-                        <div id="selectedCustomerCard" class="hidden border border-gray-200 rounded-lg p-3 bg-blue-50">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="font-semibold text-gray-900" id="selectedCustomerName"></p>
-                                    <p class="text-sm text-gray-600 mt-1" id="selectedCustomerEmail"></p>
-                                    <p class="text-sm text-gray-600" id="selectedCustomerPhone"></p>
-                                    <p class="text-sm text-gray-600" id="selectedCustomerAddress"></p>
-                                </div>
-                                <button 
-                                    id="clearCustomerBtn"
-                                    class="text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button id="clearSearchBtn" class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
+                                <!-- Autocomplete Dropdown -->
+                                <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                    <!-- Autocomplete results will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Customer Card -->
+                        <div id="selectedCustomerCard" class="hidden mt-3">
+                            <div class="border border-blue-300 rounded-lg p-3 bg-blue-50">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <p class="font-semibold text-gray-900" id="selectedCustomerName"></p>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Selected</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1" id="selectedCustomerEmail"></p>
+                                        <p class="text-sm text-gray-600" id="selectedCustomerPhone"></p>
+                                    </div>
+                                    <button 
+                                        id="clearCustomerBtn"
+                                        class="text-gray-500 hover:text-gray-700"
+                                        title="Clear selection"
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <!-- Service Address Section -->
+                                <div class="border-t border-blue-200 pt-3 mt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium text-gray-700">Service Address</h3>
+                                        <label class="flex items-center gap-2 text-xs text-gray-600">
+                                            <input type="checkbox" id="sameAsBilling" checked class="rounded" />
+                                            <span>Same as customer address</span>
+                                        </label>
+                                    </div>
+                                    <div id="serviceAddressFields" class="hidden space-y-2">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Service Location</label>
+                                            <input type="text" id="serviceStreet" placeholder="Enter service address" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Access Instructions</label>
+                                            <textarea id="serviceAddressNotes" rows="2" placeholder="Gate codes, parking info, entry instructions, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                        </div>
+                                    </div>
+                                    <div id="serviceAddressDisplay" class="text-sm text-gray-600" style="display: block;">
+                                        <span id="displayServiceAddress"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Preferred Schedule Section -->
+                                <div class="border-t border-blue-200 pt-3 mt-3">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Preferred Schedule</h3>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Preferred Date</label>
+                                            <input type="date" id="preferredDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Preferred Time</label>
+                                            <select id="preferredTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                <option value="">Select time...</option>
+                                                <option value="morning">Morning (8AM - 12PM)</option>
+                                                <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                                                <option value="evening">Evening (5PM - 8PM)</option>
+                                                <option value="flexible">Flexible</option>
+                                                <option value="exact">Exact Time</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="exactTimeField" class="hidden mt-2">
+                                        <label class="block text-xs text-gray-600 mb-1">Exact Time</label>
+                                        <input type="time" id="exactTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div class="mt-2">
+                                        <label class="block text-xs text-gray-600 mb-1">Schedule Notes</label>
+                                        <textarea id="scheduleNotes" rows="2" placeholder="Any specific timing requirements or preferences..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -153,6 +219,13 @@
                                 <div class="form-group mt-3">
                                     <label for="newCustomerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                                     <input type="tel" id="newCustomerPhone" placeholder="+1 234 567 8900" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="newCustomerWhatsApp" class="block text-sm font-medium text-gray-700 mb-1">
+                                        WhatsApp Number
+                                        <span class="text-xs text-gray-500">(for quote delivery)</span>
+                                    </label>
+                                    <input type="tel" id="newCustomerWhatsApp" placeholder="+61 412 345 678" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="newCustomerPreferredContact" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
@@ -357,6 +430,47 @@
                                 </div>
                             </div>
 
+                            <!-- Deposit Section -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                        <input type="checkbox" id="requireDeposit" class="rounded" />
+                                        <span class="text-gray-700 font-medium">Require Deposit</span>
+                                    </label>
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                
+                                <div id="depositSection" class="hidden space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <select 
+                                            id="depositType"
+                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
+                                        >
+                                            <option value="percentage">%</option>
+                                            <option value="fixed">$</option>
+                                        </select>
+                                        <input 
+                                            type="number"
+                                            id="depositValue"
+                                            value="50"
+                                            class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                                            min="0"
+                                            step="1"
+                                        />
+                                    </div>
+                                    <div class="flex justify-between text-sm bg-green-50 p-2 rounded">
+                                        <span class="text-gray-700">Deposit Required:</span>
+                                        <span class="font-semibold text-green-700" id="depositAmount">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-600">
+                                        <span>Balance Due:</span>
+                                        <span id="balanceDue">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="border-t-2 border-gray-300 pt-3">
                                 <div class="flex justify-between">
                                     <span class="font-bold text-gray-900 text-lg">Total</span>
@@ -535,16 +649,42 @@
             quoteItems: [],
             discount: 0,
             discountType: 'percentage',
+            depositRequired: false,
+            depositType: 'percentage',
+            depositValue: 50,
             approvalRequired: false,
             currentPriceModIndex: null,
             currentPriceModNewValue: null
         };
 
-        // Sample data
+        // Sample data - Customers A-Z
         const customers = [
-            { id: 1, name: 'Sarah Johnson', email: 'sarah.j@email.com', phone: '0412 345 678', address: '123 Main St, Melbourne', previousQuotes: 2 },
-            { id: 2, name: 'Michael Chen', email: 'm.chen@email.com', phone: '0423 456 789', address: '456 Park Ave, Melbourne', previousQuotes: 5 },
-            { id: 3, name: 'Emma Wilson', email: 'emma.w@email.com', phone: '0434 567 890', address: '789 Oak Rd, Melbourne', previousQuotes: 0 }
+            { id: 1, name: 'Alice Anderson', email: 'alice.a@email.com', phone: '0412 111 111', address: '1 Apple St, Melbourne VIC 3000', previousQuotes: 3 },
+            { id: 2, name: 'Benjamin Brown', email: 'ben.brown@email.com', phone: '0412 222 222', address: '2 Beach Rd, Brighton VIC 3186', previousQuotes: 1 },
+            { id: 3, name: 'Catherine Chen', email: 'cathy.chen@email.com', phone: '0412 333 333', address: '3 Chapel St, South Yarra VIC 3141', previousQuotes: 5 },
+            { id: 4, name: 'David Davis', email: 'david.d@email.com', phone: '0412 444 444', address: '4 Docklands Dr, Docklands VIC 3008', previousQuotes: 0 },
+            { id: 5, name: 'Emily Evans', email: 'emily.evans@email.com', phone: '0412 555 555', address: '5 Elizabeth St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 6, name: 'Frank Foster', email: 'frank.f@email.com', phone: '0412 666 666', address: '6 Flinders St, Melbourne VIC 3000', previousQuotes: 4 },
+            { id: 7, name: 'Grace Garcia', email: 'grace.g@email.com', phone: '0412 777 777', address: '7 Glenferrie Rd, Hawthorn VIC 3122', previousQuotes: 1 },
+            { id: 8, name: 'Henry Harris', email: 'henry.h@email.com', phone: '0412 888 888', address: '8 High St, Kew VIC 3101', previousQuotes: 6 },
+            { id: 9, name: 'Isabella Ibrahim', email: 'isabella.i@email.com', phone: '0412 999 999', address: '9 Inkerman St, St Kilda VIC 3182', previousQuotes: 0 },
+            { id: 10, name: 'James Johnson', email: 'james.j@email.com', phone: '0413 111 111', address: '10 Johnston St, Fitzroy VIC 3065', previousQuotes: 3 },
+            { id: 11, name: 'Katherine Kim', email: 'kate.kim@email.com', phone: '0413 222 222', address: '11 King St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 12, name: 'Liam Lee', email: 'liam.lee@email.com', phone: '0413 333 333', address: '12 Lygon St, Carlton VIC 3053', previousQuotes: 7 },
+            { id: 13, name: 'Maria Martinez', email: 'maria.m@email.com', phone: '0413 444 444', address: '13 Main Rd, Eltham VIC 3095', previousQuotes: 1 },
+            { id: 14, name: 'Nathan Nguyen', email: 'nathan.n@email.com', phone: '0413 555 555', address: '14 Nicholson St, Fitzroy VIC 3065', previousQuotes: 4 },
+            { id: 15, name: "Olivia O'Connor", email: 'olivia.o@email.com', phone: '0413 666 666', address: '15 Ormond Rd, Elwood VIC 3184', previousQuotes: 0 },
+            { id: 16, name: 'Patrick Patel', email: 'patrick.p@email.com', phone: '0413 777 777', address: '16 Park St, South Melbourne VIC 3205', previousQuotes: 5 },
+            { id: 17, name: 'Quinn Roberts', email: 'quinn.r@email.com', phone: '0413 888 888', address: '17 Queen St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 18, name: 'Rachel Robinson', email: 'rachel.r@email.com', phone: '0413 999 999', address: '18 Royal Pde, Parkville VIC 3052', previousQuotes: 3 },
+            { id: 19, name: 'Samuel Smith', email: 'sam.smith@email.com', phone: '0414 111 111', address: '19 Smith St, Collingwood VIC 3066', previousQuotes: 8 },
+            { id: 20, name: 'Taylor Thompson', email: 'taylor.t@email.com', phone: '0414 222 222', address: '20 Toorak Rd, South Yarra VIC 3141', previousQuotes: 1 },
+            { id: 21, name: 'Uma Patel', email: 'uma.patel@email.com', phone: '0414 333 333', address: '21 Union St, Windsor VIC 3181', previousQuotes: 0 },
+            { id: 22, name: 'Victor Vasquez', email: 'victor.v@email.com', phone: '0414 444 444', address: '22 Victoria St, Richmond VIC 3121', previousQuotes: 4 },
+            { id: 23, name: 'Wendy White', email: 'wendy.w@email.com', phone: '0414 555 555', address: '23 Wellington St, St Kilda VIC 3182', previousQuotes: 2 },
+            { id: 24, name: 'Xavier Xu', email: 'xavier.x@email.com', phone: '0414 666 666', address: '24 Xavier St, Kew VIC 3101', previousQuotes: 6 },
+            { id: 25, name: 'Yasmin Young', email: 'yasmin.y@email.com', phone: '0414 777 777', address: '25 York St, South Melbourne VIC 3205', previousQuotes: 1 },
+            { id: 26, name: 'Zachary Zhang', email: 'zach.zhang@email.com', phone: '0414 888 888', address: '26 Zoe St, Brunswick VIC 3056', previousQuotes: 3 }
         ];
 
         const tutoringServices = [
@@ -660,6 +800,21 @@
             return calculateSubtotal() - calculateDiscount() + calculateTax();
         }
         
+        // Calculate deposit amount
+        function calculateDeposit() {
+            if (!state.depositRequired) return 0;
+            const total = calculateTotal();
+            if (state.depositType === 'percentage') {
+                return total * (state.depositValue / 100);
+            }
+            return Math.min(state.depositValue, total);
+        }
+        
+        // Calculate balance due after deposit
+        function calculateBalanceDue() {
+            return calculateTotal() - calculateDeposit();
+        }
+        
         // Get tax breakdown by category
         function getTaxBreakdown() {
             const breakdown = {
@@ -706,6 +861,12 @@
             const totalTax = calculateTax();
             document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
 
+            // Update deposit display
+            if (state.depositRequired) {
+                document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
+                document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
+            }
+
             // Check approval requirement
             const discountAmount = calculateDiscount();
             const discountPercent = (discountAmount / calculateSubtotal()) * 100;
@@ -726,35 +887,53 @@
         }
 
         // Render functions
-        function renderCustomerResults(searchTerm = '') {
-            const resultsList = document.getElementById('customerResultsList');
+        function renderCustomerAutocomplete(searchTerm = '') {
+            const autocomplete = document.getElementById('customerAutocomplete');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (!searchTerm || searchTerm.length < 2) {
+                autocomplete.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+            
+            clearBtn.classList.remove('hidden');
+            
             const filtered = customers.filter(c => 
                 c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 c.phone.includes(searchTerm)
             );
 
-            resultsList.innerHTML = filtered.map(customer => `
+            if (filtered.length === 0) {
+                autocomplete.innerHTML = `
+                    <div class="p-3 text-sm text-gray-500 text-center">
+                        No customers found. <button onclick="document.getElementById('toggleNewCustomerBtn').click()" class="text-blue-600 hover:underline">Create new customer</button>
+                    </div>
+                `;
+                autocomplete.classList.remove('hidden');
+                return;
+            }
+
+            autocomplete.innerHTML = filtered.map(customer => `
                 <div 
-                    class="border border-gray-200 rounded p-3 hover:border-blue-500 cursor-pointer text-sm"
+                    class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                     onclick="selectCustomer(${customer.id})"
                 >
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-medium text-gray-900">${customer.name}</p>
-                            <p class="text-xs text-gray-600">${customer.email} • ${customer.phone}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-900 text-sm">${customer.name}</p>
+                            <p class="text-xs text-gray-600 mt-0.5">${customer.email}</p>
+                            <p class="text-xs text-gray-500">${customer.phone}</p>
                         </div>
                         ${customer.previousQuotes > 0 ? `
-                            <button class="text-xs text-blue-600 flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                                </svg>
-                                Select
-                            </button>
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">${customer.previousQuotes} quotes</span>
                         ` : ''}
                     </div>
                 </div>
             `).join('');
+            
+            autocomplete.classList.remove('hidden');
         }
 
         function renderServicesCatalog() {
@@ -935,12 +1114,23 @@
             const customer = customers.find(c => c.id === customerId);
             state.selectedCustomer = customer;
             
+            // Hide search, show selected card
+            document.getElementById('customerSearchInput').value = '';
+            document.getElementById('customerAutocomplete').classList.add('hidden');
+            document.getElementById('clearSearchBtn').classList.add('hidden');
             document.getElementById('customerSearchSection').classList.add('hidden');
             document.getElementById('selectedCustomerCard').classList.remove('hidden');
+            
+            // Populate customer info
             document.getElementById('selectedCustomerName').textContent = customer.name;
             document.getElementById('selectedCustomerEmail').textContent = customer.email;
             document.getElementById('selectedCustomerPhone').textContent = customer.phone;
-            document.getElementById('selectedCustomerAddress').textContent = customer.address;
+            
+            // Set service address (same as billing by default)
+            document.getElementById('displayServiceAddress').textContent = customer.address || 'No address on file';
+            document.getElementById('sameAsBilling').checked = true;
+            document.getElementById('serviceAddressFields').classList.add('hidden');
+            document.getElementById('serviceAddressDisplay').style.display = 'block';
             
             updateSendButton();
         }
@@ -1243,9 +1433,25 @@
             document.getElementById('catalogFilterType').addEventListener('change', renderServicesCatalog);
             document.getElementById('catalogFilterTag').addEventListener('change', renderServicesCatalog);
             
-            // Customer search
+            // Customer search autocomplete
             document.getElementById('customerSearchInput').addEventListener('input', function(e) {
-                renderCustomerResults(e.target.value);
+                renderCustomerAutocomplete(e.target.value);
+            });
+            
+            // Clear search button
+            document.getElementById('clearSearchBtn').addEventListener('click', function() {
+                document.getElementById('customerSearchInput').value = '';
+                document.getElementById('customerAutocomplete').classList.add('hidden');
+                document.getElementById('clearSearchBtn').classList.add('hidden');
+            });
+            
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                const searchSection = document.getElementById('customerSearchSection');
+                const autocomplete = document.getElementById('customerAutocomplete');
+                if (searchSection && !searchSection.contains(e.target)) {
+                    autocomplete.classList.add('hidden');
+                }
             });
             
             // Toggle new customer form
@@ -1334,7 +1540,32 @@
                 state.selectedCustomer = null;
                 document.getElementById('selectedCustomerCard').classList.add('hidden');
                 document.getElementById('customerSearchSection').classList.remove('hidden');
+                document.getElementById('customerSearchInput').focus();
                 updateSendButton();
+            });
+            
+            // Service address toggle
+            document.getElementById('sameAsBilling').addEventListener('change', function(e) {
+                const isChecked = e.target.checked;
+                document.getElementById('serviceAddressFields').classList.toggle('hidden', isChecked);
+                document.getElementById('serviceAddressDisplay').style.display = isChecked ? 'block' : 'none';
+                
+                if (!isChecked) {
+                    // Clear custom address fields
+                    document.getElementById('serviceStreet').value = '';
+                    document.getElementById('serviceAddressNotes').value = '';
+                }
+            });
+            
+            // Preferred time toggle for exact time
+            document.getElementById('preferredTime').addEventListener('change', function(e) {
+                const isExactTime = e.target.value === 'exact';
+                document.getElementById('exactTimeField').classList.toggle('hidden', !isExactTime);
+                
+                if (!isExactTime) {
+                    // Clear exact time when switching to time slot
+                    document.getElementById('exactTime').value = '';
+                }
             });
             
             // Discount changes
@@ -1346,6 +1577,24 @@
             
             document.getElementById('discountValue').addEventListener('input', function(e) {
                 state.discount = Number(e.target.value);
+                updateSummary();
+            });
+            
+            // Deposit changes
+            document.getElementById('requireDeposit').addEventListener('change', function(e) {
+                state.depositRequired = e.target.checked;
+                document.getElementById('depositSection').classList.toggle('hidden', !e.target.checked);
+                updateSummary();
+            });
+            
+            document.getElementById('depositType').addEventListener('change', function(e) {
+                state.depositType = e.target.value;
+                document.getElementById('depositValue').step = e.target.value === 'percentage' ? '1' : '0.01';
+                updateSummary();
+            });
+            
+            document.getElementById('depositValue').addEventListener('input', function(e) {
+                state.depositValue = Number(e.target.value);
                 updateSummary();
             });
             
@@ -1473,7 +1722,6 @@
 
             // Initial render
             updateTagFilter(); // Initialize tag dropdown
-            renderCustomerResults();
             renderServicesCatalog();
             renderQuoteItems();
             updateSummary();

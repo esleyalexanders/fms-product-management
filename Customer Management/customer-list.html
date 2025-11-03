@@ -9,30 +9,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .customer-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
-        .customer-table th, .customer-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
-        .customer-table th { background:#f3f4f6; font-weight:500; color:#374151; }
-        .customer-table tr:last-child td { border-bottom:none; }
-        .customer-actions { display:flex; gap:8px; }
-        .btn-primary, .btn-secondary, .btn-link { font-family:inherit; font-size:15px; border-radius:6px; padding:8px 16px; border:none; cursor:pointer; }
-        .btn-primary { background:#6366f1; color:#fff; }
-        .btn-secondary { background:#e5e7eb; color:#374151; }
-        .btn-link { background:none; color:#6366f1; text-decoration:underline; padding:0; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); align-items:center; justify-content:center; z-index:1000; }
-        .modal.active { display:flex; }
-        .modal-content { background:#fff; border-radius:10px; padding:32px 24px; min-width:340px; max-width:96vw; box-shadow:0 4px 24px rgba(0,0,0,0.08); }
-        .modal-header { font-size:20px; font-weight:600; margin-bottom:18px; }
-        .modal-actions { display:flex; gap:12px; margin-top:18px; }
-        .form-group { margin-bottom:14px; }
-        .form-group label { display:block; font-size:15px; margin-bottom:6px; color:#374151; }
-        .form-group input, .form-group select { width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px; font-size:15px; }
-        .form-group textarea { width:100%; padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px; font-size:15px; min-height:60px; }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
         .sidebar .nav-item.customers-link { background:#eef2ff; color:#6366f1; font-weight:600; }
-        @media (max-width:900px) { .modal-content { min-width:90vw; } }
+        
+        /* Override home-styles.css to allow scrolling */
+        .main-content {
+            overflow: visible !important;
+            overflow-y: auto !important;
+            padding: 1.5rem;
+        }
     </style>
 </head>
-<body>
+<body class="bg-gray-50">
     <div class="app-container">
         <!-- Sidebar -->
         <nav class="sidebar">
@@ -55,6 +60,7 @@
                 <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
                 <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
                 <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+            </div>
             <div class="sidebar-footer">
                 <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-shield-alt"></i>
@@ -72,115 +78,188 @@
         </nav>
         <!-- Main Content Area -->
         <main class="main-content">
-            <header class="top-header">
-                <div class="header-left">
-                    <h1 class="page-title">Customer Management</h1>
-                    <p class="page-subtitle">Manage your customers for quotes and jobs</p>
-                </div>
-                <div class="header-right">
-                    <a href="customer-create.html" style="text-decoration:none;"><button class="btn-primary" id="addCustomerBtn"><i class="fas fa-user-plus"></i> Add Customer</button></a>
-                </div>
-            </header>
-            <div class="content-wrapper">
-                <section>
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
-                        <div>
-                            <input type="text" id="searchInput" placeholder="Search customers by name, company, email, phone" style="padding:8px 14px;border-radius:6px;border:1px solid #e5e7eb;width:260px;">
-                        </div>
-                        <div>
-                            <button class="btn-secondary" id="importBtn"><i class="fas fa-upload"></i> Import</button>
-                            <button class="btn-secondary" id="exportBtn"><i class="fas fa-download"></i> Export</button>
-                        </div>
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Customer Management</h1>
+                        <p class="text-gray-600 text-sm mt-1">Manage your customers for quotes and jobs</p>
                     </div>
-                    <table class="customer-table" id="customerTable">
-                        <thead>
+                    <div>
+                        <a href="customer-create.html">
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Add Customer
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer List Card -->
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <!-- Search and Actions -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="relative flex-1 max-w-md">
+                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search customers by name, company, email, phone..." 
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        >
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="importBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Import
+                        </button>
+                        <button id="exportBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Customer Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm" id="customerTable">
+                        <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th>Name</th>
-                                <th>Company</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>City</th>
-                                <th>Actions</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Name</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Company</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Email</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Phone</th>
+                                <th class="text-left p-3 font-medium text-gray-700">City</th>
+                                <th class="text-center p-3 font-medium text-gray-700">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td>
-                                <td>ABC Corp</td>
-                                <td>john.doe@abc.com</td>
-                                <td>+1 234 567 8901</td>
-                                <td>New York</td>
-                                <td class="customer-actions">
-                                    <button class="btn-link edit-btn" data-id="sample1" onclick="window.location.href='customer-edit.html?id=sample1'">Edit</button>
-                                    <button class="btn-link delete-btn" data-id="sample1">Delete</button>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-medium text-gray-900">John Doe</td>
+                                <td class="p-3 text-gray-600">ABC Corp</td>
+                                <td class="p-3 text-gray-600">john.doe@abc.com</td>
+                                <td class="p-3 text-gray-600">+1 234 567 8901</td>
+                                <td class="p-3 text-gray-600">New York</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-800 edit-btn" data-id="sample1" onclick="window.location.href='customer-edit.html?id=sample1'">Edit</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button class="text-red-600 hover:text-red-800 delete-btn" data-id="sample1">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>-</td>
-                                <td>jane.smith@email.com</td>
-                                <td>+61 400 123 456</td>
-                                <td>Sydney</td>
-                                <td class="customer-actions">
-                                    <button class="btn-link edit-btn" data-id="sample2" onclick="window.location.href='customer-edit.html?id=sample2'">Edit</button>
-                                    <button class="btn-link delete-btn" data-id="sample2">Delete</button>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-medium text-gray-900">Jane Smith</td>
+                                <td class="p-3 text-gray-600">-</td>
+                                <td class="p-3 text-gray-600">jane.smith@email.com</td>
+                                <td class="p-3 text-gray-600">+61 400 123 456</td>
+                                <td class="p-3 text-gray-600">Sydney</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-800 edit-btn" data-id="sample2" onclick="window.location.href='customer-edit.html?id=sample2'">Edit</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button class="text-red-600 hover:text-red-800 delete-btn" data-id="sample2">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Mike Johnson</td>
-                                <td>XYZ Services</td>
-                                <td>mike@xyzservices.com</td>
-                                <td>+1 987 654 3210</td>
-                                <td>Los Angeles</td>
-                                <td class="customer-actions">
-                                    <button class="btn-link edit-btn" data-id="sample3" onclick="window.location.href='customer-edit.html?id=sample3'">Edit</button>
-                                    <button class="btn-link delete-btn" data-id="sample3">Delete</button>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-medium text-gray-900">Mike Johnson</td>
+                                <td class="p-3 text-gray-600">XYZ Services</td>
+                                <td class="p-3 text-gray-600">mike@xyzservices.com</td>
+                                <td class="p-3 text-gray-600">+1 987 654 3210</td>
+                                <td class="p-3 text-gray-600">Los Angeles</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-800 edit-btn" data-id="sample3" onclick="window.location.href='customer-edit.html?id=sample3'">Edit</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button class="text-red-600 hover:text-red-800 delete-btn" data-id="sample3">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Sarah Williams</td>
-                                <td>-</td>
-                                <td>sarah.williams@gmail.com</td>
-                                <td>+61 411 222 333</td>
-                                <td>Melbourne</td>
-                                <td class="customer-actions">
-                                    <button class="btn-link edit-btn" data-id="sample4" onclick="window.location.href='customer-edit.html?id=sample4'">Edit</button>
-                                    <button class="btn-link delete-btn" data-id="sample4">Delete</button>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-medium text-gray-900">Sarah Williams</td>
+                                <td class="p-3 text-gray-600">-</td>
+                                <td class="p-3 text-gray-600">sarah.williams@gmail.com</td>
+                                <td class="p-3 text-gray-600">+61 411 222 333</td>
+                                <td class="p-3 text-gray-600">Melbourne</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-800 edit-btn" data-id="sample4" onclick="window.location.href='customer-edit.html?id=sample4'">Edit</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button class="text-red-600 hover:text-red-800 delete-btn" data-id="sample4">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>David Brown</td>
-                                <td>Brown Enterprises</td>
-                                <td>david@brownent.com</td>
-                                <td>+1 555 123 4567</td>
-                                <td>Chicago</td>
-                                <td class="customer-actions">
-                                    <button class="btn-link edit-btn" data-id="sample5" onclick="window.location.href='customer-edit.html?id=sample5'">Edit</button>
-                                    <button class="btn-link delete-btn" data-id="sample5">Delete</button>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 font-medium text-gray-900">David Brown</td>
+                                <td class="p-3 text-gray-600">Brown Enterprises</td>
+                                <td class="p-3 text-gray-600">david@brownent.com</td>
+                                <td class="p-3 text-gray-600">+1 555 123 4567</td>
+                                <td class="p-3 text-gray-600">Chicago</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-800 edit-btn" data-id="sample5" onclick="window.location.href='customer-edit.html?id=sample5'">Edit</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button class="text-red-600 hover:text-red-800 delete-btn" data-id="sample5">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div id="emptyState" style="display:none;text-align:center;padding:32px 0;color:#6b7280;">
-                        <i class="fas fa-users" style="font-size:32px;margin-bottom:12px;"></i>
-                        <div>No customers found. Click "Add Customer" to create your first one.</div>
-                    </div>
-                </section>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden text-center py-12 text-gray-500">
+                    <svg class="mx-auto mb-3 text-gray-300 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <p class="text-sm">No customers found. Click "Add Customer" to create your first one.</p>
+                </div>
             </div>
         </main>
     </div>
     <!-- Import Modal -->
-    <div class="modal" id="importModal">
-        <div class="modal-content">
-            <div class="modal-header">Import Customers</div>
-            <div style="margin-bottom:12px;">Upload a CSV file with customer data. Expected columns: First Name, Last Name, Company, Email, Phone, Street, City, State, Postal Code, Country, Notes</div>
-            <input type="file" id="importFile" accept=".csv" style="margin-bottom:12px;">
-            <div class="modal-actions">
-                <button class="btn-primary" id="confirmImportBtn">Import</button>
-                <button class="btn-secondary" id="cancelImportBtn">Cancel</button>
+    <div id="importModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Import Customers</h2>
+            <p class="text-sm text-gray-600 mb-4">Upload a CSV file with customer data. Expected columns: First Name, Last Name, Company, Email, Phone, Street, City, State, Postal Code, Country, Notes</p>
+            <input type="file" id="importFile" accept=".csv" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-4">
+            <div class="flex gap-3">
+                <button id="confirmImportBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Import
+                </button>
+                <button id="cancelImportBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Delete Customer</h2>
+            <p class="text-sm text-gray-600 mb-6">Are you sure you want to delete this customer? This action will soft-delete the customer but preserve historical data.</p>
+            <div class="flex gap-3">
+                <button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Delete
+                </button>
+                <button id="cancelDeleteBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="customers.js"></script>
     <script src="customer-list-script.js"></script>
 </body>
