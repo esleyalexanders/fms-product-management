@@ -133,6 +133,15 @@
                                     </button>
                                 </div>
                                 
+                                <!-- Quote Contact Selector (if secondary contacts exist) -->
+                                <div id="quoteContactSelector" class="hidden border-t border-blue-200 pt-3 mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quote Contact</label>
+                                    <select id="quoteContactSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                        <!-- Options populated dynamically -->
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Select who should receive this quote</p>
+                                </div>
+                                
                                 <!-- Service Address Section -->
                                 <div class="border-t border-blue-200 pt-3 mt-3">
                                     <div class="flex items-center justify-between mb-2">
@@ -291,65 +300,40 @@
                         </div>
                     </div>
 
-                    <!-- Services Catalog -->
+                    <!-- Quote Line Items -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900">Services & Products Catalog</h2>
-                            <div class="text-sm text-gray-500">
-                                Showing <span id="servicesCount">0</span> items
-                            </div>
-                        </div>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items</h2>
                         
-                        <!-- Search and Filter -->
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="flex-1 relative">
+                        <!-- Add Service/Product Search -->
+                        <div class="mb-4">
+                            <div class="relative">
                                 <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                                 <input 
                                     type="text" 
                                     id="catalogSearchInput"
-                                    placeholder="Search by name, code, or tag..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Type to search and add services or products..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    autocomplete="off"
                                 />
+                                <button id="clearCatalogSearchBtn" class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                                <!-- Autocomplete Dropdown -->
+                                <div id="catalogAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto custom-scrollbar">
+                                    <!-- Autocomplete results will be populated here -->
+                                </div>
                             </div>
-                            <select 
-                                id="catalogFilterType"
-                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="">All types</option>
-                                <option value="service">Service</option>
-                                <option value="product">Product</option>
-                            </select>
-                            <select 
-                                id="catalogFilterTag"
-                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="">All tags</option>
-                            </select>
                         </div>
-                        
-                        <div id="emptyCatalog" class="hidden text-center py-12 text-gray-400">
-                            <svg class="mx-auto mb-3 text-gray-300 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            <p class="text-sm">No items found. Try adjusting your filters.</p>
-                        </div>
-                        
-                        <div id="servicesCatalog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto custom-scrollbar">
-                            <!-- Services cards will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Quote Items Table -->
-                    <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items</h2>
                         
                         <div id="emptyQuoteState" class="text-center py-8 text-gray-500">
                             <svg class="mx-auto mb-2 text-gray-400 w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                             </svg>
-                            <p class="text-sm">No items added yet. Select services from the catalog above.</p>
+                            <p class="text-sm">No items added yet. Search and add services or products above.</p>
                         </div>
 
                         <div id="quoteItemsTable" class="hidden overflow-x-auto">
@@ -358,8 +342,10 @@
                                     <tr>
                                         <th class="text-left p-2 font-medium text-gray-700">Service/Product</th>
                                         <th class="text-left p-2 font-medium text-gray-700">Type</th>
+                                        <th class="text-left p-2 font-medium text-gray-700">Date</th>
                                         <th class="text-center p-2 font-medium text-gray-700">Qty</th>
                                         <th class="text-right p-2 font-medium text-gray-700">Unit Price</th>
+                                        <th class="text-right p-2 font-medium text-gray-700">Discount</th>
                                         <th class="text-right p-2 font-medium text-gray-700">Total</th>
                                         <th class="w-10"></th>
                                     </tr>
@@ -510,53 +496,26 @@
                                 ></textarea>
                             </div>
                         </div>
-
-                        <!-- Send Options -->
-                        <div class="border-t border-gray-200 pt-4 mt-4">
-                            <label class="block text-xs font-medium text-gray-700 mb-2">Send Method (multiple selection)</label>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-2 text-sm">
-                                    <input type="checkbox" name="sendMethod" value="email" checked />
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                    </svg>
-                                    <span>Email</span>
-                                </label>
-                                <label class="flex items-center gap-2 text-sm">
-                                    <input type="checkbox" name="sendMethod" value="sms" />
-                                    <span>Whatsapp with Portal Link</span>
-                                </label>
-                            </div>
-                        </div>
-
                         <!-- Action Buttons -->
                         <div class="mt-4 space-y-2">
                             <button 
-                                id="submitApprovalBtn"
-                                class="hidden w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 text-sm font-medium"
+                                id="createQuoteBtn"
+                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
                             >
-                                Submit for Approval
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Create Quote
                             </button>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button 
-                                    id="printQuoteBtn"
-                                    class="bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                                    </svg>
-                                    Print/Manual
-                                </button>
-                                <button 
-                                    id="sendQuoteBtn"
-                                    class="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                    </svg>
-                                    Send Quote
-                                </button>
-                            </div>
+                            <button 
+                                id="saveDraftBtn"
+                                class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                </svg>
+                                Save as Draft
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -645,6 +604,7 @@
         const state = {
             businessType: 'tutoring',
             selectedCustomer: null,
+            selectedQuoteContact: null, // Will store the contact for this quote (primary or secondary)
             showNewCustomerForm: false,
             quoteItems: [],
             discount: 0,
@@ -659,9 +619,30 @@
 
         // Sample data - Customers A-Z
         const customers = [
-            { id: 1, name: 'Alice Anderson', email: 'alice.a@email.com', phone: '0412 111 111', address: '1 Apple St, Melbourne VIC 3000', previousQuotes: 3 },
-            { id: 2, name: 'Benjamin Brown', email: 'ben.brown@email.com', phone: '0412 222 222', address: '2 Beach Rd, Brighton VIC 3186', previousQuotes: 1 },
-            { id: 3, name: 'Catherine Chen', email: 'cathy.chen@email.com', phone: '0412 333 333', address: '3 Chapel St, South Yarra VIC 3141', previousQuotes: 5 },
+            { 
+                id: 1, 
+                name: 'Alice Anderson', 
+                email: 'alice.a@email.com', 
+                phone: '0412 345 678', 
+                address: '1 Albert St, Melbourne VIC 3000', 
+                previousQuotes: 3,
+                secondaryContacts: [
+                    { name: 'John Anderson', email: 'john.a@email.com', phone: '0412 345 679', role: 'Spouse' }
+                ]
+            },
+            { 
+                id: 2, 
+                name: 'Bob Brown', 
+                email: 'bob.brown@email.com', 
+                phone: '0413 456 789', 
+                address: '2 Bridge Rd, Richmond VIC 3121', 
+                previousQuotes: 5,
+                secondaryContacts: [
+                    { name: 'Sarah Brown', email: 'sarah.b@email.com', phone: '0413 456 790', role: 'Assistant' },
+                    { name: 'Mike Brown', email: 'mike.b@email.com', phone: '0413 456 791', role: 'Business Partner' }
+                ]
+            },
+            { id: 3, name: 'Charlie Chen', email: 'charlie.c@email.com', phone: '0414 567 890', address: '3 Chapel St, Windsor VIC 3181', previousQuotes: 2 },
             { id: 4, name: 'David Davis', email: 'david.d@email.com', phone: '0412 444 444', address: '4 Docklands Dr, Docklands VIC 3008', previousQuotes: 0 },
             { id: 5, name: 'Emily Evans', email: 'emily.evans@email.com', phone: '0412 555 555', address: '5 Elizabeth St, Melbourne VIC 3000', previousQuotes: 2 },
             { id: 6, name: 'Frank Foster', email: 'frank.f@email.com', phone: '0412 666 666', address: '6 Flinders St, Melbourne VIC 3000', previousQuotes: 4 },
@@ -716,22 +697,6 @@
             return tutoringServices;
         }
         
-        function updateTagFilter() {
-            const services = getServices();
-            const tags = [...new Set(services.map(s => s.tag))].sort();
-            const tagSelect = document.getElementById('catalogFilterTag');
-            
-            // Keep "All tags" option
-            tagSelect.innerHTML = '<option value="">All tags</option>';
-            
-            // Add unique tags
-            tags.forEach(tag => {
-                const option = document.createElement('option');
-                option.value = tag;
-                option.textContent = tag;
-                tagSelect.appendChild(option);
-            });
-        }
 
         function getPricingIcon(type) {
             const icons = {
@@ -778,7 +743,13 @@
 
         // Calculation functions
         function calculateSubtotal() {
-            return state.quoteItems.reduce((sum, item) => sum + (item.customPrice * item.quantity), 0);
+            return state.quoteItems.reduce((sum, item) => {
+                const lineTotal = item.customPrice * item.quantity;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                return sum + (lineTotal - discountAmount);
+            }, 0);
         }
 
         function calculateDiscount() {
@@ -875,15 +846,13 @@
             document.getElementById('approvalWarning').classList.toggle('hidden', !state.approvalRequired);
             document.getElementById('submitApprovalBtn').classList.toggle('hidden', !state.approvalRequired);
             
-            updateSendButton();
+            updateCreateButton();
         }
 
-        function updateSendButton() {
-            const sendBtn = document.getElementById('sendQuoteBtn');
-            const printBtn = document.getElementById('printQuoteBtn');
-            const canSend = state.quoteItems.length > 0 && state.selectedCustomer !== null;
-            sendBtn.disabled = !canSend;
-            printBtn.disabled = !canSend;
+        function updateCreateButton() {
+            const createBtn = document.getElementById('createQuoteBtn');
+            const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
+            createBtn.disabled = !canCreate;
         }
 
         // Render functions
@@ -936,80 +905,60 @@
             autocomplete.classList.remove('hidden');
         }
 
-        function renderServicesCatalog() {
-            const catalog = document.getElementById('servicesCatalog');
-            const searchTerm = document.getElementById('catalogSearchInput').value.toLowerCase();
-            const typeFilter = document.getElementById('catalogFilterType').value;
-            const tagFilter = document.getElementById('catalogFilterTag').value;
+        function renderCatalogAutocomplete(searchTerm = '') {
+            const autocomplete = document.getElementById('catalogAutocomplete');
+            const clearBtn = document.getElementById('clearCatalogSearchBtn');
             
-            const services = getServices().filter(service => {
-                // Search filter
-                if (searchTerm && 
-                    !service.name.toLowerCase().includes(searchTerm) && 
-                    !service.id.toLowerCase().includes(searchTerm) &&
-                    !service.tag.toLowerCase().includes(searchTerm)) {
-                    return false;
-                }
-                // Type filter
-                if (typeFilter && service.type !== typeFilter) {
-                    return false;
-                }
-                // Tag filter
-                if (tagFilter && service.tag !== tagFilter) {
-                    return false;
-                }
-                return true;
-            });
-            
-            // Update count
-            document.getElementById('servicesCount').textContent = services.length;
-            
-            // Show/hide empty state
-            const emptyState = document.getElementById('emptyCatalog');
-            if (services.length === 0) {
-                emptyState.classList.remove('hidden');
-                catalog.innerHTML = '';
+            if (!searchTerm || searchTerm.length < 2) {
+                autocomplete.classList.add('hidden');
+                clearBtn.classList.add('hidden');
                 return;
             }
-            emptyState.classList.add('hidden');
             
-            // Render as cards
-            catalog.innerHTML = services.map(service => `
-                <div class="border border-gray-200 rounded-lg p-3 hover:border-blue-500 transition-all">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-2">
-                                ${getTypeIndicator(service.type)}
-                                <span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">${service.tag}</span>
-                            </div>
-                            <h3 class="font-medium text-gray-900 text-sm mb-1">${service.name}</h3>
-                            <p class="text-xs text-gray-500">${service.id}</p>
-                        </div>
+            clearBtn.classList.remove('hidden');
+            
+            const services = getServices().filter(service => 
+                service.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                service.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.tag.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (services.length === 0) {
+                autocomplete.innerHTML = `
+                    <div class="p-3 text-sm text-gray-500 text-center">
+                        No services or products found.
                     </div>
-                    
-                    <div class="mt-3 pt-3 border-t border-gray-100">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-1 text-gray-600">
-                                ${getPricingIcon(service.pricingType)}
-                                <span class="text-sm font-semibold">$${service.price}</span>
-                                <span class="text-xs">/ ${service.unit}</span>
+                `;
+                autocomplete.classList.remove('hidden');
+                return;
+            }
+
+            autocomplete.innerHTML = services.map(service => `
+                <div 
+                    class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    onclick="addQuoteItem('${service.id}')"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                ${getTypeIndicator(service.type)}
+                                <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">${service.tag}</span>
                             </div>
+                            <p class="font-medium text-gray-900 text-sm">${service.name}</p>
+                            <p class="text-xs text-gray-500 mt-0.5">${service.id}</p>
                         </div>
-                        <div class="text-xs text-gray-600 mb-2">
-                            Tax: ${getTaxCategoryLabel(service.taxCategory || 'taxable_gst')}
+                        <div class="text-right ml-3">
+                            <div class="flex items-center gap-1 text-gray-700">
+                                <span class="text-sm font-semibold">$${service.price}</span>
+                                <span class="text-xs text-gray-500">/ ${service.unit}</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-0.5">${getTaxCategoryLabel(service.taxCategory || 'taxable_gst')}</div>
                         </div>
-                        <button 
-                            onclick="addQuoteItem('${service.id}')"
-                            class="w-full bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 flex items-center justify-center gap-1"
-                        >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Add to Quote
-                        </button>
                     </div>
                 </div>
             `).join('');
+            
+            autocomplete.classList.remove('hidden');
         }
 
         function renderQuoteItems() {
@@ -1038,6 +987,12 @@
                     taxBadge = taxLabels[item.taxCategory] || '';
                 }
                 
+                const lineTotal = item.quantity * item.customPrice;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                const lineTotalAfterDiscount = lineTotal - discountAmount;
+                
                 return `
                 <tr class="border-b border-gray-100">
                     <td class="p-2">
@@ -1051,12 +1006,29 @@
                                 💬 ${item.priceModificationComment}
                             </div>
                         ` : ''}
+                        <div class="mt-2">
+                            <textarea 
+                                placeholder="${item.type === 'product' ? 'Delivery instructions, quantity details, etc...' : 'Service requirements, special instructions, etc...'}"
+                                onchange="updateItemNotes(${index}, this.value)"
+                                class="w-full px-2 py-1 border border-gray-300 rounded text-xs resize-none"
+                                rows="2"
+                            >${item.notes || ''}</textarea>
+                        </div>
                     </td>
                     <td class="p-2">
                         <div class="flex items-center gap-1 text-gray-600">
                             ${getPricingIcon(item.pricingType)}
                             <span class="text-xs">${item.unit}</span>
                         </div>
+                    </td>
+                    <td class="p-2">
+                        <input 
+                            type="date"
+                            value="${item.serviceDate || ''}"
+                            onchange="updateItemServiceDate(${index}, this.value)"
+                            class="w-32 px-2 py-1 border border-gray-300 rounded text-xs"
+                            title="${item.type === 'product' ? 'Delivery Date' : 'Service Date'}"
+                        />
                     </td>
                     <td class="p-2 text-center">
                         <input 
@@ -1080,8 +1052,28 @@
                             ${item.priceModified ? `<span class="text-xs text-yellow-600">Modified</span>` : ''}
                         </div>
                     </td>
+                    <td class="p-2 text-right">
+                        <div class="flex items-center gap-1 justify-end">
+                            <select 
+                                onchange="updateItemDiscountType(${index}, this.value)"
+                                class="px-1 py-1 border border-gray-300 rounded text-xs w-12"
+                            >
+                                <option value="percentage" ${item.discountType === 'percentage' ? 'selected' : ''}>%</option>
+                                <option value="fixed" ${item.discountType === 'fixed' ? 'selected' : ''}>$</option>
+                            </select>
+                            <input 
+                                type="number"
+                                value="${item.discount || 0}"
+                                onchange="updateItemDiscount(${index}, this.value)"
+                                class="w-16 px-2 py-1 border border-gray-300 rounded text-right text-xs"
+                                min="0"
+                                step="0.01"
+                            />
+                        </div>
+                        ${item.discount > 0 ? `<div class="text-xs text-green-600 mt-1">-$${discountAmount.toFixed(2)}</div>` : ''}
+                    </td>
                     <td class="p-2 text-right font-semibold">
-                        $${(item.quantity * item.customPrice).toFixed(2)}
+                        $${lineTotalAfterDiscount.toFixed(2)}
                     </td>
                     <td class="p-2">
                         <button 
@@ -1092,17 +1084,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
-                    </td>
-                </tr>
-                <tr class="border-b border-gray-200">
-                    <td colspan="6" class="p-2 pb-3">
-                        <input 
-                            type="text"
-                            value="${item.notes || ''}"
-                            onchange="updateItemNotes(${index}, this.value)"
-                            placeholder="Add notes for this line item..."
-                            class="w-full px-2 py-1 border border-gray-200 rounded text-xs text-gray-600"
-                        />
                     </td>
                 </tr>
             `;
@@ -1126,13 +1107,46 @@
             document.getElementById('selectedCustomerEmail').textContent = customer.email;
             document.getElementById('selectedCustomerPhone').textContent = customer.phone;
             
+            // Setup quote contact selector if secondary contacts exist
+            const contactSelector = document.getElementById('quoteContactSelector');
+            const contactSelect = document.getElementById('quoteContactSelect');
+            
+            if (customer.secondaryContacts && customer.secondaryContacts.length > 0) {
+                // Show contact selector
+                contactSelector.classList.remove('hidden');
+                
+                // Build options: primary contact + secondary contacts
+                let options = `<option value="primary">Primary: ${customer.name} (${customer.email})</option>`;
+                customer.secondaryContacts.forEach((contact, index) => {
+                    options += `<option value="secondary-${index}">${contact.name} - ${contact.role} (${contact.email})</option>`;
+                });
+                contactSelect.innerHTML = options;
+                
+                // Set default to primary
+                state.selectedQuoteContact = {
+                    type: 'primary',
+                    name: customer.name,
+                    email: customer.email,
+                    phone: customer.phone
+                };
+            } else {
+                // Hide contact selector, use primary by default
+                contactSelector.classList.add('hidden');
+                state.selectedQuoteContact = {
+                    type: 'primary',
+                    name: customer.name,
+                    email: customer.email,
+                    phone: customer.phone
+                };
+            }
+            
             // Set service address (same as billing by default)
             document.getElementById('displayServiceAddress').textContent = customer.address || 'No address on file';
             document.getElementById('sameAsBilling').checked = true;
             document.getElementById('serviceAddressFields').classList.add('hidden');
             document.getElementById('serviceAddressDisplay').style.display = 'block';
             
-            updateSendButton();
+            updateCreateButton();
         }
 
         function addQuoteItem(serviceId) {
@@ -1148,12 +1162,20 @@
                 originalPrice: service.price,
                 priceModified: false,
                 priceModificationComment: '',
-                notes: ''
+                notes: '',
+                serviceDate: '',
+                discount: 0,
+                discountType: 'percentage'
             };
             
             state.quoteItems.push(newItem);
             renderQuoteItems();
             updateSummary();
+            
+            // Clear catalog search after adding
+            document.getElementById('catalogSearchInput').value = '';
+            document.getElementById('catalogAutocomplete').classList.add('hidden');
+            document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
         }
 
         function removeQuoteItem(index) {
@@ -1164,6 +1186,27 @@
 
         function updateItemQuantity(index, value) {
             state.quoteItems[index].quantity = Number(value);
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemServiceDate(index, value) {
+            state.quoteItems[index].serviceDate = value;
+            renderQuoteItems();
+        }
+
+        function updateItemNotes(index, value) {
+            state.quoteItems[index].notes = value;
+        }
+
+        function updateItemDiscount(index, value) {
+            state.quoteItems[index].discount = Number(value);
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemDiscountType(index, value) {
+            state.quoteItems[index].discountType = value;
             renderQuoteItems();
             updateSummary();
         }
@@ -1428,10 +1471,26 @@
             validUntil.setDate(validUntil.getDate() + 14);
             document.getElementById('validUntilDate').valueAsDate = validUntil;
             
-            // Catalog search and filters
-            document.getElementById('catalogSearchInput').addEventListener('input', renderServicesCatalog);
-            document.getElementById('catalogFilterType').addEventListener('change', renderServicesCatalog);
-            document.getElementById('catalogFilterTag').addEventListener('change', renderServicesCatalog);
+            // Catalog search autocomplete
+            document.getElementById('catalogSearchInput').addEventListener('input', function(e) {
+                renderCatalogAutocomplete(e.target.value);
+            });
+            
+            // Clear catalog search button
+            document.getElementById('clearCatalogSearchBtn').addEventListener('click', function() {
+                document.getElementById('catalogSearchInput').value = '';
+                document.getElementById('catalogAutocomplete').classList.add('hidden');
+                document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
+            });
+            
+            // Close catalog autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                const catalogSearch = document.getElementById('catalogSearchInput');
+                const autocomplete = document.getElementById('catalogAutocomplete');
+                if (catalogSearch && !catalogSearch.parentElement.contains(e.target)) {
+                    autocomplete.classList.add('hidden');
+                }
+            });
             
             // Customer search autocomplete
             document.getElementById('customerSearchInput').addEventListener('input', function(e) {
@@ -1538,10 +1597,38 @@
             // Clear customer
             document.getElementById('clearCustomerBtn').addEventListener('click', function() {
                 state.selectedCustomer = null;
+                state.selectedQuoteContact = null;
                 document.getElementById('selectedCustomerCard').classList.add('hidden');
                 document.getElementById('customerSearchSection').classList.remove('hidden');
                 document.getElementById('customerSearchInput').focus();
-                updateSendButton();
+                updateCreateButton();
+            });
+            
+            // Quote contact selector change
+            document.getElementById('quoteContactSelect').addEventListener('change', function(e) {
+                const value = e.target.value;
+                const customer = state.selectedCustomer;
+                
+                if (value === 'primary') {
+                    state.selectedQuoteContact = {
+                        type: 'primary',
+                        name: customer.name,
+                        email: customer.email,
+                        phone: customer.phone
+                    };
+                } else if (value.startsWith('secondary-')) {
+                    const index = parseInt(value.split('-')[1]);
+                    const contact = customer.secondaryContacts[index];
+                    state.selectedQuoteContact = {
+                        type: 'secondary',
+                        name: contact.name,
+                        email: contact.email,
+                        phone: contact.phone,
+                        role: contact.role
+                    };
+                }
+                
+                console.log('Quote contact changed:', state.selectedQuoteContact);
             });
             
             // Service address toggle
@@ -1598,8 +1685,8 @@
                 updateSummary();
             });
             
-            // Send quote button
-            document.getElementById('sendQuoteBtn').addEventListener('click', function() {
+            // Create quote button
+            document.getElementById('createQuoteBtn').addEventListener('click', function() {
                 if (!state.selectedCustomer) {
                     alert('Please select a customer');
                     return;
@@ -1610,15 +1697,7 @@
                     return;
                 }
                 
-                // Get all selected send methods
-                const selectedMethods = Array.from(document.querySelectorAll('input[name="sendMethod"]:checked')).map(cb => cb.value);
-                
-                if (selectedMethods.length === 0) {
-                    alert('Please select at least one send method');
-                    return;
-                }
-                
-                // Check for price modifications and alert if any
+                // Check for price modifications
                 const priceModifiedItems = state.quoteItems.filter(item => item.priceModified);
                 if (priceModifiedItems.length > 0) {
                     console.log('Price modifications:', 
@@ -1631,14 +1710,16 @@
                     );
                 }
                 
-                // Here you would normally send the quote data to the server
-                console.log('Sending quote:', {
+                // Create quote data
+                const quoteData = {
                     customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
                     items: state.quoteItems,
                     discount: state.discount,
                     discountType: state.discountType,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
                     total: calculateTotal(),
-                    sendMethods: selectedMethods,
                     validUntil: document.getElementById('validUntilDate').value,
                     paymentTerms: document.getElementById('paymentTerms').value,
                     customerNotes: document.getElementById('customerNotes').value,
@@ -1648,44 +1729,48 @@
                         originalPrice: item.originalPrice,
                         modifiedPrice: item.customPrice,
                         comment: item.priceModificationComment
-                    }))
-                });
+                    })),
+                    status: 'active',
+                    createdDate: new Date().toISOString()
+                };
                 
-                alert(`Quote sent to ${state.selectedCustomer.name} via ${selectedMethods.join(', ')}!`);
-            });
-            
-            // Print quote button
-            document.getElementById('printQuoteBtn').addEventListener('click', function() {
-                if (!state.selectedCustomer) {
-                    alert('Please select a customer');
-                    return;
-                }
+                // Here you would normally send the quote data to the server
+                console.log('Creating quote:', quoteData);
                 
-                if (state.quoteItems.length === 0) {
-                    alert('Please add at least one item to the quote');
-                    return;
-                }
-                
-                console.log('Printing quote:', {
-                    customer: state.selectedCustomer,
-                    items: state.quoteItems,
-                    discount: state.discount,
-                    discountType: state.discountType,
-                    total: calculateTotal(),
-                    validUntil: document.getElementById('validUntilDate').value,
-                    paymentTerms: document.getElementById('paymentTerms').value,
-                    customerNotes: document.getElementById('customerNotes').value
-                });
-                
-                alert('Opening print dialog...');
-                // In a real implementation, this would trigger the browser's print dialog
-                window.print();
+                const contactName = state.selectedQuoteContact.type === 'secondary' 
+                    ? `${state.selectedQuoteContact.name} (${state.selectedQuoteContact.role})` 
+                    : state.selectedCustomer.name;
+                alert(`Quote created successfully for ${state.selectedCustomer.name}!\nQuote will be sent to: ${contactName}`);
+                // In real implementation: redirect to quotes list or quote detail page
+                // window.location.href = 'quotes.html';
             });
             
             // Save draft button
             document.getElementById('saveDraftBtn').addEventListener('click', function() {
-                console.log('Saving draft:', state);
+                // Create draft quote data
+                const draftData = {
+                    customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
+                    items: state.quoteItems,
+                    discount: state.discount,
+                    discountType: state.discountType,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
+                    total: calculateTotal(),
+                    validUntil: document.getElementById('validUntilDate').value,
+                    paymentTerms: document.getElementById('paymentTerms').value,
+                    customerNotes: document.getElementById('customerNotes').value,
+                    internalNotes: document.getElementById('internalNotes').value,
+                    status: 'draft',
+                    createdDate: new Date().toISOString()
+                };
+                
+                // Here you would normally save the draft to the server
+                console.log('Saving draft:', draftData);
+                
                 alert('Quote saved as draft!');
+                // In real implementation: redirect to quotes list
+                // window.location.href = 'quotes.html';
             });
             
             // Preview button
@@ -1721,8 +1806,6 @@
             });
 
             // Initial render
-            updateTagFilter(); // Initialize tag dropdown
-            renderServicesCatalog();
             renderQuoteItems();
             updateSummary();
         });

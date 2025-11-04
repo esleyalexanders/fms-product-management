@@ -418,8 +418,6 @@
     } else {
       // Initial preview
       updatePreview();
-      // Add one secondary contact by default
-      addSecondaryContact();
     }
 
     // Save button
@@ -475,9 +473,10 @@
     const addSecondaryContactBtn = document.getElementById('addSecondaryContactBtn');
     console.log('Secondary contact button:', addSecondaryContactBtn);
     if (addSecondaryContactBtn) {
-      addSecondaryContactBtn.addEventListener('click', () => {
+      addSecondaryContactBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent any default behavior
         console.log('Add secondary contact button clicked!');
-        addSecondaryContact();
+        window.addSecondaryContact();
       });
       console.log('Event listener attached successfully!');
     } else {
