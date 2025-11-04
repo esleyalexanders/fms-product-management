@@ -65,6 +65,18 @@
                 </div>
             </div>
 
+            <!-- Required Fields Notice -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm text-blue-800">
+                        <span class="text-red-500 font-bold">*</span> indicates required fields
+                    </p>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 <!-- Left Column - Customer & Services -->
@@ -73,7 +85,7 @@
                     <!-- Customer Section -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
                         <div class="flex justify-between items-center mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900">Customer Information</h2>
+                            <h2 class="text-lg font-semibold text-gray-900">Customer Information <span class="text-red-500">*</span></h2>
                             <button 
                                 id="toggleNewCustomerBtn"
                                 class="text-blue-600 text-sm hover:underline flex items-center gap-1"
@@ -94,9 +106,10 @@
                                 <input
                                     type="text"
                                     id="customerSearchInput"
-                                    placeholder="Type to search customer by name, email, or phone..."
-                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Type to search customer by name, email, or phone... (Required)"
+                                    class="w-full pl-10 pr-10 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                     autocomplete="off"
+                                    required
                                 />
                                 <button id="clearSearchBtn" class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,35 +179,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Preferred Schedule Section -->
-                                <div class="border-t border-blue-200 pt-3 mt-3">
-                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Preferred Schedule</h3>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div>
-                                            <label class="block text-xs text-gray-600 mb-1">Preferred Date</label>
-                                            <input type="date" id="preferredDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-600 mb-1">Preferred Time</label>
-                                            <select id="preferredTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                                <option value="">Select time...</option>
-                                                <option value="morning">Morning (8AM - 12PM)</option>
-                                                <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                                                <option value="evening">Evening (5PM - 8PM)</option>
-                                                <option value="flexible">Flexible</option>
-                                                <option value="exact">Exact Time</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div id="exactTimeField" class="hidden mt-2">
-                                        <label class="block text-xs text-gray-600 mb-1">Exact Time</label>
-                                        <input type="time" id="exactTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                    </div>
-                                    <div class="mt-2">
-                                        <label class="block text-xs text-gray-600 mb-1">Schedule Notes</label>
-                                        <textarea id="scheduleNotes" rows="2" placeholder="Any specific timing requirements or preferences..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -302,7 +286,7 @@
 
                     <!-- Quote Line Items -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items</h2>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items <span class="text-red-500">*</span></h2>
                         
                         <!-- Add Service/Product Search -->
                         <div class="mb-4">
@@ -329,31 +313,17 @@
                             </div>
                         </div>
                         
-                        <div id="emptyQuoteState" class="text-center py-8 text-gray-500">
-                            <svg class="mx-auto mb-2 text-gray-400 w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div id="emptyQuoteState" class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                             </svg>
-                            <p class="text-sm">No items added yet. Search and add services or products above.</p>
+                            <p class="text-sm font-medium text-gray-700 mb-1">No items added yet</p>
+                            <p class="text-xs text-gray-500">Search and add services or products above to build your quote</p>
                         </div>
 
-                        <div id="quoteItemsTable" class="hidden overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-gray-50 border-b border-gray-200">
-                                    <tr>
-                                        <th class="text-left p-2 font-medium text-gray-700">Service/Product</th>
-                                        <th class="text-left p-2 font-medium text-gray-700">Type</th>
-                                        <th class="text-left p-2 font-medium text-gray-700">Date</th>
-                                        <th class="text-center p-2 font-medium text-gray-700">Qty</th>
-                                        <th class="text-right p-2 font-medium text-gray-700">Unit Price</th>
-                                        <th class="text-right p-2 font-medium text-gray-700">Discount</th>
-                                        <th class="text-right p-2 font-medium text-gray-700">Total</th>
-                                        <th class="w-10"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="quoteItemsBody">
-                                    <!-- Quote items will be populated here -->
-                                </tbody>
-                            </table>
+                        <!-- Card-based Quote Items Container -->
+                        <div id="quoteItemsContainer" class="hidden space-y-3">
+                            <!-- Quote item cards will be populated here -->
                         </div>
                     </div>
                 </div>
@@ -963,19 +933,18 @@
 
         function renderQuoteItems() {
             const emptyState = document.getElementById('emptyQuoteState');
-            const table = document.getElementById('quoteItemsTable');
-            const tbody = document.getElementById('quoteItemsBody');
+            const container = document.getElementById('quoteItemsContainer');
             
             if (state.quoteItems.length === 0) {
                 emptyState.classList.remove('hidden');
-                table.classList.add('hidden');
+                container.classList.add('hidden');
                 return;
             }
             
             emptyState.classList.add('hidden');
-            table.classList.remove('hidden');
+            container.classList.remove('hidden');
             
-            tbody.innerHTML = state.quoteItems.map((item, index) => {
+            container.innerHTML = state.quoteItems.map((item, index) => {
                 // Show tax category
                 let taxBadge = '';
                 if (item.taxCategory) {
@@ -994,98 +963,151 @@
                 const lineTotalAfterDiscount = lineTotal - discountAmount;
                 
                 return `
-                <tr class="border-b border-gray-100">
-                    <td class="p-2">
-                        <p class="font-medium text-gray-900">${item.name}</p>
-                        <div class="mt-1 flex items-center gap-2">
-                            ${getTypeIndicator(item.type)}
-                            ${taxBadge}
-                        </div>
-                        ${item.priceModificationComment ? `
-                            <div class="mt-1 text-xs text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded">
-                                💬 ${item.priceModificationComment}
+                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <!-- Header Row -->
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-900">${item.name}</h3>
                             </div>
-                        ` : ''}
-                        <div class="mt-2">
-                            <textarea 
-                                placeholder="${item.type === 'product' ? 'Delivery instructions, quantity details, etc...' : 'Service requirements, special instructions, etc...'}"
-                                onchange="updateItemNotes(${index}, this.value)"
-                                class="w-full px-2 py-1 border border-gray-300 rounded text-xs resize-none"
-                                rows="2"
-                            >${item.notes || ''}</textarea>
+                            <div class="flex items-center gap-2">
+                                ${getTypeIndicator(item.type)}
+                                ${taxBadge}
+                            </div>
+                            ${item.priceModificationComment ? `
+                                <div class="mt-2 text-xs text-yellow-700 bg-yellow-50 px-2 py-1 rounded">
+                                    💬 ${item.priceModificationComment}
+                                </div>
+                            ` : ''}
                         </div>
-                    </td>
-                    <td class="p-2">
-                        <div class="flex items-center gap-1 text-gray-600">
-                            ${getPricingIcon(item.pricingType)}
-                            <span class="text-xs">${item.unit}</span>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-gray-900">$${lineTotalAfterDiscount.toFixed(2)}</div>
+                                ${item.discount > 0 ? `<div class="text-xs text-green-600">-$${discountAmount.toFixed(2)} discount</div>` : ''}
+                            </div>
+                            <button 
+                                onclick="removeQuoteItem(${index})"
+                                class="ml-2 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remove item"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
                         </div>
-                    </td>
-                    <td class="p-2">
-                        <input 
-                            type="date"
-                            value="${item.serviceDate || ''}"
-                            onchange="updateItemServiceDate(${index}, this.value)"
-                            class="w-32 px-2 py-1 border border-gray-300 rounded text-xs"
-                            title="${item.type === 'product' ? 'Delivery Date' : 'Service Date'}"
-                        />
-                    </td>
-                    <td class="p-2 text-center">
-                        <input 
-                            type="number"
-                            value="${item.quantity}"
-                            onchange="updateItemQuantity(${index}, this.value)"
-                            class="w-16 px-2 py-1 border border-gray-300 rounded text-center"
-                            min="1"
-                        />
-                    </td>
-                    <td class="p-2 text-right">
-                        <div class="flex flex-col items-end gap-1">
+                    </div>
+                    
+                    <!-- Details Grid -->
+                    <div class="grid grid-cols-12 gap-3 mb-3 pb-3 border-b border-gray-200">
+                        <div class="col-span-3">
+                            <label class="text-xs text-gray-500 block mb-1">${item.type === 'product' ? 'Delivery Date' : 'Service Date'} <span class="text-red-500">*</span></label>
+                            <input 
+                                type="date"
+                                value="${item.serviceDate || ''}"
+                                onchange="updateItemServiceDate(${index}, this.value)"
+                                class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm"
+                            />
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-xs text-gray-500 block mb-1">Quantity <span class="text-red-500">*</span></label>
+                            <input 
+                                type="number"
+                                value="${item.quantity}"
+                                onchange="updateItemQuantity(${index}, this.value)"
+                                class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                                min="1"
+                            />
+                        </div>
+                        <div class="col-span-3">
+                            <label class="text-xs text-gray-500 block mb-1">Unit Price</label>
                             <input 
                                 type="number"
                                 value="${item.customPrice}"
                                 onchange="updateItemPrice(${index}, this.value)"
-                                class="w-20 px-2 py-1 border ${item.priceModified ? 'border-yellow-500 bg-yellow-50' : 'border-gray-300'} rounded text-right"
+                                class="w-full px-2 py-1.5 border ${item.priceModified ? 'border-yellow-500 bg-yellow-50' : 'border-gray-300'} rounded text-sm text-right"
                                 min="0"
                                 step="0.01"
                             />
                             ${item.priceModified ? `<span class="text-xs text-yellow-600">Modified</span>` : ''}
                         </div>
-                    </td>
-                    <td class="p-2 text-right">
-                        <div class="flex items-center gap-1 justify-end">
-                            <select 
-                                onchange="updateItemDiscountType(${index}, this.value)"
-                                class="px-1 py-1 border border-gray-300 rounded text-xs w-12"
-                            >
-                                <option value="percentage" ${item.discountType === 'percentage' ? 'selected' : ''}>%</option>
-                                <option value="fixed" ${item.discountType === 'fixed' ? 'selected' : ''}>$</option>
-                            </select>
-                            <input 
-                                type="number"
-                                value="${item.discount || 0}"
-                                onchange="updateItemDiscount(${index}, this.value)"
-                                class="w-16 px-2 py-1 border border-gray-300 rounded text-right text-xs"
-                                min="0"
-                                step="0.01"
-                            />
+                        <div class="col-span-4">
+                            <label class="text-xs text-gray-500 block mb-1">Discount</label>
+                            <div class="flex gap-2">
+                                <select 
+                                    onchange="updateItemDiscountType(${index}, this.value)"
+                                    class="w-16 px-2 py-1.5 border border-gray-300 rounded text-sm"
+                                >
+                                    <option value="percentage" ${item.discountType === 'percentage' ? 'selected' : ''}>%</option>
+                                    <option value="fixed" ${item.discountType === 'fixed' ? 'selected' : ''}>$</option>
+                                </select>
+                                <input 
+                                    type="number"
+                                    value="${item.discount || 0}"
+                                    onchange="updateItemDiscount(${index}, this.value)"
+                                    class="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm text-right"
+                                    min="0"
+                                    step="0.01"
+                                />
+                            </div>
                         </div>
-                        ${item.discount > 0 ? `<div class="text-xs text-green-600 mt-1">-$${discountAmount.toFixed(2)}</div>` : ''}
-                    </td>
-                    <td class="p-2 text-right font-semibold">
-                        $${lineTotalAfterDiscount.toFixed(2)}
-                    </td>
-                    <td class="p-2">
-                        <button 
-                            onclick="removeQuoteItem(${index})"
-                            class="text-red-600 hover:text-red-800"
-                        >
+                    </div>
+                    
+                    <!-- Notes Section -->
+                    <div class="mb-3">
+                        <label class="text-xs text-gray-500 block mb-1">Notes</label>
+                        <textarea 
+                            placeholder="${item.type === 'product' ? 'Delivery instructions, quantity details, etc...' : 'Service requirements, special instructions, etc...'}"
+                            onchange="updateItemNotes(${index}, this.value)"
+                            class="w-full px-3 py-2 border border-gray-300 rounded text-sm resize-none"
+                            rows="2"
+                        >${item.notes || ''}</textarea>
+                    </div>
+                    ${item.type === 'service' ? `
+                    <!-- Schedule Section for Services -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div class="text-sm font-medium text-blue-900 mb-3 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                        </button>
-                    </td>
-                </tr>
+                            Preferred Schedule
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-2">
+                            <div>
+                                <label class="text-xs text-gray-600 block mb-1">Time Preference</label>
+                                <select 
+                                    onchange="updateItemPreferredTime(${index}, this.value)"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
+                                >
+                                    <option value="">Select time...</option>
+                                    <option value="morning" ${item.preferredTime === 'morning' ? 'selected' : ''}>Morning (8AM-12PM)</option>
+                                    <option value="afternoon" ${item.preferredTime === 'afternoon' ? 'selected' : ''}>Afternoon (12PM-5PM)</option>
+                                    <option value="evening" ${item.preferredTime === 'evening' ? 'selected' : ''}>Evening (5PM-8PM)</option>
+                                    <option value="flexible" ${item.preferredTime === 'flexible' ? 'selected' : ''}>Flexible</option>
+                                    <option value="exact" ${item.preferredTime === 'exact' ? 'selected' : ''}>Exact Time</option>
+                                </select>
+                            </div>
+                            <div id="exactTimeField-${index}" class="${item.preferredTime === 'exact' ? '' : 'hidden'}">
+                                <label class="text-xs text-gray-600 block mb-1">Exact Time</label>
+                                <input 
+                                    type="time"
+                                    value="${item.exactTime || ''}"
+                                    onchange="updateItemExactTime(${index}, this.value)"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-600 block mb-1">Schedule Notes</label>
+                            <textarea 
+                                placeholder="Timing preferences, recurring schedule, etc..."
+                                onchange="updateItemScheduleNotes(${index}, this.value)"
+                                class="w-full px-3 py-2 border border-gray-300 rounded text-sm resize-none"
+                                rows="2"
+                            >${item.scheduleNotes || ''}</textarea>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
             `;
             }).join('');
         }
@@ -1096,7 +1118,10 @@
             state.selectedCustomer = customer;
             
             // Hide search, show selected card
-            document.getElementById('customerSearchInput').value = '';
+            const searchInput = document.getElementById('customerSearchInput');
+            searchInput.value = '';
+            searchInput.classList.remove('border-red-300');
+            searchInput.classList.add('border-green-500');
             document.getElementById('customerAutocomplete').classList.add('hidden');
             document.getElementById('clearSearchBtn').classList.add('hidden');
             document.getElementById('customerSearchSection').classList.add('hidden');
@@ -1165,7 +1190,11 @@
                 notes: '',
                 serviceDate: '',
                 discount: 0,
-                discountType: 'percentage'
+                discountType: 'percentage',
+                // Schedule fields (only for services)
+                preferredTime: '',
+                exactTime: '',
+                scheduleNotes: ''
             };
             
             state.quoteItems.push(newItem);
@@ -1209,6 +1238,19 @@
             state.quoteItems[index].discountType = value;
             renderQuoteItems();
             updateSummary();
+        }
+
+        function updateItemPreferredTime(index, value) {
+            state.quoteItems[index].preferredTime = value;
+            renderQuoteItems();
+        }
+
+        function updateItemExactTime(index, value) {
+            state.quoteItems[index].exactTime = value;
+        }
+
+        function updateItemScheduleNotes(index, value) {
+            state.quoteItems[index].scheduleNotes = value;
         }
 
         function showPriceModModal(index, newPrice) {
@@ -1598,9 +1640,12 @@
             document.getElementById('clearCustomerBtn').addEventListener('click', function() {
                 state.selectedCustomer = null;
                 state.selectedQuoteContact = null;
+                const searchInput = document.getElementById('customerSearchInput');
+                searchInput.classList.remove('border-green-500');
+                searchInput.classList.add('border-red-300');
                 document.getElementById('selectedCustomerCard').classList.add('hidden');
                 document.getElementById('customerSearchSection').classList.remove('hidden');
-                document.getElementById('customerSearchInput').focus();
+                searchInput.focus();
                 updateCreateButton();
             });
             
@@ -1641,17 +1686,6 @@
                     // Clear custom address fields
                     document.getElementById('serviceStreet').value = '';
                     document.getElementById('serviceAddressNotes').value = '';
-                }
-            });
-            
-            // Preferred time toggle for exact time
-            document.getElementById('preferredTime').addEventListener('change', function(e) {
-                const isExactTime = e.target.value === 'exact';
-                document.getElementById('exactTimeField').classList.toggle('hidden', !isExactTime);
-                
-                if (!isExactTime) {
-                    // Clear exact time when switching to time slot
-                    document.getElementById('exactTime').value = '';
                 }
             });
             

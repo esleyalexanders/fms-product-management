@@ -101,7 +101,7 @@
             <!-- Customer List Card -->
             <div class="bg-white rounded-lg shadow-sm p-4">
                 <!-- Search and Actions -->
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between mb-4 gap-4">
                     <div class="relative flex-1 max-w-md">
                         <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -113,7 +113,12 @@
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         >
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 items-center">
+                        <select id="statusFilter" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white">
+                            <option value="active">Active</option>
+                            <option value="archived">Archived</option>
+                            <option value="all">All</option>
+                        </select>
                         <button id="importBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
@@ -304,14 +309,14 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
+    <!-- Archive Modal -->
     <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Delete Customer</h2>
-            <p class="text-sm text-gray-600 mb-6">Are you sure you want to delete this customer? This action will soft-delete the customer but preserve historical data.</p>
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Archive Customer</h2>
+            <p class="text-sm text-gray-600 mb-6">Are you sure you want to archive this customer? You can view archived customers by selecting "Archived" from the status filter.</p>
             <div class="flex gap-3">
-                <button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    Delete
+                <button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                    Archive
                 </button>
                 <button id="cancelDeleteBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
                     Cancel
