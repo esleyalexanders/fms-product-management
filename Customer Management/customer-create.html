@@ -109,24 +109,24 @@
           <!-- Basic Information -->
           <div class="bg-white rounded-lg shadow-sm p-4">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                <input id="firstName" name="firstName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John" required>
-              </div>
-              <div>
-                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                <input id="lastName" name="lastName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Doe" required>
-              </div>
+            <div>
+              <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+              <input id="fullName" name="fullName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John Doe" required>
             </div>
           </div>
 
           <!-- Company -->
           <div class="bg-white rounded-lg shadow-sm p-4">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Company</h2>
-            <div>
-              <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-              <input id="company" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ABC Corp">
+            <div class="space-y-3">
+              <div>
+                <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                <input id="company" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ABC Corp">
+              </div>
+              <div>
+                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <input id="role" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Manager, Owner, Contractor">
+              </div>
             </div>
           </div>
 
@@ -150,8 +150,12 @@
                 <input id="email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="john@example.com" required>
               </div>
               <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                <input id="phone" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900">
+                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                <input id="phone" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900" required>
+              </div>
+              <div>
+                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                <input id="address" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 Main St, New York, NY 10001" required>
               </div>
               <div>
                 <label for="preferredContactMethod" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
@@ -168,36 +172,6 @@
             <div id="secondaryContactsContainer" class="mt-4 space-y-4"></div>
           </div>
 
-          <!-- Address -->
-          <div class="bg-white rounded-lg shadow-sm p-4">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Address</h2>
-            <div class="space-y-3">
-              <div>
-                <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Street</label>
-                <input id="street" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 Main St">
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <input id="city" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New York">
-                </div>
-                <div>
-                  <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
-                  <input id="state" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="NY">
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                  <input id="postalCode" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10001">
-                </div>
-                <div>
-                  <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                  <input id="country" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Australia" value="Australia">
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Notes -->
           <div class="bg-white rounded-lg shadow-sm p-4">
@@ -221,6 +195,10 @@
                 <div class="flex justify-between gap-2">
                   <span class="text-gray-600 font-medium">Company:</span>
                   <span class="text-gray-900 text-right" id="previewCompany">ABC Corp</span>
+                </div>
+                <div class="flex justify-between gap-2">
+                  <span class="text-gray-600 font-medium">Role:</span>
+                  <span class="text-gray-900 text-right" id="previewRole">—</span>
                 </div>
                 <div class="flex justify-between gap-2">
                   <span class="text-gray-600 font-medium">Email:</span>
@@ -341,21 +319,18 @@
     }
 
     // Update preview on input
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
+    const fullNameInput = document.getElementById('fullName');
     const companyInput = document.getElementById('company');
+    const roleInput = document.getElementById('role');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
     const preferredContactMethodSelect = document.getElementById('preferredContactMethod');
-    const streetInput = document.getElementById('street');
-    const cityInput = document.getElementById('city');
-    const stateInput = document.getElementById('state');
-    const postalCodeInput = document.getElementById('postalCode');
-    const countryInput = document.getElementById('country');
+    const addressInput = document.getElementById('address');
     const notesTextarea = document.getElementById('notes');
 
     const previewName = document.getElementById('previewName');
     const previewCompany = document.getElementById('previewCompany');
+    const previewRole = document.getElementById('previewRole');
     const previewEmail = document.getElementById('previewEmail');
     const previewPhone = document.getElementById('previewPhone');
     const previewContactMethod = document.getElementById('previewContactMethod');
@@ -363,19 +338,17 @@
     const previewNotes = document.getElementById('previewNotes');
 
     function updatePreview() {
-      const firstName = firstNameInput.value || '';
-      const lastName = lastNameInput.value || '';
-      previewName.textContent = `${firstName} ${lastName}`.trim() || 'Customer Name';
+      previewName.textContent = fullNameInput.value || 'Customer Name';
       previewCompany.textContent = companyInput.value || '—';
+      previewRole.textContent = roleInput.value || '—';
       previewEmail.textContent = emailInput.value || '—';
       previewPhone.textContent = phoneInput.value || '—';
       previewContactMethod.textContent = preferredContactMethodSelect.options[preferredContactMethodSelect.selectedIndex].text;
-      const addressParts = [streetInput.value, cityInput.value, stateInput.value, postalCodeInput.value, countryInput.value].filter(p => p);
-      previewAddress.textContent = addressParts.join(', ') || '—';
+      previewAddress.textContent = addressInput.value || '—';
       previewNotes.textContent = notesTextarea.value || '—';
     }
 
-    [firstNameInput, lastNameInput, companyInput, emailInput, phoneInput, preferredContactMethodSelect, streetInput, cityInput, stateInput, postalCodeInput, countryInput, notesTextarea].forEach(el => {
+    [fullNameInput, companyInput, roleInput, emailInput, phoneInput, preferredContactMethodSelect, addressInput, notesTextarea].forEach(el => {
       el.addEventListener('input', updatePreview);
       el.addEventListener('change', updatePreview);
     });
@@ -390,17 +363,24 @@
       }
       const customer = customersAPI.getCustomerById(editingCustomerId);
       if (customer) {
-        firstNameInput.value = customer.firstName || '';
-        lastNameInput.value = customer.lastName || '';
+        // Handle legacy firstName/lastName or new fullName
+        if (customer.fullName) {
+          fullNameInput.value = customer.fullName;
+        } else if (customer.firstName || customer.lastName) {
+          fullNameInput.value = `${customer.firstName || ''} ${customer.lastName || ''}`.trim();
+        }
         companyInput.value = customer.company || '';
+        roleInput.value = customer.role || '';
         emailInput.value = customer.email || '';
         phoneInput.value = customer.phone || '';
         preferredContactMethodSelect.value = customer.preferredContactMethod || 'email';
-        streetInput.value = customer.address?.street || '';
-        cityInput.value = customer.address?.city || '';
-        stateInput.value = customer.address?.state || '';
-        postalCodeInput.value = customer.address?.postalCode || '';
-        countryInput.value = customer.address?.country || '';
+        // Handle legacy address object or new single address field
+        if (customer.address && typeof customer.address === 'object') {
+          const addressParts = [customer.address.street, customer.address.city, customer.address.state, customer.address.postalCode, customer.address.country].filter(p => p);
+          addressInput.value = addressParts.join(', ');
+        } else {
+          addressInput.value = customer.address || '';
+        }
         notesTextarea.value = customer.notes || '';
         
         // Load secondary contacts if they exist
@@ -424,23 +404,19 @@
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.addEventListener('click', () => {
       const customerData = {
-        firstName: firstNameInput.value.trim(),
-        lastName: lastNameInput.value.trim(),
+        fullName: fullNameInput.value.trim(),
         company: companyInput.value.trim(),
+        role: roleInput.value.trim(),
         email: emailInput.value.trim(),
         phone: phoneInput.value.trim(),
-        street: streetInput.value.trim(),
-        city: cityInput.value.trim(),
-        state: stateInput.value.trim(),
-        postalCode: postalCodeInput.value.trim(),
-        country: countryInput.value.trim(),
+        address: addressInput.value.trim(),
         preferredContactMethod: preferredContactMethodSelect.value,
         notes: notesTextarea.value.trim(),
         secondaryContacts: getSecondaryContactsData()
       };
 
       // Basic validation (HTML required handles most, but double-check)
-      if (!customerData.firstName || !customerData.lastName || !customerData.email) {
+      if (!customerData.fullName || !customerData.email || !customerData.phone || !customerData.address) {
         alert('Please fill in all required fields.');
         return;
       }
