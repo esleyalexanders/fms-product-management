@@ -194,19 +194,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Expired</p>
-                            <p class="text-2xl font-bold text-gray-600" id="expiredQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Filters & Search -->
@@ -235,8 +222,18 @@
                         <option value="sent">📤 Sent</option>
                         <option value="accepted">✅ Accepted</option>
                         <option value="declined">❌ Declined</option>
-                        <option value="expired">⏰ Expired</option>
                         <option value="converted">💰 Converted</option>
+                    </select>
+
+                    <!-- Created By Filter -->
+                    <select 
+                        id="createdByFilter"
+                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">All</option>
+                        <option value="John Smith">John Smith</option>
+                        <option value="Sarah Williams">Sarah Williams</option>
+                        <option value="Mike Johnson">Mike Johnson</option>
                     </select>
 
                     <!-- Date Range Filter -->
@@ -513,6 +510,7 @@
             itemsPerPage: 10,
             searchTerm: '',
             statusFilter: '',
+            createdByFilter: '',
             dateRangeFilter: '',
             sortBy: 'newest',
             quoteToDelete: null,
@@ -656,17 +654,17 @@
                 total: 890.00,
                 approvalRequired: false
             },
-            // ⏰ EXPIRED - Validity period has passed (dates in the past)
+            // EXPIRED - Validity period has passed (dates in the past)
             {
                 id: 'Q-2024-011',
-                customerId: 2,
+                customerId: 9,
                 customerName: 'Michael Chen',
                 customerEmail: 'm.chen@email.com',
                 customerPhone: '0423 456 789',
                 createdBy: 'Sarah Williams',
                 dateCreated: '2024-09-25',
-                validUntil: '2024-10-09', // Expired (past date)
-                status: 'expired',
+                validUntil: '2024-10-09',
+                status: 'declined',
                 total: 1450.00,
                 approvalRequired: false
             },
@@ -678,8 +676,8 @@
                 customerPhone: '0401 234 567',
                 createdBy: 'John Smith',
                 dateCreated: '2024-09-20',
-                validUntil: '2024-10-04', // Expired (past date)
-                status: 'expired',
+                validUntil: '2024-10-04',
+                status: 'declined',
                 total: 675.00,
                 approvalRequired: false
             },
@@ -735,7 +733,6 @@
                 approved: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">✅ Accepted</span>',
                 declined: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
                 rejected: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
-                expired: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700">⏰ Expired</span>',
                 converted: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700">💰 Converted</span>'
             };
             return badges[status] || badges.draft;
@@ -885,6 +882,11 @@
             } else {
                 // By default, hide converted quotes from active list
                 filtered = filtered.filter(q => q.status !== 'converted');
+            }
+
+            // Created By filter
+            if (state.createdByFilter) {
+                filtered = filtered.filter(q => q.createdBy === state.createdByFilter);
             }
 
             // Date range filter
@@ -1075,8 +1077,7 @@
                 draft: quotes.filter(q => q.status === 'draft').length,
                 sent: quotes.filter(q => q.status === 'sent' || q.status === 'pending_approval').length,
                 accepted: quotes.filter(q => q.status === 'accepted' || q.status === 'approved').length,
-                declined: quotes.filter(q => q.status === 'declined' || q.status === 'rejected').length,
-                expired: quotes.filter(q => q.status === 'expired').length
+                declined: quotes.filter(q => q.status === 'declined' || q.status === 'rejected').length
             };
 
             document.getElementById('totalQuotes').textContent = stats.total;
@@ -1084,7 +1085,6 @@
             document.getElementById('sentQuotes').textContent = stats.sent;
             document.getElementById('acceptedQuotes').textContent = stats.accepted;
             document.getElementById('declinedQuotes').textContent = stats.declined;
-            document.getElementById('expiredQuotes').textContent = stats.expired;
         }
 
         function updateResultsCount() {
@@ -1440,6 +1440,13 @@
                 renderQuotes();
             });
 
+            // Created By filter
+            document.getElementById('createdByFilter').addEventListener('change', function(e) {
+                state.createdByFilter = e.target.value;
+                state.currentPage = 1;
+                renderQuotes();
+            });
+
             // Date range filter
             document.getElementById('dateRangeFilter').addEventListener('change', function(e) {
                 state.dateRangeFilter = e.target.value;
@@ -1476,6 +1483,7 @@
             document.getElementById('clearFiltersBtn').addEventListener('click', function() {
                 document.getElementById('searchInput').value = '';
                 document.getElementById('statusFilter').value = '';
+                document.getElementById('createdByFilter').value = '';
                 document.getElementById('dateRangeFilter').value = '';
                 document.getElementById('dateFrom').value = '';
                 document.getElementById('dateTo').value = '';
@@ -1484,6 +1492,7 @@
                 
                 state.searchTerm = '';
                 state.statusFilter = '';
+                state.createdByFilter = '';
                 state.dateRangeFilter = '';
                 state.sortBy = 'newest';
                 state.currentPage = 1;
