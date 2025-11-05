@@ -341,31 +341,14 @@
                                 <span class="font-medium" id="subtotalAmount">$0.00</span>
                             </div>
 
-                            <div class="border-t border-gray-200 pt-3">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-sm text-gray-600">Discount</span>
-                                    <div class="flex items-center gap-2">
-                                        <select 
-                                            id="discountType"
-                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
-                                        >
-                                            <option value="percentage">%</option>
-                                            <option value="fixed">$</option>
-                                        </select>
-                                        <input 
-                                            type="number"
-                                            id="discountValue"
-                                            value="0"
-                                            class="w-20 px-2 py-1 border border-gray-300 rounded text-sm text-right"
-                                            min="0"
-                                            step="1"
-                                        />
-                                    </div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <span class="text-sm font-medium text-red-600" id="discountAmount">-$0.00</span>
+                            <!-- Line Item Discounts Summary -->
+                            <div id="lineItemDiscountSection" class="hidden">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-sm text-gray-600">Line Item Discounts</span>
+                                    <span class="text-sm font-medium text-red-600" id="lineItemDiscountAmount">-$0.00</span>
                                 </div>
                             </div>
+
 
                             <div id="approvalWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded p-2 flex items-start gap-2">
                                 <svg class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -577,8 +560,6 @@
             selectedQuoteContact: null, // Will store the contact for this quote (primary or secondary)
             showNewCustomerForm: false,
             quoteItems: [],
-            discount: 0,
-            discountType: 'percentage',
             depositRequired: false,
             depositType: 'percentage',
             depositValue: 50,
@@ -722,14 +703,6 @@
             }, 0);
         }
 
-        function calculateDiscount() {
-            const subtotal = calculateSubtotal();
-            if (state.discountType === 'percentage') {
-                return subtotal * (state.discount / 100);
-            }
-            return state.discount;
-        }
-
         function calculateTax() {
             // Calculate tax per line item based on their tax categories
             return state.quoteItems.reduce((sum, item) => {
@@ -738,7 +711,18 @@
         }
 
         function calculateTotal() {
-            return calculateSubtotal() - calculateDiscount() + calculateTax();
+            return calculateSubtotal() + calculateTax();
+        }
+        
+        // Calculate total line item discounts
+        function calculateLineItemDiscounts() {
+            return state.quoteItems.reduce((sum, item) => {
+                const lineTotal = item.customPrice * item.quantity;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                return sum + discountAmount;
+            }, 0);
         }
         
         // Calculate deposit amount
@@ -778,7 +762,17 @@
 
         function updateSummary() {
             document.getElementById('subtotalAmount').textContent = `$${calculateSubtotal().toFixed(2)}`;
-            document.getElementById('discountAmount').textContent = `-$${calculateDiscount().toFixed(2)}`;
+            
+            // Update line item discounts display
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const lineItemDiscountSection = document.getElementById('lineItemDiscountSection');
+            if (lineItemDiscounts > 0) {
+                lineItemDiscountSection.classList.remove('hidden');
+                document.getElementById('lineItemDiscountAmount').textContent = `-$${lineItemDiscounts.toFixed(2)}`;
+            } else {
+                lineItemDiscountSection.classList.add('hidden');
+            }
+            
             document.getElementById('totalAmount').textContent = `$${calculateTotal().toFixed(2)}`;
 
             // Calculate and display tax breakdown by category
@@ -808,13 +802,16 @@
                 document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
             }
 
-            // Check approval requirement
-            const discountAmount = calculateDiscount();
-            const discountPercent = (discountAmount / calculateSubtotal()) * 100;
+            // Check approval requirement based on line item discounts
+            const lineItemDiscountTotal = calculateLineItemDiscounts();
+            const subtotal = calculateSubtotal();
+            const discountPercent = subtotal > 0 ? (lineItemDiscountTotal / (subtotal + lineItemDiscountTotal)) * 100 : 0;
             state.approvalRequired = discountPercent > 20;
             
-            document.getElementById('approvalWarning').classList.toggle('hidden', !state.approvalRequired);
-            document.getElementById('submitApprovalBtn').classList.toggle('hidden', !state.approvalRequired);
+            const approvalWarning = document.getElementById('approvalWarning');
+            if (approvalWarning) {
+                approvalWarning.classList.toggle('hidden', !state.approvalRequired);
+            }
             
             updateCreateButton();
         }
@@ -1062,51 +1059,6 @@
                             rows="2"
                         >${item.notes || ''}</textarea>
                     </div>
-                    ${item.type === 'service' ? `
-                    <!-- Schedule Section for Services -->
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <div class="text-sm font-medium text-blue-900 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                            Preferred Schedule
-                        </div>
-                        <div class="grid grid-cols-2 gap-3 mb-2">
-                            <div>
-                                <label class="text-xs text-gray-600 block mb-1">Time Preference</label>
-                                <select 
-                                    onchange="updateItemPreferredTime(${index}, this.value)"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded text-sm bg-white"
-                                >
-                                    <option value="">Select time...</option>
-                                    <option value="morning" ${item.preferredTime === 'morning' ? 'selected' : ''}>Morning (8AM-12PM)</option>
-                                    <option value="afternoon" ${item.preferredTime === 'afternoon' ? 'selected' : ''}>Afternoon (12PM-5PM)</option>
-                                    <option value="evening" ${item.preferredTime === 'evening' ? 'selected' : ''}>Evening (5PM-8PM)</option>
-                                    <option value="flexible" ${item.preferredTime === 'flexible' ? 'selected' : ''}>Flexible</option>
-                                    <option value="exact" ${item.preferredTime === 'exact' ? 'selected' : ''}>Exact Time</option>
-                                </select>
-                            </div>
-                            <div id="exactTimeField-${index}" class="${item.preferredTime === 'exact' ? '' : 'hidden'}">
-                                <label class="text-xs text-gray-600 block mb-1">Exact Time</label>
-                                <input 
-                                    type="time"
-                                    value="${item.exactTime || ''}"
-                                    onchange="updateItemExactTime(${index}, this.value)"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded text-sm"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-600 block mb-1">Schedule Notes</label>
-                            <textarea 
-                                placeholder="Timing preferences, recurring schedule, etc..."
-                                onchange="updateItemScheduleNotes(${index}, this.value)"
-                                class="w-full px-3 py-2 border border-gray-300 rounded text-sm resize-none"
-                                rows="2"
-                            >${item.scheduleNotes || ''}</textarea>
-                        </div>
-                    </div>
-                    ` : ''}
                 </div>
             `;
             }).join('');
@@ -1436,10 +1388,10 @@
                                 <span class="text-gray-700">Subtotal:</span>
                                 <span class="font-medium">$${calculateSubtotal().toFixed(2)}</span>
                             </div>
-                            ${calculateDiscount() > 0 ? `
+                            ${calculateLineItemDiscounts() > 0 ? `
                                 <div class="flex justify-between text-sm py-1">
-                                    <span class="text-gray-700">Discount:</span>
-                                    <span class="text-red-600">-$${calculateDiscount().toFixed(2)}</span>
+                                    <span class="text-gray-700">Line Item Discounts:</span>
+                                    <span class="text-red-600">-$${calculateLineItemDiscounts().toFixed(2)}</span>
                                 </div>
                             ` : ''}
                             <div class="border-t border-gray-300 mt-2 pt-2">
@@ -1689,18 +1641,6 @@
                 }
             });
             
-            // Discount changes
-            document.getElementById('discountType').addEventListener('change', function(e) {
-                state.discountType = e.target.value;
-                document.getElementById('discountValue').step = e.target.value === 'percentage' ? '1' : '0.01';
-                updateSummary();
-            });
-            
-            document.getElementById('discountValue').addEventListener('input', function(e) {
-                state.discount = Number(e.target.value);
-                updateSummary();
-            });
-            
             // Deposit changes
             document.getElementById('requireDeposit').addEventListener('change', function(e) {
                 state.depositRequired = e.target.checked;
@@ -1749,13 +1689,10 @@
                     customer: state.selectedCustomer,
                     quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
                     items: state.quoteItems,
-                    discount: state.discount,
-                    discountType: state.discountType,
                     subtotal: calculateSubtotal(),
                     tax: calculateTax(),
                     total: calculateTotal(),
                     validUntil: document.getElementById('validUntilDate').value,
-                    paymentTerms: document.getElementById('paymentTerms').value,
                     customerNotes: document.getElementById('customerNotes').value,
                     internalNotes: document.getElementById('internalNotes').value,
                     priceModifications: priceModifiedItems.map(item => ({
@@ -1786,13 +1723,10 @@
                     customer: state.selectedCustomer,
                     quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
                     items: state.quoteItems,
-                    discount: state.discount,
-                    discountType: state.discountType,
                     subtotal: calculateSubtotal(),
                     tax: calculateTax(),
                     total: calculateTotal(),
                     validUntil: document.getElementById('validUntilDate').value,
-                    paymentTerms: document.getElementById('paymentTerms').value,
                     customerNotes: document.getElementById('customerNotes').value,
                     internalNotes: document.getElementById('internalNotes').value,
                     status: 'draft',
@@ -1813,12 +1747,6 @@
             // Preview modal buttons
             document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
             document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
-            
-            // Submit for approval
-            document.getElementById('submitApprovalBtn').addEventListener('click', function() {
-                console.log('Submitting for approval:', state);
-                alert('Quote submitted for manager approval!');
-            });
             
             // Price modification modal event listeners
             document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);
