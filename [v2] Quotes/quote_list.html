@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotes Management - FMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
@@ -22,12 +24,77 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+        
+        /* Override for main content with sidebar */
+        .main-content {
+            background: #f9fafb;
+        }
+        
+        .content-wrapper {
+            padding: 0;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-    
-    <div class="p-4">
-        <div class="max-w-7xl mx-auto">
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text">Sunshine Tutoring</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i><span>Home</span>
+                </a>
+                <a href="quote_list.html" class="nav-item active" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-file-contract"></i><span>Quotes</span>
+                </a>
+                <a href="../[v2] Jobs/job_list.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-briefcase"></i><span>Jobs</span>
+                </a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-calendar-alt"></i><span>Schedule</span>
+                </a>
+                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-users"></i><span>Manage team</span>
+                </a>
+                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-book"></i><span>My pricebook</span>
+                </a>
+                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-user-friends"></i><span>Customers</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="p-4">
+                    <div class="max-w-7xl mx-auto">
             
             <!-- Header -->
             <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -78,12 +145,12 @@
                 <div class="bg-white rounded-lg shadow-sm p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">Pending Approval</p>
-                            <p class="text-2xl font-bold text-yellow-600" id="pendingApproval">0</p>
+                            <p class="text-sm text-gray-600">Draft</p>
+                            <p class="text-2xl font-bold text-yellow-600" id="draftQuotes">0</p>
                         </div>
                         <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
                         </div>
                     </div>
@@ -104,12 +171,38 @@
                 <div class="bg-white rounded-lg shadow-sm p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">Converted to Jobs</p>
-                            <p class="text-2xl font-bold text-purple-600" id="convertedQuotes">0</p>
+                            <p class="text-sm text-gray-600">Accepted</p>
+                            <p class="text-2xl font-bold text-green-600" id="acceptedQuotes">0</p>
                         </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Declined</p>
+                            <p class="text-2xl font-bold text-red-600" id="declinedQuotes">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Expired</p>
+                            <p class="text-2xl font-bold text-gray-600" id="expiredQuotes">0</p>
+                        </div>
+                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                     </div>
@@ -137,11 +230,13 @@
                         id="statusFilter"
                         class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="">Active Status</option>
-                        <option value="draft">Draft</option>
-                        <option value="sent">Sent / Pending Approval</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="converted">Archived (Converted)</option>
+                        <option value="">All Statuses</option>
+                        <option value="draft">📝 Draft</option>
+                        <option value="sent">📤 Sent</option>
+                        <option value="accepted">✅ Accepted</option>
+                        <option value="declined">❌ Declined</option>
+                        <option value="expired">⏰ Expired</option>
+                        <option value="converted">💰 Converted</option>
                     </select>
 
                     <!-- Date Range Filter -->
@@ -228,6 +323,7 @@
                             <tr>
                                 <th class="text-left p-3 font-medium text-gray-700">Quote ID</th>
                                 <th class="text-left p-3 font-medium text-gray-700">Customer</th>
+                                <th class="text-left p-3 font-medium text-gray-700">Created By</th>
                                 <th class="text-left p-3 font-medium text-gray-700">Date Created</th>
                                 <th class="text-left p-3 font-medium text-gray-700">Valid Until</th>
                                 <th class="text-right p-3 font-medium text-gray-700">Total Price</th>
@@ -381,27 +477,27 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <!-- Archive Confirmation Modal -->
+    <div id="archiveModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Delete Quote</h3>
-                    <button id="closeDeleteModal" class="text-gray-400 hover:text-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900">Archive Quote</h3>
+                    <button id="closeArchiveModal" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
                 
-                <p class="text-gray-600 mb-4">Are you sure you want to delete this quote? This action cannot be undone.</p>
+                <p class="text-gray-600 mb-4">Are you sure you want to archive this quote? Archived quotes can be restored later if needed.</p>
                 
                 <div class="flex gap-3">
-                    <button id="cancelDeleteBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    <button id="cancelArchiveBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
                         Cancel
                     </button>
-                    <button id="confirmDeleteBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
-                        Delete
+                    <button id="confirmArchiveBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
+                        Archive
                     </button>
                 </div>
             </div>
@@ -423,88 +519,206 @@
             currentQuoteForAction: null
         };
 
-        // Sample data
+        // Sample data - All statuses represented
         const quotes = [
+            // 📝 DRAFT - Being prepared
             {
                 id: 'Q-2024-001',
-                customerId: 1,
-                customerName: 'Sarah Johnson',
-                customerEmail: 'sarah.j@email.com',
-                customerPhone: '0412 345 678',
-                dateCreated: '2024-10-20',
-                validUntil: '2024-11-03',
-                status: 'sent',
-                total: 412.50,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-002',
                 customerId: 2,
                 customerName: 'Michael Chen',
                 customerEmail: 'm.chen@email.com',
                 customerPhone: '0423 456 789',
-                dateCreated: '2024-10-19',
-                validUntil: '2024-11-02',
-                status: 'converted',
-                total: 1125.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-003',
-                customerId: 3,
-                customerName: 'Emma Wilson',
-                customerEmail: 'emma.w@email.com',
-                customerPhone: '0434 567 890',
-                dateCreated: '2024-10-18',
-                validUntil: '2024-11-01',
-                status: 'pending_approval',
-                total: 3250.00,
-                approvalRequired: true
-            },
-            {
-                id: 'Q-2024-004',
-                customerId: 1,
-                customerName: 'Sarah Johnson',
-                customerEmail: 'sarah.j@email.com',
-                customerPhone: '0412 345 678',
-                dateCreated: '2024-10-17',
-                validUntil: '2024-11-17',
-                status: 'sent',
-                total: 850.50,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-005',
-                customerId: 2,
-                customerName: 'Michael Chen',
-                customerEmail: 'm.chen@email.com',
-                customerPhone: '0423 456 789',
-                dateCreated: '2024-10-16',
-                validUntil: '2024-10-30',
+                createdBy: 'John Smith',
+                dateCreated: '2024-10-25',
+                validUntil: '2024-11-08',
                 status: 'draft',
                 total: 750.00,
                 approvalRequired: false
             },
             {
-                id: 'Q-2024-006',
+                id: 'Q-2024-002',
+                customerId: 5,
+                customerName: 'Lisa Anderson',
+                customerEmail: 'lisa.a@email.com',
+                customerPhone: '0456 789 012',
+                createdBy: 'Sarah Williams',
+                dateCreated: '2024-10-24',
+                validUntil: '2024-11-07',
+                status: 'draft',
+                total: 1250.00,
+                approvalRequired: false
+            },
+            // 📤 SENT - Awaiting customer response
+            {
+                id: 'Q-2024-003',
+                customerId: 1,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                createdBy: 'John Smith',
+                dateCreated: '2024-10-23',
+                validUntil: '2024-11-06',
+                status: 'sent',
+                total: 412.50,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-004',
+                customerId: 3,
+                customerName: 'Emma Wilson',
+                customerEmail: 'emma.w@email.com',
+                customerPhone: '0434 567 890',
+                createdBy: 'Mike Johnson',
+                dateCreated: '2024-10-22',
+                validUntil: '2024-11-05',
+                status: 'sent',
+                total: 850.50,
+                approvalRequired: false
+            },
+            // More SENT quotes
+            {
+                id: 'Q-2024-005',
                 customerId: 4,
                 customerName: 'David Brown',
                 customerEmail: 'david.b@email.com',
                 customerPhone: '0445 678 901',
-                dateCreated: '2024-10-15',
-                validUntil: '2024-10-29',
-                status: 'rejected',
+                createdBy: 'Sarah Williams',
+                dateCreated: '2024-10-21',
+                validUntil: '2024-11-04',
+                status: 'sent',
                 total: 920.75,
                 approvalRequired: false
             },
+            {
+                id: 'Q-2024-006',
+                customerId: 6,
+                customerName: 'James Taylor',
+                customerEmail: 'james.t@email.com',
+                customerPhone: '0467 890 123',
+                createdBy: 'John Smith',
+                dateCreated: '2024-10-20',
+                validUntil: '2024-11-03',
+                status: 'sent',
+                total: 1580.00,
+                approvalRequired: false
+            },
+            // ✅ ACCEPTED - Customer approved the quote
             {
                 id: 'Q-2024-007',
                 customerId: 1,
                 customerName: 'Sarah Johnson',
                 customerEmail: 'sarah.j@email.com',
                 customerPhone: '0412 345 678',
+                createdBy: 'Mike Johnson',
+                dateCreated: '2024-10-19',
+                validUntil: '2024-11-02',
+                status: 'accepted',
+                total: 3250.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-008',
+                customerId: 7,
+                customerName: 'Rachel Green',
+                customerEmail: 'rachel.g@email.com',
+                customerPhone: '0478 901 234',
+                createdBy: 'Sarah Williams',
+                dateCreated: '2024-10-18',
+                validUntil: '2024-11-01',
+                status: 'accepted',
+                total: 2100.00,
+                approvalRequired: false
+            },
+            // ❌ DECLINED - Customer rejected the quote
+            {
+                id: 'Q-2024-009',
+                customerId: 8,
+                customerName: 'Tom Harris',
+                customerEmail: 'tom.h@email.com',
+                customerPhone: '0489 012 345',
+                createdBy: 'John Smith',
+                dateCreated: '2024-10-17',
+                validUntil: '2024-10-31',
+                status: 'declined',
+                total: 1750.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-010',
+                customerId: 9,
+                customerName: 'Nina Patel',
+                customerEmail: 'nina.p@email.com',
+                customerPhone: '0490 123 456',
+                createdBy: 'Mike Johnson',
+                dateCreated: '2024-10-16',
+                validUntil: '2024-10-30',
+                status: 'declined',
+                total: 890.00,
+                approvalRequired: false
+            },
+            // ⏰ EXPIRED - Validity period has passed (dates in the past)
+            {
+                id: 'Q-2024-011',
+                customerId: 2,
+                customerName: 'Michael Chen',
+                customerEmail: 'm.chen@email.com',
+                customerPhone: '0423 456 789',
+                createdBy: 'Sarah Williams',
+                dateCreated: '2024-09-25',
+                validUntil: '2024-10-09', // Expired (past date)
+                status: 'expired',
+                total: 1450.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-012',
+                customerId: 10,
+                customerName: 'Oliver Smith',
+                customerEmail: 'oliver.s@email.com',
+                customerPhone: '0401 234 567',
+                createdBy: 'John Smith',
                 dateCreated: '2024-09-20',
-                validUntil: '2024-10-05',
+                validUntil: '2024-10-04', // Expired (past date)
+                status: 'expired',
+                total: 675.00,
+                approvalRequired: false
+            },
+            // 💰 CONVERTED - Converted to job
+            {
+                id: 'Q-2024-013',
+                customerId: 1,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                createdBy: 'Mike Johnson',
+                dateCreated: '2024-09-15',
+                validUntil: '2024-09-29',
+                status: 'converted',
+                total: 1125.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-014',
+                customerId: 3,
+                customerName: 'Emma Wilson',
+                customerEmail: 'emma.w@email.com',
+                customerPhone: '0434 567 890',
+                createdBy: 'Sarah Williams',
+                dateCreated: '2024-09-10',
+                validUntil: '2024-09-24',
+                status: 'converted',
+                total: 2850.00,
+                approvalRequired: false
+            },
+            {
+                id: 'Q-2024-015',
+                customerId: 4,
+                customerName: 'David Brown',
+                customerEmail: 'david.b@email.com',
+                customerPhone: '0445 678 901',
+                createdBy: 'John Smith',
+                dateCreated: '2024-09-05',
+                validUntil: '2024-09-19',
                 status: 'converted',
                 total: 525.00,
                 approvalRequired: false
@@ -514,12 +728,15 @@
         // Helper functions
         function getStatusBadge(status) {
             const badges = {
-                draft: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">✏️ Draft</span>',
-                sent: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">⏳ Waiting for Approval</span>',
-                pending_approval: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">⏳ Waiting for Approval</span>',
-                approved: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">✓ Approved</span>',
-                rejected: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">✕ Rejected</span>',
-                converted: '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">✓ Converted to Job</span>'
+                draft: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700">📝 Draft</span>',
+                sent: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700">📤 Sent</span>',
+                pending_approval: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700">📤 Sent</span>',
+                accepted: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">✅ Accepted</span>',
+                approved: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">✅ Accepted</span>',
+                declined: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
+                rejected: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
+                expired: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700">⏰ Expired</span>',
+                converted: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700">💰 Converted</span>'
             };
             return badges[status] || badges.draft;
         }
@@ -545,6 +762,101 @@
                 return '<span class="text-orange-600 text-xs">⏰ Expiring Soon</span>';
             }
             return '';
+        }
+
+        function getQuickActions(quote) {
+            const actions = [];
+            
+            // Status-based quick actions
+            switch(quote.status) {
+                case 'draft':
+                    actions.push(`
+                        <button 
+                            onclick="quickStatusChange('${quote.id}', 'sent')"
+                            class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 flex items-center gap-1"
+                            title="Send Quote"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Send
+                        </button>
+                    `);
+                    break;
+                    
+                case 'sent':
+                case 'pending_approval':
+                    actions.push(`
+                        <button 
+                            onclick="quickStatusChange('${quote.id}', 'accepted')"
+                            class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 flex items-center gap-1"
+                            title="Mark as Accepted"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Accept
+                        </button>
+                        <button 
+                            onclick="quickStatusChange('${quote.id}', 'declined')"
+                            class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 flex items-center gap-1"
+                            title="Mark as Declined"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Decline
+                        </button>
+                    `);
+                    break;
+                    
+                case 'accepted':
+                    actions.push(`
+                        <button 
+                            onclick="convertToWorkOrder('${quote.id}')"
+                            class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 flex items-center gap-1"
+                            title="Convert to Job"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            Convert
+                        </button>
+                    `);
+                    break;
+                    
+                case 'expired':
+                    actions.push(`
+                        <button 
+                            onclick="extendQuote('${quote.id}')"
+                            class="px-3 py-1 bg-orange-600 text-white text-xs rounded-lg hover:bg-orange-700 flex items-center gap-1"
+                            title="Extend & Resend"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Extend
+                        </button>
+                    `);
+                    break;
+                    
+                case 'converted':
+                    actions.push(`
+                        <button 
+                            onclick="viewJob('${quote.id}')"
+                            class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 flex items-center gap-1"
+                            title="View Job"
+                        >
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            View Job
+                        </button>
+                    `);
+                    break;
+            }
+            
+            return actions.join('');
         }
 
         // Filter and sort functions
@@ -653,13 +965,27 @@
                 return `
                     <tr class="hover:bg-gray-50">
                         <td class="p-3">
-                            <a href="quote_create.html?id=${quote.id}" class="text-blue-600 hover:underline font-medium">
-                                ${quote.id}
-                            </a>
+                            <div class="flex items-center gap-2">
+                                <a href="quote_edit.html?id=${quote.id}" class="text-blue-600 hover:underline font-medium">
+                                    ${quote.id}
+                                </a>
+                                <button 
+                                    onclick="window.location.href='quote_edit.html?id=${quote.id}'"
+                                    class="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                    title="View Quote Details"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </td>
                         <td class="p-3">
                             <p class="font-medium text-gray-900">${quote.customerName}</p>
                             <p class="text-xs text-gray-600">${quote.customerEmail}</p>
+                        </td>
+                        <td class="p-3">
+                            <p class="text-gray-700">${quote.createdBy}</p>
                         </td>
                         <td class="p-3 text-gray-700">
                             ${formatDate(quote.dateCreated)}
@@ -676,45 +1002,64 @@
                         </td>
                         <td class="p-3">
                             <div class="flex items-center justify-center gap-2">
-                                ${quote.status === 'converted' ? `
+                                ${getQuickActions(quote)}
+                                <div class="relative">
                                     <button 
-                                        onclick="viewJob('${quote.id}')"
-                                        class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 flex items-center gap-1"
+                                        onclick="toggleActionsMenu('${quote.id}')"
+                                        class="p-1 text-gray-600 hover:text-gray-900"
+                                        title="More actions"
                                     >
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                                         </svg>
-                                        View Job
                                     </button>
-                                ` : ''}
-                                ${isWaitingForApproval ? `
-                                    <button 
-                                        onclick="convertToWorkOrder('${quote.id}')"
-                                        class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700"
-                                    >
-                                        Convert to Job
-                                    </button>
-                                ` : ''}
-                                ${quote.status !== 'converted' ? `
-                                    <div class="relative">
-                                        <button 
-                                            onclick="toggleActionsMenu('${quote.id}')"
-                                            class="p-1 text-gray-600 hover:text-gray-900"
-                                        >
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                            </svg>
+                                    <div id="actionsMenu-${quote.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+                                        <button onclick="previewPDF('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                View Details (PDF)
+                                            </span>
                                         </button>
-                                        <div id="actionsMenu-${quote.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
-                                            <button onclick="viewQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Details</button>
-                                            <button onclick="editQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</button>
-                                            <button onclick="previewPDF('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Preview PDF</button>
-                                            <button onclick="sendQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Resend</button>
-                                            <button onclick="cloneQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Clone</button>
-                                            <button onclick="showDeleteModal('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</button>
-                                        </div>
+                                        <button onclick="editQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                Edit
+                                            </span>
+                                        </button>
+                                        ${quote.status !== 'declined' && quote.status !== 'draft' && quote.status !== 'rejected' ? `
+                                        <button onclick="sendQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                                </svg>
+                                                Resend
+                                            </span>
+                                        </button>
+                                        ` : ''}
+                                        <button onclick="cloneQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                </svg>
+                                                Clone
+                                            </span>
+                                        </button>
+                                        <div class="border-t border-gray-200 my-1"></div>
+                                        <button onclick="archiveQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                                                </svg>
+                                                Archive
+                                            </span>
+                                        </button>
                                     </div>
-                                ` : ''}
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -727,15 +1072,19 @@
         function updateStats() {
             const stats = {
                 total: quotes.filter(q => q.status !== 'converted').length, // Only count active quotes (not converted)
-                pendingApproval: quotes.filter(q => q.status === 'pending_approval' || q.status === 'sent').length,
-                sent: quotes.filter(q => q.status === 'sent').length,
-                converted: quotes.filter(q => q.status === 'converted').length
+                draft: quotes.filter(q => q.status === 'draft').length,
+                sent: quotes.filter(q => q.status === 'sent' || q.status === 'pending_approval').length,
+                accepted: quotes.filter(q => q.status === 'accepted' || q.status === 'approved').length,
+                declined: quotes.filter(q => q.status === 'declined' || q.status === 'rejected').length,
+                expired: quotes.filter(q => q.status === 'expired').length
             };
 
             document.getElementById('totalQuotes').textContent = stats.total;
-            document.getElementById('pendingApproval').textContent = stats.pendingApproval;
+            document.getElementById('draftQuotes').textContent = stats.draft;
             document.getElementById('sentQuotes').textContent = stats.sent;
-            document.getElementById('convertedQuotes').textContent = stats.converted;
+            document.getElementById('acceptedQuotes').textContent = stats.accepted;
+            document.getElementById('declinedQuotes').textContent = stats.declined;
+            document.getElementById('expiredQuotes').textContent = stats.expired;
         }
 
         function updateResultsCount() {
@@ -970,6 +1319,49 @@
             window.location.href = `../Jobs/job_detail.html?id=${jobId}`;
         }
 
+        function quickStatusChange(quoteId, newStatus) {
+            const quote = quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+            
+            const statusMessages = {
+                'sent': 'Send this quote to the customer?',
+                'accepted': 'Mark this quote as accepted by the customer?',
+                'declined': 'Mark this quote as declined by the customer?'
+            };
+            
+            const confirmMessage = statusMessages[newStatus] || 'Change quote status?';
+            
+            if (confirm(confirmMessage)) {
+                quote.status = newStatus;
+                console.log(`Quote ${quoteId} status changed to: ${newStatus}`);
+                
+                const successMessages = {
+                    'sent': 'Quote sent successfully!',
+                    'accepted': 'Quote marked as accepted!',
+                    'declined': 'Quote marked as declined!'
+                };
+                
+                alert(successMessages[newStatus] || 'Quote status updated!');
+                renderQuotes();
+            }
+        }
+
+        function extendQuote(quoteId) {
+            const quote = quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+            
+            const newValidUntil = prompt('Enter new valid until date (YYYY-MM-DD):', 
+                new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+            
+            if (newValidUntil) {
+                quote.validUntil = newValidUntil;
+                quote.status = 'sent';
+                console.log(`Quote ${quoteId} extended to: ${newValidUntil}`);
+                alert('Quote validity extended and resent to customer!');
+                renderQuotes();
+            }
+        }
+
         function convertToWorkOrder(quoteId) {
             if (confirm('Are you sure you want to convert this quote to a job?')) {
                 console.log('Convert to job:', quoteId);
@@ -986,21 +1378,26 @@
             }
         }
 
-        function showDeleteModal(quoteId) {
-            state.quoteToDelete = quoteId;
-            document.getElementById('deleteModal').classList.remove('hidden');
+        function archiveQuote(quoteId) {
+            state.quoteToArchive = quoteId;
+            document.getElementById('archiveModal').classList.remove('hidden');
         }
 
-        function hideDeleteModal() {
-            state.quoteToDelete = null;
-            document.getElementById('deleteModal').classList.add('hidden');
+        function hideArchiveModal() {
+            state.quoteToArchive = null;
+            document.getElementById('archiveModal').classList.add('hidden');
         }
 
-        function deleteQuote() {
-            if (state.quoteToDelete) {
-                console.log('Delete quote:', state.quoteToDelete);
-                alert('Quote deleted successfully!');
-                hideDeleteModal();
+        function confirmArchive() {
+            if (state.quoteToArchive) {
+                // Find and remove the quote from the array
+                const index = quotes.findIndex(q => q.id === state.quoteToArchive);
+                if (index !== -1) {
+                    quotes.splice(index, 1);
+                }
+                console.log('Archive quote:', state.quoteToArchive);
+                alert('Quote archived successfully!');
+                hideArchiveModal();
                 renderQuotes();
             }
         }
@@ -1110,10 +1507,10 @@
                 }
             });
 
-            // Delete modal
-            document.getElementById('closeDeleteModal').addEventListener('click', hideDeleteModal);
-            document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteModal);
-            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteQuote);
+            // Archive modal
+            document.getElementById('closeArchiveModal').addEventListener('click', hideArchiveModal);
+            document.getElementById('cancelArchiveBtn').addEventListener('click', hideArchiveModal);
+            document.getElementById('confirmArchiveBtn').addEventListener('click', confirmArchive);
 
             // View modal
             document.getElementById('closeViewModal').addEventListener('click', function() {
@@ -1175,5 +1572,10 @@
             renderQuotes();
         });
     </script>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
