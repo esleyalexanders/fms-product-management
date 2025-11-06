@@ -3,8 +3,8 @@
 // Load main content on page load
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Load the main content template
-        const response = await fetch('job_create_simple_content.html');
+        // Load the main content template (with cache busting)
+        const response = await fetch('job_create_simple_content.html?v=' + Date.now());
         
         if (!response.ok) {
             throw new Error('Failed to load content');
@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.log('👤 Customer card found:', document.querySelector('.sticky.top-4') ? 'Yes' : 'No');
         console.log('📝 Notes section found:', document.querySelector('#internalNotes') ? 'Yes' : 'No');
         console.log('📋 Total cards in left column:', document.querySelectorAll('.lg\\:col-span-8 > .bg-white').length);
+        
+        // Debug: Check what's actually in the DOM
+        console.log('🔍 DEBUG: Right column exists?', document.querySelector('.lg\\:col-span-4') ? 'Yes' : 'No');
+        console.log('🔍 DEBUG: Notes card exists?', document.querySelector('h2') ? Array.from(document.querySelectorAll('h2')).map(h => h.textContent) : 'No h2 tags');
+        console.log('🔍 DEBUG: Total .bg-white cards:', document.querySelectorAll('.bg-white').length);
         
         // Initialize event listeners after content is loaded
         initializeEventListeners();

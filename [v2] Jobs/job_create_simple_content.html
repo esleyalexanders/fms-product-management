@@ -1,5 +1,11 @@
 <!-- This file contains the main content template for job_create_simple.html -->
 <!-- It will be loaded dynamically by JavaScript -->
+<!-- VERSION: 2024-11-06-12:00 - WITH CUSTOMER & NOTES SECTIONS -->
+
+<!-- TEST BANNER - Remove after confirming it works -->
+<div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 rounded-lg mb-4 text-center font-bold text-lg">
+    ✅ NEW VERSION LOADED - Customer & Notes sections are included!
+</div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" style="display: grid !important;">
     
@@ -303,8 +309,8 @@
         </div>
         
         <!-- Notes Card -->
-        <div class="bg-white rounded-lg shadow-sm p-6" style="display: block !important; visibility: visible !important; border: 3px solid red;">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4" style="color: red; font-size: 24px;">📝 Notes Section (TEST - Should be visible!)</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">📝 Notes</h2>
             
             <div class="space-y-4">
                 <!-- Internal Notes -->
@@ -349,10 +355,101 @@
     <!-- Right Column - Summary -->
     <div class="lg:col-span-4 space-y-4">
         
-        <!-- Right column content deleted - ready for redesign -->
+        <!-- Customer Information Card -->
+        <div class="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Customer Information</h3>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Customer Name -->
+                <div>
+                    <p class="text-xs font-medium text-gray-500 mb-1">Customer Name</p>
+                    <p class="text-sm font-semibold text-gray-900">Sarah Johnson</p>
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <p class="text-xs font-medium text-gray-500 mb-1">Email</p>
+                    <a href="mailto:sarah.j@email.com" class="text-sm text-blue-600 hover:text-blue-700 hover:underline">
+                        sarah.j@email.com
+                    </a>
+                </div>
+                
+                <!-- Phone -->
+                <div>
+                    <p class="text-xs font-medium text-gray-500 mb-1">Phone</p>
+                    <a href="tel:+61400123456" class="text-sm text-blue-600 hover:text-blue-700 hover:underline">
+                        +61 400 123 456
+                    </a>
+                </div>
+                
+                <!-- Service Address -->
+                <div>
+                    <p class="text-xs font-medium text-gray-500 mb-1">Service Address</p>
+                    <p class="text-sm text-gray-900">123 Main Street</p>
+                    <p class="text-sm text-gray-900">Melbourne, VIC 3000</p>
+                </div>
+                
+                <!-- Divider -->
+                <div class="border-t border-gray-200 pt-4">
+                    <p class="text-xs font-medium text-gray-500 mb-2">Quote Details</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Quote ID:</span>
+                            <span class="font-medium text-gray-900">Q-2024-001</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Total Items:</span>
+                            <span class="font-medium text-gray-900">5 items</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Quote Total:</span>
+                            <span class="font-semibold text-gray-900">$1,650.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- View Quote Link -->
+                <div class="pt-2">
+                    <a href="../[v2] Quotes/quote_edit.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        View Full Quote
+                    </a>
+                </div>
+            </div>
+        </div>
         
     </div>
     
+</div>
+
+<!-- Action Buttons -->
+<div class="flex gap-3 justify-end mt-6">
+    <button 
+        id="saveDraftBtn"
+        class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2"
+    >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+        </svg>
+        Save Draft
+    </button>
+    <button 
+        id="createJobBtn"
+        class="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium flex items-center gap-2"
+    >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        Create Job
+    </button>
 </div>
 
 <!-- Split Items Modal -->
