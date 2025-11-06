@@ -18,6 +18,31 @@
             background: #888;
             border-radius: 10px;
         }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Sticky side panel */
+        .sticky-panel {
+            position: sticky;
+            top: 1rem;
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+        
+        /* Job card hover effect */
+        .job-nav-card {
+            transition: all 0.2s ease;
+        }
+        
+        .job-nav-card:hover {
+            transform: translateX(4px);
+        }
+        
+        .job-nav-card.active {
+            border-left: 4px solid #059669;
+            background: #ecfdf5;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -67,8 +92,34 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Left Column - Main Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <!-- Left Side Panel - Job Navigation -->
+                <div class="lg:col-span-1">
+                    <div class="sticky-panel bg-white rounded-lg shadow-sm p-4 custom-scrollbar">
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-1">Quote Jobs</h3>
+                            <p class="text-xs text-gray-600">Q-2024-001</p>
+                        </div>
+                        
+                        <div id="jobNavigationList" class="space-y-2">
+                            <!-- Job navigation cards will be populated here -->
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <button 
+                                onclick="window.location.href='../[v2] Quotes/quote_edit.html?id=Q-2024-001'"
+                                class="w-full px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                View Quote
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Column - Main Content -->
                 <div class="lg:col-span-2 space-y-4">
                     
                     <!-- Job Overview -->
@@ -330,6 +381,7 @@
             'J-2024-001': {
                 id: 'J-2024-001',
                 quoteId: 'Q-2024-001',
+                jobName: 'Tutoring Services',
                 customerName: 'Sarah Johnson',
                 customerEmail: 'sarah.j@email.com',
                 customerPhone: '0412 345 678',
@@ -340,11 +392,55 @@
                 assignedMembers: ['John Smith', 'Jane Doe'],
                 status: 'scheduled',
                 priority: 'high',
-                total: 412.50,
-                description: 'Initial tutoring session for Math and Science',
+                total: 825.00,
+                itemCount: 3,
+                description: 'Math, Science, and English tutoring sessions',
                 lineItems: [
-                    { name: 'One-on-One Tutoring - Math', id: 'TUT001', quantity: 2, unit: 'hour', price: 75.00 },
-                    { name: 'Assessment & Report', id: 'RPT002', quantity: 1, unit: 'each', price: 120.00 }
+                    { name: 'Math Tutoring Session', id: 'TUT001', quantity: 1, unit: 'session', price: 300.00 },
+                    { name: 'Science Tutoring Session', id: 'TUT002', quantity: 1, unit: 'session', price: 300.00 },
+                    { name: 'English Tutoring Session', id: 'TUT003', quantity: 1, unit: 'session', price: 300.00 }
+                ]
+            },
+            'J-2024-002': {
+                id: 'J-2024-002',
+                quoteId: 'Q-2024-001',
+                jobName: 'Materials Services',
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                location: '123 Main St, Melbourne VIC 3000',
+                scheduleDate: '2024-10-29',
+                scheduleTime: '2:00 PM',
+                assignedTeam: 'Team 2 - Support',
+                assignedMembers: ['Mike Wilson'],
+                status: 'pending',
+                priority: 'medium',
+                total: 165.00,
+                itemCount: 1,
+                description: 'Study materials package delivery',
+                lineItems: [
+                    { name: 'Study Materials Package', id: 'MAT001', quantity: 1, unit: 'package', price: 150.00 }
+                ]
+            },
+            'J-2024-003': {
+                id: 'J-2024-003',
+                quoteId: 'Q-2024-001',
+                jobName: 'Assessment Services',
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.j@email.com',
+                customerPhone: '0412 345 678',
+                location: '123 Main St, Melbourne VIC 3000',
+                scheduleDate: '2024-11-05',
+                scheduleTime: '10:00 AM',
+                assignedTeam: 'Team 1 - Primary',
+                assignedMembers: ['John Smith'],
+                status: 'unscheduled',
+                priority: 'low',
+                total: 110.00,
+                itemCount: 1,
+                description: 'Progress assessment and evaluation',
+                lineItems: [
+                    { name: 'Progress Assessment', id: 'ASS001', quantity: 1, unit: 'assessment', price: 100.00 }
                 ]
             }
         };

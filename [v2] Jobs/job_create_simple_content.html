@@ -1,0 +1,436 @@
+<!-- This file contains the main content template for job_create_simple.html -->
+<!-- It will be loaded dynamically by JavaScript -->
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6" style="display: grid !important;">
+    
+    <!-- Left Column - Job Configuration -->
+    <div class="lg:col-span-8 space-y-4">
+        
+        <!-- Job Details Card -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Job Details</h2>
+            
+            <div class="space-y-4">
+                <!-- Job Name -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Job Name <span class="text-gray-400">(Optional)</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="jobName"
+                        placeholder="e.g., Complete Tutoring Package"
+                        maxlength="100"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <p class="text-xs text-gray-500 mt-1">Leave blank to use default: "Job from Quote Q-2024-001"</p>
+                </div>
+                
+                <!-- Priority -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center justify-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-red-500 transition-colors">
+                            <input type="radio" name="priority" value="high" class="mr-2">
+                            <span class="font-medium text-red-600">🔴 High</span>
+                        </label>
+                        <label class="flex items-center justify-center p-3 border-2 border-blue-500 rounded-lg cursor-pointer">
+                            <input type="radio" name="priority" value="medium" checked class="mr-2">
+                            <span class="font-medium text-blue-600">🔵 Medium</span>
+                        </label>
+                        <label class="flex items-center justify-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-green-500 transition-colors">
+                            <input type="radio" name="priority" value="low" class="mr-2">
+                            <span class="font-medium text-green-600">🟢 Low</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Schedule Card -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Schedule</h2>
+                <span class="text-sm text-gray-500">Optional - can schedule later</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Date -->
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Date
+                    </label>
+                    <input 
+                        type="date" 
+                        id="scheduleDate"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                </div>
+                
+                <!-- Preferred Time -->
+                <div>
+                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Preferred Time <span class="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    
+                    <div class="space-y-2">
+                        <select 
+                            id="scheduleTimeSelect"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer"
+                            onchange="toggleCustomTime()"
+                            style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em 1.25em; padding-right: 2.5rem;"
+                        >
+                            <option value="flexible" selected>Flexible (Anytime)</option>
+                            <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                            <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
+                            <option value="evening">Evening (5:00 PM - 9:00 PM)</option>
+                            <option value="custom">Specific Time...</option>
+                        </select>
+                        
+                        <!-- Custom Time Input (Hidden by default) -->
+                        <div id="customTimeContainer" class="hidden">
+                            <div class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <input 
+                                    type="time" 
+                                    id="scheduleTime"
+                                    class="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                />
+                                <button 
+                                    type="button"
+                                    onclick="clearCustomTime()"
+                                    class="text-gray-400 hover:text-gray-600 transition-colors"
+                                    title="Clear"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Duration Estimate -->
+            <div>
+                <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Estimated Duration
+                </label>
+                <div class="grid grid-cols-2 gap-4 max-w-md">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Hours</label>
+                        <input 
+                            type="number" 
+                            id="durationHours"
+                            placeholder="0"
+                            min="0"
+                            max="24"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-2xl font-semibold"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Minutes</label>
+                        <input 
+                            type="number" 
+                            id="durationMinutes"
+                            placeholder="0"
+                            min="0"
+                            max="59"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-2xl font-semibold"
+                        />
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Auto-calculated from line items: 6 hours</p>
+            </div>
+        </div>
+        
+        <!-- Staff Assignment Card -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <label class="flex items-center gap-2 text-lg font-semibold text-gray-900">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Assignment <span class="text-sm text-gray-500 font-normal">(Optional)</span>
+                </label>
+                
+                <!-- Assignment Type Tabs -->
+                <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
+                    <button id="assignStaffTab" class="px-3 py-1.5 text-sm font-medium rounded bg-white text-blue-600 shadow-sm">
+                        Staff
+                    </button>
+                    <button id="assignTeamTab" class="px-3 py-1.5 text-sm font-medium rounded text-gray-600 hover:text-gray-900">
+                        Team
+                    </button>
+                </div>
+            </div>
+                    
+                    <!-- Staff Assignment Mode (Unified - allows single or multiple) -->
+                    <div id="staffAssignmentMode">
+                        <div class="mb-3">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input 
+                                    type="text" 
+                                    id="staffSearchInput"
+                                    placeholder="Search staff by name or skills..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    autocomplete="off"
+                                />
+                                <div id="staffAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                    <!-- Staff search results -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Selected Staff List -->
+                        <div id="selectedStaffContainer" class="mb-3">
+                            <p class="text-xs font-semibold text-gray-700 mb-2">Selected Staff (<span id="selectedStaffCount">0</span>)</p>
+                            <div id="selectedStaffList" class="space-y-2">
+                                <!-- Selected staff will appear here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Recommended Staff Section -->
+                        <div id="recommendedStaffSection" class="mb-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-xs font-medium text-gray-700">✨ Recommended Staff</p>
+                                <button id="refreshRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Refresh
+                                </button>
+                            </div>
+                            <div id="recommendedStaffList" class="space-y-2">
+                                <!-- Recommended staff cards will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Team Assignment Mode -->
+                    <div id="teamAssignmentMode" class="hidden">
+                        <div class="space-y-2 mb-3">
+                            <!-- Team Selection Cards -->
+                            <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
+                                <input type="radio" name="team" value="math-team" class="text-indigo-600 focus:ring-indigo-500">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="flex -space-x-2">
+                                            <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">J</div>
+                                            <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">M</div>
+                                            <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">E</div>
+                                        </div>
+                                        <span class="font-semibold text-gray-900 text-sm">Math & Science Team</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">John Smith, Michael Chen, Emily Davis • 3 members</p>
+                                    <div class="flex gap-1 mt-1">
+                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Math</span>
+                                        <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Science</span>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
+                                <input type="radio" name="team" value="english-team" class="text-indigo-600 focus:ring-indigo-500">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="flex -space-x-2">
+                                            <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">S</div>
+                                            <div class="w-6 h-6 bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">D</div>
+                                        </div>
+                                        <span class="font-semibold text-gray-900 text-sm">English & Literature Team</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Sarah Williams, David Brown • 2 members</p>
+                                    <div class="flex gap-1 mt-1">
+                                        <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-xs rounded">English</span>
+                                        <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">Literature</span>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
+                                <input type="radio" name="team" value="all-subjects-team" class="text-indigo-600 focus:ring-indigo-500">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <div class="flex -space-x-2">
+                                            <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">J</div>
+                                            <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">S</div>
+                                            <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">E</div>
+                                            <div class="w-6 h-6 bg-gray-400 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">+2</div>
+                                        </div>
+                                        <span class="font-semibold text-gray-900 text-sm">All Subjects Team</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">All available tutors • 5 members</p>
+                                    <div class="flex gap-1 mt-1">
+                                        <span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded">All Subjects</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-indigo-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <p class="text-xs text-indigo-700">Team assignment allows flexible scheduling. Any team member can handle the job based on availability.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+            <!-- Auto-assign Option (shown for all modes) -->
+            <div class="mt-3 pt-3 border-t border-gray-200">
+                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                    <input type="checkbox" id="autoAssignStaff" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span>Auto-assign if no selection made (System will choose best match)</span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Notes Card -->
+        <div class="bg-white rounded-lg shadow-sm p-6" style="display: block !important; visibility: visible !important; border: 3px solid red;">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4" style="color: red; font-size: 24px;">📝 Notes Section (TEST - Should be visible!)</h2>
+            
+            <div class="space-y-4">
+                <!-- Internal Notes -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Internal Notes <span class="text-gray-500 font-normal">(From quote - editable)</span>
+                    </label>
+                    <div class="relative">
+                        <textarea 
+                            id="internalNotes"
+                            rows="4"
+                            maxlength="500"
+                            placeholder="Add any internal notes for the team..."
+                            class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-blue-50"
+                        ></textarea>
+                        <div class="absolute top-2 right-2">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-md font-medium">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                                Editable
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">You can modify these notes or add additional information for the team</p>
+                </div>
+                
+                <!-- Customer Notes -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Customer Notes <span class="text-gray-500 font-normal">(From quote - read only)</span>
+                    </label>
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <p class="text-sm text-gray-700 leading-relaxed">Student needs extra help with algebra. Prefer morning sessions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Right Column - Summary -->
+    <div class="lg:col-span-4 space-y-4">
+        
+        <!-- Right column content deleted - ready for redesign -->
+        
+    </div>
+    
+</div>
+
+<!-- Split Items Modal -->
+<div id="splitItemsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold text-gray-900">Split into Multiple Jobs</h2>
+                <button 
+                    id="closeSplitModal"
+                    class="text-gray-400 hover:text-gray-600"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm text-yellow-800 font-medium">Switching to advanced mode</p>
+                        <p class="text-sm text-yellow-700 mt-1">
+                            You'll be able to distribute items across multiple jobs for different dates or teams.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <p class="text-gray-700">
+                    <strong>Why split into multiple jobs?</strong>
+                </p>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Schedule services on different dates (e.g., weekly tutoring sessions)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Assign different teams to different services</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Create phased projects (e.g., initial consultation + follow-up)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Invoice separately for each completed job</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="flex gap-3">
+                <button 
+                    id="confirmSplitBtn"
+                    class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                >
+                    Continue to Split Items
+                </button>
+                <button 
+                    id="cancelSplitBtn"
+                    class="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+                >
+                    Stay with Single Job
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
