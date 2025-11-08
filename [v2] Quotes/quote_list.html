@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quotes Management - FMS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../home-styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
@@ -24,92 +22,395 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* Tab styles */
+        .tab-button {
+            position: relative;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+        }
         
-        /* Override for main content with sidebar */
-        .main-content {
+        .tab-button:hover {
+            color: #374151;
             background: #f9fafb;
         }
         
-        .content-wrapper {
-            padding: 0;
+        .tab-button.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.5rem;
+            height: 1.5rem;
+            padding: 0 0.5rem;
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .tab-button.active .tab-badge {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Card styles - Enhanced Table */
+        .quote-card {
+            background: white;
+            border-bottom: 1px solid #f3f4f6;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .quote-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+
+        .quote-card:first-child {
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .quote-card:last-child {
+            border-radius: 0 0 0.5rem 0.5rem;
+            border-bottom: none;
+        }
+
+        .quote-card:hover {
+            background: #f9fafb;
+            box-shadow: inset 0 0 0 1px #e5e7eb;
+        }
+
+        .quote-card:hover::before {
+            background: #93c5fd;
+        }
+
+        .quote-card.selected {
+            background: #eff6ff;
+        }
+
+        .quote-card.selected::before {
+            background: #2563eb;
+        }
+
+        .quotes-container {
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .quote-card-clickable {
+            cursor: pointer;
+        }
+
+        .quote-card-clickable:hover .quote-id {
+            text-decoration: underline;
+        }
+
+        /* Column headers */
+        .table-header {
+            background: #f9fafb;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.813rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .action-btn svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.2);
+        }
+
+        .action-btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 2px 4px 0 rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .action-btn-secondary:hover {
+            background: #f9fafb;
+            color: #374151;
+            border-color: #9ca3af;
+        }
+
+        .action-btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(16, 185, 129, 0.2);
+        }
+
+        .action-btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 2px 4px 0 rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 1px 2px 0 rgba(245, 158, 11, 0.2);
+        }
+
+        .action-btn-warning:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            box-shadow: 0 2px 4px 0 rgba(245, 158, 11, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn-icon-only {
+            padding: 0.5rem;
+            width: 2rem;
+            height: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 0.25rem;
+            min-width: 10rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            background: white;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #f3f4f6;
+        }
+
+        .dropdown-item.text-red-600:hover {
+            background: #fef2f2;
+        }
+
+        .dropdown-item svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* Financial summary panel */
+        .financial-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        /* Collapsible section */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 500px;
+        }
+
+        /* Icon rotation transition */
+        #financialPanelIcon,
+        #filterIcon {
+            transition: transform 0.3s ease;
+        }
+
+        /* Bulk action bar */
+        .bulk-action-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #1f2937;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .bulk-action-bar button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .bulk-action-bar button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .bulk-action-bar button.cancel {
+            background: rgba(239, 68, 68, 0.8);
+        }
+
+        .bulk-action-bar button.cancel:hover {
+            background: rgba(220, 38, 38, 0.9);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .table-header {
+                display: none;
+            }
+            
+            .quote-card {
+                padding: 1rem;
+            }
+            
+            .quote-card .grid {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .quote-card .grid > div {
+                width: 100%;
+            }
+            
+            .financial-panel {
+                padding: 1rem;
+            }
+
+            .tab-button {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
         }
     </style>
 </head>
-<body>
-    <!-- Main Container -->
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-store"></i>
-                    <div class="logo-text-wrapper">
-                        <span class="logo-text">Sunshine Tutoring</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-nav">
-                <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-home"></i><span>Home</span>
-                </a>
-                <a href="quote_list.html" class="nav-item active" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-file-contract"></i><span>Quotes</span>
-                </a>
-                <a href="../[v2] Jobs/job_list.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-briefcase"></i><span>Jobs</span>
-                </a>
-                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-calendar-alt"></i><span>Schedule</span>
-                </a>
-                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-users"></i><span>Manage team</span>
-                </a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-book"></i><span>My pricebook</span>
-                </a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-user-friends"></i><span>Customers</span>
-                </a>
-            </div>
-
-            <div class="sidebar-footer">
-                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <div class="content-wrapper">
-                <div class="p-4">
-                    <div class="max-w-7xl mx-auto">
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
             
             <!-- Header -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Quotes Management</h1>
-                        <p class="text-gray-600 mt-1 font-medium">Sunshine Tutoring - Melbourne East</p>
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-3">
+                            <h1 class="text-3xl font-bold text-gray-900">Quotes Management</h1>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span class="font-medium">Sunshine Tutoring - Melbourne East</span>
+                        </div>
                     </div>
                     <div class="flex gap-2">
                         <button 
                             id="exportBtn"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             Export
                         </button>
@@ -127,78 +428,170 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Total Quotes</p>
-                            <p class="text-2xl font-bold text-gray-900" id="totalQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <!-- Active Quotes -->
+                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">Draft</p>
-                            <p class="text-2xl font-bold text-yellow-600" id="draftQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
+                            <p class="text-xs text-gray-500">Active Quotes</p>
+                            <p class="text-2xl font-bold text-gray-900" id="activeQuotes">13</p>
                         </div>
                     </div>
+                    <p class="text-xs text-green-600 font-medium" id="activeQuotesTrend">↑ 3 from last</p>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Sent</p>
-                            <p class="text-2xl font-bold text-blue-600" id="sentQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+
+                <!-- Total Value -->
+                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Total Value</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalValue">$21.6K</p>
                         </div>
                     </div>
+                    <p class="text-xs text-green-600 font-medium" id="totalValueTrend">↑ 15% vs last</p>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Accepted</p>
-                            <p class="text-2xl font-bold text-green-600" id="acceptedQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                <!-- Outstanding -->
+                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Outstanding</p>
+                            <p class="text-2xl font-bold text-gray-900" id="outstandingAmount">$5.5K</p>
                         </div>
                     </div>
+                    <p class="text-xs text-red-600 font-medium" id="unpaidCount">3 unpaid</p>
                 </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Declined</p>
-                            <p class="text-2xl font-bold text-red-600" id="declinedQuotes">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+
+                <!-- This Month -->
+                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">This Month</p>
+                            <p class="text-2xl font-bold text-gray-900" id="monthlyValue">$0.0K</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600 font-medium" id="monthlyQuotes">+0 quotes</p>
+                </div>
+            </div>
+
+            <!-- Financial Summary Panel (Collapsible) -->
+            <div class="financial-panel" id="financialPanel">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinancialPanel()">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <div>
+                            <h3 class="text-base font-semibold">Financial Summary</h3>
+                            <p class="text-xs opacity-90">Track invoicing and payment progress</p>
+                        </div>
+                    </div>
+                    <button class="text-white hover:bg-white/20 rounded-lg p-2 transition">
+                        <svg class="w-5 h-5" id="financialPanelIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="collapsible-content" id="financialPanelContent">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <!-- Invoiced Progress -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-sm font-medium">Invoiced</span>
+                                <span class="text-xl font-bold" id="invoicedPercent">63%</span>
+                            </div>
+                            <div class="progress-bar mb-2">
+                                <div class="progress-fill" id="invoicedBar" style="width: 63%"></div>
+                            </div>
+                            <p class="text-xs opacity-80" id="invoicedAmount">$13600 of $21604</p>
+                        </div>
+
+                        <!-- Paid Progress -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-sm font-medium">Paid</span>
+                                <span class="text-xl font-bold" id="paidPercent">38%</span>
+                            </div>
+                            <div class="progress-bar mb-2">
+                                <div class="progress-fill" id="paidBar" style="width: 38%"></div>
+                            </div>
+                            <p class="text-xs opacity-80" id="paidAmount">$8155 of $21604</p>
+                        </div>
+
+                        <!-- Outstanding -->
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-sm font-medium">Outstanding</span>
+                                <span class="text-xl font-bold" id="outstandingTotal">$5505</span>
+                            </div>
+                            <div class="mt-6">
+                                <button class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    View Details
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Filters & Search -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex flex-wrap gap-3">
+            <!-- Status Tabs -->
+            <div class="bg-white rounded-lg shadow-sm mb-4 border border-gray-200">
+                <div class="flex overflow-x-auto custom-scrollbar">
+                    <button class="tab-button active" data-status="all" onclick="filterByStatus('all')">
+                        All
+                        <span class="tab-badge" id="countAll">0</span>
+                    </button>
+                    <button class="tab-button" data-status="draft" onclick="filterByStatus('draft')">
+                        📝 Draft
+                        <span class="tab-badge" id="countDraft">0</span>
+                    </button>
+                    <button class="tab-button" data-status="sent" onclick="filterByStatus('sent')">
+                        📤 Sent
+                        <span class="tab-badge" id="countSent">0</span>
+                    </button>
+                    <button class="tab-button" data-status="accepted" onclick="filterByStatus('accepted')">
+                        ✅ Accepted
+                        <span class="tab-badge" id="countAccepted">0</span>
+                    </button>
+                    <button class="tab-button" data-status="declined" onclick="filterByStatus('declined')">
+                        ❌ Declined
+                        <span class="tab-badge" id="countDeclined">0</span>
+                    </button>
+                    <button class="tab-button" data-status="converted" onclick="filterByStatus('converted')">
+                        💰 Converted
+                        <span class="tab-badge" id="countConverted">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+                <div class="flex flex-wrap gap-3 items-center">
                     <!-- Search -->
                     <div class="flex-1 min-w-64 relative">
                         <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,51 +600,30 @@
                         <input
                             type="text"
                             id="searchInput"
-                            placeholder="Search by customer name, email, quote ID..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                            placeholder="Search by customer, email, or quote ID..."
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         />
                     </div>
 
-                    <!-- Status Filter -->
-                    <select 
-                        id="statusFilter"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <!-- Advanced Filters Toggle -->
+                    <button 
+                        id="toggleFiltersBtn"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
+                        onclick="toggleFilters()"
                     >
-                        <option value="">All Statuses</option>
-                        <option value="draft">📝 Draft</option>
-                        <option value="sent">📤 Sent</option>
-                        <option value="accepted">✅ Accepted</option>
-                        <option value="declined">❌ Declined</option>
-                        <option value="converted">💰 Converted</option>
-                    </select>
-
-                    <!-- Created By Filter -->
-                    <select 
-                        id="createdByFilter"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">All</option>
-                        <option value="John Smith">John Smith</option>
-                        <option value="Sarah Williams">Sarah Williams</option>
-                        <option value="Mike Johnson">Mike Johnson</option>
-                    </select>
-
-                    <!-- Date Range Filter -->
-                    <select 
-                        id="dateRangeFilter"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="">All Time</option>
-                        <option value="7">Last 7 days</option>
-                        <option value="30">Last 30 days</option>
-                        <option value="90">Last 90 days</option>
-                        <option value="custom">Custom Range</option>
-                    </select>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                        </svg>
+                        Advanced Filters
+                        <svg class="w-3 h-3" id="filterIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
                     <!-- Sort -->
                     <select 
                         id="sortBy"
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="newest">Newest First</option>
                         <option value="oldest">Oldest First</option>
@@ -259,1332 +631,1075 @@
                         <option value="amount_low">Amount: Low to High</option>
                         <option value="customer">Customer A-Z</option>
                     </select>
-
-                    <!-- Clear Filters -->
-                    <button 
-                        id="clearFiltersBtn"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm"
-                    >
-                        Clear Filters
-                    </button>
                 </div>
 
-                <!-- Custom Date Range (hidden by default) -->
-                <div id="customDateRange" class="hidden mt-3 grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">From</label>
-                        <input 
-                            type="date" 
-                            id="dateFrom"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">To</label>
-                        <input 
-                            type="date" 
-                            id="dateTo"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                <!-- Advanced Filters Panel -->
+                <div class="collapsible-content mt-4" id="moreFilters">
+                    <div class="pt-4 border-t border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                            <!-- Payment Status Filter -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Payment Status</label>
+                                <select 
+                                    id="paymentStatusFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">All Payments</option>
+                                    <option value="not_invoiced">⚪ Not Invoiced</option>
+                                    <option value="partially_invoiced">🔵 Partial Invoice</option>
+                                    <option value="invoiced_unpaid">🟠 Unpaid</option>
+                                    <option value="partially_paid">🟡 Partially Paid</option>
+                                    <option value="fully_paid">🟢 Fully Paid</option>
+                                </select>
+                            </div>
+
+                            <!-- Created By Filter -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Created By</label>
+                                <div class="relative">
+                                    <input 
+                                        type="text"
+                                        id="createdByInput"
+                                        placeholder="Type to search team members..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        autocomplete="off"
+                                    />
+                                    <div id="createdByAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                                        <!-- Autocomplete results -->
+                                    </div>
+                                </div>
+                                <div id="createdByTags" class="flex flex-wrap gap-1 mt-2">
+                                    <!-- Selected team members will appear here as tags -->
+                                </div>
+                            </div>
+
+                            <!-- Date Range Filter -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Date Range</label>
+                                <select 
+                                    id="dateRangeFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">All Time</option>
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30">Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                </select>
+                            </div>
+
+                            <!-- Amount Range Filter -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Amount Range</label>
+                                <select 
+                                    id="amountRangeFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">All Amounts</option>
+                                    <option value="0-500">$0 - $500</option>
+                                    <option value="500-1000">$500 - $1,000</option>
+                                    <option value="1000-2000">$1,000 - $2,000</option>
+                                    <option value="2000-5000">$2,000 - $5,000</option>
+                                    <option value="5000+">$5,000+</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Filter Actions -->
+                        <div class="flex items-center justify-between">
+                            <button 
+                                id="clearFiltersBtn"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
+                                onclick="clearFilters()"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Clear All Filters
+                            </button>
+                            <button 
+                                id="applyFiltersBtn"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium"
+                                onclick="applyFilters()"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                                Apply Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quotes Table -->
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Quotes</h2>
-                    <div class="text-sm text-gray-600" id="resultsCount">
-                        Showing 0 quotes
-                    </div>
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyState" class="text-center py-12 text-gray-500">
-                    <svg class="mx-auto mb-3 text-gray-300 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <p class="text-sm mb-2">No quotes found</p>
-                    <button 
-                        onclick="window.location.href='quote_create.html'"
-                        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                    >
-                        Create Your First Quote
-                    </button>
-                </div>
-
-                <!-- Table -->
-                <div id="quotesTable" class="hidden overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-50 border-b border-gray-200">
-                            <tr>
-                                <th class="text-left p-3 font-medium text-gray-700">Quote ID</th>
-                                <th class="text-left p-3 font-medium text-gray-700">Customer</th>
-                                <th class="text-left p-3 font-medium text-gray-700">Created By</th>
-                                <th class="text-left p-3 font-medium text-gray-700">Date Created</th>
-                                <th class="text-left p-3 font-medium text-gray-700">Valid Until</th>
-                                <th class="text-right p-3 font-medium text-gray-700">Total Price</th>
-                                <th class="text-left p-3 font-medium text-gray-700">Status</th>
-                                <th class="text-center p-3 font-medium text-gray-700">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="quotesTableBody" class="divide-y divide-gray-200">
-                            <!-- Quotes will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div id="pagination" class="hidden mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                    <div class="text-sm text-gray-600">
-                        Showing <span id="paginationStart">0</span> to <span id="paginationEnd">0</span> of <span id="paginationTotal">0</span> quotes
-                    </div>
-                    <div class="flex gap-2">
-                        <button 
-                            id="prevBtn"
-                            class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Previous
-                        </button>
-                        <button 
-                            id="nextBtn"
-                            class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Next
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Quote Details Modal -->
-    <div id="viewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Quote Details</h3>
-                    <button id="closeViewModal" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div id="viewModalContent" class="space-y-4">
-                    <!-- Content will be populated by JavaScript -->
-                </div>
-                
-                <div class="flex gap-3 mt-6 border-t border-gray-200 pt-4">
-                    <button id="closeViewModalBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
-                        Close
-                    </button>
-                    <button id="editFromViewBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
-                        Edit Quote
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Preview PDF Modal -->
-    <div id="previewPDFModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
-                    <button id="closePreviewModal" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div id="previewPDFContent" class="bg-white p-8" style="font-family: 'Helvetica', 'Arial', sans-serif;">
-                    <!-- PDF-like content will be populated here -->
-                </div>
-                
-                <div class="flex gap-3 mt-6 border-t border-gray-200 pt-4">
-                    <button id="closePreviewBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
-                        Close
-                    </button>
-                    <button id="downloadPDFBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        Download PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Send Quote Modal -->
-    <div id="sendModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Resend Quote</h3>
-                    <button id="closeSendModal" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="mb-4">
-                    <p class="text-sm text-gray-600 mb-3">Select send method(s):</p>
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" name="sendMethodModal" value="email" checked id="sendEmail" />
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            <!-- Filter Summary Panel -->
+            <div id="filterSummary" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm p-4 mb-4 border border-blue-200">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-3">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
-                            <span>Email</span>
-                        </label>
-                        <label class="flex items-center gap-2 text-sm">
-                            <input type="checkbox" name="sendMethodModal" value="sms" id="sendWhatsApp" />
-                            <span>WhatsApp with Portal Link</span>
-                        </label>
+                            <h3 class="text-sm font-semibold text-gray-900">Filter Summary</h3>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Filtered Quotes</p>
+                                <p class="text-2xl font-bold text-gray-900" id="summaryCount">0</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Total Value</p>
+                                <p class="text-2xl font-bold text-gray-900" id="summaryTotal">$0</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Average Value</p>
+                                <p class="text-2xl font-bold text-gray-900" id="summaryAverage">$0</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 mb-1">Outstanding</p>
+                                <p class="text-2xl font-bold text-gray-900" id="summaryOutstanding">$0</p>
+                            </div>
+                        </div>
+                        <div id="activeFilters" class="flex flex-wrap gap-2 mt-3">
+                            <!-- Active filter tags will appear here -->
+                        </div>
                     </div>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-xs font-medium text-gray-700 mb-1">Add a note (optional)</label>
-                    <textarea 
-                        id="sendNote"
-                        rows="3"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Add a personal message to the customer..."
-                    ></textarea>
-                </div>
-                
-                <div class="flex gap-3">
-                    <button id="cancelSendBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
-                        Cancel
+                    <button onclick="clearFilters()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
-                    <button id="confirmSendBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2">
+                </div>
+            </div>
+
+            <!-- Bulk Action Bar (Hidden by default) -->
+            <div class="bulk-action-bar hidden" id="bulkActionBar">
+                <input type="checkbox" id="selectAllCheckbox" class="w-5 h-5 rounded border-gray-300" onchange="toggleSelectAll()">
+                <span class="font-semibold" id="selectedCount">0 selected</span>
+                <div class="flex gap-2 ml-auto">
+                    <button onclick="bulkSend()" class="flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                         </svg>
-                        Send Quote
+                        Send All
+                    </button>
+                    <button onclick="bulkExport()" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Export
+                    </button>
+                    <button onclick="bulkArchive()" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                        Archive
+                    </button>
+                    <button class="cancel" onclick="clearSelection()" class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cancel
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Archive Confirmation Modal -->
-    <div id="archiveModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Archive Quote</h3>
-                    <button id="closeArchiveModal" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <!-- Quote Cards List -->
+            <div id="quotesContainer">
+                <!-- Cards will be rendered here by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">No quotes found</h3>
+                <p class="text-gray-600 mb-6" id="emptyStateMessage">Try adjusting your filters or create a new quote</p>
+                <button 
+                    onclick="window.location.href='quote_create.html'"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 mx-auto"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Create Your First Quote
+                </button>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="hidden mt-6 flex items-center justify-between">
+                <div class="text-sm text-gray-600">
+                    Showing <span id="paginationStart">1</span> to <span id="paginationEnd">10</span> of <span id="paginationTotal">0</span> quotes
+                </div>
+                <div class="flex gap-2">
+                    <button 
+                        id="prevBtn"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        Previous
+                    </button>
+                    <button 
+                        id="nextBtn"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Next
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                     </button>
                 </div>
-                
-                <p class="text-gray-600 mb-4">Are you sure you want to archive this quote? Archived quotes can be restored later if needed.</p>
-                
-                <div class="flex gap-3">
-                    <button id="cancelArchiveBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
-                        Cancel
-                    </button>
-                    <button id="confirmArchiveBtn" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
-                        Archive
-                    </button>
-                </div>
             </div>
+
         </div>
     </div>
 
-    <script>
-        // State management
-        const state = {
-            quotes: [],
-            filteredQuotes: [],
-            currentPage: 1,
-            itemsPerPage: 10,
-            searchTerm: '',
-            statusFilter: '',
-            createdByFilter: '',
-            dateRangeFilter: '',
-            sortBy: 'newest',
-            quoteToDelete: null,
-            currentQuoteForAction: null
-        };
+<script>
+// State management
+const state = {
+    quotes: [],
+    filteredQuotes: [],
+    selectedQuotes: new Set(),
+    currentPage: 1,
+    itemsPerPage: 10,
+    searchTerm: '',
+    statusFilter: 'all',
+    paymentStatusFilter: '',
+    createdByFilter: [], // Changed to array for multi-select
+    dateRangeFilter: '',
+    amountRangeFilter: '',
+    sortBy: 'newest'
+};
 
-        // Sample data - All statuses represented
-        const quotes = [
-            // 📝 DRAFT - Being prepared
-            {
-                id: 'Q-2024-001',
-                customerId: 2,
-                customerName: 'Michael Chen',
-                customerEmail: 'm.chen@email.com',
-                customerPhone: '0423 456 789',
-                createdBy: 'John Smith',
-                dateCreated: '2024-10-25',
-                validUntil: '2024-11-08',
-                status: 'draft',
-                total: 750.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-002',
-                customerId: 5,
-                customerName: 'Lisa Anderson',
-                customerEmail: 'lisa.a@email.com',
-                customerPhone: '0456 789 012',
-                createdBy: 'Sarah Williams',
-                dateCreated: '2024-10-24',
-                validUntil: '2024-11-07',
-                status: 'draft',
-                total: 1250.00,
-                approvalRequired: false
-            },
-            // 📤 SENT - Awaiting customer response
-            {
-                id: 'Q-2024-003',
-                customerId: 1,
-                customerName: 'Sarah Johnson',
-                customerEmail: 'sarah.j@email.com',
-                customerPhone: '0412 345 678',
-                createdBy: 'John Smith',
-                dateCreated: '2024-10-23',
-                validUntil: '2024-11-06',
-                status: 'sent',
-                total: 412.50,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-004',
-                customerId: 3,
-                customerName: 'Emma Wilson',
-                customerEmail: 'emma.w@email.com',
-                customerPhone: '0434 567 890',
-                createdBy: 'Mike Johnson',
-                dateCreated: '2024-10-22',
-                validUntil: '2024-11-05',
-                status: 'sent',
-                total: 850.50,
-                approvalRequired: false
-            },
-            // More SENT quotes
-            {
-                id: 'Q-2024-005',
-                customerId: 4,
-                customerName: 'David Brown',
-                customerEmail: 'david.b@email.com',
-                customerPhone: '0445 678 901',
-                createdBy: 'Sarah Williams',
-                dateCreated: '2024-10-21',
-                validUntil: '2024-11-04',
-                status: 'sent',
-                total: 920.75,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-006',
-                customerId: 6,
-                customerName: 'James Taylor',
-                customerEmail: 'james.t@email.com',
-                customerPhone: '0467 890 123',
-                createdBy: 'John Smith',
-                dateCreated: '2024-10-20',
-                validUntil: '2024-11-03',
-                status: 'sent',
-                total: 1580.00,
-                approvalRequired: false
-            },
-            // ✅ ACCEPTED - Customer approved the quote
-            {
-                id: 'Q-2024-007',
-                customerId: 1,
-                customerName: 'Sarah Johnson',
-                customerEmail: 'sarah.j@email.com',
-                customerPhone: '0412 345 678',
-                createdBy: 'Mike Johnson',
-                dateCreated: '2024-10-19',
-                validUntil: '2024-11-02',
-                status: 'accepted',
-                total: 3250.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-008',
-                customerId: 7,
-                customerName: 'Rachel Green',
-                customerEmail: 'rachel.g@email.com',
-                customerPhone: '0478 901 234',
-                createdBy: 'Sarah Williams',
-                dateCreated: '2024-10-18',
-                validUntil: '2024-11-01',
-                status: 'accepted',
-                total: 2100.00,
-                approvalRequired: false
-            },
-            // ❌ DECLINED - Customer rejected the quote
-            {
-                id: 'Q-2024-009',
-                customerId: 8,
-                customerName: 'Tom Harris',
-                customerEmail: 'tom.h@email.com',
-                customerPhone: '0489 012 345',
-                createdBy: 'John Smith',
-                dateCreated: '2024-10-17',
-                validUntil: '2024-10-31',
-                status: 'declined',
-                total: 1750.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-010',
-                customerId: 9,
-                customerName: 'Nina Patel',
-                customerEmail: 'nina.p@email.com',
-                customerPhone: '0490 123 456',
-                createdBy: 'Mike Johnson',
-                dateCreated: '2024-10-16',
-                validUntil: '2024-10-30',
-                status: 'declined',
-                total: 890.00,
-                approvalRequired: false
-            },
-            // EXPIRED - Validity period has passed (dates in the past)
-            {
-                id: 'Q-2024-011',
-                customerId: 9,
-                customerName: 'Michael Chen',
-                customerEmail: 'm.chen@email.com',
-                customerPhone: '0423 456 789',
-                createdBy: 'Sarah Williams',
-                dateCreated: '2024-09-25',
-                validUntil: '2024-10-09',
-                status: 'declined',
-                total: 1450.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-012',
-                customerId: 10,
-                customerName: 'Oliver Smith',
-                customerEmail: 'oliver.s@email.com',
-                customerPhone: '0401 234 567',
-                createdBy: 'John Smith',
-                dateCreated: '2024-09-20',
-                validUntil: '2024-10-04',
-                status: 'declined',
-                total: 675.00,
-                approvalRequired: false
-            },
-            // 💰 CONVERTED - Converted to job
-            {
-                id: 'Q-2024-013',
-                customerId: 1,
-                customerName: 'Sarah Johnson',
-                customerEmail: 'sarah.j@email.com',
-                customerPhone: '0412 345 678',
-                createdBy: 'Mike Johnson',
-                dateCreated: '2024-09-15',
-                validUntil: '2024-09-29',
-                status: 'converted',
-                total: 1125.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-014',
-                customerId: 3,
-                customerName: 'Emma Wilson',
-                customerEmail: 'emma.w@email.com',
-                customerPhone: '0434 567 890',
-                createdBy: 'Sarah Williams',
-                dateCreated: '2024-09-10',
-                validUntil: '2024-09-24',
-                status: 'converted',
-                total: 2850.00,
-                approvalRequired: false
-            },
-            {
-                id: 'Q-2024-015',
-                customerId: 4,
-                customerName: 'David Brown',
-                customerEmail: 'david.b@email.com',
-                customerPhone: '0445 678 901',
-                createdBy: 'John Smith',
-                dateCreated: '2024-09-05',
-                validUntil: '2024-09-19',
-                status: 'converted',
-                total: 525.00,
-                approvalRequired: false
-            }
-        ];
+// Team members list for autocomplete
+const teamMembers = ['John Smith', 'Sarah Williams', 'Mike Johnson'];
 
-        // Helper functions
-        function getStatusBadge(status) {
-            const badges = {
-                draft: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700">📝 Draft</span>',
-                sent: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700">📤 Sent</span>',
-                pending_approval: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700">📤 Sent</span>',
-                accepted: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">✅ Accepted</span>',
-                approved: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-700">✅ Accepted</span>',
-                declined: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
-                rejected: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">❌ Declined</span>',
-                converted: '<span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700">💰 Converted</span>'
-            };
-            return badges[status] || badges.draft;
+// Sample data
+const quotes = [
+    {id: 'Q-2024-001', customerId: 2, customerName: 'Michael Chen', customerEmail: 'm.chen@email.com', customerPhone: '0423 456 789', createdBy: 'John Smith', dateCreated: '2024-10-25', validUntil: '2024-11-08', status: 'draft', total: 750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-002', customerId: 5, customerName: 'Lisa Anderson', customerEmail: 'lisa.a@email.com', customerPhone: '0456 789 012', createdBy: 'Sarah Williams', dateCreated: '2024-10-24', validUntil: '2024-11-07', status: 'draft', total: 1250.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-003', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-23', validUntil: '2024-11-06', status: 'sent', total: 412.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-004', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Mike Johnson', dateCreated: '2024-10-22', validUntil: '2024-11-05', status: 'sent', total: 850.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-005', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Sarah Williams', dateCreated: '2024-10-21', validUntil: '2024-11-04', status: 'sent', total: 920.75, paymentStatus: 'partially_invoiced', amountInvoiced: 460.38, amountPaid: 230.19},
+    {id: 'Q-2024-006', customerId: 6, customerName: 'James Taylor', customerEmail: 'james.t@email.com', customerPhone: '0467 890 123', createdBy: 'John Smith', dateCreated: '2024-10-20', validUntil: '2024-11-03', status: 'sent', total: 1580.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-007', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'Mike Johnson', dateCreated: '2024-10-19', validUntil: '2024-11-02', status: 'accepted', total: 3250.00, paymentStatus: 'partially_paid', amountInvoiced: 3250.00, amountPaid: 1625.00},
+    {id: 'Q-2024-008', customerId: 7, customerName: 'Rachel Green', customerEmail: 'rachel.g@email.com', customerPhone: '0478 901 234', createdBy: 'Sarah Williams', dateCreated: '2024-10-18', validUntil: '2024-11-01', status: 'accepted', total: 2100.00, paymentStatus: 'invoiced_unpaid', amountInvoiced: 2100.00, amountPaid: 0},
+    {id: 'Q-2024-009', customerId: 8, customerName: 'Tom Harris', customerEmail: 'tom.h@email.com', customerPhone: '0489 012 345', createdBy: 'John Smith', dateCreated: '2024-10-17', validUntil: '2024-10-31', status: 'accepted', total: 1750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-010', customerId: 9, customerName: 'Nina Patel', customerEmail: 'nina.p@email.com', customerPhone: '0490 123 456', createdBy: 'Mike Johnson', dateCreated: '2024-10-16', validUntil: '2024-10-30', status: 'declined', total: 890.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-10', validUntil: '2024-10-24', status: 'converted', total: 2800.00, paymentStatus: 'fully_paid', amountInvoiced: 2800.00, amountPaid: 2800.00},
+    {id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2024-10-08', validUntil: '2024-10-22', status: 'converted', total: 1950.00, paymentStatus: 'fully_paid', amountInvoiced: 1950.00, amountPaid: 1950.00},
+    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2024-10-05', validUntil: '2024-10-19', status: 'converted', total: 3100.00, paymentStatus: 'partially_paid', amountInvoiced: 3100.00, amountPaid: 1550.00}
+];
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    state.quotes = quotes;
+    updateCounts();
+    updateFinancialSummary();
+    filterAndRender();
+    setupEventListeners();
+});
+
+// Get status badge HTML
+function getStatusBadge(status) {
+    const badges = {
+        draft: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Draft</span>',
+        sent: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Sent</span>',
+        accepted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Accepted</span>',
+        declined: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Declined</span>',
+        converted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Converted</span>'
+    };
+    return badges[status] || badges.draft;
+}
+
+// Get payment status badge HTML
+function getPaymentStatusBadge(paymentStatus, amountInvoiced, amountPaid, total) {
+    const percentage = total > 0 ? Math.round((amountPaid / total) * 100) : 0;
+    const badges = {
+        not_invoiced: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">⚪ Not Invoiced</span>',
+        partially_invoiced: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700" title="$${amountInvoiced.toFixed(2)} invoiced of $${total.toFixed(2)}">🔵 Partial Invoice</span>`,
+        invoiced_unpaid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700" title="$${amountInvoiced.toFixed(2)} invoiced, $0 paid">🟠 Unpaid</span>`,
+        partially_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700" title="$${amountPaid.toFixed(2)} paid of $${total.toFixed(2)} (${percentage}%)">🟡 Partial (${percentage}%)</span>`,
+        fully_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700" title="$${amountPaid.toFixed(2)} paid">🟢 Paid</span>`
+    };
+    return badges[paymentStatus] || badges.not_invoiced;
+}
+
+// Get contextual actions based on status and payment
+function getContextualActions(quote) {
+    let actions = '';
+    
+    if (quote.status === 'draft') {
+        actions = `<button class="action-btn action-btn-primary">Send Quote</button>`;
+    } else if (quote.status === 'sent') {
+        actions = `<button class="action-btn action-btn-primary">Follow Up</button>`;
+    } else if (quote.status === 'accepted') {
+        if (quote.paymentStatus === 'not_invoiced') {
+            actions = `<button class="action-btn action-btn-primary">Create Invoice</button>`;
+        } else if (quote.paymentStatus === 'invoiced_unpaid') {
+            actions = `<button class="action-btn action-btn-primary">Send Payment Link</button>`;
+        } else if (quote.paymentStatus === 'partially_paid') {
+            actions = `<button class="action-btn action-btn-primary">View Payments</button>`;
+        } else if (quote.paymentStatus === 'fully_paid') {
+            actions = `<button class="action-btn action-btn-primary">Convert to Job</button>`;
         }
+    } else if (quote.status === 'converted') {
+        actions = `<button class="action-btn action-btn-secondary">View Job</button>`;
+    }
+    
+    // Add dropdown menu with contextual options
+    let menuOptions = '';
+    if (quote.status === 'draft') {
+        menuOptions = `
+            <button class="dropdown-item" onclick="editQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit
+            </button>
+            <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Clone
+            </button>
+            <button class="dropdown-item text-red-600" onclick="deleteQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Delete
+            </button>`;
+    } else if (quote.status === 'sent' || quote.status === 'accepted') {
+        menuOptions = `
+            <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Clone
+            </button>`;
+    } else if (quote.status === 'declined') {
+        menuOptions = `
+            <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Clone
+            </button>
+            <button class="dropdown-item text-red-600" onclick="deleteQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Delete
+            </button>`;
+    } else if (quote.status === 'converted') {
+        menuOptions = `
+            <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Clone
+            </button>`;
+    }
+    
+    return actions + `
+        <div class="dropdown-container">
+            <button class="action-btn action-btn-secondary action-btn-icon-only" onclick="toggleDropdown(event, '${quote.id}')" title="More options">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                </svg>
+            </button>
+            <div class="dropdown-menu" id="dropdown-${quote.id}">
+                ${menuOptions}
+            </div>
+        </div>`;
+}
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
-        }
-
-        function calculateDaysUntil(validUntil) {
-            const today = new Date();
-            const valid = new Date(validUntil);
-            const diffTime = valid - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays;
-        }
-
-        function getExpiryIndicator(validUntil) {
-            const daysUntil = calculateDaysUntil(validUntil);
-            if (daysUntil < 0) {
-                return '<span class="text-red-600 text-xs">⚠️ Expired</span>';
-            } else if (daysUntil <= 3) {
-                return '<span class="text-orange-600 text-xs">⏰ Expiring Soon</span>';
-            }
-            return '';
-        }
-
-        function getQuickActions(quote) {
-            const actions = [];
-            
-            // Status-based quick actions
-            switch(quote.status) {
-                case 'draft':
-                    actions.push(`
-                        <button 
-                            onclick="quickStatusChange('${quote.id}', 'sent')"
-                            class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 flex items-center gap-1"
-                            title="Send Quote"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                            Send
-                        </button>
-                    `);
-                    break;
-                    
-                case 'sent':
-                case 'pending_approval':
-                    actions.push(`
-                        <button 
-                            onclick="quickStatusChange('${quote.id}', 'accepted')"
-                            class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 flex items-center gap-1"
-                            title="Mark as Accepted"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Accept
-                        </button>
-                        <button 
-                            onclick="quickStatusChange('${quote.id}', 'declined')"
-                            class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 flex items-center gap-1"
-                            title="Mark as Declined"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Decline
-                        </button>
-                    `);
-                    break;
-                    
-                case 'accepted':
-                    actions.push(`
-                        <button 
-                            onclick="convertToWorkOrder('${quote.id}')"
-                            class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 flex items-center gap-1"
-                            title="Convert to Job"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            Convert
-                        </button>
-                    `);
-                    break;
-                    
-                case 'expired':
-                    actions.push(`
-                        <button 
-                            onclick="extendQuote('${quote.id}')"
-                            class="px-3 py-1 bg-orange-600 text-white text-xs rounded-lg hover:bg-orange-700 flex items-center gap-1"
-                            title="Extend & Resend"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                            </svg>
-                            Extend
-                        </button>
-                    `);
-                    break;
-                    
-                case 'converted':
-                    actions.push(`
-                        <button 
-                            onclick="viewJob('${quote.id}')"
-                            class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 flex items-center gap-1"
-                            title="View Job"
-                        >
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            View Job
-                        </button>
-                    `);
-                    break;
-            }
-            
-            return actions.join('');
-        }
-
-        // Filter and sort functions
-        function filterQuotes() {
-            let filtered = [...quotes];
-
-            // Search filter
-            if (state.searchTerm) {
-                const search = state.searchTerm.toLowerCase();
-                filtered = filtered.filter(q => 
-                    q.customerName.toLowerCase().includes(search) ||
-                    q.customerEmail.toLowerCase().includes(search) ||
-                    q.id.toLowerCase().includes(search)
-                );
-            }
-
-            // Status filter - "sent" filter matches both "sent" and "pending_approval"
-            if (state.statusFilter) {
-                if (state.statusFilter === 'sent') {
-                    filtered = filtered.filter(q => q.status === 'sent' || q.status === 'pending_approval');
-                } else if (state.statusFilter === 'converted') {
-                    filtered = filtered.filter(q => q.status === 'converted');
-                } else {
-                    filtered = filtered.filter(q => q.status === state.statusFilter);
-                }
-            } else {
-                // By default, hide converted quotes from active list
-                filtered = filtered.filter(q => q.status !== 'converted');
-            }
-
-            // Created By filter
-            if (state.createdByFilter) {
-                filtered = filtered.filter(q => q.createdBy === state.createdByFilter);
-            }
-
-            // Date range filter
-            if (state.dateRangeFilter) {
-                const today = new Date();
-                if (state.dateRangeFilter === '7') {
-                    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    filtered = filtered.filter(q => new Date(q.dateCreated) >= sevenDaysAgo);
-                } else if (state.dateRangeFilter === '30') {
-                    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-                    filtered = filtered.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
-                } else if (state.dateRangeFilter === '90') {
-                    const ninetyDaysAgo = new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000);
-                    filtered = filtered.filter(q => new Date(q.dateCreated) >= ninetyDaysAgo);
-                } else if (state.dateRangeFilter === 'custom') {
-                    const dateFrom = document.getElementById('dateFrom').value;
-                    const dateTo = document.getElementById('dateTo').value;
-                    if (dateFrom && dateTo) {
-                        filtered = filtered.filter(q => q.dateCreated >= dateFrom && q.dateCreated <= dateTo);
-                    }
-                }
-            }
-
-            state.filteredQuotes = filtered;
-        }
-
-        function sortQuotes() {
-            const quotes = [...state.filteredQuotes];
-            
-            switch (state.sortBy) {
-                case 'newest':
-                    quotes.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
-                    break;
-                case 'oldest':
-                    quotes.sort((a, b) => new Date(a.dateCreated) - new Date(b.dateCreated));
-                    break;
-                case 'amount_high':
-                    quotes.sort((a, b) => b.total - a.total);
-                    break;
-                case 'amount_low':
-                    quotes.sort((a, b) => a.total - b.total);
-                    break;
-                case 'customer':
-                    quotes.sort((a, b) => a.customerName.localeCompare(b.customerName));
-                    break;
-            }
-            
-            state.filteredQuotes = quotes;
-        }
-
-        // Render functions
-        function renderQuotes() {
-            filterQuotes();
-            sortQuotes();
-            
-            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
-            const endIndex = startIndex + state.itemsPerPage;
-            const pageQuotes = state.filteredQuotes.slice(startIndex, endIndex);
-
-            updateStats();
-            updateResultsCount();
-            
-            if (state.filteredQuotes.length === 0) {
-                document.getElementById('emptyState').classList.remove('hidden');
-                document.getElementById('quotesTable').classList.add('hidden');
-                document.getElementById('pagination').classList.add('hidden');
-                return;
-            }
-
-            document.getElementById('emptyState').classList.add('hidden');
-            document.getElementById('quotesTable').classList.remove('hidden');
-            
-            const tbody = document.getElementById('quotesTableBody');
-            tbody.innerHTML = pageQuotes.map(quote => {
-                const expiryIndicator = getExpiryIndicator(quote.validUntil);
-                const isWaitingForApproval = quote.status === 'sent' || quote.status === 'pending_approval';
-                
-                return `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3">
-                            <div class="flex items-center gap-2">
-                                <a href="quote_edit.html?id=${quote.id}" class="text-blue-600 hover:underline font-medium">
-                                    ${quote.id}
-                                </a>
-                                <button 
-                                    onclick="window.location.href='quote_edit.html?id=${quote.id}'"
-                                    class="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                                    title="View Quote Details"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                        <td class="p-3">
-                            <p class="font-medium text-gray-900">${quote.customerName}</p>
-                            <p class="text-xs text-gray-600">${quote.customerEmail}</p>
-                        </td>
-                        <td class="p-3">
-                            <p class="text-gray-700">${quote.createdBy}</p>
-                        </td>
-                        <td class="p-3 text-gray-700">
-                            ${formatDate(quote.dateCreated)}
-                        </td>
-                        <td class="p-3 text-gray-700">
-                            <div>${formatDate(quote.validUntil)}</div>
-                            ${expiryIndicator}
-                        </td>
-                        <td class="p-3 text-right font-semibold">
-                            $${quote.total.toFixed(2)}
-                        </td>
-                        <td class="p-3">
-                            ${getStatusBadge(quote.status)}
-                        </td>
-                        <td class="p-3">
-                            <div class="flex items-center justify-center gap-2">
-                                ${getQuickActions(quote)}
-                                <div class="relative">
-                                    <button 
-                                        onclick="toggleActionsMenu('${quote.id}')"
-                                        class="p-1 text-gray-600 hover:text-gray-900"
-                                        title="More actions"
-                                    >
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                                        </svg>
-                                    </button>
-                                    <div id="actionsMenu-${quote.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
-                                        <button onclick="previewPDF('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                                </svg>
-                                                View Details (PDF)
-                                            </span>
-                                        </button>
-                                        <button onclick="editQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                </svg>
-                                                Edit
-                                            </span>
-                                        </button>
-                                        ${quote.status !== 'declined' && quote.status !== 'draft' && quote.status !== 'rejected' ? `
-                                        <button onclick="sendQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                                </svg>
-                                                Resend
-                                            </span>
-                                        </button>
-                                        ` : ''}
-                                        <button onclick="cloneQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                                </svg>
-                                                Clone
-                                            </span>
-                                        </button>
-                                        <div class="border-t border-gray-200 my-1"></div>
-                                        <button onclick="archiveQuote('${quote.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                            <span class="flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                                                </svg>
-                                                Archive
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            renderPagination();
-        }
-
-        function updateStats() {
-            const stats = {
-                total: quotes.filter(q => q.status !== 'converted').length, // Only count active quotes (not converted)
-                draft: quotes.filter(q => q.status === 'draft').length,
-                sent: quotes.filter(q => q.status === 'sent' || q.status === 'pending_approval').length,
-                accepted: quotes.filter(q => q.status === 'accepted' || q.status === 'approved').length,
-                declined: quotes.filter(q => q.status === 'declined' || q.status === 'rejected').length
-            };
-
-            document.getElementById('totalQuotes').textContent = stats.total;
-            document.getElementById('draftQuotes').textContent = stats.draft;
-            document.getElementById('sentQuotes').textContent = stats.sent;
-            document.getElementById('acceptedQuotes').textContent = stats.accepted;
-            document.getElementById('declinedQuotes').textContent = stats.declined;
-        }
-
-        function updateResultsCount() {
-            const total = state.filteredQuotes.length;
-            const start = total === 0 ? 0 : (state.currentPage - 1) * state.itemsPerPage + 1;
-            const end = Math.min(state.currentPage * state.itemsPerPage, total);
-            
-            document.getElementById('resultsCount').textContent = `Showing ${start}-${end} of ${total} quotes`;
-        }
-
-        function renderPagination() {
-            const totalPages = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
-            
-            if (totalPages <= 1) {
-                document.getElementById('pagination').classList.add('hidden');
-                return;
-            }
-
-            document.getElementById('pagination').classList.remove('hidden');
-            document.getElementById('paginationStart').textContent = (state.currentPage - 1) * state.itemsPerPage + 1;
-            document.getElementById('paginationEnd').textContent = Math.min(state.currentPage * state.itemsPerPage, state.filteredQuotes.length);
-            document.getElementById('paginationTotal').textContent = state.filteredQuotes.length;
-
-            document.getElementById('prevBtn').disabled = state.currentPage === 1;
-            document.getElementById('nextBtn').disabled = state.currentPage === totalPages;
-        }
-
-        // Action handlers
-        function viewQuote(quoteId) {
-            const quote = quotes.find(q => q.id === quoteId);
-            if (!quote) return;
-            
-            state.currentQuoteForAction = quoteId;
-            const quoteDetails = quote;
-            
-            // Populate modal content
-            document.getElementById('viewModalContent').innerHTML = `
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 mb-1">Quote ID</p>
-                        <p class="text-sm font-semibold text-gray-900">${quoteDetails.id}</p>
+// Render quote cards
+function renderQuotes() {
+    const container = document.getElementById('quotesContainer');
+    const emptyState = document.getElementById('emptyState');
+    const pagination = document.getElementById('pagination');
+    
+    if (state.filteredQuotes.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        pagination.classList.add('hidden');
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    pagination.classList.remove('hidden');
+    
+    const start = (state.currentPage - 1) * state.itemsPerPage;
+    const end = start + state.itemsPerPage;
+    const pageQuotes = state.filteredQuotes.slice(start, end);
+    
+    container.innerHTML = `
+        <div class="quotes-container">
+            <!-- Table Header -->
+            <div class="table-header">
+                <div class="grid grid-cols-12 gap-3 items-center">
+                    <div class="col-span-1 flex items-center justify-center">
+                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300" 
+                               id="selectAllCheckbox" 
+                               onchange="toggleSelectAll()">
                     </div>
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 mb-1">Status</p>
-                        <p class="text-sm">${getStatusBadge(quoteDetails.status)}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 mb-1">Date Created</p>
-                        <p class="text-sm text-gray-900">${formatDate(quoteDetails.dateCreated)}</p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 mb-1">Valid Until</p>
-                        <p class="text-sm text-gray-900">${formatDate(quoteDetails.validUntil)}</p>
-                    </div>
-                </div>
-                
-                <div class="border-t border-gray-200 pt-4 mt-4">
-                    <p class="text-xs font-medium text-gray-500 mb-2">Customer</p>
-                    <p class="text-sm font-medium text-gray-900">${quoteDetails.customerName}</p>
-                    <p class="text-xs text-gray-600">${quoteDetails.customerEmail}</p>
-                    <p class="text-xs text-gray-600">${quoteDetails.customerPhone}</p>
-                </div>
-                
-                <div class="border-t border-gray-200 pt-4 mt-4">
-                    <p class="text-xs font-medium text-gray-500 mb-2">Total Amount</p>
-                    <p class="text-lg font-bold text-gray-900">$${quoteDetails.total.toFixed(2)}</p>
-                </div>
-            `;
-            
-            // Show modal
-            document.getElementById('viewModal').classList.remove('hidden');
-        }
-
-        function editQuote(quoteId) {
-            window.location.href = `quote_edit.html?id=${quoteId}`;
-        }
-
-        function previewPDF(quoteId) {
-            const quote = quotes.find(q => q.id === quoteId);
-            if (!quote) return;
-            
-            state.currentQuoteForAction = quoteId;
-            
-            // Get current date
-            const currentDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-            const validUntil = new Date(quote.validUntil).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            // Sample line items (in real app, these would come from the quote data)
-            const sampleItems = [
-                { name: 'One-on-One Tutoring - Math', id: 't1', quantity: 2, unit: 'hour', price: 75.00, notes: '' },
-                { name: 'Assessment & Report', id: 't4', quantity: 1, unit: 'each', price: 120.00, notes: '' }
-            ];
-            
-            const lineItemsHTML = sampleItems.map(item => `
-                <tr class="border-b border-gray-200">
-                    <td class="py-2 px-1" style="width: 35%;">
-                        <div class="font-medium text-gray-900">${item.name}</div>
-                        <div class="text-xs text-gray-600 mt-1">${item.id}</div>
-                        ${item.notes ? `<div class="text-xs text-gray-500 italic mt-1">${item.notes}</div>` : ''}
-                    </td>
-                    <td class="py-2 px-1 text-center text-gray-700">${item.quantity} ${item.unit}</td>
-                    <td class="py-2 px-1 text-right text-gray-700">$${item.price.toFixed(2)}</td>
-                    <td class="py-2 px-1 text-right font-medium">$${(item.price * item.quantity).toFixed(2)}</td>
-                </tr>
-            `).join('');
-            
-            const subtotal = sampleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const tax = subtotal * 0.1;
-            const total = subtotal + tax;
-            
-            // Build preview HTML (similar to create/edit screens)
-            const previewHTML = `
-                <!-- Company Header -->
-                <div class="border-b-2 border-gray-800 pb-4 mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900 mb-1">SUNSHINE TUTORING</h1>
-                            <p class="text-sm text-gray-600">Tutoring Excellence Since 2015</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-lg font-bold">QUOTE</p>
-                            <p class="text-sm text-gray-600">Date: ${currentDate}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Customer Details -->
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Bill To:</h3>
-                        <div class="text-sm text-gray-700">
-                            <p class="font-medium">${quote.customerName}</p>
-                            <p>${quote.customerEmail}</p>
-                            <p>${quote.customerPhone}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Quote Details:</h3>
-                        <div class="text-sm text-gray-700">
-                            <p><span class="font-medium">Quote ID:</span> ${quote.id}</p>
-                            <p><span class="font-medium">Valid Until:</span> ${validUntil}</p>
-                            <p class="mt-2 text-xs text-gray-500">Melbourne East Branch</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Line Items Table -->
-                <div class="mb-6">
-                    <table class="w-full text-sm" style="min-width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr class="bg-gray-100 border-b-2 border-gray-800">
-                                <th class="text-left py-2 px-1 font-semibold text-gray-900" style="width: 35%;">Description</th>
-                                <th class="text-center py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Quantity</th>
-                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Unit Price</th>
-                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 25%;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${lineItemsHTML}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Summary -->
-                <div class="flex justify-end mb-6">
-                    <div class="w-64">
-                        <div class="border-t border-gray-300 pt-3">
-                            <div class="flex justify-between text-sm py-1">
-                                <span class="text-gray-700">Subtotal:</span>
-                                <span class="font-medium">$${subtotal.toFixed(2)}</span>
-                            </div>
-                            <div class="border-t border-gray-300 mt-2 pt-2">
-                                <div class="flex justify-between text-sm py-1">
-                                    <span>GST (10%):</span>
-                                    <span>$${tax.toFixed(2)}</span>
-                                </div>
-                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
-                                    <span class="text-sm font-semibold">Total Tax:</span>
-                                    <span class="text-sm font-semibold">$${tax.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div class="border-t-2 border-gray-800 mt-2 pt-2">
-                                <div class="flex justify-between">
-                                    <span class="text-lg font-bold text-gray-900">TOTAL:</span>
-                                    <span class="text-lg font-bold text-gray-900">$${total.toFixed(2)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="border-t-2 border-gray-800 pt-4 mt-6">
-                    <div class="grid grid-cols-2 gap-6 text-xs text-gray-600">
-                        <div>
-                            <p class="font-semibold text-gray-900 mb-1">Sunshine Tutoring - Melbourne East</p>
-                            <p>123 Education Street, Melbourne VIC 3000</p>
-                            <p>Phone: (03) 1234 5678</p>
-                            <p>Email: melbourne@sunshinetutoring.com.au</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-900 mb-1">Payment Information</p>
-                            <p>ABN: 12 345 678 901</p>
-                            <p>Valid for 30 days from date of issue</p>
-                            <p class="mt-2 text-gray-500">Terms and conditions apply</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('previewPDFContent').innerHTML = previewHTML;
-            document.getElementById('previewPDFModal').classList.remove('hidden');
-        }
-
-        function sendQuote(quoteId) {
-            const quote = quotes.find(q => q.id === quoteId);
-            if (!quote) return;
-            
-            state.currentQuoteForAction = quoteId;
-            document.getElementById('sendModal').classList.remove('hidden');
-        }
-
-        function cloneQuote(quoteId) {
-            // Navigate to quote_create.html with the quote ID to clone
-            window.location.href = `quote_create.html?clone=${quoteId}`;
-        }
-
-        function viewJob(quoteId) {
-            // Convert quote ID to job ID (in real app, this would fetch the job ID from the quote)
-            const jobId = quoteId.replace('Q-', 'J-');
-            // Navigate to the job details page
-            window.location.href = `../Jobs/job_detail.html?id=${jobId}`;
-        }
-
-        function quickStatusChange(quoteId, newStatus) {
-            const quote = quotes.find(q => q.id === quoteId);
-            if (!quote) return;
-            
-            const statusMessages = {
-                'sent': 'Send this quote to the customer?',
-                'accepted': 'Mark this quote as accepted by the customer?',
-                'declined': 'Mark this quote as declined by the customer?'
-            };
-            
-            const confirmMessage = statusMessages[newStatus] || 'Change quote status?';
-            
-            if (confirm(confirmMessage)) {
-                quote.status = newStatus;
-                console.log(`Quote ${quoteId} status changed to: ${newStatus}`);
-                
-                const successMessages = {
-                    'sent': 'Quote sent successfully!',
-                    'accepted': 'Quote marked as accepted!',
-                    'declined': 'Quote marked as declined!'
-                };
-                
-                alert(successMessages[newStatus] || 'Quote status updated!');
-                renderQuotes();
-            }
-        }
-
-        function extendQuote(quoteId) {
-            const quote = quotes.find(q => q.id === quoteId);
-            if (!quote) return;
-            
-            const newValidUntil = prompt('Enter new valid until date (YYYY-MM-DD):', 
-                new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
-            
-            if (newValidUntil) {
-                quote.validUntil = newValidUntil;
-                quote.status = 'sent';
-                console.log(`Quote ${quoteId} extended to: ${newValidUntil}`);
-                alert('Quote validity extended and resent to customer!');
-                renderQuotes();
-            }
-        }
-
-        function convertToWorkOrder(quoteId) {
-            if (confirm('Are you sure you want to convert this quote to a job?')) {
-                console.log('Convert to job:', quoteId);
-                
-                // Find and update the quote status to 'converted'
-                const quote = quotes.find(q => q.id === quoteId);
-                if (quote) {
-                    quote.status = 'converted';
-                }
-                
-                alert('Quote converted to job successfully! The quote has been archived.');
-                // Update the quotes list (will hide converted quotes by default)
-                renderQuotes();
-            }
-        }
-
-        function archiveQuote(quoteId) {
-            state.quoteToArchive = quoteId;
-            document.getElementById('archiveModal').classList.remove('hidden');
-        }
-
-        function hideArchiveModal() {
-            state.quoteToArchive = null;
-            document.getElementById('archiveModal').classList.add('hidden');
-        }
-
-        function confirmArchive() {
-            if (state.quoteToArchive) {
-                // Find and remove the quote from the array
-                const index = quotes.findIndex(q => q.id === state.quoteToArchive);
-                if (index !== -1) {
-                    quotes.splice(index, 1);
-                }
-                console.log('Archive quote:', state.quoteToArchive);
-                alert('Quote archived successfully!');
-                hideArchiveModal();
-                renderQuotes();
-            }
-        }
-
-        function toggleActionsMenu(quoteId) {
-            // Close all menus first
-            document.querySelectorAll('[id^="actionsMenu-"]').forEach(menu => {
-                menu.classList.add('hidden');
-            });
-
-            // Toggle target menu
-            const menu = document.getElementById(`actionsMenu-${quoteId}`);
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        }
-
-        // Close menus when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('[id^="actionsMenu-"]') && !e.target.closest('button[onclick*="toggleActionsMenu"]')) {
-                document.querySelectorAll('[id^="actionsMenu-"]').forEach(menu => {
-                    menu.classList.add('hidden');
-                });
-            }
-        });
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search
-            document.getElementById('searchInput').addEventListener('input', function(e) {
-                state.searchTerm = e.target.value;
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            // Status filter - treat "sent" filter as matching both "sent" and "pending_approval"
-            document.getElementById('statusFilter').addEventListener('change', function(e) {
-                state.statusFilter = e.target.value;
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            // Created By filter
-            document.getElementById('createdByFilter').addEventListener('change', function(e) {
-                state.createdByFilter = e.target.value;
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            // Date range filter
-            document.getElementById('dateRangeFilter').addEventListener('change', function(e) {
-                state.dateRangeFilter = e.target.value;
-                
-                const customRange = document.getElementById('customDateRange');
-                if (e.target.value === 'custom') {
-                    customRange.classList.remove('hidden');
-                } else {
-                    customRange.classList.add('hidden');
-                }
-                
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            document.getElementById('dateFrom').addEventListener('change', function() {
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            document.getElementById('dateTo').addEventListener('change', function() {
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            // Sort
-            document.getElementById('sortBy').addEventListener('change', function(e) {
-                state.sortBy = e.target.value;
-                state.currentPage = 1;
-                renderQuotes();
-            });
-
-            // Clear filters
-            document.getElementById('clearFiltersBtn').addEventListener('click', function() {
-                document.getElementById('searchInput').value = '';
-                document.getElementById('statusFilter').value = '';
-                document.getElementById('createdByFilter').value = '';
-                document.getElementById('dateRangeFilter').value = '';
-                document.getElementById('dateFrom').value = '';
-                document.getElementById('dateTo').value = '';
-                document.getElementById('customDateRange').classList.add('hidden');
-                document.getElementById('sortBy').value = 'newest';
-                
-                state.searchTerm = '';
-                state.statusFilter = '';
-                state.createdByFilter = '';
-                state.dateRangeFilter = '';
-                state.sortBy = 'newest';
-                state.currentPage = 1;
-                
-                renderQuotes();
-            });
-
-            // Pagination
-            document.getElementById('prevBtn').addEventListener('click', function() {
-                if (state.currentPage > 1) {
-                    state.currentPage--;
-                    renderQuotes();
-                }
-            });
-
-            document.getElementById('nextBtn').addEventListener('click', function() {
-                const totalPages = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
-                if (state.currentPage < totalPages) {
-                    state.currentPage++;
-                    renderQuotes();
-                }
-            });
-
-            // Archive modal
-            document.getElementById('closeArchiveModal').addEventListener('click', hideArchiveModal);
-            document.getElementById('cancelArchiveBtn').addEventListener('click', hideArchiveModal);
-            document.getElementById('confirmArchiveBtn').addEventListener('click', confirmArchive);
-
-            // View modal
-            document.getElementById('closeViewModal').addEventListener('click', function() {
-                document.getElementById('viewModal').classList.add('hidden');
-            });
-            document.getElementById('closeViewModalBtn').addEventListener('click', function() {
-                document.getElementById('viewModal').classList.add('hidden');
-            });
-            document.getElementById('editFromViewBtn').addEventListener('click', function() {
-                if (state.currentQuoteForAction) {
-                    editQuote(state.currentQuoteForAction);
-                }
-            });
-
-            // Preview PDF modal
-            document.getElementById('closePreviewModal').addEventListener('click', function() {
-                document.getElementById('previewPDFModal').classList.add('hidden');
-            });
-            document.getElementById('closePreviewBtn').addEventListener('click', function() {
-                document.getElementById('previewPDFModal').classList.add('hidden');
-            });
-            document.getElementById('downloadPDFBtn').addEventListener('click', function() {
-                console.log('Download PDF for quote:', state.currentQuoteForAction);
-                alert('PDF download started!');
-            });
-
-            // Send modal
-            document.getElementById('closeSendModal').addEventListener('click', function() {
-                document.getElementById('sendModal').classList.add('hidden');
-            });
-            document.getElementById('cancelSendBtn').addEventListener('click', function() {
-                document.getElementById('sendModal').classList.add('hidden');
-            });
-            document.getElementById('confirmSendBtn').addEventListener('click', function() {
-                const selectedMethods = Array.from(document.querySelectorAll('input[name="sendMethodModal"]:checked')).map(cb => cb.value);
-                const note = document.getElementById('sendNote').value.trim();
-                
-                if (selectedMethods.length === 0) {
-                    alert('Please select at least one send method');
-                    return;
-                }
-                
-                console.log('Send quote:', state.currentQuoteForAction, 'via', selectedMethods.join(', '), note);
-                alert(`Quote sent successfully via ${selectedMethods.join(', ')}!`);
-                
-                document.getElementById('sendModal').classList.add('hidden');
-                document.getElementById('sendNote').value = '';
-                renderQuotes();
-            });
-
-            // Export
-            document.getElementById('exportBtn').addEventListener('click', function() {
-                console.log('Export quotes');
-                alert('Export functionality');
-            });
-
-            // Initial render
-            state.quotes = quotes;
-            renderQuotes();
-        });
-    </script>
-                    </div>
+                    <div class="col-span-1">Quote ID</div>
+                    <div class="col-span-2">Customer</div>
+                    <div class="col-span-1">Created</div>
+                    <div class="col-span-2">Created By</div>
+                    <div class="col-span-1">Status</div>
+                    <div class="col-span-2 text-right">Amount</div>
+                    <div class="col-span-2 text-right">Actions</div>
                 </div>
             </div>
-        </main>
-    </div>
+            
+            <!-- Table Rows -->
+            ${pageQuotes.map(quote => `
+                <div class="quote-card ${state.selectedQuotes.has(quote.id) ? 'selected' : ''}" data-quote-id="${quote.id}">
+                    <div class="grid grid-cols-12 gap-3 items-center">
+                        <!-- Checkbox -->
+                        <div class="col-span-1 flex items-center justify-center" onclick="event.stopPropagation()">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300 quote-checkbox" 
+                                   data-quote-id="${quote.id}" 
+                                   ${state.selectedQuotes.has(quote.id) ? 'checked' : ''}
+                                   onchange="toggleQuoteSelection('${quote.id}')">
+                        </div>
+                        
+                        <!-- Quote ID -->
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            <div class="text-sm font-semibold text-blue-600 quote-id">${quote.id}</div>
+                        </div>
+                        
+                        <!-- Customer -->
+                        <div class="col-span-2 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            <div class="text-sm font-semibold text-gray-900">${quote.customerName}</div>
+                            <div class="text-xs text-gray-500 mt-0.5 truncate" title="${quote.customerEmail}">${quote.customerEmail}</div>
+                        </div>
+                        
+                        <!-- Date -->
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            <div class="text-sm text-gray-900">${formatDate(quote.dateCreated)}</div>
+                            <div class="text-xs text-gray-500 mt-0.5">Valid: ${formatDate(quote.validUntil)}</div>
+                        </div>
+                        
+                        <!-- Created By -->
+                        <div class="col-span-2 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
+                                    ${quote.createdBy.split(' ').map(n => n[0]).join('')}
+                                </div>
+                                <div class="text-sm text-gray-900">${quote.createdBy}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            ${getStatusBadge(quote.status)}
+                        </div>
+                        
+                        <!-- Amount & Payment -->
+                        <div class="col-span-2 text-right quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                            <div class="text-lg font-bold text-gray-900">$${quote.total.toFixed(2)}</div>
+                            <div class="flex items-center justify-end gap-1 mt-1">
+                                ${getPaymentStatusBadge(quote.paymentStatus, quote.amountInvoiced, quote.amountPaid, quote.total)}
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="col-span-2 flex items-center justify-end gap-2" onclick="event.stopPropagation()">
+                            ${getContextualActions(quote)}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    updatePagination();
+}
+
+// Format date
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// Filter and render
+function filterAndRender() {
+    let filtered = [...state.quotes];
+    
+    // Status filter
+    if (state.statusFilter && state.statusFilter !== 'all') {
+        filtered = filtered.filter(q => q.status === state.statusFilter);
+    }
+    
+    // Search filter
+    if (state.searchTerm) {
+        const term = state.searchTerm.toLowerCase();
+        filtered = filtered.filter(q => 
+            q.id.toLowerCase().includes(term) ||
+            q.customerName.toLowerCase().includes(term) ||
+            q.customerEmail.toLowerCase().includes(term)
+        );
+    }
+    
+    // Payment status filter
+    if (state.paymentStatusFilter) {
+        filtered = filtered.filter(q => q.paymentStatus === state.paymentStatusFilter);
+    }
+    
+    // Created by filter (multi-select)
+    if (state.createdByFilter.length > 0) {
+        filtered = filtered.filter(q => state.createdByFilter.includes(q.createdBy));
+    }
+    
+    // Date range filter
+    if (state.dateRangeFilter) {
+        const days = parseInt(state.dateRangeFilter);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        filtered = filtered.filter(q => new Date(q.dateCreated) >= cutoffDate);
+    }
+    
+    // Amount range filter
+    if (state.amountRangeFilter) {
+        if (state.amountRangeFilter === '5000+') {
+            filtered = filtered.filter(q => q.total >= 5000);
+        } else {
+            const [min, max] = state.amountRangeFilter.split('-').map(Number);
+            filtered = filtered.filter(q => q.total >= min && q.total < max);
+        }
+    }
+    
+    // Sort
+    filtered.sort((a, b) => {
+        switch(state.sortBy) {
+            case 'newest': return new Date(b.dateCreated) - new Date(a.dateCreated);
+            case 'oldest': return new Date(a.dateCreated) - new Date(b.dateCreated);
+            case 'amount_high': return b.total - a.total;
+            case 'amount_low': return a.total - b.total;
+            case 'customer': return a.customerName.localeCompare(b.customerName);
+            default: return 0;
+        }
+    });
+    
+    state.filteredQuotes = filtered;
+    state.currentPage = 1;
+    renderQuotes();
+}
+
+// Update counts
+function updateCounts() {
+    const counts = {
+        all: state.quotes.length,
+        draft: state.quotes.filter(q => q.status === 'draft').length,
+        sent: state.quotes.filter(q => q.status === 'sent').length,
+        accepted: state.quotes.filter(q => q.status === 'accepted').length,
+        declined: state.quotes.filter(q => q.status === 'declined').length,
+        converted: state.quotes.filter(q => q.status === 'converted').length
+    };
+    
+    document.getElementById('countAll').textContent = counts.all;
+    document.getElementById('countDraft').textContent = counts.draft;
+    document.getElementById('countSent').textContent = counts.sent;
+    document.getElementById('countAccepted').textContent = counts.accepted;
+    document.getElementById('countDeclined').textContent = counts.declined;
+    document.getElementById('countConverted').textContent = counts.converted;
+    
+    // Update KPI cards
+    const totalValue = state.quotes.reduce((sum, q) => sum + q.total, 0);
+    const outstanding = state.quotes.reduce((sum, q) => sum + (q.amountInvoiced - q.amountPaid), 0);
+    const unpaidCount = state.quotes.filter(q => q.paymentStatus === 'invoiced_unpaid' || q.paymentStatus === 'partially_paid').length;
+    
+    document.getElementById('activeQuotes').textContent = counts.all;
+    document.getElementById('totalValue').textContent = `$${(totalValue / 1000).toFixed(1)}K`;
+    document.getElementById('outstandingAmount').textContent = `$${(outstanding / 1000).toFixed(1)}K`;
+    document.getElementById('unpaidCount').textContent = `${unpaidCount} unpaid`;
+    
+    // This month (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const monthlyQuotes = state.quotes.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
+    const monthlyValue = monthlyQuotes.reduce((sum, q) => sum + q.total, 0);
+    document.getElementById('monthlyValue').textContent = `$${(monthlyValue / 1000).toFixed(1)}K`;
+    document.getElementById('monthlyQuotes').textContent = `+${monthlyQuotes.length} quotes`;
+}
+
+// Update financial summary
+function updateFinancialSummary() {
+    const total = state.quotes.reduce((sum, q) => sum + q.total, 0);
+    const invoiced = state.quotes.reduce((sum, q) => sum + q.amountInvoiced, 0);
+    const paid = state.quotes.reduce((sum, q) => sum + q.amountPaid, 0);
+    const outstanding = invoiced - paid;
+    
+    const invoicedPercent = total > 0 ? Math.round((invoiced / total) * 100) : 0;
+    const paidPercent = total > 0 ? Math.round((paid / total) * 100) : 0;
+    
+    document.getElementById('invoicedPercent').textContent = `${invoicedPercent}%`;
+    document.getElementById('invoicedBar').style.width = `${invoicedPercent}%`;
+    document.getElementById('invoicedAmount').textContent = `$${invoiced.toFixed(0)} of $${total.toFixed(0)}`;
+    
+    document.getElementById('paidPercent').textContent = `${paidPercent}%`;
+    document.getElementById('paidBar').style.width = `${paidPercent}%`;
+    document.getElementById('paidAmount').textContent = `$${paid.toFixed(0)} of $${total.toFixed(0)}`;
+    
+    document.getElementById('outstandingTotal').textContent = `$${outstanding.toFixed(0)}`;
+}
+
+// Update pagination
+function updatePagination() {
+    const total = state.filteredQuotes.length;
+    const start = (state.currentPage - 1) * state.itemsPerPage + 1;
+    const end = Math.min(start + state.itemsPerPage - 1, total);
+    
+    document.getElementById('paginationStart').textContent = start;
+    document.getElementById('paginationEnd').textContent = end;
+    document.getElementById('paginationTotal').textContent = total;
+    
+    document.getElementById('prevBtn').disabled = state.currentPage === 1;
+    document.getElementById('nextBtn').disabled = end >= total;
+}
+
+// Filter by status (tab click)
+function filterByStatus(status) {
+    state.statusFilter = status;
+    
+    // Update active tab
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.status === status) {
+            btn.classList.add('active');
+        }
+    });
+    
+    filterAndRender();
+}
+
+// Toggle financial panel
+function toggleFinancialPanel() {
+    const content = document.getElementById('financialPanelContent');
+    const icon = document.getElementById('financialPanelIcon');
+    
+    content.classList.toggle('expanded');
+    // Rotate the SVG icon
+    if (content.classList.contains('expanded')) {
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Toggle filters
+function toggleFilters() {
+    const filters = document.getElementById('moreFilters');
+    const icon = document.getElementById('filterIcon');
+    
+    filters.classList.toggle('expanded');
+    // Rotate the SVG icon
+    if (filters.classList.contains('expanded')) {
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Toggle dropdown menu
+function toggleDropdown(event, quoteId) {
+    event.stopPropagation();
+    const dropdown = document.getElementById(`dropdown-${quoteId}`);
+    const allDropdowns = document.querySelectorAll('.dropdown-menu');
+    
+    // Close all other dropdowns
+    allDropdowns.forEach(d => {
+        if (d.id !== `dropdown-${quoteId}`) {
+            d.classList.remove('show');
+        }
+    });
+    
+    // Toggle current dropdown
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.dropdown-container')) {
+        document.querySelectorAll('.dropdown-menu').forEach(d => {
+            d.classList.remove('show');
+        });
+    }
+});
+
+// Edit quote
+function editQuote(quoteId) {
+    console.log('Edit quote:', quoteId);
+    window.location.href = `quote_create.html?id=${quoteId}`;
+}
+
+// Clone quote
+function cloneQuote(quoteId) {
+    console.log('Clone quote:', quoteId);
+    if (confirm('Create a copy of this quote?')) {
+        window.location.href = `quote_create.html?clone=${quoteId}`;
+    }
+}
+
+// Delete quote
+function deleteQuote(quoteId) {
+    console.log('Delete quote:', quoteId);
+    if (confirm('Are you sure you want to delete this quote? This action cannot be undone.')) {
+        // Remove from state
+        state.quotes = state.quotes.filter(q => q.id !== quoteId);
+        filterAndRender();
+        updateCounts();
+        alert('Quote deleted successfully');
+    }
+}
+
+// Apply filters and show summary
+function applyFilters() {
+    filterAndRender();
+    updateFilterSummary();
+}
+
+// Update filter summary panel
+function updateFilterSummary() {
+    const hasActiveFilters = state.searchTerm || state.statusFilter !== 'all' || 
+                            state.paymentStatusFilter || state.createdByFilter || 
+                            state.dateRangeFilter || state.amountRangeFilter;
+    
+    const summaryPanel = document.getElementById('filterSummary');
+    
+    if (!hasActiveFilters || state.filteredQuotes.length === 0) {
+        summaryPanel.classList.add('hidden');
+        return;
+    }
+    
+    summaryPanel.classList.remove('hidden');
+    
+    // Calculate summary statistics
+    const count = state.filteredQuotes.length;
+    const total = state.filteredQuotes.reduce((sum, q) => sum + q.total, 0);
+    const average = count > 0 ? total / count : 0;
+    const outstanding = state.filteredQuotes.reduce((sum, q) => {
+        return sum + (q.total - q.amountPaid);
+    }, 0);
+    
+    // Update summary values
+    document.getElementById('summaryCount').textContent = count;
+    document.getElementById('summaryTotal').textContent = '$' + total.toFixed(2);
+    document.getElementById('summaryAverage').textContent = '$' + average.toFixed(2);
+    document.getElementById('summaryOutstanding').textContent = '$' + outstanding.toFixed(2);
+    
+    // Update active filter tags
+    updateActiveFilterTags();
+}
+
+// Update active filter tags
+function updateActiveFilterTags() {
+    const container = document.getElementById('activeFilters');
+    const tags = [];
+    
+    if (state.searchTerm) {
+        tags.push({ label: `Search: "${state.searchTerm}"`, clear: () => {
+            document.getElementById('searchInput').value = '';
+            state.searchTerm = '';
+        }});
+    }
+    
+    if (state.statusFilter && state.statusFilter !== 'all') {
+        const statusLabels = {
+            draft: 'Draft',
+            sent: 'Sent',
+            accepted: 'Accepted',
+            declined: 'Declined',
+            converted: 'Converted'
+        };
+        tags.push({ label: `Status: ${statusLabels[state.statusFilter]}`, clear: () => {
+            filterByStatus('all');
+        }});
+    }
+    
+    if (state.paymentStatusFilter) {
+        const paymentLabels = {
+            not_invoiced: 'Not Invoiced',
+            partially_invoiced: 'Partial Invoice',
+            invoiced_unpaid: 'Unpaid',
+            partially_paid: 'Partially Paid',
+            fully_paid: 'Fully Paid'
+        };
+        tags.push({ label: `Payment: ${paymentLabels[state.paymentStatusFilter]}`, clear: () => {
+            document.getElementById('paymentStatusFilter').value = '';
+            state.paymentStatusFilter = '';
+        }});
+    }
+    
+    if (state.createdByFilter.length > 0) {
+        tags.push({ label: `Created by: ${state.createdByFilter.join(', ')}`, clear: () => {
+            state.createdByFilter = [];
+            renderCreatedByTags();
+        }});
+    }
+    
+    if (state.dateRangeFilter) {
+        const dateLabels = {
+            '7': 'Last 7 days',
+            '30': 'Last 30 days',
+            '90': 'Last 90 days'
+        };
+        tags.push({ label: `Date: ${dateLabels[state.dateRangeFilter]}`, clear: () => {
+            document.getElementById('dateRangeFilter').value = '';
+            state.dateRangeFilter = '';
+        }});
+    }
+    
+    if (state.amountRangeFilter) {
+        const amountLabels = {
+            '0-500': '$0 - $500',
+            '500-1000': '$500 - $1,000',
+            '1000-2000': '$1,000 - $2,000',
+            '2000-5000': '$2,000 - $5,000',
+            '5000+': '$5,000+'
+        };
+        tags.push({ label: `Amount: ${amountLabels[state.amountRangeFilter]}`, clear: () => {
+            document.getElementById('amountRangeFilter').value = '';
+            state.amountRangeFilter = '';
+        }});
+    }
+    
+    container.innerHTML = tags.map(tag => `
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-blue-300 text-blue-700 rounded-full text-xs font-medium">
+            ${tag.label}
+            <button onclick="removeFilterTag(this)" class="hover:text-blue-900" data-clear="${tags.indexOf(tag)}">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </span>
+    `).join('');
+    
+    // Store tags for removal
+    window.filterTags = tags;
+}
+
+// Remove individual filter tag
+function removeFilterTag(button) {
+    const index = parseInt(button.dataset.clear);
+    if (window.filterTags && window.filterTags[index]) {
+        window.filterTags[index].clear();
+        applyFilters();
+    }
+}
+
+// Clear filters
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('paymentStatusFilter').value = '';
+    document.getElementById('createdByInput').value = '';
+    document.getElementById('dateRangeFilter').value = '';
+    document.getElementById('amountRangeFilter').value = '';
+    document.getElementById('sortBy').value = 'newest';
+    
+    state.searchTerm = '';
+    state.paymentStatusFilter = '';
+    state.createdByFilter = [];
+    state.dateRangeFilter = '';
+    state.amountRangeFilter = '';
+    state.sortBy = 'newest';
+    state.statusFilter = 'all';
+    
+    renderCreatedByTags();
+    
+    // Reset tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.status === 'all') {
+            btn.classList.add('active');
+        }
+    });
+    
+    filterAndRender();
+    document.getElementById('filterSummary').classList.add('hidden');
+}
+
+// Toggle quote selection
+function toggleQuoteSelection(quoteId) {
+    if (state.selectedQuotes.has(quoteId)) {
+        state.selectedQuotes.delete(quoteId);
+    } else {
+        state.selectedQuotes.add(quoteId);
+    }
+    updateBulkActionBar();
+    renderQuotes();
+}
+
+// Toggle select all
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAllCheckbox').checked;
+    
+    if (selectAll) {
+        state.filteredQuotes.forEach(q => state.selectedQuotes.add(q.id));
+    } else {
+        state.selectedQuotes.clear();
+    }
+    
+    updateBulkActionBar();
+    renderQuotes();
+}
+
+// Update bulk action bar
+function updateBulkActionBar() {
+    const bar = document.getElementById('bulkActionBar');
+    const count = state.selectedQuotes.size;
+    
+    if (count > 0) {
+        bar.classList.remove('hidden');
+        document.getElementById('selectedCount').textContent = `${count} selected`;
+    } else {
+        bar.classList.add('hidden');
+    }
+}
+
+// Clear selection
+function clearSelection() {
+    state.selectedQuotes.clear();
+    document.getElementById('selectAllCheckbox').checked = false;
+    updateBulkActionBar();
+    renderQuotes();
+}
+
+// Bulk actions (placeholders)
+function bulkSend() { alert('Bulk send functionality'); }
+function bulkExport() { alert('Bulk export functionality'); }
+function bulkArchive() { alert('Bulk archive functionality'); }
+
+// Add team member to filter
+function addCreatedByFilter(member) {
+    if (!state.createdByFilter.includes(member)) {
+        state.createdByFilter.push(member);
+        renderCreatedByTags();
+        document.getElementById('createdByInput').value = '';
+        document.getElementById('createdByAutocomplete').classList.add('hidden');
+    }
+}
+
+// Remove team member from filter
+function removeCreatedByFilter(member) {
+    state.createdByFilter = state.createdByFilter.filter(m => m !== member);
+    renderCreatedByTags();
+}
+
+// Render selected team member tags
+function renderCreatedByTags() {
+    const container = document.getElementById('createdByTags');
+    
+    if (state.createdByFilter.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = state.createdByFilter.map(member => `
+        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+            ${member}
+            <button onclick="removeCreatedByFilter('${member}')" class="hover:text-blue-900">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </span>
+    `).join('');
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Search input
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        state.searchTerm = e.target.value;
+        filterAndRender();
+    });
+    
+    // Payment status filter
+    document.getElementById('paymentStatusFilter').addEventListener('change', (e) => {
+        state.paymentStatusFilter = e.target.value;
+    });
+    
+    // Created by autocomplete
+    const createdByInput = document.getElementById('createdByInput');
+    const createdByAutocomplete = document.getElementById('createdByAutocomplete');
+    
+    createdByInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        if (searchTerm.length === 0) {
+            createdByAutocomplete.classList.add('hidden');
+            return;
+        }
+        
+        const matches = teamMembers.filter(member => 
+            member.toLowerCase().includes(searchTerm) && 
+            !state.createdByFilter.includes(member)
+        );
+        
+        if (matches.length === 0) {
+            createdByAutocomplete.classList.add('hidden');
+            return;
+        }
+        
+        createdByAutocomplete.innerHTML = matches.map(member => `
+            <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm" onclick="addCreatedByFilter('${member}')">
+                ${member}
+            </div>
+        `).join('');
+        
+        createdByAutocomplete.classList.remove('hidden');
+    });
+    
+    createdByInput.addEventListener('blur', () => {
+        setTimeout(() => createdByAutocomplete.classList.add('hidden'), 200);
+    });
+    
+    createdByInput.addEventListener('focus', (e) => {
+        if (e.target.value.length > 0) {
+            e.target.dispatchEvent(new Event('input'));
+        }
+    });
+    
+    // Date range filter
+    document.getElementById('dateRangeFilter').addEventListener('change', (e) => {
+        state.dateRangeFilter = e.target.value;
+    });
+    
+    // Amount range filter
+    document.getElementById('amountRangeFilter').addEventListener('change', (e) => {
+        state.amountRangeFilter = e.target.value;
+    });
+    
+    // Sort
+    document.getElementById('sortBy').addEventListener('change', (e) => {
+        state.sortBy = e.target.value;
+        filterAndRender();
+    });
+    
+    document.getElementById('prevBtn').addEventListener('click', () => {
+        if (state.currentPage > 1) {
+            state.currentPage--;
+            renderQuotes();
+        }
+    });
+    
+    document.getElementById('nextBtn').addEventListener('click', () => {
+        const maxPage = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
+        if (state.currentPage < maxPage) {
+            state.currentPage++;
+            renderQuotes();
+        }
+    });
+}
+</script>
+
 </body>
 </html>

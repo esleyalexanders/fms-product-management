@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Details - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 p-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <button onclick="history.back()" class="p-2 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-3xl font-bold">Invoice Details</h1>
+                    </div>
+                    <div class="flex items-center gap-3 ml-14">
+                        <span id="invoiceNumber" class="text-lg font-semibold text-purple-600">INV-Q-2024-001</span>
+                        <span class="text-gray-300">|</span>
+                        <span id="invoiceStatus" class="px-3 py-1.5 text-sm font-medium rounded-full bg-yellow-100 text-yellow-700">💳 Unpaid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Invoice Document -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <div class="flex justify-between mb-8">
+                        <div>
+                            <h2 class="text-2xl font-bold">INVOICE</h2>
+                            <p id="invoiceNum" class="text-sm text-gray-600">INV-Q-2024-001</p>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="text-lg font-bold">Your Company</h3>
+                            <p class="text-sm text-gray-600">123 Business St</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h4 class="text-sm font-semibold mb-2">BILL TO:</h4>
+                            <p id="customerName" class="font-semibold">Sunshine Tutoring</p>
+                            <p id="customerEmail" class="text-sm text-gray-600">contact@example.com</p>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Invoice Date:</span>
+                                <span id="invoiceDate" class="font-medium">Nov 9, 2024</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Due Date:</span>
+                                <span id="dueDate" class="font-medium">Nov 16, 2024</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Quote Ref:</span>
+                                <span id="quoteRef" class="font-medium text-blue-600">Q-2024-001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Invoice Type:</span>
+                                <span id="invoiceType" class="font-medium">Down Payment</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Payment Terms:</span>
+                                <span id="paymentTerms" class="font-medium">Net 7 Days</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="w-full mb-8">
+                        <thead>
+                            <tr class="border-b-2">
+                                <th class="text-left py-3">Description</th>
+                                <th class="text-right py-3">Qty</th>
+                                <th class="text-right py-3">Price</th>
+                                <th class="text-right py-3">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lineItems"></tbody>
+                    </table>
+
+                    <div class="flex justify-end">
+                        <div class="w-64">
+                            <div class="flex justify-between py-2 text-sm">
+                                <span class="text-gray-600">Subtotal:</span>
+                                <span id="subtotal" class="font-medium">$850.00</span>
+                            </div>
+                            <div class="flex justify-between py-2 text-sm">
+                                <span class="text-gray-600">Tax (10%):</span>
+                                <span id="tax" class="font-medium">$85.00</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-t-2">
+                                <span class="font-bold text-gray-900">Total:</span>
+                                <span id="total" class="font-bold text-purple-600 text-lg">$935.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Notes -->
+                    <div id="notesSection" class="mt-6 border-t pt-4">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-2">Invoice Notes:</h4>
+                        <p id="invoiceNotes" class="text-sm text-gray-600">Payment is due within 7 days of invoice date.</p>
+                    </div>
+
+                    <!-- Payment Instructions -->
+                    <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-blue-900 mb-2">💳 Payment Instructions:</h4>
+                        <p class="text-sm text-blue-800">Click the payment link above or use the following methods:</p>
+                        <ul class="text-sm text-blue-700 mt-2 space-y-1 ml-4 list-disc">
+                            <li>Credit Card / Debit Card</li>
+                            <li>Bank Transfer (BSB & Account details in email)</li>
+                            <li>PayPal / Stripe</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Additional Info Cards -->
+                <div class="mt-4 space-y-4">
+                    <!-- Billing Model Info -->
+                    <div id="billingModelCard" class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold">Billing Information</h3>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Billing Model:</span>
+                                <span id="billingModel" class="font-medium">One-Time Service</span>
+                            </div>
+                            <div id="subscriptionDetails" class="hidden space-y-2 border-t pt-2 mt-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Frequency:</span>
+                                    <span id="subFrequency" class="font-medium">Monthly</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Duration:</span>
+                                    <span id="subDuration" class="font-medium">12 cycles</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Current Cycle:</span>
+                                    <span id="subCycle" class="font-medium text-green-600">1 of 12</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Next Billing:</span>
+                                    <span id="nextBilling" class="font-medium">Dec 9, 2024</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Auto-Charge:</span>
+                                    <span class="font-medium text-green-600">✓ Enabled</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split Invoice Info -->
+                    <div id="splitInvoiceCard" class="hidden bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold">Split Invoice</h3>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">This invoice is part of a split payment:</p>
+                        <div id="splitPayerInfo" class="space-y-2 text-sm">
+                            <!-- Split payer info will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Info (for subscriptions) -->
+                    <div id="paymentMethodCard" class="hidden bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
+                            <h3 class="text-lg font-semibold">Payment Method</h3>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Type:</span>
+                                <span id="paymentMethodType" class="font-medium">Credit Card</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Last 4 Digits:</span>
+                                <span id="cardLast4" class="font-medium">•••• 3456</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Status:</span>
+                                <span class="font-medium text-green-600">✓ Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Panel -->
+            <div>
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+                    <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+                    
+                    <!-- Payment Link -->
+                    <div class="mb-4 p-4 bg-purple-50 rounded-lg">
+                        <h3 class="font-semibold text-sm mb-2">Payment Link</h3>
+                        <div class="flex gap-2 mb-3">
+                            <input id="paymentLink" value="https://pay.example.com/inv-123" readonly class="flex-1 px-3 py-2 text-xs border rounded-lg"/>
+                            <button onclick="copyLink()" class="px-3 py-2 bg-purple-600 text-white rounded-lg">
+                                Copy
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="sendEmail()" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs">Email</button>
+                            <button onclick="sendSMS()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-xs">SMS</button>
+                            <button onclick="sendWhatsApp()" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs">WhatsApp</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-2">
+                        <button onclick="markPaid()" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-medium">
+                            Mark as Paid
+                        </button>
+                        <button onclick="window.print()" class="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 font-medium">
+                            Print Invoice
+                        </button>
+                        <button onclick="downloadPDF()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium">
+                            Download PDF
+                        </button>
+                        <button onclick="voidInvoice()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-medium">
+                            Void Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const invoiceData = {
+            invoiceNumber: 'INV-Q-2024-001',
+            status: 'unpaid',
+            invoiceDate: '2024-11-09',
+            dueDate: '2024-11-16',
+            customer: {name: 'Sunshine Tutoring', email: 'contact@sunshinetutoring.com.au'},
+            lineItems: [
+                {description: 'Weekly Tutoring Sessions', qty: 1, price: 400, amount: 440},
+                {description: 'Study Materials', qty: 1, price: 150, amount: 165},
+                {description: 'Progress Reports', qty: 1, price: 100, amount: 110},
+                {description: 'Platform Access', qty: 1, price: 200, amount: 220}
+            ],
+            subtotal: 850, tax: 85, total: 935
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('invoiceNumber').textContent = invoiceData.invoiceNumber;
+            document.getElementById('invoiceNum').textContent = invoiceData.invoiceNumber;
+            document.getElementById('customerName').textContent = invoiceData.customer.name;
+            document.getElementById('customerEmail').textContent = invoiceData.customer.email;
+            document.getElementById('invoiceDate').textContent = formatDate(invoiceData.invoiceDate);
+            document.getElementById('dueDate').textContent = formatDate(invoiceData.dueDate);
+            document.getElementById('subtotal').textContent = '$' + invoiceData.subtotal.toFixed(2);
+            document.getElementById('tax').textContent = '$' + invoiceData.tax.toFixed(2);
+            document.getElementById('total').textContent = '$' + invoiceData.total.toFixed(2);
+            
+            const tbody = document.getElementById('lineItems');
+            invoiceData.lineItems.forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="py-3">${item.description}</td>
+                        <td class="text-right">${item.qty}</td>
+                        <td class="text-right">$${item.price.toFixed(2)}</td>
+                        <td class="text-right">$${item.amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+        }
+
+        function copyLink() {
+            const link = document.getElementById('paymentLink');
+            link.select();
+            document.execCommand('copy');
+            alert('Payment link copied!');
+        }
+
+        function sendEmail() {
+            alert('Sending payment link via Email to ' + invoiceData.customer.email);
+        }
+
+        function sendSMS() {
+            alert('Sending payment link via SMS');
+        }
+
+        function sendWhatsApp() {
+            alert('Sending payment link via WhatsApp');
+        }
+
+        function markPaid() {
+            if (confirm('Mark this invoice as paid?')) {
+                alert('Invoice marked as paid!');
+                document.getElementById('invoiceStatus').textContent = '✓ Paid';
+                document.getElementById('invoiceStatus').className = 'px-3 py-1.5 text-sm font-medium rounded-full bg-green-100 text-green-700';
+            }
+        }
+
+        function downloadPDF() {
+            alert('Downloading PDF...');
+        }
+
+        function voidInvoice() {
+            if (confirm('Are you sure you want to void this invoice? This action cannot be undone.')) {
+                alert('Invoice voided');
+                document.getElementById('invoiceStatus').textContent = '✕ Void';
+                document.getElementById('invoiceStatus').className = 'px-3 py-1.5 text-sm font-medium rounded-full bg-red-100 text-red-700';
+            }
+        }
+    </script>
+</body>
+</html>
