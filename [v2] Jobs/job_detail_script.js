@@ -237,14 +237,15 @@ function updatePriorityBorders() {
 function updateStatusBadge(status) {
     const statusBadge = document.getElementById('statusBadge');
     const statusMap = {
+        'created': { icon: '📝', text: 'Created', class: 'bg-blue-100 text-blue-700 border-blue-200' },
         'scheduled': { icon: '📋', text: 'Scheduled', class: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-        'in_progress': { icon: '🔄', text: 'In Progress', class: 'bg-blue-100 text-blue-700 border-blue-200' },
         'completed': { icon: '✅', text: 'Completed', class: 'bg-green-100 text-green-700 border-green-200' },
         'cancelled': { icon: '❌', text: 'Cancelled', class: 'bg-red-100 text-red-700 border-red-200' },
         'on_hold': { icon: '⏸️', text: 'On Hold', class: 'bg-gray-100 text-gray-700 border-gray-200' }
     };
-    const statusInfo = statusMap[status] || statusMap['scheduled'];
-    statusBadge.className = `px-3 py-1.5 text-xs font-semibold rounded-full ${statusInfo.class} border`;
+    
+    const statusInfo = statusMap[status] || statusMap['created'];
+    statusBadge.className = `inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border ${statusInfo.class}`;
     statusBadge.textContent = `${statusInfo.icon} ${statusInfo.text}`;
 }
 
@@ -452,8 +453,29 @@ function attachEventListeners() {
     }
     
     if (refreshRecommendationsBtn) {
-        refreshRecommendationsBtn.addEventListener('click', loadRecommendedStaff);
+        refreshRecommendationsBtn.addEventListener('click', () => loadRecommendedStaff(true));
     }
+    
+    // Schedule change detection - refresh recommendations when date/time changes
+    const scheduleDateInput = document.getElementById('scheduleDate');
+    const scheduleTimeSelect = document.getElementById('scheduleTimeSelect');
+    const scheduleTimeInput = document.getElementById('scheduleTime');
+    
+    if (scheduleDateInput) {
+        scheduleDateInput.addEventListener('change', handleScheduleChange);
+    }
+    
+    if (scheduleTimeSelect) {
+        scheduleTimeSelect.addEventListener('change', handleScheduleChange);
+    }
+    
+    if (scheduleTimeInput) {
+        scheduleTimeInput.addEventListener('change', handleScheduleChange);
+    }
+    
+    // Action buttons
+    document.getElementById('saveJobBtn').addEventListener('click', saveJobChanges);
+    document.getElementById('cancelJobBtn').addEventListener('click', cancelJob);
     
     // Load recommended staff
     loadRecommendedStaff();
@@ -574,11 +596,96 @@ function renderSelectedStaff() {
     }).join('');
 }
 
-function loadRecommendedStaff() {
+let scheduleChanged = false;
+let originalSchedule = {
+    date: jobData.scheduledDate,
+    time: jobData.scheduledTime
+};
+
+function handleScheduleChange() {
+    const currentDate = document.getElementById('scheduleDate').value;
+    const currentTimeSelect = document.getElementById('scheduleTimeSelect').value;
+    const currentTime = currentTimeSelect === 'custom' ? document.getElementById('scheduleTime').value : currentTimeSelect;
+    
+    // Check if schedule has changed from original
+    if (currentDate !== originalSchedule.date || currentTime !== originalSchedule.time) {
+        scheduleChanged = true;
+        
+        // Show warning if staff are already selected
+        if (selectedStaff.length > 0) {
+            showScheduleChangeWarning();
+        }
+        
+        // Refresh recommended staff based on new schedule
+        loadRecommendedStaff(true);
+    } else {
+        scheduleChanged = false;
+        hideScheduleChangeWarning();
+    }
+}
+
+function showScheduleChangeWarning() {
+    // Check if warning already exists
+    let warningDiv = document.getElementById('scheduleChangeWarning');
+    
+    if (!warningDiv) {
+        // Create warning message
+        warningDiv = document.createElement('div');
+        warningDiv.id = 'scheduleChangeWarning';
+        warningDiv.className = 'mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg animate-slide-in';
+        warningDiv.innerHTML = `
+            <div class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-yellow-800">Schedule Changed</p>
+                    <p class="text-xs text-yellow-700 mt-1">Selected staff may no longer be the best fit. Recommendations updated based on new schedule and availability.</p>
+                </div>
+                <button onclick="hideScheduleChangeWarning()" class="text-yellow-600 hover:text-yellow-800">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        // Insert before selected staff container
+        const selectedContainer = document.getElementById('selectedStaffContainer');
+        selectedContainer.parentNode.insertBefore(warningDiv, selectedContainer);
+    }
+}
+
+function hideScheduleChangeWarning() {
+    const warningDiv = document.getElementById('scheduleChangeWarning');
+    if (warningDiv) {
+        warningDiv.remove();
+    }
+}
+
+function loadRecommendedStaff(manualRefresh = false) {
     const container = document.getElementById('recommendedStaffList');
     
-    // Get staff not already selected
-    const recommended = availableStaff.filter(s => !selectedStaff.find(sel => sel.id === s.id)).slice(0, 3);
+    // Get current schedule info
+    const scheduleDate = document.getElementById('scheduleDate').value;
+    const scheduleTime = document.getElementById('scheduleTimeSelect').value;
+    
+    // Simulate filtering based on schedule (distance + availability)
+    // In a real app, this would call an API with date/time to get available staff
+    let recommended = [...availableStaff]
+        .filter(s => !selectedStaff.find(sel => sel.id === s.id));
+    
+    // If schedule is set, sort by availability (simulating distance + availability calculation)
+    if (scheduleDate) {
+        recommended = recommended.sort((a, b) => {
+            // Prioritize by availability (high > medium > low)
+            const availabilityScore = { 'high': 3, 'medium': 2, 'low': 1 };
+            return (availabilityScore[b.availability] || 0) - (availabilityScore[a.availability] || 0);
+        });
+    }
+    
+    // Take top 3
+    recommended = recommended.slice(0, 3);
     
     if (recommended.length === 0) {
         container.innerHTML = '<p class="text-xs text-gray-500 italic">All staff selected</p>';
@@ -595,6 +702,13 @@ function loadRecommendedStaff() {
         };
         const colorClass = colorMap[staff.color] || colorMap['blue'];
         
+        // Show availability badge
+        const availabilityBadge = {
+            'high': '<span class="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded">Available</span>',
+            'medium': '<span class="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">Limited</span>',
+            'low': '<span class="px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded">Busy</span>'
+        };
+        
         return `
             <button onclick="selectStaff('${staff.id}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left">
                 <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
@@ -603,6 +717,7 @@ function loadRecommendedStaff() {
                 <div class="flex-1">
                     <p class="font-semibold text-gray-900 text-sm">${staff.name}</p>
                     <p class="text-xs text-gray-600">${staff.role}</p>
+                    ${availabilityBadge[staff.availability] || ''}
                 </div>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -610,6 +725,11 @@ function loadRecommendedStaff() {
             </button>
         `;
     }).join('');
+    
+    // Show toast if manually refreshed
+    if (manualRefresh) {
+        showToast('Recommendations refreshed based on current schedule', 'success');
+    }
 }
 
 function addComment() {
@@ -637,7 +757,113 @@ function addComment() {
 }
 
 function navigateToJob(jobId) {
-    window.location.href = `job_detail.html?id=${jobId}`;
+    showToast(`Navigating to job ${jobId}...`, 'success');
+    // In a real app, this would navigate to the job detail page
+    // window.location.href = `job_detail.html?id=${jobId}`;
+}
+
+function saveJobChanges() {
+    // Gather form data
+    const jobName = document.getElementById('jobName').value;
+    const priority = document.querySelector('input[name="priority"]:checked')?.value;
+    const scheduleDate = document.getElementById('scheduleDate').value;
+    const scheduleTimeSelect = document.getElementById('scheduleTimeSelect').value;
+    const scheduleTime = scheduleTimeSelect === 'custom' ? document.getElementById('scheduleTime').value : scheduleTimeSelect;
+    const durationHours = document.getElementById('durationHours').value;
+    const durationMinutes = document.getElementById('durationMinutes').value;
+    let status = document.getElementById('statusSelect').value;
+    
+    // Auto-update status to "scheduled" if user selects it and has schedule/assignment info
+    if (status === 'scheduled') {
+        // Validate required fields for scheduled status
+        if (!scheduleDate) {
+            showToast('Please select a schedule date to mark as Scheduled', 'error');
+            return;
+        }
+        
+        if (selectedStaff.length === 0) {
+            showToast('Please assign at least one staff member to mark as Scheduled', 'error');
+            return;
+        }
+    }
+    
+    // Require comment for "On Hold" status
+    if (status === 'on_hold') {
+        const reason = prompt('Please provide a reason for putting this job on hold:');
+        if (!reason || reason.trim() === '') {
+            showToast('A reason is required to put the job on hold', 'error');
+            return;
+        }
+        
+        // Add comment to job
+        const onHoldComment = {
+            id: Date.now(),
+            author: 'Current User',
+            message: `Job put on hold. Reason: ${reason.trim()}`,
+            timestamp: new Date().toISOString(),
+            isCurrentUser: true
+        };
+        jobData.comments.push(onHoldComment);
+        renderComments();
+    }
+    
+    // Update job data
+    jobData.name = jobName || jobData.name;
+    jobData.priority = priority;
+    jobData.scheduledDate = scheduleDate;
+    jobData.scheduledTime = scheduleTime;
+    jobData.assignedStaff = [...selectedStaff];
+    jobData.status = status;
+    
+    // Update status badge
+    updateStatusBadge(status);
+    
+    // Update the status select dropdown to reflect saved status
+    document.getElementById('statusSelect').value = status;
+    
+    // In a real app, this would send data to the server
+    console.log('Saving job changes:', jobData);
+    
+    showToast(`Job saved successfully! Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`, 'success');
+}
+
+function cancelJob() {
+    if (confirm('Are you sure you want to cancel this job? This action cannot be undone.')) {
+        // Require cancellation reason
+        const reason = prompt('Please provide a reason for cancelling this job:');
+        if (!reason || reason.trim() === '') {
+            showToast('A reason is required to cancel the job', 'error');
+            return;
+        }
+        
+        // Add cancellation comment
+        const cancelComment = {
+            id: Date.now(),
+            author: 'Current User',
+            message: `Job cancelled. Reason: ${reason.trim()}`,
+            timestamp: new Date().toISOString(),
+            isCurrentUser: true
+        };
+        jobData.comments.push(cancelComment);
+        renderComments();
+        
+        // Update job status to cancelled
+        jobData.status = 'cancelled';
+        updateStatusBadge('cancelled');
+        
+        // Update the status select dropdown
+        document.getElementById('statusSelect').value = 'cancelled';
+        
+        // In a real app, this would send the cancellation to the server
+        console.log('Job cancelled:', jobData.id);
+        
+        showToast('Job has been cancelled', 'success');
+        
+        // Optionally redirect after a delay
+        // setTimeout(() => {
+        //     window.location.href = 'job_list.html';
+        // }, 2000);
+    }
 }
 
 // ============================================================================
