@@ -196,3 +196,39 @@ stateDiagram-v2
     state EndJob {
         [*]
     }
+
+**Luồng Invoice Status Lifecycle**
+flowchart TB
+    subgraph Legend["Legend"]
+        L1["Active States"]
+        L2["Success State"]
+        L3["Closed States"]
+    end
+    
+    subgraph Flow["Invoice Status Lifecycle"]
+        Start([Invoice Created]) --> Unpaid[Status: Unpaid<br/>Awaiting payment]
+        
+        Unpaid -->|Customer pays| Paid[Status: Paid<br/>Payment received]
+        
+        Unpaid -->|Past due date| Overdue[Status: Overdue<br/>Payment overdue]
+        
+        Overdue -->|Customer pays| Paid
+        
+        Unpaid -->|Canceled| Void[Status: Void<br/>Canceled]
+        Overdue -->|Canceled| Void
+        
+        Paid -->|Refund issued| Void
+        
+        Void --> End1([Invoice Closed])
+    end
+    
+    style L1 fill:#E3F2FD,stroke:#1565C0
+    style L2 fill:#C8E6C9,stroke:#1B5E20
+    style L3 fill:#BDBDBD,stroke:#616161
+    
+    style Start fill:#4CAF50,stroke:#2E7D32,stroke-width:3px
+    style Unpaid fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
+    style Overdue fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style Paid fill:#C8E6C9,stroke:#1B5E20,stroke-width:2px
+    style Void fill:#BDBDBD,stroke:#616161,stroke-width:2px
+    style End1 fill:#757575,stroke:#424242,stroke-width:3px
