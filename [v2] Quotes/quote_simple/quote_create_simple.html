@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quote - Simplified - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-3">
+                            <h1 class="text-3xl font-bold text-gray-900">Create Quote</h1>
+                            <span class="px-3 py-1.5 text-sm font-medium rounded-full bg-blue-100 text-blue-700">📝 New</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-gray-700">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span class="font-medium">Sunshine Tutoring - Melbourne East</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button 
+                            onclick="window.location.href='quote_list.html'"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Quotes
+                        </button>
+                        <button 
+                            id="saveDraftBtn"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                        >
+                            Save Draft
+                        </button>
+                        <button 
+                            id="previewBtn"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Preview
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Required Fields Notice -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-sm text-blue-800">
+                        <span class="text-red-500 font-bold">*</span> indicates required fields
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Customer & Services -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Customer Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Customer Information <span class="text-red-500">*</span></h2>
+                            <button 
+                                id="toggleNewCustomerBtn"
+                                class="text-blue-600 text-sm hover:underline flex items-center gap-1"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                New Customer
+                            </button>
+                        </div>
+
+                        <!-- Customer Search with Autocomplete -->
+                        <div id="customerSearchSection">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input
+                                    type="text"
+                                    id="customerSearchInput"
+                                    placeholder="Type to search customer by name, email, or phone... (Required)"
+                                    class="w-full pl-10 pr-10 py-2 border border-red-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    autocomplete="off"
+                                    required
+                                />
+                                <button id="clearSearchBtn" class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                                <!-- Autocomplete Dropdown -->
+                                <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                    <!-- Autocomplete results will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Customer Card -->
+                        <div id="selectedCustomerCard" class="hidden mt-3">
+                            <div class="border border-blue-300 rounded-lg p-3 bg-blue-50">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <p class="font-semibold text-gray-900" id="selectedCustomerName"></p>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">Selected</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1" id="selectedCustomerEmail"></p>
+                                        <p class="text-sm text-gray-600" id="selectedCustomerPhone"></p>
+                                    </div>
+                                    <button 
+                                        id="clearCustomerBtn"
+                                        class="text-gray-500 hover:text-gray-700"
+                                        title="Clear selection"
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <!-- Quote Contact Selector (if secondary contacts exist) -->
+                                <div id="quoteContactSelector" class="hidden border-t border-blue-200 pt-3 mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quote Contact</label>
+                                    <select id="quoteContactSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                        <!-- Options populated dynamically -->
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Select who should receive this quote</p>
+                                </div>
+                                
+                                <!-- Service Address Section -->
+                                <div class="border-t border-blue-200 pt-3 mt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-sm font-medium text-gray-700">Service Address</h3>
+                                        <label class="flex items-center gap-2 text-xs text-gray-600">
+                                            <input type="checkbox" id="sameAsBilling" checked class="rounded" />
+                                            <span>Same as customer address</span>
+                                        </label>
+                                    </div>
+                                    <div id="serviceAddressFields" class="hidden">
+                                        <div class="mb-2">
+                                            <label class="block text-xs text-gray-600 mb-1">Service Location <span class="text-red-500">*</span></label>
+                                            <input type="text" id="serviceStreet" placeholder="Enter service address" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                                        </div>
+                                    </div>
+                                    <div id="serviceAddressDisplay" class="text-sm text-gray-600 mb-2" style="display: block;">
+                                        <span id="displayServiceAddress"></span>
+                                    </div>
+                                    <!-- Access Instructions - Always visible -->
+                                    <div class="mt-2">
+                                        <label class="block text-xs text-gray-600 mb-1">Access Instructions <span class="text-gray-400 text-xs">(Optional)</span></label>
+                                        <textarea id="serviceAddressNotes" rows="2" placeholder="Gate codes, parking info, entry instructions, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- New Customer Form -->
+                        <div id="newCustomerForm" class="hidden space-y-3">
+                            <!-- Name Fields -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="form-group">
+                                    <label for="newCustomerFirstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                                    <input type="text" id="newCustomerFirstName" placeholder="John" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="newCustomerLastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                                    <input type="text" id="newCustomerLastName" placeholder="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                                </div>
+                            </div>
+                            
+                            <!-- Company -->
+                            <div class="form-group">
+                                <label for="newCustomerCompany" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                                <input type="text" id="newCustomerCompany" placeholder="ABC Corp" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Contact Information</h3>
+                                <div class="form-group">
+                                    <label for="newCustomerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                                    <input type="email" id="newCustomerEmail" placeholder="john@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="newCustomerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <input type="tel" id="newCustomerPhone" placeholder="+1 234 567 8900" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="newCustomerWhatsApp" class="block text-sm font-medium text-gray-700 mb-1">
+                                        WhatsApp Number
+                                        <span class="text-xs text-gray-500">(for quote delivery)</span>
+                                    </label>
+                                    <input type="tel" id="newCustomerWhatsApp" placeholder="+61 412 345 678" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="newCustomerPreferredContact" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
+                                    <select id="newCustomerPreferredContact" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="email">Email</option>
+                                        <option value="phone">Phone</option>
+                                        <option value="whatsapp">WhatsApp</option>
+                                        <option value="none">None</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Address</h3>
+                                <div class="form-group">
+                                    <label for="newCustomerStreet" class="block text-sm font-medium text-gray-700 mb-1">Street</label>
+                                    <input type="text" id="newCustomerStreet" placeholder="123 Main St" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 mt-3">
+                                    <div class="form-group">
+                                        <label for="newCustomerCity" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                        <input type="text" id="newCustomerCity" placeholder="New York" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newCustomerState" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                                        <input type="text" id="newCustomerState" placeholder="NY" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 mt-3">
+                                    <div class="form-group">
+                                        <label for="newCustomerPostalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                                        <input type="text" id="newCustomerPostalCode" placeholder="10001" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newCustomerCountry" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                                        <input type="text" id="newCustomerCountry" placeholder="Australia" value="Australia" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Notes</h3>
+                                <textarea id="newCustomerNotes" placeholder="Additional notes about the customer" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="flex gap-2 border-t border-gray-200 pt-3">
+                                <button 
+                                    id="cancelNewCustomerBtn"
+                                    class="flex-1 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    id="createCustomerBtn"
+                                    class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+                                >
+                                    Create & Select
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quote Line Items -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items <span class="text-red-500">*</span></h2>
+                        
+                        <!-- Add Service/Product Search -->
+                        <div class="mb-4">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input 
+                                    type="text" 
+                                    id="catalogSearchInput"
+                                    placeholder="Type to search and add services or products..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    autocomplete="off"
+                                />
+                                <button id="clearCatalogSearchBtn" class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                                <!-- Autocomplete Dropdown -->
+                                <div id="catalogAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-80 overflow-y-auto custom-scrollbar">
+                                    <!-- Autocomplete results will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="emptyQuoteState" class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-700 mb-1">No items added yet</p>
+                            <p class="text-xs text-gray-500">Search and add services or products above to build your quote</p>
+                        </div>
+
+                        <!-- Card-based Quote Items Container -->
+                        <div id="quoteItemsContainer" class="hidden space-y-3">
+                            <!-- Quote item cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Summary & Actions -->
+                <div class="space-y-4">
+                    
+                    <!-- Pricing Summary -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Summary</h2>
+                        
+                        <div class="space-y-3 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-medium" id="subtotalAmount">$0.00</span>
+                            </div>
+
+                            <!-- Line Item Discounts Summary -->
+                            <div id="lineItemDiscountSection" class="hidden">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-sm text-gray-600">Line Item Discounts</span>
+                                    <span class="text-sm font-medium text-red-600" id="lineItemDiscountAmount">-$0.00</span>
+                                </div>
+                            </div>
+
+
+                            <div id="approvalWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded p-2 flex items-start gap-2">
+                                <svg class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <p class="text-xs text-yellow-800">Manager approval required (discount >20%)</p>
+                            </div>
+                            
+                            <!-- Tax Breakdown by Category -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="text-xs text-gray-600 mb-2">Tax Breakdown:</div>
+                                <div id="taxBreakdown" class="space-y-1 text-xs">
+                                    <!-- Tax breakdown will be populated here -->
+                                </div>
+                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                                    <span class="text-sm text-gray-600">Total Tax</span>
+                                    <span class="text-sm font-medium" id="taxAmount">$0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- Deposit Section -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                        <input type="checkbox" id="requireDeposit" class="rounded" />
+                                        <span class="text-gray-700 font-medium">Require Deposit</span>
+                                    </label>
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                
+                                <div id="depositSection" class="hidden space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <select 
+                                            id="depositType"
+                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
+                                        >
+                                            <option value="percentage">%</option>
+                                            <option value="fixed">$</option>
+                                        </select>
+                                        <input 
+                                            type="number"
+                                            id="depositValue"
+                                            value="50"
+                                            class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                                            min="0"
+                                            step="1"
+                                        />
+                                    </div>
+                                    <div class="flex justify-between text-sm bg-green-50 p-2 rounded">
+                                        <span class="text-gray-700">Deposit Required:</span>
+                                        <span class="font-semibold text-green-700" id="depositAmount">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-600">
+                                        <span>Balance Due:</span>
+                                        <span id="balanceDue">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t-2 border-gray-300 pt-3">
+                                <div class="flex justify-between">
+                                    <span class="font-bold text-gray-900 text-lg">Total</span>
+                                    <span class="font-bold text-gray-900 text-lg" id="totalAmount">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quote Details -->
+                        <div class="border-t border-gray-200 pt-4 space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Valid Until</label>
+                                <input 
+                                    type="date" 
+                                    id="validUntilDate"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Notes for Customer</label>
+                                <textarea 
+                                    id="customerNotes"
+                                    rows="3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Terms, conditions, or special notes..."
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Internal Notes</label>
+                                <textarea 
+                                    id="internalNotes"
+                                    rows="2"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Private notes (not visible to customer)..."
+                                ></textarea>
+                            </div>
+                        </div>
+                        <!-- Action Buttons -->
+                        <div class="mt-4 space-y-2">
+                            <button 
+                                id="createQuoteBtn"
+                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Create Quote
+                            </button>
+                            <button 
+                                id="saveDraftBtn"
+                                class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                </svg>
+                                Save as Draft
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote Preview Modal (PDF-like) -->
+    <div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4 sticky top-0 bg-white pb-4 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
+                    <div class="flex gap-2">
+                        <button id="downloadPreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download PDF
+                        </button>
+                        <button id="closePreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="previewContent" class="bg-white p-8" style="font-family: 'Helvetica', 'Arial', sans-serif;">
+                    <!-- PDF-like content will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price Modification Modal -->
+    <div id="priceModModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Modify Price</h3>
+                    <button id="closePriceModModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <p class="text-sm font-medium text-gray-900" id="priceModItemName"></p>
+                        <span id="priceModItemType"></span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-600">Original Price:</span>
+                        <span class="font-medium" id="priceModOriginal"></span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm mt-1">
+                        <span class="text-gray-600">New Price:</span>
+                        <span class="font-semibold text-blue-600" id="priceModNew"></span>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Reason for modification <span class="text-red-600">*</span></label>
+                    <textarea 
+                        id="priceModComment"
+                        rows="3"
+                        placeholder="Enter reason for price modification (required for approval)"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    ></textarea>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button id="cancelPriceModBtn" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                        Cancel
+                    </button>
+                    <button id="savePriceModBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        const state = {
+            businessType: 'tutoring',
+            selectedCustomer: null,
+            selectedQuoteContact: null, // Will store the contact for this quote (primary or secondary)
+            showNewCustomerForm: false,
+            quoteItems: [],
+            depositRequired: false,
+            depositType: 'percentage',
+            depositValue: 50,
+            approvalRequired: false,
+            currentPriceModIndex: null,
+            currentPriceModNewValue: null
+        };
+
+        // Sample data - Customers A-Z
+        const customers = [
+            { 
+                id: 1, 
+                name: 'Alice Anderson', 
+                email: 'alice.a@email.com', 
+                phone: '0412 345 678', 
+                address: '1 Albert St, Melbourne VIC 3000', 
+                previousQuotes: 3,
+                secondaryContacts: [
+                    { name: 'John Anderson', email: 'john.a@email.com', phone: '0412 345 679', role: 'Spouse' }
+                ]
+            },
+            { 
+                id: 2, 
+                name: 'Bob Brown', 
+                email: 'bob.brown@email.com', 
+                phone: '0413 456 789', 
+                address: '2 Bridge Rd, Richmond VIC 3121', 
+                previousQuotes: 5,
+                secondaryContacts: [
+                    { name: 'Sarah Brown', email: 'sarah.b@email.com', phone: '0413 456 790', role: 'Assistant' },
+                    { name: 'Mike Brown', email: 'mike.b@email.com', phone: '0413 456 791', role: 'Business Partner' }
+                ]
+            },
+            { id: 3, name: 'Charlie Chen', email: 'charlie.c@email.com', phone: '0414 567 890', address: '3 Chapel St, Windsor VIC 3181', previousQuotes: 2 },
+            { id: 4, name: 'David Davis', email: 'david.d@email.com', phone: '0412 444 444', address: '4 Docklands Dr, Docklands VIC 3008', previousQuotes: 0 },
+            { id: 5, name: 'Emily Evans', email: 'emily.evans@email.com', phone: '0412 555 555', address: '5 Elizabeth St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 6, name: 'Frank Foster', email: 'frank.f@email.com', phone: '0412 666 666', address: '6 Flinders St, Melbourne VIC 3000', previousQuotes: 4 },
+            { id: 7, name: 'Grace Garcia', email: 'grace.g@email.com', phone: '0412 777 777', address: '7 Glenferrie Rd, Hawthorn VIC 3122', previousQuotes: 1 },
+            { id: 8, name: 'Henry Harris', email: 'henry.h@email.com', phone: '0412 888 888', address: '8 High St, Kew VIC 3101', previousQuotes: 6 },
+            { id: 9, name: 'Isabella Ibrahim', email: 'isabella.i@email.com', phone: '0412 999 999', address: '9 Inkerman St, St Kilda VIC 3182', previousQuotes: 0 },
+            { id: 10, name: 'James Johnson', email: 'james.j@email.com', phone: '0413 111 111', address: '10 Johnston St, Fitzroy VIC 3065', previousQuotes: 3 },
+            { id: 11, name: 'Katherine Kim', email: 'kate.kim@email.com', phone: '0413 222 222', address: '11 King St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 12, name: 'Liam Lee', email: 'liam.lee@email.com', phone: '0413 333 333', address: '12 Lygon St, Carlton VIC 3053', previousQuotes: 7 },
+            { id: 13, name: 'Maria Martinez', email: 'maria.m@email.com', phone: '0413 444 444', address: '13 Main Rd, Eltham VIC 3095', previousQuotes: 1 },
+            { id: 14, name: 'Nathan Nguyen', email: 'nathan.n@email.com', phone: '0413 555 555', address: '14 Nicholson St, Fitzroy VIC 3065', previousQuotes: 4 },
+            { id: 15, name: "Olivia O'Connor", email: 'olivia.o@email.com', phone: '0413 666 666', address: '15 Ormond Rd, Elwood VIC 3184', previousQuotes: 0 },
+            { id: 16, name: 'Patrick Patel', email: 'patrick.p@email.com', phone: '0413 777 777', address: '16 Park St, South Melbourne VIC 3205', previousQuotes: 5 },
+            { id: 17, name: 'Quinn Roberts', email: 'quinn.r@email.com', phone: '0413 888 888', address: '17 Queen St, Melbourne VIC 3000', previousQuotes: 2 },
+            { id: 18, name: 'Rachel Robinson', email: 'rachel.r@email.com', phone: '0413 999 999', address: '18 Royal Pde, Parkville VIC 3052', previousQuotes: 3 },
+            { id: 19, name: 'Samuel Smith', email: 'sam.smith@email.com', phone: '0414 111 111', address: '19 Smith St, Collingwood VIC 3066', previousQuotes: 8 },
+            { id: 20, name: 'Taylor Thompson', email: 'taylor.t@email.com', phone: '0414 222 222', address: '20 Toorak Rd, South Yarra VIC 3141', previousQuotes: 1 },
+            { id: 21, name: 'Uma Patel', email: 'uma.patel@email.com', phone: '0414 333 333', address: '21 Union St, Windsor VIC 3181', previousQuotes: 0 },
+            { id: 22, name: 'Victor Vasquez', email: 'victor.v@email.com', phone: '0414 444 444', address: '22 Victoria St, Richmond VIC 3121', previousQuotes: 4 },
+            { id: 23, name: 'Wendy White', email: 'wendy.w@email.com', phone: '0414 555 555', address: '23 Wellington St, St Kilda VIC 3182', previousQuotes: 2 },
+            { id: 24, name: 'Xavier Xu', email: 'xavier.x@email.com', phone: '0414 666 666', address: '24 Xavier St, Kew VIC 3101', previousQuotes: 6 },
+            { id: 25, name: 'Yasmin Young', email: 'yasmin.y@email.com', phone: '0414 777 777', address: '25 York St, South Melbourne VIC 3205', previousQuotes: 1 },
+            { id: 26, name: 'Zachary Zhang', email: 'zach.zhang@email.com', phone: '0414 888 888', address: '26 Zoe St, Brunswick VIC 3056', previousQuotes: 3 }
+        ];
+
+        const tutoringServices = [
+            // Services with GST (10% tax)
+            { id: 't1', name: 'One-on-One Tutoring - Math', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
+            { id: 't2', name: 'One-on-One Tutoring - English', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
+            { id: 't3', name: 'Small Group (2-4 students)', tag: 'Group', type: 'service', price: 50, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
+            { id: 't4', name: 'Assessment & Report', tag: 'Assessment', type: 'service', price: 120, pricingType: 'fixed', unit: 'each', taxCategory: 'taxable_gst' },
+            
+            // Services GST-Free (0% tax)
+            { id: 't5', name: 'Educational Counseling Service', tag: 'Support', type: 'service', price: 80, pricingType: 'per_hour', unit: 'hour', taxCategory: 'gst_free' },
+            { id: 't6', name: 'Learning Disability Assessment', tag: 'Assessment', type: 'service', price: 150, pricingType: 'fixed', unit: 'each', taxCategory: 'gst_free' },
+            
+            // Services Input-Taxed (0% tax)
+            { id: 't7', name: 'Tutoring Consultation Fee', tag: 'Consultation', type: 'service', price: 60, pricingType: 'fixed', unit: 'each', taxCategory: 'input_taxed' },
+            
+            // Products with GST (10% tax)
+            { id: 'p1', name: 'Study Materials Package', tag: 'Materials', type: 'product', price: 45, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
+            { id: 'p2', name: 'Textbook Bundle', tag: 'Materials', type: 'product', price: 120, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
+            { id: 'p3', name: 'Practice Test Series', tag: 'Materials', type: 'product', price: 35, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
+            
+            // Products GST-Free (0% tax)
+            { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
+            { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
+        ];
+
+        // Helper functions
+        function getServices() {
+            return tutoringServices;
+        }
+        
+
+        function getPricingIcon(type) {
+            const icons = {
+                'per_hour': `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+                'per_sqm': `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"></path></svg>`,
+                'per_unit': `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>`,
+                'fixed': `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+            };
+            return icons[type] || icons['fixed'];
+        }
+
+        function getTypeIndicator(type) {
+            if (type === 'product') {
+                return '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">🟢 Product</span>';
+            }
+            return '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">🔵 Service</span>';
+        }
+
+        // Tax rate lookup based on tax category
+        function getTaxRate(taxCategory) {
+            const taxRates = {
+                'taxable_gst': 0.10,    // 10% GST
+                'gst_free': 0.00,       // 0% GST-free
+                'input_taxed': 0.00     // 0% Input-taxed (no GST on output, but special reporting)
+            };
+            return taxRates[taxCategory] || 0.10; // Default to 10% if category not found
+        }
+
+        function getTaxCategoryLabel(taxCategory) {
+            const labels = {
+                'taxable_gst': 'Taxable (10% GST)',
+                'gst_free': 'GST-Free (0%)',
+                'input_taxed': 'Input-Taxed (0%)'
+            };
+            return labels[taxCategory] || 'Standard (10%)';
+        }
+
+        // Calculate tax for each line item based on its tax category
+        function calculateLineItemTax(item) {
+            const taxRate = getTaxRate(item.taxCategory);
+            const lineTotal = item.customPrice * item.quantity;
+            return lineTotal * taxRate;
+        }
+
+        // Calculation functions
+        function calculateSubtotal() {
+            return state.quoteItems.reduce((sum, item) => {
+                const lineTotal = item.customPrice * item.quantity;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                return sum + (lineTotal - discountAmount);
+            }, 0);
+        }
+
+        function calculateTax() {
+            // Calculate tax per line item based on their tax categories
+            return state.quoteItems.reduce((sum, item) => {
+                return sum + calculateLineItemTax(item);
+            }, 0);
+        }
+
+        function calculateTotal() {
+            return calculateSubtotal() + calculateTax();
+        }
+        
+        // Calculate total line item discounts
+        function calculateLineItemDiscounts() {
+            return state.quoteItems.reduce((sum, item) => {
+                const lineTotal = item.customPrice * item.quantity;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                return sum + discountAmount;
+            }, 0);
+        }
+        
+        // Calculate deposit amount
+        function calculateDeposit() {
+            if (!state.depositRequired) return 0;
+            const total = calculateTotal();
+            if (state.depositType === 'percentage') {
+                return total * (state.depositValue / 100);
+            }
+            return Math.min(state.depositValue, total);
+        }
+        
+        // Calculate balance due after deposit
+        function calculateBalanceDue() {
+            return calculateTotal() - calculateDeposit();
+        }
+        
+        // Get tax breakdown by category
+        function getTaxBreakdown() {
+            const breakdown = {
+                taxable_gst: 0,
+                gst_free: 0,
+                input_taxed: 0
+            };
+            
+            state.quoteItems.forEach(item => {
+                const taxAmount = calculateLineItemTax(item);
+                if (item.taxCategory && breakdown.hasOwnProperty(item.taxCategory)) {
+                    breakdown[item.taxCategory] += taxAmount;
+                } else {
+                    breakdown.taxable_gst += taxAmount; // Default
+                }
+            });
+            
+            return breakdown;
+        }
+
+        function updateSummary() {
+            document.getElementById('subtotalAmount').textContent = `$${calculateSubtotal().toFixed(2)}`;
+            
+            // Update line item discounts display
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const lineItemDiscountSection = document.getElementById('lineItemDiscountSection');
+            if (lineItemDiscounts > 0) {
+                lineItemDiscountSection.classList.remove('hidden');
+                document.getElementById('lineItemDiscountAmount').textContent = `-$${lineItemDiscounts.toFixed(2)}`;
+            } else {
+                lineItemDiscountSection.classList.add('hidden');
+            }
+            
+            document.getElementById('totalAmount').textContent = `$${calculateTotal().toFixed(2)}`;
+
+            // Calculate and display tax breakdown by category
+            const taxBreakdown = getTaxBreakdown();
+            const taxBreakdownContainer = document.getElementById('taxBreakdown');
+            
+            let taxBreakdownHTML = '';
+            if (taxBreakdown.taxable_gst > 0) {
+                taxBreakdownHTML += `<div class="flex justify-between"><span>GST (10%):</span><span>$${taxBreakdown.taxable_gst.toFixed(2)}</span></div>`;
+            }
+            if (taxBreakdown.gst_free > 0) {
+                taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>GST-Free:</span><span>$0.00</span></div>`;
+            }
+            if (taxBreakdown.input_taxed > 0) {
+                taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>Input-Taxed:</span><span>$0.00</span></div>`;
+            }
+            
+            taxBreakdownContainer.innerHTML = taxBreakdownHTML || '<div class="text-gray-400">No taxable items</div>';
+            
+            // Total tax
+            const totalTax = calculateTax();
+            document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
+
+            // Update deposit display
+            if (state.depositRequired) {
+                document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
+                document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
+            }
+
+            // Check approval requirement based on line item discounts
+            const lineItemDiscountTotal = calculateLineItemDiscounts();
+            const subtotal = calculateSubtotal();
+            const discountPercent = subtotal > 0 ? (lineItemDiscountTotal / (subtotal + lineItemDiscountTotal)) * 100 : 0;
+            state.approvalRequired = discountPercent > 20;
+            
+            const approvalWarning = document.getElementById('approvalWarning');
+            if (approvalWarning) {
+                approvalWarning.classList.toggle('hidden', !state.approvalRequired);
+            }
+            
+            updateCreateButton();
+        }
+
+        function updateCreateButton() {
+            const createBtn = document.getElementById('createQuoteBtn');
+            const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
+            createBtn.disabled = !canCreate;
+        }
+
+        // Render functions
+        function renderCustomerAutocomplete(searchTerm = '') {
+            const autocomplete = document.getElementById('customerAutocomplete');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (!searchTerm || searchTerm.length < 2) {
+                autocomplete.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+            
+            clearBtn.classList.remove('hidden');
+            
+            const filtered = customers.filter(c => 
+                c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                c.phone.includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                autocomplete.innerHTML = `
+                    <div class="p-3 text-sm text-gray-500 text-center">
+                        No customers found. <button onclick="document.getElementById('toggleNewCustomerBtn').click()" class="text-blue-600 hover:underline">Create new customer</button>
+                    </div>
+                `;
+                autocomplete.classList.remove('hidden');
+                return;
+            }
+
+            autocomplete.innerHTML = filtered.map(customer => `
+                <div 
+                    class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    onclick="selectCustomer(${customer.id})"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="font-medium text-gray-900 text-sm">${customer.name}</p>
+                            <p class="text-xs text-gray-600 mt-0.5">${customer.email}</p>
+                            <p class="text-xs text-gray-500">${customer.phone}</p>
+                        </div>
+                        ${customer.previousQuotes > 0 ? `
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">${customer.previousQuotes} quotes</span>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            autocomplete.classList.remove('hidden');
+        }
+
+        function renderCatalogAutocomplete(searchTerm = '') {
+            const autocomplete = document.getElementById('catalogAutocomplete');
+            const clearBtn = document.getElementById('clearCatalogSearchBtn');
+            
+            if (!searchTerm || searchTerm.length < 2) {
+                autocomplete.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+            
+            clearBtn.classList.remove('hidden');
+            
+            const services = getServices().filter(service => 
+                service.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                service.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.tag.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            if (services.length === 0) {
+                autocomplete.innerHTML = `
+                    <div class="p-3 text-sm text-gray-500 text-center">
+                        No services or products found.
+                    </div>
+                `;
+                autocomplete.classList.remove('hidden');
+                return;
+            }
+
+            autocomplete.innerHTML = services.map(service => `
+                <div 
+                    class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                    onclick="addQuoteItem('${service.id}')"
+                >
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                ${getTypeIndicator(service.type)}
+                                <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">${service.tag}</span>
+                            </div>
+                            <p class="font-medium text-gray-900 text-sm">${service.name}</p>
+                            <p class="text-xs text-gray-500 mt-0.5">${service.id}</p>
+                        </div>
+                        <div class="text-right ml-3">
+                            <div class="flex items-center gap-1 text-gray-700">
+                                <span class="text-sm font-semibold">$${service.price}</span>
+                                <span class="text-xs text-gray-500">/ ${service.unit}</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-0.5">${getTaxCategoryLabel(service.taxCategory || 'taxable_gst')}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            autocomplete.classList.remove('hidden');
+        }
+
+        function renderQuoteItems() {
+            const emptyState = document.getElementById('emptyQuoteState');
+            const container = document.getElementById('quoteItemsContainer');
+            
+            if (state.quoteItems.length === 0) {
+                emptyState.classList.remove('hidden');
+                container.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            container.classList.remove('hidden');
+            
+            container.innerHTML = state.quoteItems.map((item, index) => {
+                // Show tax category
+                let taxBadge = '';
+                if (item.taxCategory) {
+                    const taxLabels = {
+                        'taxable_gst': '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-50 text-blue-700">📋 GST (10%)</span>',
+                        'gst_free': '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-50 text-gray-600">GST-Free</span>',
+                        'input_taxed': '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-50 text-gray-600">Input-Taxed</span>'
+                    };
+                    taxBadge = taxLabels[item.taxCategory] || '';
+                }
+                
+                const lineTotal = item.quantity * item.customPrice;
+                const discountAmount = item.discountType === 'percentage' 
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                const lineTotalAfterDiscount = lineTotal - discountAmount;
+                
+                return `
+                <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <!-- Header Row -->
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-900">${item.name}</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${getTypeIndicator(item.type)}
+                                ${taxBadge}
+                            </div>
+                            ${item.priceModificationComment ? `
+                                <div class="mt-2 text-xs text-yellow-700 bg-yellow-50 px-2 py-1 rounded">
+                                    💬 ${item.priceModificationComment}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-gray-900">$${lineTotalAfterDiscount.toFixed(2)}</div>
+                                ${item.discount > 0 ? `<div class="text-xs text-green-600">-$${discountAmount.toFixed(2)} discount</div>` : ''}
+                            </div>
+                            <button 
+                                onclick="removeQuoteItem(${index})"
+                                class="ml-2 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remove item"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Details Grid -->
+                    <div class="grid grid-cols-12 gap-3 mb-3 pb-3 border-b border-gray-200">
+                        <div class="col-span-3">
+                            <label class="text-xs text-gray-500 block mb-1">${item.type === 'product' ? 'Delivery Date' : 'Service Date'} <span class="text-red-500">*</span></label>
+                            <input 
+                                type="date"
+                                value="${item.serviceDate || ''}"
+                                onchange="updateItemServiceDate(${index}, this.value)"
+                                class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm"
+                            />
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-xs text-gray-500 block mb-1">Quantity <span class="text-red-500">*</span></label>
+                            <input 
+                                type="number"
+                                value="${item.quantity}"
+                                onchange="updateItemQuantity(${index}, this.value)"
+                                class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
+                                min="1"
+                            />
+                        </div>
+                        <div class="col-span-3">
+                            <label class="text-xs text-gray-500 block mb-1">Unit Price</label>
+                            <input 
+                                type="number"
+                                value="${item.customPrice}"
+                                onchange="updateItemPrice(${index}, this.value)"
+                                class="w-full px-2 py-1.5 border ${item.priceModified ? 'border-yellow-500 bg-yellow-50' : 'border-gray-300'} rounded text-sm text-right"
+                                min="0"
+                                step="0.01"
+                            />
+                            ${item.priceModified ? `<span class="text-xs text-yellow-600">Modified</span>` : ''}
+                        </div>
+                        <div class="col-span-4">
+                            <label class="text-xs text-gray-500 block mb-1">Discount</label>
+                            <div class="flex gap-2">
+                                <select 
+                                    onchange="updateItemDiscountType(${index}, this.value)"
+                                    class="w-16 px-2 py-1.5 border border-gray-300 rounded text-sm"
+                                >
+                                    <option value="percentage" ${item.discountType === 'percentage' ? 'selected' : ''}>%</option>
+                                    <option value="fixed" ${item.discountType === 'fixed' ? 'selected' : ''}>$</option>
+                                </select>
+                                <input 
+                                    type="number"
+                                    value="${item.discount || 0}"
+                                    onchange="updateItemDiscount(${index}, this.value)"
+                                    class="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm text-right"
+                                    min="0"
+                                    step="0.01"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes Section -->
+                    <div class="mb-3">
+                        <label class="text-xs text-gray-500 block mb-1">Notes</label>
+                        <textarea 
+                            placeholder="${item.type === 'product' ? 'Delivery instructions, quantity details, etc...' : 'Service requirements, special instructions, etc...'}"
+                            onchange="updateItemNotes(${index}, this.value)"
+                            class="w-full px-3 py-2 border border-gray-300 rounded text-sm resize-none"
+                            rows="2"
+                        >${item.notes || ''}</textarea>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Event handlers
+        function selectCustomer(customerId) {
+            const customer = customers.find(c => c.id === customerId);
+            state.selectedCustomer = customer;
+            
+            // Hide search, show selected card
+            const searchInput = document.getElementById('customerSearchInput');
+            searchInput.value = '';
+            searchInput.classList.remove('border-red-300');
+            searchInput.classList.add('border-green-500');
+            document.getElementById('customerAutocomplete').classList.add('hidden');
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            document.getElementById('customerSearchSection').classList.add('hidden');
+            document.getElementById('selectedCustomerCard').classList.remove('hidden');
+            
+            // Populate customer info
+            document.getElementById('selectedCustomerName').textContent = customer.name;
+            document.getElementById('selectedCustomerEmail').textContent = customer.email;
+            document.getElementById('selectedCustomerPhone').textContent = customer.phone;
+            
+            // Setup quote contact selector if secondary contacts exist
+            const contactSelector = document.getElementById('quoteContactSelector');
+            const contactSelect = document.getElementById('quoteContactSelect');
+            
+            if (customer.secondaryContacts && customer.secondaryContacts.length > 0) {
+                // Show contact selector
+                contactSelector.classList.remove('hidden');
+                
+                // Build options: primary contact + secondary contacts
+                let options = `<option value="primary">Primary: ${customer.name} (${customer.email})</option>`;
+                customer.secondaryContacts.forEach((contact, index) => {
+                    options += `<option value="secondary-${index}">${contact.name} - ${contact.role} (${contact.email})</option>`;
+                });
+                contactSelect.innerHTML = options;
+                
+                // Set default to primary
+                state.selectedQuoteContact = {
+                    type: 'primary',
+                    name: customer.name,
+                    email: customer.email,
+                    phone: customer.phone
+                };
+            } else {
+                // Hide contact selector, use primary by default
+                contactSelector.classList.add('hidden');
+                state.selectedQuoteContact = {
+                    type: 'primary',
+                    name: customer.name,
+                    email: customer.email,
+                    phone: customer.phone
+                };
+            }
+            
+            // Set service address (same as billing by default)
+            document.getElementById('displayServiceAddress').textContent = customer.address || 'No address on file';
+            document.getElementById('sameAsBilling').checked = true;
+            document.getElementById('serviceAddressFields').classList.add('hidden');
+            document.getElementById('serviceAddressDisplay').style.display = 'block';
+            
+            updateCreateButton();
+        }
+
+        function addQuoteItem(serviceId) {
+            const services = getServices();
+            const service = services.find(s => s.id === serviceId);
+            
+            if (!service) return;
+            
+            const newItem = {
+                ...service,
+                quantity: 1,
+                customPrice: service.price,
+                originalPrice: service.price,
+                priceModified: false,
+                priceModificationComment: '',
+                notes: '',
+                serviceDate: '',
+                discount: 0,
+                discountType: 'percentage',
+                // Schedule fields (only for services)
+                preferredTime: '',
+                exactTime: '',
+                scheduleNotes: ''
+            };
+            
+            state.quoteItems.push(newItem);
+            renderQuoteItems();
+            updateSummary();
+            
+            // Clear catalog search after adding
+            document.getElementById('catalogSearchInput').value = '';
+            document.getElementById('catalogAutocomplete').classList.add('hidden');
+            document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
+        }
+
+        function removeQuoteItem(index) {
+            state.quoteItems.splice(index, 1);
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemQuantity(index, value) {
+            state.quoteItems[index].quantity = Number(value);
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemServiceDate(index, value) {
+            state.quoteItems[index].serviceDate = value;
+            renderQuoteItems();
+        }
+
+        function updateItemNotes(index, value) {
+            state.quoteItems[index].notes = value;
+        }
+
+        function updateItemDiscount(index, value) {
+            state.quoteItems[index].discount = Number(value);
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemDiscountType(index, value) {
+            state.quoteItems[index].discountType = value;
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function updateItemPreferredTime(index, value) {
+            state.quoteItems[index].preferredTime = value;
+            renderQuoteItems();
+        }
+
+        function updateItemExactTime(index, value) {
+            state.quoteItems[index].exactTime = value;
+        }
+
+        function updateItemScheduleNotes(index, value) {
+            state.quoteItems[index].scheduleNotes = value;
+        }
+
+        function showPriceModModal(index, newPrice) {
+            const item = state.quoteItems[index];
+            state.currentPriceModIndex = index;
+            state.currentPriceModNewValue = newPrice;
+            
+            // Populate modal with item details
+            document.getElementById('priceModItemName').textContent = item.name;
+            
+            // Set item type badge
+            const typeBadge = document.getElementById('priceModItemType');
+            if (item.type === 'product') {
+                typeBadge.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">🟢 Product</span>';
+            } else {
+                typeBadge.innerHTML = '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">🔵 Service</span>';
+            }
+            
+            document.getElementById('priceModOriginal').textContent = `$${item.originalPrice.toFixed(2)}`;
+            document.getElementById('priceModNew').textContent = `$${Number(newPrice).toFixed(2)}`;
+            document.getElementById('priceModComment').value = '';
+            
+            // Show modal
+            document.getElementById('priceModModal').classList.remove('hidden');
+        }
+
+        function hidePriceModModal() {
+            document.getElementById('priceModModal').classList.add('hidden');
+            state.currentPriceModIndex = null;
+            state.currentPriceModNewValue = null;
+            document.getElementById('priceModComment').value = '';
+        }
+
+        function updateItemPrice(index, value) {
+            const item = state.quoteItems[index];
+            const newPrice = Number(value);
+            const originalPrice = item.price;
+            
+            // Check if price is being modified from original
+            if (newPrice !== originalPrice && !item.priceModified) {
+                // Show modal to get reason
+                showPriceModModal(index, newPrice);
+                return;
+            }
+            
+            item.customPrice = newPrice;
+            renderQuoteItems();
+            updateSummary();
+        }
+
+        function confirmPriceModification() {
+            const comment = document.getElementById('priceModComment').value.trim();
+            
+            if (!comment) {
+                alert('Please provide a reason for the price modification');
+                return;
+            }
+            
+            if (state.currentPriceModIndex !== null) {
+                const item = state.quoteItems[state.currentPriceModIndex];
+                item.priceModified = true;
+                item.priceModificationComment = comment;
+                item.customPrice = state.currentPriceModNewValue;
+                
+                renderQuoteItems();
+                updateSummary();
+                hidePriceModModal();
+            }
+        }
+
+        function cancelPriceModification() {
+            if (state.currentPriceModIndex !== null) {
+                // Revert to original price
+                const item = state.quoteItems[state.currentPriceModIndex];
+                item.customPrice = item.originalPrice;
+                
+                renderQuoteItems();
+                updateSummary();
+                hidePriceModModal();
+            }
+        }
+
+        function updateItemNotes(index, value) {
+            state.quoteItems[index].notes = value;
+        }
+
+        // Preview function
+        function showPreview() {
+            if (!state.selectedCustomer || state.quoteItems.length === 0) {
+                alert('Please select a customer and add items to the quote first.');
+                return;
+            }
+
+            const validUntil = document.getElementById('validUntilDate').value;
+            const customerNotes = document.getElementById('customerNotes').value;
+            const internalNotes = document.getElementById('internalNotes').value;
+
+            // Get current date
+            const currentDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Build line items HTML
+            const lineItemsHTML = state.quoteItems.map(item => `
+                <tr class="border-b border-gray-200">
+                    <td class="py-2 px-1" style="width: 35%;">
+                        <div class="font-medium text-gray-900">${item.name}</div>
+                        <div class="text-xs text-gray-600 mt-1">${item.id}</div>
+                        ${item.notes ? `<div class="text-xs text-gray-500 italic mt-1">${item.notes}</div>` : ''}
+                    </td>
+                    <td class="py-2 px-1 text-center text-gray-700">${item.quantity} ${item.unit}</td>
+                    <td class="py-2 px-1 text-right text-gray-700">$${item.customPrice.toFixed(2)}</td>
+                    <td class="py-2 px-1 text-right font-medium">$${(item.customPrice * item.quantity).toFixed(2)}</td>
+                </tr>
+            `).join('');
+
+            // Format tax breakdown
+            const taxBreakdown = getTaxBreakdown();
+            const taxBreakdownHTML = `
+                ${taxBreakdown.taxable_gst > 0 ? `<div class="flex justify-between text-sm py-1"><span>GST (10%):</span><span>$${taxBreakdown.taxable_gst.toFixed(2)}</span></div>` : ''}
+                ${taxBreakdown.gst_free > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>GST-Free Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'gst_free').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
+                ${taxBreakdown.input_taxed > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>Input-Taxed Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'input_taxed').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
+            `;
+
+            // Build preview HTML
+            const previewHTML = `
+                <!-- Company Header -->
+                <div class="border-b-2 border-gray-800 pb-4 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 mb-1">SUNSHINE TUTORING</h1>
+                            <p class="text-sm text-gray-600">Tutoring Excellence Since 2015</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold">QUOTE</p>
+                            <p class="text-sm text-gray-600">Date: ${currentDate}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Details -->
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Bill To:</h3>
+                        <div class="text-sm text-gray-700">
+                            <p class="font-medium">${state.selectedCustomer.name}</p>
+                            ${state.selectedCustomer.company ? `<p>${state.selectedCustomer.company}</p>` : ''}
+                            <p>${state.selectedCustomer.email}</p>
+                            <p>${state.selectedCustomer.phone}</p>
+                            ${state.selectedCustomer.address ? `<p class="mt-2">${state.selectedCustomer.address}</p>` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Quote Details:</h3>
+                        <div class="text-sm text-gray-700">
+                            <p><span class="font-medium">Quote ID:</span> Q-2024-001</p>
+                            <p><span class="font-medium">Valid Until:</span> ${validUntil ? new Date(validUntil).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                            <p class="mt-2 text-xs text-gray-500">Melbourne East Branch</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Line Items Table -->
+                <div class="mb-6">
+                    <table class="w-full text-sm" style="min-width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr class="bg-gray-100 border-b-2 border-gray-800">
+                                <th class="text-left py-2 px-1 font-semibold text-gray-900" style="width: 35%;">Description</th>
+                                <th class="text-center py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Quantity</th>
+                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Unit Price</th>
+                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 25%;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${lineItemsHTML}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="flex justify-end mb-6">
+                    <div class="w-64">
+                        <div class="border-t border-gray-300 pt-3">
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-700">Subtotal:</span>
+                                <span class="font-medium">$${calculateSubtotal().toFixed(2)}</span>
+                            </div>
+                            ${calculateLineItemDiscounts() > 0 ? `
+                                <div class="flex justify-between text-sm py-1">
+                                    <span class="text-gray-700">Line Item Discounts:</span>
+                                    <span class="text-red-600">-$${calculateLineItemDiscounts().toFixed(2)}</span>
+                                </div>
+                            ` : ''}
+                            <div class="border-t border-gray-300 mt-2 pt-2">
+                                ${taxBreakdownHTML}
+                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
+                                    <span class="text-sm font-semibold">Total Tax:</span>
+                                    <span class="text-sm font-semibold">$${calculateTax().toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="border-t-2 border-gray-800 mt-2 pt-2">
+                                <div class="flex justify-between">
+                                    <span class="text-lg font-bold text-gray-900">TOTAL:</span>
+                                    <span class="text-lg font-bold text-gray-900">$${calculateTotal().toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                ${customerNotes ? `
+                    <div class="border-t border-gray-300 pt-4 mb-4">
+                        <h4 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Notes:</h4>
+                        <p class="text-sm text-gray-700 whitespace-pre-wrap">${customerNotes}</p>
+                    </div>
+                ` : ''}
+
+                <!-- Footer -->
+                <div class="border-t-2 border-gray-800 pt-4 mt-6">
+                    <div class="grid grid-cols-2 gap-6 text-xs text-gray-600">
+                        <div>
+                            <p class="font-semibold text-gray-900 mb-1">Sunshine Tutoring - Melbourne East</p>
+                            <p>123 Education Street, Melbourne VIC 3000</p>
+                            <p>Phone: (03) 1234 5678</p>
+                            <p>Email: melbourne@sunshinetutoring.com.au</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-900 mb-1">Payment Information</p>
+                            <p>ABN: 12 345 678 901</p>
+                            <p>Valid for 30 days from date of issue</p>
+                            <p class="mt-2 text-gray-500">Terms and conditions apply</p>
+                        </div>
+                    </div>
+                </div>
+
+                ${internalNotes ? `
+                    <div class="mt-6 pt-4 border-t-2 border-dashed border-red-300 bg-red-50 p-3 rounded">
+                        <p class="text-xs font-semibold text-red-700 mb-1">INTERNAL NOTES (Not visible to customer):</p>
+                        <p class="text-xs text-red-600 whitespace-pre-wrap">${internalNotes}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('previewContent').innerHTML = previewHTML;
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function hidePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        function downloadPreviewPDF() {
+            alert('PDF download functionality would be implemented here');
+            // In a real implementation, this would generate and download a PDF
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default valid until date (14 days from now)
+            const validUntil = new Date();
+            validUntil.setDate(validUntil.getDate() + 14);
+            document.getElementById('validUntilDate').valueAsDate = validUntil;
+            
+            // Catalog search autocomplete
+            document.getElementById('catalogSearchInput').addEventListener('input', function(e) {
+                renderCatalogAutocomplete(e.target.value);
+            });
+            
+            // Clear catalog search button
+            document.getElementById('clearCatalogSearchBtn').addEventListener('click', function() {
+                document.getElementById('catalogSearchInput').value = '';
+                document.getElementById('catalogAutocomplete').classList.add('hidden');
+                document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
+            });
+            
+            // Close catalog autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                const catalogSearch = document.getElementById('catalogSearchInput');
+                const autocomplete = document.getElementById('catalogAutocomplete');
+                if (catalogSearch && !catalogSearch.parentElement.contains(e.target)) {
+                    autocomplete.classList.add('hidden');
+                }
+            });
+            
+            // Customer search autocomplete
+            document.getElementById('customerSearchInput').addEventListener('input', function(e) {
+                renderCustomerAutocomplete(e.target.value);
+            });
+            
+            // Clear search button
+            document.getElementById('clearSearchBtn').addEventListener('click', function() {
+                document.getElementById('customerSearchInput').value = '';
+                document.getElementById('customerAutocomplete').classList.add('hidden');
+                document.getElementById('clearSearchBtn').classList.add('hidden');
+            });
+            
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                const searchSection = document.getElementById('customerSearchSection');
+                const autocomplete = document.getElementById('customerAutocomplete');
+                if (searchSection && !searchSection.contains(e.target)) {
+                    autocomplete.classList.add('hidden');
+                }
+            });
+            
+            // Toggle new customer form
+            document.getElementById('toggleNewCustomerBtn').addEventListener('click', function() {
+                state.showNewCustomerForm = !state.showNewCustomerForm;
+                document.getElementById('newCustomerForm').classList.toggle('hidden');
+                document.getElementById('customerSearchSection').classList.toggle('hidden');
+            });
+            
+            // Cancel new customer
+            document.getElementById('cancelNewCustomerBtn').addEventListener('click', function() {
+                state.showNewCustomerForm = false;
+                document.getElementById('newCustomerForm').classList.add('hidden');
+                document.getElementById('customerSearchSection').classList.remove('hidden');
+            });
+            
+            // Create customer
+            document.getElementById('createCustomerBtn').addEventListener('click', function() {
+                const firstName = document.getElementById('newCustomerFirstName').value.trim();
+                const lastName = document.getElementById('newCustomerLastName').value.trim();
+                const company = document.getElementById('newCustomerCompany').value.trim();
+                const email = document.getElementById('newCustomerEmail').value.trim();
+                const phone = document.getElementById('newCustomerPhone').value.trim();
+                const preferredContactMethod = document.getElementById('newCustomerPreferredContact').value;
+                const street = document.getElementById('newCustomerStreet').value.trim();
+                const city = document.getElementById('newCustomerCity').value.trim();
+                const state = document.getElementById('newCustomerState').value.trim();
+                const postalCode = document.getElementById('newCustomerPostalCode').value.trim();
+                const country = document.getElementById('newCustomerCountry').value.trim();
+                const notes = document.getElementById('newCustomerNotes').value.trim();
+                
+                // Validation
+                if (!firstName || !lastName || !email) {
+                    alert('Please fill in all required fields (First Name, Last Name, Email)');
+                    return;
+                }
+                
+                // Build address
+                const addressParts = [street, city, state, postalCode, country].filter(p => p);
+                const address = addressParts.join(', ') || '';
+                
+                const newCustomer = {
+                    id: customers.length + 1,
+                    name: `${firstName} ${lastName}`,
+                    firstName: firstName,
+                    lastName: lastName,
+                    company: company,
+                    email,
+                    phone,
+                    preferredContactMethod: preferredContactMethod,
+                    address: address,
+                    addressDetails: {
+                        street: street,
+                        city: city,
+                        state: state,
+                        postalCode: postalCode,
+                        country: country
+                    },
+                    notes: notes,
+                    previousQuotes: 0
+                };
+                
+                customers.push(newCustomer);
+                selectCustomer(newCustomer.id);
+                
+                state.showNewCustomerForm = false;
+                document.getElementById('newCustomerForm').classList.add('hidden');
+                
+                // Clear form
+                document.getElementById('newCustomerFirstName').value = '';
+                document.getElementById('newCustomerLastName').value = '';
+                document.getElementById('newCustomerCompany').value = '';
+                document.getElementById('newCustomerEmail').value = '';
+                document.getElementById('newCustomerPhone').value = '';
+                document.getElementById('newCustomerPreferredContact').value = 'email';
+                document.getElementById('newCustomerStreet').value = '';
+                document.getElementById('newCustomerCity').value = '';
+                document.getElementById('newCustomerState').value = '';
+                document.getElementById('newCustomerPostalCode').value = '';
+                document.getElementById('newCustomerCountry').value = 'Australia';
+                document.getElementById('newCustomerNotes').value = '';
+            });
+            
+            // Clear customer
+            document.getElementById('clearCustomerBtn').addEventListener('click', function() {
+                state.selectedCustomer = null;
+                state.selectedQuoteContact = null;
+                const searchInput = document.getElementById('customerSearchInput');
+                searchInput.classList.remove('border-green-500');
+                searchInput.classList.add('border-red-300');
+                document.getElementById('selectedCustomerCard').classList.add('hidden');
+                document.getElementById('customerSearchSection').classList.remove('hidden');
+                searchInput.focus();
+                updateCreateButton();
+            });
+            
+            // Quote contact selector change
+            document.getElementById('quoteContactSelect').addEventListener('change', function(e) {
+                const value = e.target.value;
+                const customer = state.selectedCustomer;
+                
+                if (value === 'primary') {
+                    state.selectedQuoteContact = {
+                        type: 'primary',
+                        name: customer.name,
+                        email: customer.email,
+                        phone: customer.phone
+                    };
+                } else if (value.startsWith('secondary-')) {
+                    const index = parseInt(value.split('-')[1]);
+                    const contact = customer.secondaryContacts[index];
+                    state.selectedQuoteContact = {
+                        type: 'secondary',
+                        name: contact.name,
+                        email: contact.email,
+                        phone: contact.phone,
+                        role: contact.role
+                    };
+                }
+                
+                console.log('Quote contact changed:', state.selectedQuoteContact);
+            });
+            
+            // Service address toggle
+            document.getElementById('sameAsBilling').addEventListener('change', function(e) {
+                const isChecked = e.target.checked;
+                document.getElementById('serviceAddressFields').classList.toggle('hidden', isChecked);
+                document.getElementById('serviceAddressDisplay').style.display = isChecked ? 'block' : 'none';
+                
+                if (!isChecked) {
+                    // Clear custom address fields
+                    document.getElementById('serviceStreet').value = '';
+                    document.getElementById('serviceAddressNotes').value = '';
+                }
+            });
+            
+            // Deposit changes
+            document.getElementById('requireDeposit').addEventListener('change', function(e) {
+                state.depositRequired = e.target.checked;
+                document.getElementById('depositSection').classList.toggle('hidden', !e.target.checked);
+                updateSummary();
+            });
+            
+            document.getElementById('depositType').addEventListener('change', function(e) {
+                state.depositType = e.target.value;
+                document.getElementById('depositValue').step = e.target.value === 'percentage' ? '1' : '0.01';
+                updateSummary();
+            });
+            
+            document.getElementById('depositValue').addEventListener('input', function(e) {
+                state.depositValue = Number(e.target.value);
+                updateSummary();
+            });
+            
+            // Create quote button
+            document.getElementById('createQuoteBtn').addEventListener('click', function() {
+                if (!state.selectedCustomer) {
+                    alert('Please select a customer');
+                    return;
+                }
+                
+                if (state.quoteItems.length === 0) {
+                    alert('Please add at least one item to the quote');
+                    return;
+                }
+                
+                // Check for price modifications
+                const priceModifiedItems = state.quoteItems.filter(item => item.priceModified);
+                if (priceModifiedItems.length > 0) {
+                    console.log('Price modifications:', 
+                        priceModifiedItems.map(item => ({
+                            name: item.name,
+                            originalPrice: item.originalPrice,
+                            modifiedPrice: item.customPrice,
+                            comment: item.priceModificationComment
+                        }))
+                    );
+                }
+                
+                // Create quote data
+                const quoteData = {
+                    customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
+                    items: state.quoteItems,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
+                    total: calculateTotal(),
+                    validUntil: document.getElementById('validUntilDate').value,
+                    customerNotes: document.getElementById('customerNotes').value,
+                    internalNotes: document.getElementById('internalNotes').value,
+                    priceModifications: priceModifiedItems.map(item => ({
+                        name: item.name,
+                        originalPrice: item.originalPrice,
+                        modifiedPrice: item.customPrice,
+                        comment: item.priceModificationComment
+                    })),
+                    status: 'active',
+                    createdDate: new Date().toISOString()
+                };
+                
+                // Here you would normally send the quote data to the server
+                console.log('Creating quote:', quoteData);
+                
+                const contactName = state.selectedQuoteContact.type === 'secondary' 
+                    ? `${state.selectedQuoteContact.name} (${state.selectedQuoteContact.role})` 
+                    : state.selectedCustomer.name;
+                alert(`Quote created successfully for ${state.selectedCustomer.name}!\nQuote will be sent to: ${contactName}`);
+                // In real implementation: redirect to quotes list or quote detail page
+                // window.location.href = 'quotes.html';
+            });
+            
+            // Save draft button
+            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+                // Create draft quote data
+                const draftData = {
+                    customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
+                    items: state.quoteItems,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
+                    total: calculateTotal(),
+                    validUntil: document.getElementById('validUntilDate').value,
+                    customerNotes: document.getElementById('customerNotes').value,
+                    internalNotes: document.getElementById('internalNotes').value,
+                    status: 'draft',
+                    createdDate: new Date().toISOString()
+                };
+                
+                // Here you would normally save the draft to the server
+                console.log('Saving draft:', draftData);
+                
+                alert('Quote saved as draft!');
+                // In real implementation: redirect to quotes list
+                // window.location.href = 'quotes.html';
+            });
+            
+            // Preview button
+            document.getElementById('previewBtn').addEventListener('click', showPreview);
+            
+            // Preview modal buttons
+            document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
+            document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
+            
+            // Price modification modal event listeners
+            document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);
+            document.getElementById('cancelPriceModBtn').addEventListener('click', cancelPriceModification);
+            document.getElementById('savePriceModBtn').addEventListener('click', confirmPriceModification);
+            
+            // Close modal on background click
+            document.getElementById('priceModModal').addEventListener('click', function(e) {
+                if (e.target.id === 'priceModModal') {
+                    cancelPriceModification();
+                }
+            });
+            
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !document.getElementById('priceModModal').classList.contains('hidden')) {
+                    cancelPriceModification();
+                }
+            });
+
+            // Initial render
+            renderQuoteItems();
+            updateSummary();
+        });
+    </script>
+</body>
+</html>
+
