@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Details - Simplified - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="p-4">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <button onclick="window.location.href='invoice_list_simple.html'" class="p-2 hover:bg-gray-100 rounded-lg">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                            </button>
+                            <h1 class="text-3xl font-bold">Invoice Details</h1>
+                            <span id="invoiceNumber" class="px-3 py-1.5 text-sm font-medium rounded-full bg-purple-100 text-purple-700">INV-2024-001</span>
+                            <span id="statusBadge" class="px-3 py-1.5 text-sm font-medium rounded-full bg-yellow-100 text-yellow-700">Unpaid</span>
+                        </div>
+                    </div>
+                    <button id="downloadPdfBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Invoice Details -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold mb-4">Invoice Information</h2>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><div class="text-xs text-gray-500">Invoice Date</div><div class="text-sm font-medium" id="invoiceDate">Nov 10, 2024</div></div>
+                            <div><div class="text-xs text-gray-500">Due Date</div><div class="text-sm font-medium" id="dueDate">Dec 10, 2024</div></div>
+                            <div><div class="text-xs text-gray-500">Payment Terms</div><div class="text-sm font-medium">Net 30 Days</div></div>
+                            <div><div class="text-xs text-gray-500">Amount Due</div><div class="text-sm font-bold text-purple-600" id="amountDue">$341.00</div></div>
+                        </div>
+                        
+                        <!-- Payment Model -->
+                        <div class="border-t border-gray-200 pt-4 mb-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-3">Payment Model</h3>
+                            <div id="paymentModelInfo">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium" id="paymentModelBadge">Full Payment</span>
+                                </div>
+                                <div id="depositDetails" class="hidden p-3 bg-blue-50 rounded-lg space-y-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Deposit Paid:</span>
+                                        <span class="font-semibold text-gray-900" id="depositPaidAmount">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Remaining Balance:</span>
+                                        <span class="font-semibold text-orange-600" id="remainingBalanceAmount">$0.00</span>
+                                    </div>
+                                    <div class="text-xs text-gray-600 mt-2">
+                                        💡 Remaining balance due after service completion
+                                    </div>
+                                </div>
+                                <div id="subscriptionDetails" class="hidden p-3 bg-green-50 rounded-lg space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Billing Frequency:</span>
+                                        <span class="font-semibold text-gray-900" id="billingFrequencyDisplay">Monthly</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Next Invoice:</span>
+                                        <span class="font-semibold text-green-700" id="nextInvoiceDisplay">Dec 10, 2024</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-700">Auto-charge:</span>
+                                        <span class="font-semibold" id="autoChargeDisplay">
+                                            <span class="text-green-600">✓ Enabled</span>
+                                        </span>
+                                    </div>
+                                    <div id="subscriptionEndInfo" class="text-xs text-gray-600 mt-2 pt-2 border-t border-green-200">
+                                        📅 <span id="subscriptionEndText">Ongoing subscription</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Accepted Payment Methods -->
+                        <div class="border-t border-gray-200 pt-4">
+                            <h3 class="text-sm font-semibold text-gray-900 mb-3">Accepted Payment Methods</h3>
+                            <div class="flex flex-wrap gap-2" id="paymentMethodsDisplay">
+                                <!-- Payment methods will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold mb-4">Line Items</h2>
+                        <div id="lineItemsContainer" class="space-y-3"></div>
+                        <div class="border-t mt-4 pt-4 space-y-2">
+                            <div class="flex justify-between text-sm"><span>Subtotal</span><span id="subtotal">$310.00</span></div>
+                            <div class="flex justify-between text-sm"><span>Tax</span><span id="tax">$31.00</span></div>
+                            <div class="flex justify-between text-lg font-bold border-t pt-2"><span>Total</span><span class="text-purple-600" id="total">$341.00</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold mb-4">Payment Status</h2>
+                        <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-4">
+                            <div class="text-xs text-yellow-600">Current Status</div>
+                            <div class="text-xl font-bold text-yellow-700" id="currentStatus">Unpaid</div>
+                        </div>
+                        
+                        <div id="unpaidActions" class="space-y-2">
+                            <button id="sendPaymentLinkBtn" class="w-full bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                Send Payment Link
+                            </button>
+                            <button id="markAsPaidBtn" class="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Mark as Paid
+                            </button>
+                        </div>
+                        
+                        <div id="paidState" class="hidden p-4 bg-green-50 rounded-lg border border-green-200 text-center">
+                            <svg class="w-12 h-12 text-green-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="text-sm font-semibold text-green-700">Fully Paid</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark as Paid Modal -->
+    <div id="markPaidModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Mark Invoice as Paid</h3>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date <span class="text-red-500">*</span></label>
+                    <input type="date" id="paymentDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
+                    <select id="paymentMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">Select payment method...</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="credit_card">Credit/Debit Card</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="cash">Cash</option>
+                        <option value="check">Check</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Transaction Reference</label>
+                    <input type="text" id="transactionRef" placeholder="Transaction ID, check number, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notes</label>
+                    <textarea id="paymentNotes" rows="2" placeholder="Additional payment notes..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="closeMarkPaidModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button onclick="confirmMarkAsPaid()" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    Mark as Paid
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const invoiceData = {
+            id: 'INV-2024-001',
+            status: 'unpaid',
+            paymentModel: 'deposit', // 'full' or 'deposit'
+            paymentMethods: ['bank_transfer', 'credit_card'],
+            items: [
+                { name: 'Math Tutoring - Grade 10', description: '4 sessions', quantity: 4, unitPrice: 50.00, total: 200.00 },
+                { name: 'Science Tutoring - Grade 10', description: '2 sessions', quantity: 2, unitPrice: 55.00, total: 110.00 }
+            ],
+            subtotal: 310.00,
+            tax: 31.00,
+            total: 341.00,
+            depositAmount: 170.50,
+            remainingBalance: 170.50
+        };
+
+        // Payment method display configuration
+        const paymentMethodConfig = {
+            stripe: {
+                name: 'Stripe',
+                color: 'purple',
+                icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
+            },
+            paypal: {
+                name: 'PayPal',
+                color: 'blue',
+                icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'
+            },
+            google_wallet: {
+                name: 'Google Wallet',
+                color: 'green',
+                icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'
+            },
+            apple_pay: {
+                name: 'Apple Pay',
+                color: 'gray',
+                icon: 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z'
+            },
+            cash: {
+                name: 'Cash',
+                color: 'yellow',
+                icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'
+            }
+        };
+
+        function initializePage() {
+            const itemsContainer = document.getElementById('lineItemsContainer');
+            itemsContainer.innerHTML = invoiceData.items.map(item => `
+                <div class="flex justify-between p-3 bg-gray-50 rounded">
+                    <div class="flex-1">
+                        <div class="font-medium text-sm">${item.name}</div>
+                        <div class="text-xs text-gray-600">${item.description}</div>
+                        <div class="text-xs text-gray-500 mt-1">Qty: ${item.quantity} × $${item.unitPrice.toFixed(2)}</div>
+                    </div>
+                    <div class="text-sm font-semibold">$${item.total.toFixed(2)}</div>
+                </div>
+            `).join('');
+            
+            // Display payment methods
+            const paymentMethodsContainer = document.getElementById('paymentMethodsDisplay');
+            if (invoiceData.paymentMethods && invoiceData.paymentMethods.length > 0) {
+                paymentMethodsContainer.innerHTML = invoiceData.paymentMethods.map(method => {
+                    const config = paymentMethodConfig[method];
+                    if (!config) return '';
+                    
+                    return `
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-50 text-${config.color}-700 rounded-lg text-xs font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${config.icon}"></path>
+                            </svg>
+                            ${config.name}
+                        </span>
+                    `;
+                }).join('');
+            }
+            
+            // Display payment model
+            const paymentModelBadge = document.getElementById('paymentModelBadge');
+            const depositDetails = document.getElementById('depositDetails');
+            const subscriptionDetails = document.getElementById('subscriptionDetails');
+            
+            if (invoiceData.paymentModel === 'deposit') {
+                paymentModelBadge.textContent = 'Down Payment (Deposit)';
+                paymentModelBadge.className = 'px-3 py-1.5 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium';
+                depositDetails.classList.remove('hidden');
+                document.getElementById('depositPaidAmount').textContent = `$${invoiceData.depositAmount.toFixed(2)}`;
+                document.getElementById('remainingBalanceAmount').textContent = `$${invoiceData.remainingBalance.toFixed(2)}`;
+            } else if (invoiceData.paymentModel === 'subscription') {
+                paymentModelBadge.textContent = 'Subscription (Recurring)';
+                paymentModelBadge.className = 'px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-medium';
+                subscriptionDetails.classList.remove('hidden');
+                
+                // Display subscription info
+                const frequencyMap = {
+                    'weekly': 'Weekly',
+                    'biweekly': 'Bi-weekly',
+                    'monthly': 'Monthly',
+                    'quarterly': 'Quarterly',
+                    'yearly': 'Yearly'
+                };
+                document.getElementById('billingFrequencyDisplay').textContent = frequencyMap[invoiceData.subscription?.frequency] || 'Monthly';
+                document.getElementById('nextInvoiceDisplay').textContent = invoiceData.subscription?.nextInvoiceDate || 'TBD';
+                
+                if (invoiceData.subscription?.autoCharge) {
+                    document.getElementById('autoChargeDisplay').innerHTML = '<span class="text-green-600">✓ Enabled</span>';
+                } else {
+                    document.getElementById('autoChargeDisplay').innerHTML = '<span class="text-gray-600">✗ Disabled</span>';
+                }
+                
+                // Display end info
+                if (invoiceData.subscription?.endType === 'ongoing') {
+                    document.getElementById('subscriptionEndText').textContent = 'Ongoing subscription (no end date)';
+                } else if (invoiceData.subscription?.endType === 'after_cycles') {
+                    document.getElementById('subscriptionEndText').textContent = `Ends after ${invoiceData.subscription.billingCycles} cycles`;
+                } else if (invoiceData.subscription?.endDate) {
+                    document.getElementById('subscriptionEndText').textContent = `Ends on ${new Date(invoiceData.subscription.endDate).toLocaleDateString()}`;
+                }
+            } else {
+                paymentModelBadge.textContent = 'Full Payment (Upfront)';
+                paymentModelBadge.className = 'px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium';
+            }
+            
+            // Set today's date as default payment date
+            document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+        }
+
+        document.getElementById('sendPaymentLinkBtn').addEventListener('click', () => {
+            alert('Payment link sent to customer via email!');
+        });
+
+        document.getElementById('markAsPaidBtn').addEventListener('click', () => {
+            document.getElementById('markPaidModal').classList.remove('hidden');
+        });
+
+        function closeMarkPaidModal() {
+            document.getElementById('markPaidModal').classList.add('hidden');
+        }
+
+        function confirmMarkAsPaid() {
+            const paymentDate = document.getElementById('paymentDate').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const transactionRef = document.getElementById('transactionRef').value;
+            const notes = document.getElementById('paymentNotes').value;
+            
+            if (!paymentDate || !paymentMethod) {
+                alert('Please fill in payment date and payment method');
+                return;
+            }
+            
+            // Create payment record
+            const paymentRecord = {
+                invoiceId: invoiceData.id,
+                paymentDate: paymentDate,
+                paymentMethod: paymentMethod,
+                transactionRef: transactionRef,
+                amount: invoiceData.total,
+                notes: notes,
+                recordedAt: new Date().toISOString()
+            };
+            
+            console.log('Payment recorded:', paymentRecord);
+            
+            // Update UI
+            document.getElementById('statusBadge').className = 'px-3 py-1.5 text-sm font-medium rounded-full bg-green-100 text-green-700';
+            document.getElementById('statusBadge').textContent = 'Paid';
+            document.getElementById('currentStatus').textContent = 'Paid';
+            document.getElementById('unpaidActions').classList.add('hidden');
+            document.getElementById('paidState').classList.remove('hidden');
+            
+            closeMarkPaidModal();
+            alert('Invoice marked as paid successfully!');
+        }
+
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Quote - Simplified - FMS</title>
+    <title>Edit Quote - FMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
@@ -30,55 +30,57 @@
         <div class="max-w-7xl mx-auto">
             
             <!-- Header -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-3">
-                            <h1 class="text-3xl font-bold text-gray-900">Quote Details</h1>
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-2xl font-bold text-gray-900">Edit Quote</h1>
+                            <span id="quoteIdBadge" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">Q-2024-001</span>
+                            <span id="quoteStatusBadge" class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-700">Draft</span>
                         </div>
-                        <div class="flex items-center gap-3 flex-wrap">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <span id="quoteIdBadge" class="text-lg font-semibold text-blue-600">Q-2024-001</span>
-                            </div>
-                            <span class="text-gray-300">|</span>
-                            <span id="quoteStatusBadge" class="px-3 py-1.5 text-sm font-medium rounded-full bg-yellow-100 text-yellow-700">📝 Draft</span>
-                            <span class="text-gray-300">|</span>
-                            <div class="flex items-center gap-2 text-gray-700">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
-                                <span class="font-medium">Sunshine Tutoring - Melbourne East</span>
-                            </div>
-                        </div>
+                        <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
                     </div>
-                    <button 
-                        onclick="window.location.href='quote_list.html'"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Back to Quotes
-                    </button>
+                    <div class="flex gap-2">
+                        <button 
+                            onclick="window.location.href='quote_list_simple.html'"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Quotes
+                        </button>
+                        <button 
+                            id="saveDraftBtn"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                        >
+                            Save Changes
+                        </button>
+                        <button 
+                            id="createInvoiceBtn"
+                            onclick="createInvoiceFromQuote()"
+                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Create Invoice
+                        </button>
+                        <button 
+                            id="createQuoteBtn"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Update & Send Quote
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            
-            <!-- Expired Quote Warning Banner -->
-            <div id="expiredWarningBanner" class="hidden bg-orange-50 border-l-4 border-orange-500 p-3 mb-4">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-sm text-orange-800 flex-1">
-                        ? This quote expired on <span id="expiredDateText" class="font-semibold"></span>. 
-                        <button onclick="document.getElementById('validUntilDate').focus()" class="underline font-semibold hover:text-orange-900">Update validity date</button> and click "Extend & Resend" to reactivate.
-                    </p>
-                </div>
-            </div><div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 <!-- Left Column - Customer & Services -->
                 <div class="lg:col-span-2 space-y-4">
@@ -88,6 +90,7 @@
                         <div class="mb-4">
                             <h2 class="text-lg font-semibold text-gray-900">Customer Information</h2>
                         </div>
+
                         <!-- Selected Customer Card (Always visible in edit mode) -->
                         <div id="selectedCustomerCard">
                             <div class="border border-blue-300 rounded-lg p-3 bg-blue-50">
@@ -119,23 +122,24 @@
                                             <span>Same as customer address</span>
                                         </label>
                                     </div>
-                                    <div id="serviceAddressFields" class="hidden">
-                                        <div class="mb-2">
-                                            <label class="block text-xs text-gray-600 mb-1">Service Location <span class="text-red-500">*</span></label>
-                                            <input type="text" id="serviceStreet" placeholder="Enter service address" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                                    <div id="serviceAddressFields" class="hidden space-y-2">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Service Location</label>
+                                            <input type="text" id="serviceStreet" placeholder="Enter service address" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Access Instructions</label>
+                                            <textarea id="serviceAddressNotes" rows="2" placeholder="Gate codes, parking info, entry instructions, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                                         </div>
                                     </div>
-                                    <div id="serviceAddressDisplay" class="text-sm text-gray-600 mb-2" style="display: block;">
+                                    <div id="serviceAddressDisplay" class="text-sm text-gray-600" style="display: block;">
                                         <span id="displayServiceAddress"></span>
                                     </div>
-                                    <!-- Access Instructions - Always visible -->
-                                    <div class="mt-2">
-                                        <label class="block text-xs text-gray-600 mb-1">Access Instructions <span class="text-gray-400 text-xs">(Optional)</span></label>
-                                        <textarea id="serviceAddressNotes" rows="2" placeholder="Gate codes, parking info, entry instructions, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                                    </div>
                                 </div>
+
                             </div>
                         </div>
+
                         <!-- New Customer Form (Hidden in edit mode) -->
                         <div id="newCustomerForm" class="hidden" style="display: none;">
                             <!-- Name Fields -->
@@ -237,6 +241,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Quote Line Items -->
                     <div class="bg-white rounded-lg shadow-sm p-4">
                         <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Line Items <span class="text-red-500">*</span></h2>
@@ -273,49 +278,16 @@
                             <p class="text-sm font-medium text-gray-700 mb-1">No items added yet</p>
                             <p class="text-xs text-gray-500">Search and add services or products above to build your quote</p>
                         </div>
+
                         <!-- Card-based Quote Items Container -->
                         <div id="quoteItemsContainer" class="hidden space-y-3">
                             <!-- Quote item cards will be populated here -->
                         </div>
                     </div>
                 </div>
-                <!-- Invoices Section -->
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <h2 class="text-lg font-semibold text-gray-900">Invoices</h2>
-                            <span id="invoiceCount" class="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">0</span>
-                        </div>
-                        <button 
-                            onclick="window.location.href='invoice_create.html?quoteId=' + new URLSearchParams(window.location.search).get('id')"
-                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center gap-2"
-                        >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Create Invoice
-                        </button>
-                    </div>
 
-                    <!-- Invoice List -->
-                    <div id="invoiceListContainer" class="space-y-2">
-                        <!-- Invoices will be populated here -->
-                    </div>
-
-                    <!-- Empty State -->
-                    <div id="noInvoicesMessage" class="text-center py-8">
-                        <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <p class="text-sm font-medium text-gray-700">No invoices created yet</p>
-                        <p class="text-xs text-gray-500 mt-1">Click "Create Invoice" to generate your first invoice</p>
-                    </div>
-                </div>
                 <!-- Right Column - Summary & Actions -->
-                <div class="lg:col-span-2 space-y-4">
+                <div class="space-y-4">
                     
                     <!-- Pricing Summary -->
                     <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
@@ -326,6 +298,7 @@
                                 <span class="text-gray-600">Subtotal</span>
                                 <span class="font-medium" id="subtotalAmount">$0.00</span>
                             </div>
+
                             <!-- Line Item Discounts Summary -->
                             <div id="lineItemDiscountSection" class="hidden">
                                 <div class="flex justify-between text-sm">
@@ -333,12 +306,15 @@
                                     <span class="text-sm font-medium text-red-600" id="lineItemDiscountAmount">-$0.00</span>
                                 </div>
                             </div>
+
+
                             <div id="approvalWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded p-2 flex items-start gap-2">
                                 <svg class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                                 </svg>
                                 <p class="text-xs text-yellow-800">Manager approval required (discount >20%)</p>
                             </div>
+
                             <!-- Tax Breakdown by Category -->
                             <div class="border-t border-gray-200 pt-3">
                                 <div class="text-xs text-gray-600 mb-2">Tax Breakdown:</div>
@@ -350,6 +326,7 @@
                                     <span class="text-sm font-medium" id="taxAmount">$0.00</span>
                                 </div>
                             </div>
+
                             <!-- Deposit Section -->
                             <div class="border-t border-gray-200 pt-3">
                                 <div class="flex items-center justify-between mb-2">
@@ -390,6 +367,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="border-t-2 border-gray-300 pt-3">
                                 <div class="flex justify-between">
                                     <span class="font-bold text-gray-900 text-lg">Total</span>
@@ -397,6 +375,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <!-- Quote Details -->
                         <div class="border-t border-gray-200 pt-4 space-y-3">
                             <div>
@@ -407,6 +386,7 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
+
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">Notes for Customer</label>
                                 <textarea 
@@ -416,6 +396,7 @@
                                     placeholder="Terms, conditions, or special notes..."
                                 ></textarea>
                             </div>
+
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">Internal Notes</label>
                                 <textarea 
@@ -425,34 +406,15 @@
                                     placeholder="Private notes (not visible to customer)..."
                                 ></textarea>
                             </div>
-                            
-                            <!-- Quote Status Management -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <label class="block text-xs font-medium text-gray-700 mb-2">Quote Status</label>
-                                <select 
-                                    id="quoteStatusSelect"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                >
-                                    <option value="draft">📝 Draft - Quote being prepared</option>
-                                    <option value="sent">📤 Sent - Awaiting approval</option>
-                                    <option value="accepted">✅ Accepted - Customer agreed</option>
-                                    <option value="declined">❌ Declined - Customer rejected</option>
-                                </select>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    <em>Note: Expired status is set automatically by the system when the validity period passes.</em>
-                                </p>
-                                
-                            </div>
                         </div>
                         <!-- Action Buttons -->
                         <div class="mt-4 space-y-2">
                             <button 
-                                type="button"
-                                id="saveQuoteBtn"
+                                id="saveChangesBtn"
                                 class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                                 </svg>
                                 Save Changes
                             </button>
@@ -475,147 +437,22 @@
                                 Download PDF
                             </button>
                             <button 
-                                id="createInvoiceBtn"
+                                id="createInvoiceSidebarBtn"
+                                onclick="createInvoiceFromQuote()"
                                 class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center gap-2"
-                                onclick="window.location.href='invoice_create.html?quoteId=' + new URLSearchParams(window.location.search).get('id')"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                                 Create Invoice
                             </button>
-                            <button 
-                                id="convertToJobBtn"
-                                class="hidden w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                                Convert to Job
-                            </button>
-                            <button 
-                                id="extendResendBtn"
-                                class="hidden w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                Extend & Resend
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Log Management Section -->
-                    <div class="bg-white rounded-lg shadow-sm p-4 mt-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Activity Log
-                            </h2>
-                            <button 
-                                id="toggleLogBtn"
-                                class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                            >
-                                <span id="toggleLogText">Show All</span>
-                                <svg id="toggleLogIcon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Log Entries -->
-                        <div id="logEntries" class="space-y-3 max-h-64 overflow-y-auto custom-scrollbar">
-                            <!-- Recent logs (always visible) -->
-                            <div class="flex gap-3 pb-3 border-b border-gray-100">
-                                <div class="flex-shrink-0">
-                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-900 font-medium">Quote created</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">By John Smith • Nov 5, 2024 at 2:30 PM</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex gap-3 pb-3 border-b border-gray-100">
-                                <div class="flex-shrink-0">
-                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-900 font-medium">Quote sent to customer</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">By John Smith • Nov 5, 2024 at 3:15 PM</p>
-                                    <p class="text-xs text-gray-600 mt-1">Sent to: alice.a@email.com</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex gap-3 pb-3 border-b border-gray-100">
-                                <div class="flex-shrink-0">
-                                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                                        <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-900 font-medium">Email delivered to customer</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">Nov 5, 2024 at 4:20 PM</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Additional logs (hidden by default) -->
-                            <div id="additionalLogs" class="hidden space-y-3">
-                                <div class="flex gap-3 pb-3 border-b border-gray-100">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <p class="text-sm text-gray-900 font-medium">Status changed to Accepted</p>
-                                        <p class="text-xs text-gray-500 mt-0.5">By System • Nov 5, 2024 at 5:00 PM</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex gap-3 pb-3 border-b border-gray-100">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="flex-1">
-                                        <p class="text-sm text-gray-900 font-medium">Note added</p>
-                                        <p class="text-xs text-gray-500 mt-0.5">By John Smith • Nov 5, 2024 at 5:30 PM</p>
-                                        <p class="text-xs text-gray-600 mt-1 italic">"Customer requested morning sessions"</p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Empty state (if no logs) -->
-                            <div id="emptyLogState" class="hidden text-center py-6">
-                                <svg class="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <p class="text-sm text-gray-500">No activity yet</p>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <!-- Quote Preview Modal (PDF-like) -->
     <div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -623,12 +460,6 @@
                 <div class="flex items-center justify-between mb-4 sticky top-0 bg-white pb-4 border-b">
                     <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
                     <div class="flex gap-2">
-                        <button id="confirmSendBtn" class="hidden px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                            <span id="confirmSendBtnText">Send Quote</span>
-                        </button>
                         <button id="downloadPreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -647,6 +478,7 @@
             </div>
         </div>
     </div>
+
     <!-- Price Modification Modal -->
     <div id="priceModModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -696,6 +528,7 @@
             </div>
         </div>
     </div>
+
     <script>
         // Existing quote data (would normally come from server/API)
         const existingQuote = {
@@ -706,6 +539,7 @@
             customerNotes: 'Thank you for your interest in our tutoring services.',
             internalNotes: 'Customer prefers morning sessions.'
         };
+
         // State management - Pre-populated with existing quote data for edit mode
         const state = {
             businessType: 'tutoring',
@@ -780,9 +614,9 @@
             depositValue: 50,
             approvalRequired: false,
             currentPriceModIndex: null,
-            currentPriceModNewValue: null,
-            pendingAction: null // 'resend' or null
+            currentPriceModNewValue: null
         };
+
         // Sample data - Customers A-Z
         const customers = [
             { 
@@ -833,6 +667,7 @@
             { id: 25, name: 'Yasmin Young', email: 'yasmin.y@email.com', phone: '0414 777 777', address: '25 York St, South Melbourne VIC 3205', previousQuotes: 1 },
             { id: 26, name: 'Zachary Zhang', email: 'zach.zhang@email.com', phone: '0414 888 888', address: '26 Zoe St, Brunswick VIC 3056', previousQuotes: 3 }
         ];
+
         const tutoringServices = [
             // Services with GST (10% tax)
             { id: 't1', name: 'One-on-One Tutoring - Math', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
@@ -856,11 +691,13 @@
             { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
             { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
         ];
+
         // Helper functions
         function getServices() {
             return tutoringServices;
         }
         
+
         function getPricingIcon(type) {
             const icons = {
                 'per_hour': `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
@@ -870,12 +707,14 @@
             };
             return icons[type] || icons['fixed'];
         }
+
         function getTypeIndicator(type) {
             if (type === 'product') {
                 return '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">🟢 Product</span>';
             }
             return '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">🔵 Service</span>';
         }
+
         // Tax rate lookup based on tax category
         function getTaxRate(taxCategory) {
             const taxRates = {
@@ -885,6 +724,7 @@
             };
             return taxRates[taxCategory] || 0.10; // Default to 10% if category not found
         }
+
         function getTaxCategoryLabel(taxCategory) {
             const labels = {
                 'taxable_gst': 'Taxable (10% GST)',
@@ -893,12 +733,14 @@
             };
             return labels[taxCategory] || 'Standard (10%)';
         }
+
         // Calculate tax for each line item based on its tax category
         function calculateLineItemTax(item) {
             const taxRate = getTaxRate(item.taxCategory);
             const lineTotal = item.customPrice * item.quantity;
             return lineTotal * taxRate;
         }
+
         // Calculation functions
         function calculateSubtotal() {
             return state.quoteItems.reduce((sum, item) => {
@@ -909,12 +751,14 @@
                 return sum + (lineTotal - discountAmount);
             }, 0);
         }
+
         function calculateTax() {
             // Calculate tax per line item based on their tax categories
             return state.quoteItems.reduce((sum, item) => {
                 return sum + calculateLineItemTax(item);
             }, 0);
         }
+
         function calculateTotal() {
             return calculateSubtotal() + calculateTax();
         }
@@ -964,6 +808,7 @@
             
             return breakdown;
         }
+
         function updateSummary() {
             document.getElementById('subtotalAmount').textContent = `$${calculateSubtotal().toFixed(2)}`;
             
@@ -978,6 +823,7 @@
             }
             
             document.getElementById('totalAmount').textContent = `$${calculateTotal().toFixed(2)}`;
+
             // Calculate and display tax breakdown by category
             const taxBreakdown = getTaxBreakdown();
             const taxBreakdownContainer = document.getElementById('taxBreakdown');
@@ -998,11 +844,13 @@
             // Total tax
             const totalTax = calculateTax();
             document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
+
             // Update deposit display
             if (state.depositRequired) {
                 document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
                 document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
             }
+
             // Check approval requirement based on line item discounts
             const lineItemDiscountTotal = calculateLineItemDiscounts();
             const subtotal = calculateSubtotal();
@@ -1016,13 +864,13 @@
             
             updateCreateButton();
         }
+
         function updateCreateButton() {
             const createBtn = document.getElementById('createQuoteBtn');
-            if (createBtn) {
-                const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
-                createBtn.disabled = !canCreate;
-            }
+            const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
+            createBtn.disabled = !canCreate;
         }
+
         // Render functions
         function renderCustomerAutocomplete(searchTerm = '') {
             const autocomplete = document.getElementById('customerAutocomplete');
@@ -1041,6 +889,7 @@
                 c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 c.phone.includes(searchTerm)
             );
+
             if (filtered.length === 0) {
                 autocomplete.innerHTML = `
                     <div class="p-3 text-sm text-gray-500 text-center">
@@ -1050,6 +899,7 @@
                 autocomplete.classList.remove('hidden');
                 return;
             }
+
             autocomplete.innerHTML = filtered.map(customer => `
                 <div 
                     class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
@@ -1070,6 +920,7 @@
             
             autocomplete.classList.remove('hidden');
         }
+
         function renderCatalogAutocomplete(searchTerm = '') {
             const autocomplete = document.getElementById('catalogAutocomplete');
             const clearBtn = document.getElementById('clearCatalogSearchBtn');
@@ -1087,6 +938,7 @@
                 service.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 service.tag.toLowerCase().includes(searchTerm.toLowerCase())
             );
+
             if (services.length === 0) {
                 autocomplete.innerHTML = `
                     <div class="p-3 text-sm text-gray-500 text-center">
@@ -1096,6 +948,7 @@
                 autocomplete.classList.remove('hidden');
                 return;
             }
+
             autocomplete.innerHTML = services.map(service => `
                 <div 
                     class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
@@ -1123,6 +976,7 @@
             
             autocomplete.classList.remove('hidden');
         }
+
         function renderQuoteItems() {
             const emptyState = document.getElementById('emptyQuoteState');
             const container = document.getElementById('quoteItemsContainer');
@@ -1257,6 +1111,7 @@
             `;
             }).join('');
         }
+
         // Event handlers
         function selectCustomer(customerId) {
             const customer = customers.find(c => c.id === customerId);
@@ -1318,6 +1173,7 @@
             
             updateCreateButton();
         }
+
         function addQuoteItem(serviceId) {
             const services = getServices();
             const service = services.find(s => s.id === serviceId);
@@ -1350,43 +1206,53 @@
             document.getElementById('catalogAutocomplete').classList.add('hidden');
             document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
         }
+
         function removeQuoteItem(index) {
             state.quoteItems.splice(index, 1);
             renderQuoteItems();
             updateSummary();
         }
+
         function updateItemQuantity(index, value) {
             state.quoteItems[index].quantity = Number(value);
             renderQuoteItems();
             updateSummary();
         }
+
         function updateItemServiceDate(index, value) {
             state.quoteItems[index].serviceDate = value;
             renderQuoteItems();
         }
+
         function updateItemNotes(index, value) {
             state.quoteItems[index].notes = value;
         }
+
         function updateItemDiscount(index, value) {
             state.quoteItems[index].discount = Number(value);
             renderQuoteItems();
             updateSummary();
         }
+
         function updateItemDiscountType(index, value) {
             state.quoteItems[index].discountType = value;
             renderQuoteItems();
             updateSummary();
         }
+
         function updateItemPreferredTime(index, value) {
             state.quoteItems[index].preferredTime = value;
             renderQuoteItems();
         }
+
         function updateItemExactTime(index, value) {
             state.quoteItems[index].exactTime = value;
         }
+
         function updateItemScheduleNotes(index, value) {
             state.quoteItems[index].scheduleNotes = value;
         }
+
         function showPriceModModal(index, newPrice) {
             const item = state.quoteItems[index];
             state.currentPriceModIndex = index;
@@ -1410,12 +1276,14 @@
             // Show modal
             document.getElementById('priceModModal').classList.remove('hidden');
         }
+
         function hidePriceModModal() {
             document.getElementById('priceModModal').classList.add('hidden');
             state.currentPriceModIndex = null;
             state.currentPriceModNewValue = null;
             document.getElementById('priceModComment').value = '';
         }
+
         function updateItemPrice(index, value) {
             const item = state.quoteItems[index];
             const newPrice = Number(value);
@@ -1432,6 +1300,7 @@
             renderQuoteItems();
             updateSummary();
         }
+
         function confirmPriceModification() {
             const comment = document.getElementById('priceModComment').value.trim();
             
@@ -1451,6 +1320,7 @@
                 hidePriceModModal();
             }
         }
+
         function cancelPriceModification() {
             if (state.currentPriceModIndex !== null) {
                 // Revert to original price
@@ -1462,18 +1332,22 @@
                 hidePriceModModal();
             }
         }
+
         function updateItemNotes(index, value) {
             state.quoteItems[index].notes = value;
         }
+
         // Preview function
         function showPreview() {
             if (!state.selectedCustomer || state.quoteItems.length === 0) {
                 alert('Please select a customer and add items to the quote first.');
                 return;
             }
+
             const validUntil = document.getElementById('validUntilDate').value;
             const customerNotes = document.getElementById('customerNotes').value;
             const internalNotes = document.getElementById('internalNotes').value;
+
             // Get current date
             const currentDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
             
@@ -1490,6 +1364,7 @@
                     <td class="py-2 px-1 text-right font-medium">$${(item.customPrice * item.quantity).toFixed(2)}</td>
                 </tr>
             `).join('');
+
             // Format tax breakdown
             const taxBreakdown = getTaxBreakdown();
             const taxBreakdownHTML = `
@@ -1497,6 +1372,7 @@
                 ${taxBreakdown.gst_free > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>GST-Free Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'gst_free').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
                 ${taxBreakdown.input_taxed > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>Input-Taxed Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'input_taxed').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
             `;
+
             // Build preview HTML
             const previewHTML = `
                 <!-- Company Header -->
@@ -1512,6 +1388,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Customer Details -->
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <div>
@@ -1533,6 +1410,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Line Items Table -->
                 <div class="mb-6">
                     <table class="w-full text-sm" style="min-width: 100%; border-collapse: collapse;">
@@ -1549,6 +1427,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <!-- Summary -->
                 <div class="flex justify-end mb-6">
                     <div class="w-64">
@@ -1579,6 +1458,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Notes -->
                 ${customerNotes ? `
                     <div class="border-t border-gray-300 pt-4 mb-4">
@@ -1586,6 +1466,7 @@
                         <p class="text-sm text-gray-700 whitespace-pre-wrap">${customerNotes}</p>
                     </div>
                 ` : ''}
+
                 <!-- Footer -->
                 <div class="border-t-2 border-gray-800 pt-4 mt-6">
                     <div class="grid grid-cols-2 gap-6 text-xs text-gray-600">
@@ -1603,6 +1484,7 @@
                         </div>
                     </div>
                 </div>
+
                 ${internalNotes ? `
                     <div class="mt-6 pt-4 border-t-2 border-dashed border-red-300 bg-red-50 p-3 rounded">
                         <p class="text-xs font-semibold text-red-700 mb-1">INTERNAL NOTES (Not visible to customer):</p>
@@ -1610,26 +1492,20 @@
                     </div>
                 ` : ''}
             `;
+
             document.getElementById('previewContent').innerHTML = previewHTML;
             document.getElementById('previewModal').classList.remove('hidden');
-            
-            // Show/hide confirm send button based on pending action
-            const confirmSendBtn = document.getElementById('confirmSendBtn');
-            if (state.pendingAction === 'resend') {
-                confirmSendBtn.classList.remove('hidden');
-                document.getElementById('confirmSendBtnText').textContent = 'Confirm & Send Quote';
-            } else {
-                confirmSendBtn.classList.add('hidden');
-            }
         }
+
         function hidePreview() {
             document.getElementById('previewModal').classList.add('hidden');
-            state.pendingAction = null; // Clear pending action
         }
+
         function downloadPreviewPDF() {
             alert('PDF download functionality would be implemented here');
             // In a real implementation, this would generate and download a PDF
         }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // EDIT MODE: Load existing quote data
@@ -1639,8 +1515,8 @@
             const statusMap = {
                 'draft': { class: 'bg-yellow-100 text-yellow-700', text: '📝 Draft' },
                 'sent': { class: 'bg-blue-100 text-blue-700', text: '📤 Sent' },
-                'accepted': { class: 'bg-green-100 text-green-700', text: '✅ Accepted' },
-                'declined': { class: 'bg-red-100 text-red-700', text: '❌ Declined' }
+                'approved': { class: 'bg-green-100 text-green-700', text: '✅ Approved' },
+                'rejected': { class: 'bg-red-100 text-red-700', text: '❌ Rejected' }
             };
             const statusInfo = statusMap[existingQuote.status] || statusMap['draft'];
             statusBadge.className = `px-2 py-1 text-xs rounded ${statusInfo.class}`;
@@ -1652,317 +1528,6 @@
             // Set notes from existing quote
             document.getElementById('customerNotes').value = existingQuote.customerNotes;
             document.getElementById('internalNotes').value = existingQuote.internalNotes;
-            
-            // Set initial quote status in dropdown
-            document.getElementById('quoteStatusSelect').value = state.quoteStatus;
-            
-            // Track if form has been unlocked - make it global to this scope
-            state.formUnlocked = false;
-            
-            // Function to show warning and style form based on quote status
-            function toggleFormLock(status) {
-                console.log('toggleFormLock called with status:', status, 'formUnlocked:', state.formUnlocked);
-                const shouldWarn = status === 'accepted' || status === 'declined' || status === 'converted';
-                
-                if (!shouldWarn) {
-                    console.log('Status does not require warning, unlocking form');
-                    // Remove lock styling and warning if status is changed to unlocked state
-                    state.formUnlocked = false;
-                    const warningDiv = document.getElementById('lockedWarning');
-                    if (warningDiv) warningDiv.remove();
-                    
-                    const formInputs = document.querySelectorAll('#quoteForm input, #quoteForm select, #quoteForm textarea');
-                    formInputs.forEach(input => {
-                        if (input.id !== 'quoteStatusSelect') {
-                            input.classList.remove('bg-gray-100', 'cursor-pointer');
-                            input.style.pointerEvents = '';
-                        }
-                    });
-                    
-                    const itemButtons = document.querySelectorAll('.add-item-btn, .remove-item-btn');
-                    itemButtons.forEach(btn => {
-                        btn.classList.remove('opacity-50', 'cursor-pointer');
-                        btn.style.pointerEvents = '';
-                    });
-                    return;
-                }
-                
-                console.log('Applying lock styling to form fields');
-                // Style the form to look disabled but keep it enabled
-                const formInputs = document.querySelectorAll('#quoteForm input, #quoteForm select, #quoteForm textarea');
-                console.log('Found', formInputs.length, 'form inputs');
-                
-                formInputs.forEach(input => {
-                    if (input.id !== 'quoteStatusSelect') {
-                        if (!state.formUnlocked) {
-                            input.classList.add('bg-gray-100', 'cursor-pointer');
-                            console.log('Added gray background to:', input.id || input.name || input.type);
-                            // Prevent interaction until clicked
-                            input.addEventListener('focus', handleLockedFieldFocus);
-                        } else {
-                            input.classList.remove('bg-gray-100', 'cursor-pointer');
-                            input.removeEventListener('focus', handleLockedFieldFocus);
-                        }
-                    }
-                });
-                
-                const itemButtons = document.querySelectorAll('.add-item-btn, .remove-item-btn');
-                console.log('Found', itemButtons.length, 'item buttons');
-                
-                itemButtons.forEach(btn => {
-                    if (!state.formUnlocked) {
-                        btn.classList.add('opacity-50', 'cursor-pointer');
-                        btn.addEventListener('click', handleLockedButtonClick);
-                    } else {
-                        btn.classList.remove('opacity-50', 'cursor-pointer');
-                        btn.removeEventListener('click', handleLockedButtonClick);
-                    }
-                });
-                
-                // Show warning banner
-                let warningDiv = document.getElementById('lockedWarning');
-                if (!warningDiv) {
-                    warningDiv = document.createElement('div');
-                    warningDiv.id = 'lockedWarning';
-                    warningDiv.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4';
-                    
-                    let warningMessage = '';
-                    if (status === 'converted') {
-                        warningMessage = 'This quote has been converted to a job. Any changes made here will NOT affect the job. Click "Unlock to Edit" to change status to Draft and make revisions.';
-                    } else if (status === 'accepted') {
-                        warningMessage = 'This quote has been accepted by the customer. The customer has agreed to these specific terms and pricing. Click "Unlock to Edit" to change status to Draft if you need to make revisions.';
-                    } else if (status === 'declined') {
-                        warningMessage = 'This quote has been declined by the customer. Click "Unlock to Edit" to change status to Draft, make improvements, and resend the updated quote.';
-                    } else if (status === 'sent') {
-                        warningMessage = 'This quote has been sent to the customer and is awaiting their response. Click "Unlock to Edit" to change status to Draft if you need to make changes before they respond.';
-                    }
-                    
-                    warningDiv.innerHTML = `
-                        <div class="flex items-start justify-between">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm text-yellow-700">
-                                        <strong>⚠️ Warning:</strong> ${warningMessage}
-                                    </p>
-                                </div>
-                            </div>
-                            ${!state.formUnlocked ? `
-                            <button 
-                                id="unlockEditBtn"
-                                class="ml-4 px-3 py-1.5 text-xs font-medium text-white bg-yellow-600 hover:bg-yellow-700 rounded border border-yellow-700 transition-colors flex items-center gap-1"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
-                                </svg>
-                                Unlock to Edit
-                            </button>
-                            ` : `
-                            <span class="ml-4 px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded border border-green-300">
-                                ✓ Editing Enabled (Draft)
-                            </span>
-                            `}
-                        </div>
-                    `;
-                    const expiredBanner = document.getElementById('expiredWarningBanner');
-                    expiredBanner.parentNode.insertBefore(warningDiv, expiredBanner.nextSibling);
-                    
-                    // Add event listener to unlock button
-                    if (!state.formUnlocked) {
-                        const unlockBtn = document.getElementById('unlockEditBtn');
-                        if (unlockBtn) {
-                            unlockBtn.addEventListener('click', unlockAndChangeToDraft);
-                        }
-                    }
-                }
-            }
-            
-            // Function to unlock and change status to draft
-            function unlockAndChangeToDraft() {
-                const currentStatus = state.quoteStatus;
-                let message = '';
-                
-                if (currentStatus === 'converted') {
-                    message = '💰 CONVERTED TO JOB\n\nThis quote has been converted to a job.\n\n⚠️ Important: Changes made here will NOT affect the job.\n\nChange status to Draft and unlock editing?';
-                } else if (currentStatus === 'accepted') {
-                    message = '✅ ACCEPTED BY CUSTOMER\n\nThe customer has agreed to these specific terms and pricing.\n\n⚠️ Important: Editing may cause discrepancies with what the customer approved.\n\nRecommendation: Create a new quote or revision instead.\n\nChange status to Draft and unlock editing?';
-                } else if (currentStatus === 'declined') {
-                    message = '❌ DECLINED BY CUSTOMER\n\nThe customer has rejected this quote.\n\n💡 Tip: Review the feedback, make improvements, and resend.\n\nChange status to Draft and unlock editing?';
-                } else if (currentStatus === 'sent') {
-                    message = '📤 SENT TO CUSTOMER\n\nThis quote is awaiting customer response.\n\n⚠️ Note: If you make changes, you\'ll need to resend the updated quote.\n\nChange status to Draft and unlock editing?';
-                }
-                
-                if (confirm(message)) {
-                    // Change status to draft
-                    state.quoteStatus = 'draft';
-                    document.getElementById('quoteStatusSelect').value = 'draft';
-                    
-                    // Unlock form
-                    state.formUnlocked = true;
-                    
-                    // Apply changes
-                    applyStatusChanges('draft');
-                    
-                    console.log('Status changed to Draft, form unlocked');
-                }
-            }
-            
-            // Handle focus on locked field
-            function handleLockedFieldFocus(e) {
-                if (state.formUnlocked) return;
-                
-                const status = state.quoteStatus;
-                let message = '';
-                
-                if (status === 'converted') {
-                    message = '💰 CONVERTED TO JOB\n\nThis quote has been converted to a job.\n\n⚠️ Important: Changes made here will NOT affect the job.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'accepted') {
-                    message = '✅ ACCEPTED BY CUSTOMER\n\nThe customer has agreed to these specific terms.\n\n⚠️ Warning: Editing may cause discrepancies.\n\nRecommendation: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'declined') {
-                    message = '❌ DECLINED BY CUSTOMER\n\nThe customer has rejected this quote.\n\n💡 Tip: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'sent') {
-                    message = '📤 SENT TO CUSTOMER\n\nThis quote is awaiting customer response.\n\n⚠️ Note: Changes may confuse the customer if they\'re reviewing it.\n\nRecommendation: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                }
-                
-                if (confirm(message)) {
-                    state.formUnlocked = true;
-                    toggleFormLock(status);
-                    // Re-focus the field after unlocking
-                    setTimeout(() => e.target.focus(), 0);
-                } else {
-                    e.target.blur();
-                }
-            }
-            
-            // Handle click on locked button
-            function handleLockedButtonClick(e) {
-                if (state.formUnlocked) return;
-                
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const status = state.quoteStatus;
-                let message = '';
-                
-                if (status === 'converted') {
-                    message = '💰 CONVERTED TO JOB\n\nThis quote has been converted to a job.\n\n⚠️ Important: Changes made here will NOT affect the job.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'accepted') {
-                    message = '✅ ACCEPTED BY CUSTOMER\n\nThe customer has agreed to these specific terms.\n\n⚠️ Warning: Editing may cause discrepancies.\n\nRecommendation: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'declined') {
-                    message = '❌ DECLINED BY CUSTOMER\n\nThe customer has rejected this quote.\n\n💡 Tip: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                } else if (status === 'sent') {
-                    message = '📤 SENT TO CUSTOMER\n\nThis quote is awaiting customer response.\n\n⚠️ Note: Changes may confuse the customer if they\'re reviewing it.\n\nRecommendation: Use "Unlock to Edit" button to change status to Draft.\n\nDo you want to continue editing without changing status?';
-                }
-                
-                if (confirm(message)) {
-                    state.formUnlocked = true;
-                    toggleFormLock(status);
-                }
-            }
-            
-            // Show confirmation dialog before unlocking
-            function showUnlockConfirmation(status) {
-                let message = '';
-                if (status === 'converted') {
-                    message = 'This quote has been converted to a job.\n\nAny changes you make here will NOT affect the job.\n\nAre you sure you want to unlock and edit this quote?';
-                } else if (status === 'accepted') {
-                    message = 'This quote has been ACCEPTED by the customer.\n\nEditing may cause discrepancies between what the customer agreed to and the current quote.\n\nConsider creating a new quote or revision instead.\n\nAre you sure you want to unlock and edit?';
-                } else if (status === 'declined') {
-                    message = 'This quote has been DECLINED by the customer.\n\nIf you make changes, consider changing the status back to "Draft" or "Sent" and resending.\n\nAre you sure you want to unlock and edit?';
-                }
-                
-                if (confirm(message)) {
-                    formUnlocked = true;
-                    toggleFormLock(status);
-                }
-            }
-            
-            // Function to apply status changes to UI
-            function applyStatusChanges(newStatus) {
-                console.log('Applying status changes:', newStatus);
-                
-                try {
-                    // Update header badge
-                    const statusBadge = document.getElementById('quoteStatusBadge');
-                    if (!statusBadge) {
-                        console.error('Status badge element not found!');
-                        return;
-                    }
-                    
-                    const statusMap = {
-                        'draft': { class: 'bg-yellow-100 text-yellow-700', text: '📝 Draft' },
-                        'sent': { class: 'bg-blue-100 text-blue-700', text: '📤 Sent' },
-                        'viewed': { class: 'bg-purple-100 text-purple-700', text: '👁️ Viewed' },
-                        'accepted': { class: 'bg-green-100 text-green-700', text: '✅ Accepted' },
-                        'declined': { class: 'bg-red-100 text-red-700', text: '❌ Declined' },
-                        'expired': { class: 'bg-gray-100 text-gray-700', text: '⏰ Expired' },
-                        'converted': { class: 'bg-emerald-100 text-emerald-700', text: '💰 Converted' }
-                    };
-                    const statusInfo = statusMap[newStatus] || statusMap['draft'];
-                    statusBadge.className = `px-3 py-1.5 text-sm font-medium rounded-full ${statusInfo.class}`;
-                    statusBadge.textContent = statusInfo.text;
-                    console.log('Badge updated to:', statusInfo.text);
-                    
-                    // Lock/unlock form based on status
-                    toggleFormLock(newStatus);
-                    
-                    // Show/hide Convert to Job button for accepted status
-                    const convertBtn = document.getElementById('convertToJobBtn');
-                    if (convertBtn) {
-                        if (newStatus === 'accepted') {
-                            convertBtn.classList.remove('hidden');
-                            console.log('Convert to Job button shown');
-                        } else {
-                            convertBtn.classList.add('hidden');
-                            console.log('Convert to Job button hidden');
-                        }
-                    } else {
-                        console.error('Convert to Job button not found!');
-                    }
-                    
-                    // Show/hide expired warning banner
-                    const expiredBanner = document.getElementById('expiredWarningBanner');
-                    if (expiredBanner) {
-                        if (newStatus === 'expired') {
-                            expiredBanner.classList.remove('hidden');
-                            const validUntil = document.getElementById('validUntilDate').value;
-                            if (validUntil) {
-                                document.getElementById('expiredDateText').textContent = new Date(validUntil).toLocaleDateString();
-                            }
-                        } else {
-                            expiredBanner.classList.add('hidden');
-                        }
-                    }
-                    
-                    // Show/hide Extend & Resend button for expired status
-                    const extendBtn = document.getElementById('extendResendBtn');
-                    const resendBtn = document.getElementById('resendQuoteBtn');
-                    if (extendBtn && resendBtn) {
-                        if (newStatus === 'expired') {
-                            extendBtn.classList.remove('hidden');
-                            resendBtn.classList.add('hidden');
-                        } else {
-                            extendBtn.classList.add('hidden');
-                            if (newStatus !== 'expired') {
-                                resendBtn.classList.remove('hidden');
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error in applyStatusChanges:', error);
-                }
-            }
-            
-            // Quote status change handler - just update the state, don't apply changes yet
-            document.getElementById('quoteStatusSelect').addEventListener('change', function(e) {
-                const newStatus = e.target.value;
-                state.quoteStatus = newStatus;
-                console.log('Quote status selected (not saved yet):', newStatus);
-            });
             
             // EDIT MODE: Populate customer data (customer card is always visible)
             if (state.selectedCustomer) {
@@ -1988,12 +1553,6 @@
             // Render existing quote items
             renderQuoteItems();
             updateSummary();
-            
-            // Initialize UI based on current saved status (after DOM is fully rendered)
-            setTimeout(() => {
-                console.log('Initializing form lock for status:', state.quoteStatus);
-                applyStatusChanges(state.quoteStatus);
-            }, 100);
             
             // Catalog search autocomplete
             document.getElementById('catalogSearchInput').addEventListener('input', function(e) {
@@ -2076,10 +1635,8 @@
                 updateSummary();
             });
             
-            // Save quote button (edit mode)
-            document.getElementById('saveQuoteBtn').addEventListener('click', function() {
-                console.log('Save button clicked');
-                
+            // Create quote button
+            document.getElementById('createQuoteBtn').addEventListener('click', function() {
                 if (!state.selectedCustomer) {
                     alert('Please select a customer');
                     return;
@@ -2090,188 +1647,74 @@
                     return;
                 }
                 
-                try {
-                    // Check for price modifications
-                    const priceModifiedItems = state.quoteItems.filter(item => item.priceModified);
-                    if (priceModifiedItems.length > 0) {
-                        console.log('Price modifications:', 
-                            priceModifiedItems.map(item => ({
-                                name: item.name,
-                                originalPrice: item.originalPrice,
-                                modifiedPrice: item.customPrice,
-                                comment: item.priceModificationComment
-                            }))
-                        );
-                    }
-                    
-                    // Create quote data
-                    const quoteData = {
-                        customer: state.selectedCustomer,
-                        quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
-                        items: state.quoteItems,
-                        subtotal: calculateSubtotal(),
-                        tax: calculateTax(),
-                        total: calculateTotal(),
-                        validUntil: document.getElementById('validUntilDate').value,
-                        customerNotes: document.getElementById('customerNotes').value,
-                        internalNotes: document.getElementById('internalNotes').value,
-                        quoteStatus: state.quoteStatus, // Save the selected status
-                        priceModifications: priceModifiedItems.map(item => ({
+                // Check for price modifications
+                const priceModifiedItems = state.quoteItems.filter(item => item.priceModified);
+                if (priceModifiedItems.length > 0) {
+                    console.log('Price modifications:', 
+                        priceModifiedItems.map(item => ({
                             name: item.name,
                             originalPrice: item.originalPrice,
                             modifiedPrice: item.customPrice,
                             comment: item.priceModificationComment
-                        })),
-                        status: 'active',
-                        createdDate: new Date().toISOString()
-                    };
-                    
-                    // Apply status changes now that save is clicked
-                    applyStatusChanges(state.quoteStatus);
-                    
-                    // Here you would normally update the quote on the server
-                    console.log('Saving quote changes:', quoteData);
-                    
-                    alert(`Quote ${state.quoteId} updated successfully!\nStatus: ${state.quoteStatus}`);
-                    // In real implementation: redirect to quotes list or quote detail page
-                    // window.location.href = 'quote_list.html';
-                } catch (error) {
-                    console.error('Error saving quote:', error);
-                    alert('Error saving quote: ' + error.message);
-                }
-            });
-            
-            // Resend quote button - Show preview first
-            document.getElementById('resendQuoteBtn').addEventListener('click', function() {
-                if (!state.selectedCustomer) {
-                    alert('Please select a customer');
-                    return;
+                        }))
+                    );
                 }
                 
-                if (state.quoteItems.length === 0) {
-                    alert('Please add at least one item to the quote');
-                    return;
-                }
-                
-                // Show preview modal with send confirmation
-                state.pendingAction = 'resend';
-                showPreview();
-            });
-            
-            // Download PDF button
-            document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-                if (!state.selectedCustomer || state.quoteItems.length === 0) {
-                    alert('Cannot generate PDF: Quote must have a customer and items');
-                    return;
-                }
-                
-                // Here you would normally generate and download the PDF
-                console.log('Generating PDF for quote:', state.quoteId);
-                alert('PDF download functionality would be implemented here');
-                // In real implementation: trigger PDF generation and download
-            });
-            
-            // Toggle Activity Log
-            document.getElementById('toggleLogBtn').addEventListener('click', function() {
-                const additionalLogs = document.getElementById('additionalLogs');
-                const toggleText = document.getElementById('toggleLogText');
-                const toggleIcon = document.getElementById('toggleLogIcon');
-                
-                if (additionalLogs.classList.contains('hidden')) {
-                    additionalLogs.classList.remove('hidden');
-                    toggleText.textContent = 'Show Less';
-                    toggleIcon.classList.add('rotate-180');
-                } else {
-                    additionalLogs.classList.add('hidden');
-                    toggleText.textContent = 'Show All';
-                    toggleIcon.classList.remove('rotate-180');
-                }
-            });
-            
-            
-            
-            // Extend & Resend button (for expired quotes)
-            document.getElementById('extendResendBtn').addEventListener('click', function() {
-                if (state.quoteStatus !== 'expired') {
-                    alert('This action is only available for expired quotes');
-                    return;
-                }
-                
-                const validUntilDate = document.getElementById('validUntilDate').value;
-                const today = new Date().toISOString().split('T')[0];
-                
-                // Check if valid until date is set and is in the future
-                if (!validUntilDate) {
-                    alert('Please set a new "Valid Until" date before extending the quote.');
-                    document.getElementById('validUntilDate').focus();
-                    return;
-                }
-                
-                if (validUntilDate <= today) {
-                    alert('The "Valid Until" date must be in the future. Please select a later date.');
-                    document.getElementById('validUntilDate').focus();
-                    return;
-                }
-                
-                if (confirm(`Extend quote validity until ${new Date(validUntilDate).toLocaleDateString()}?\n\nThis will:\n1. Change status to "Sent"\n2. Resend the quote to the customer\n3. Update the validity period`)) {
-                    // Update status to Sent
-                    state.quoteStatus = 'sent';
-                    document.getElementById('quoteStatusSelect').value = 'sent';
-                    
-                    // Update header badge
-                    const statusBadge = document.getElementById('quoteStatusBadge');
-                    statusBadge.className = 'px-2 py-1 text-xs rounded bg-blue-100 text-blue-700';
-                    statusBadge.textContent = '?? Sent';
-                    
-                    // Hide extend button, show resend button
-                    document.getElementById('extendResendBtn').classList.add('hidden');
-                    document.getElementById('resendQuoteBtn').classList.remove('hidden');
-                    
-                    const contactName = state.selectedQuoteContact.type === 'secondary' 
-                        ? `${state.selectedQuoteContact.name} (${state.selectedQuoteContact.role})` 
-                        : state.selectedCustomer.name;
-                    
-                    console.log('Extending quote validity and resending:', {
-                        quoteId: state.quoteId,
-                        newValidUntil: validUntilDate,
-                        contact: state.selectedQuoteContact
-                    });
-                    
-                    alert(`Quote ${state.quoteId} extended and resent!\n\nNew validity: ${new Date(validUntilDate).toLocaleDateString()}\nSent to: ${contactName}\nEmail: ${state.selectedQuoteContact.email}`);
-                    
-                    // In real implementation: 
-                    // - Save updated quote to server
-                    // - Send email/SMS to customer
-                }
-            });
-            // Convert to Job button
-            document.getElementById('convertToJobBtn').addEventListener('click', function() {
-                if (state.quoteStatus !== 'accepted') {
-                    alert('Quote must be accepted before converting to job');
-                    return;
-                }
-                
-                // Prepare job data from quote
-                const jobData = {
-                    quoteId: state.quoteId,
+                // Create quote data
+                const quoteData = {
                     customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
                     items: state.quoteItems,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
                     total: calculateTotal(),
-                    notes: document.getElementById('customerNotes').value
+                    validUntil: document.getElementById('validUntilDate').value,
+                    customerNotes: document.getElementById('customerNotes').value,
+                    internalNotes: document.getElementById('internalNotes').value,
+                    priceModifications: priceModifiedItems.map(item => ({
+                        name: item.name,
+                        originalPrice: item.originalPrice,
+                        modifiedPrice: item.customPrice,
+                        comment: item.priceModificationComment
+                    })),
+                    status: 'active',
+                    createdDate: new Date().toISOString()
                 };
                 
-                console.log('Converting quote to job:', jobData);
+                // Here you would normally send the quote data to the server
+                console.log('Creating quote:', quoteData);
                 
-                // Here you would normally:
-                // 1. Create a new job with the quote data
-                // 2. Link the job to this quote
-                // 3. Update quote status to 'converted' (optional)
-                // 4. Redirect to the job page
+                const contactName = state.selectedQuoteContact.type === 'secondary' 
+                    ? `${state.selectedQuoteContact.name} (${state.selectedQuoteContact.role})` 
+                    : state.selectedCustomer.name;
+                alert(`Quote created successfully for ${state.selectedCustomer.name}!\nQuote will be sent to: ${contactName}`);
+                // In real implementation: redirect to quotes list or quote detail page
+                // window.location.href = 'quotes.html';
+            });
+            
+            // Save draft button
+            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+                // Create draft quote data
+                const draftData = {
+                    customer: state.selectedCustomer,
+                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
+                    items: state.quoteItems,
+                    subtotal: calculateSubtotal(),
+                    tax: calculateTax(),
+                    total: calculateTotal(),
+                    validUntil: document.getElementById('validUntilDate').value,
+                    customerNotes: document.getElementById('customerNotes').value,
+                    internalNotes: document.getElementById('internalNotes').value,
+                    status: 'draft',
+                    createdDate: new Date().toISOString()
+                };
                 
-                if (confirm(`Convert Quote ${state.quoteId} to a Job?\n\nThis will create a new job with all quote items and customer information.`)) {
-                    alert('Job created successfully! Redirecting to job page...');
-                    // window.location.href = 'job_create.html?from_quote=' + state.quoteId;
-                }
+                // Here you would normally save the draft to the server
+                console.log('Saving draft:', draftData);
+                
+                alert('Quote saved as draft!');
+                // In real implementation: redirect to quotes list
+                // window.location.href = 'quotes.html';
             });
             
             // Preview button
@@ -2280,35 +1723,6 @@
             // Preview modal buttons
             document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
             document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
-            
-            // Confirm Send button (in preview modal)
-            document.getElementById('confirmSendBtn').addEventListener('click', function() {
-                if (state.pendingAction === 'resend') {
-                    const contactName = state.selectedQuoteContact.type === 'secondary' 
-                        ? `${state.selectedQuoteContact.name} (${state.selectedQuoteContact.role})` 
-                        : state.selectedCustomer.name;
-                    
-                    // Auto-change status to Sent if currently Draft
-                    if (state.quoteStatus === 'draft') {
-                        state.quoteStatus = 'sent';
-                        document.getElementById('quoteStatusSelect').value = 'sent';
-                        
-                        // Update header badge
-                        const statusBadge = document.getElementById('quoteStatusBadge');
-                        statusBadge.className = 'px-3 py-1.5 text-sm font-medium rounded-full bg-blue-100 text-blue-700';
-                        statusBadge.textContent = '📤 Sent';
-                        
-                        console.log('Status auto-changed from Draft to Sent');
-                    }
-                    
-                    // Here you would normally resend the quote via email/SMS
-                    console.log('Resending quote to:', state.selectedQuoteContact);
-                    
-                    // Close preview and show success message
-                    hidePreview();
-                    alert(`Quote ${state.quoteId} sent successfully!\n\nSent to: ${contactName}\nEmail: ${state.selectedQuoteContact.email}`);
-                }
-            });
             
             // Price modification modal event listeners
             document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);
@@ -2328,224 +1742,30 @@
                     cancelPriceModification();
                 }
             });
+
+            // Initial render
+            renderQuoteItems();
+            updateSummary();
         });
 
-        // Mock invoice data - Sample invoices for demonstration
-        const mockInvoices = [
-            {
-                id: 'INV-Q-2024-001',
-                quoteId: 'Q-2024-001',
-                status: 'paid',
-                type: 'Down Payment (30%)',
-                amount: 935.00,
-                dueDate: '2024-11-01',
-                paidDate: '2024-10-28',
-                billingModel: 'one-time',
-                paymentMethod: 'Credit Card'
-            },
-            {
-                id: 'INV-Q-2024-002',
-                quoteId: 'Q-2024-001',
-                status: 'paid',
-                type: 'Monthly Subscription - Nov',
-                amount: 440.00,
-                dueDate: '2024-11-09',
-                paidDate: '2024-11-09',
-                billingModel: 'subscription',
-                subscription: {
-                    frequency: 'Monthly',
-                    cycle: '1 of 12'
-                },
-                paymentMethod: 'Auto-Charge'
-            },
-            {
-                id: 'INV-Q-2024-003',
-                quoteId: 'Q-2024-001',
-                status: 'unpaid',
-                type: 'Progress Billing (40%)',
-                amount: 1247.00,
-                dueDate: '2024-12-01',
-                billingModel: 'one-time'
-            },
-            {
-                id: 'INV-Q-2024-004',
-                quoteId: 'Q-2024-001',
-                status: 'unpaid',
-                type: 'Monthly Subscription - Dec',
-                amount: 440.00,
-                dueDate: '2024-12-09',
-                billingModel: 'subscription',
-                subscription: {
-                    frequency: 'Monthly',
-                    cycle: '2 of 12'
-                },
-                paymentMethod: 'Auto-Charge (Scheduled)'
-            },
-            {
-                id: 'INV-Q-2024-005',
-                quoteId: 'Q-2024-001',
-                status: 'overdue',
-                type: 'Split Invoice - Payer 1',
-                amount: 500.00,
-                dueDate: '2024-10-25',
-                billingModel: 'one-time',
-                isSplit: true,
-                splitInfo: 'John Doe (50%)'
-            },
-            {
-                id: 'INV-Q-2024-006',
-                quoteId: 'Q-2024-001',
-                status: 'void',
-                type: 'Final Payment (Cancelled)',
-                amount: 935.00,
-                dueDate: '2024-11-20',
-                voidDate: '2024-11-15',
-                billingModel: 'one-time',
-                voidReason: 'Customer requested changes'
-            }
-        ];
-
-        function loadInvoices() {
-            console.log('loadInvoices called, mockInvoices length:', mockInvoices.length);
+        // Create Invoice from Quote
+        function createInvoiceFromQuote() {
+            // Get current quote ID (in real app, get from URL or data)
+            const quoteId = document.getElementById('quoteIdBadge').textContent;
             
-            const container = document.getElementById('invoiceListContainer');
-            const emptyMessage = document.getElementById('noInvoicesMessage');
-            const countBadge = document.getElementById('invoiceCount');
-
-            console.log('Elements found:', {
-                container: !!container,
-                emptyMessage: !!emptyMessage,
-                countBadge: !!countBadge
-            });
-
-            if (!container || !emptyMessage || !countBadge) {
-                console.error('Required elements not found!');
-                return;
+            // Validate quote status
+            const quoteStatus = document.getElementById('quoteStatusBadge').textContent.toLowerCase();
+            
+            if (quoteStatus === 'draft') {
+                if (!confirm('This quote is still in draft status. Do you want to create an invoice anyway?')) {
+                    return;
+                }
             }
-
-            if (mockInvoices.length === 0) {
-                container.classList.add('hidden');
-                emptyMessage.classList.remove('hidden');
-                countBadge.textContent = '0';
-                return;
-            }
-
-            emptyMessage.classList.add('hidden');
-            container.classList.remove('hidden');
-            countBadge.textContent = mockInvoices.length;
-
-            console.log('Rendering', mockInvoices.length, 'invoices');
-            container.innerHTML = mockInvoices.map(invoice => createInvoiceCard(invoice)).join('');
-            console.log('Invoices rendered successfully');
-        }
-
-        function createInvoiceCard(invoice) {
-            const statusConfig = {
-                paid: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', icon: '✓', label: 'Paid' },
-                unpaid: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', icon: '💳', label: 'Unpaid' },
-                overdue: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', icon: '⚠', label: 'Overdue' },
-                void: { bg: 'bg-gray-50', border: 'border-gray-200', text: 'text-gray-700', icon: '✕', label: 'Void' }
-            };
-
-            const config = statusConfig[invoice.status];
-            const isSubscription = invoice.billingModel === 'subscription';
-            const isSplit = invoice.isSplit || false;
-
-            return `
-                <div class="border ${config.border} ${config.bg} rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                     onclick="window.location.href='invoice_detail.html?id=${invoice.id}'">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1 flex-wrap">
-                                <span class="font-semibold text-gray-900">${invoice.id}</span>
-                                ${isSubscription ? '<span class="px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-700 rounded">🔄 Subscription</span>' : ''}
-                                ${isSplit ? '<span class="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded">👥 Split</span>' : ''}
-                            </div>
-                            <p class="text-sm text-gray-600">${invoice.type}</p>
-                        </div>
-                        <span class="px-2 py-1 text-xs font-medium rounded ${config.bg} ${config.text} border ${config.border}">
-                            ${config.icon} ${config.label}
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 text-sm mb-3">
-                        <div>
-                            <span class="text-gray-600">Amount:</span>
-                            <span class="font-semibold ml-1">$${invoice.amount.toFixed(2)}</span>
-                        </div>
-                        <div>
-                            <span class="text-gray-600">Due:</span>
-                            <span class="font-medium ml-1">${formatDate(invoice.dueDate)}</span>
-                        </div>
-                    </div>
-
-                    ${isSubscription ? `
-                        <div class="text-xs text-purple-700 bg-purple-50 border border-purple-200 rounded px-2 py-1 mb-2 flex items-center justify-between">
-                            <span>${invoice.subscription.frequency} • Cycle ${invoice.subscription.cycle}</span>
-                            ${invoice.paymentMethod ? `<span class="text-purple-600">⚡ ${invoice.paymentMethod}</span>` : ''}
-                        </div>
-                    ` : ''}
-
-                    ${isSplit ? `
-                        <div class="text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded px-2 py-1 mb-2">
-                            ${invoice.splitInfo}
-                        </div>
-                    ` : ''}
-
-                    ${invoice.status === 'paid' ? `
-                        <div class="text-xs text-green-700 flex items-center gap-1 mb-2">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Paid on ${formatDate(invoice.paidDate)}${invoice.paymentMethod ? ` via ${invoice.paymentMethod}` : ''}
-                        </div>
-                    ` : ''}
-
-                    ${invoice.status === 'void' ? `
-                        <div class="text-xs text-gray-600 bg-gray-100 border border-gray-300 rounded px-2 py-1 mb-2">
-                            Voided on ${formatDate(invoice.voidDate)}${invoice.voidReason ? ` - ${invoice.voidReason}` : ''}
-                        </div>
-                    ` : ''}
-
-                    <div class="mt-3 pt-3 border-t ${config.border} flex gap-2">
-                        <button 
-                            onclick="event.stopPropagation(); window.location.href='invoice_detail.html?id=${invoice.id}'"
-                            class="flex-1 px-3 py-1.5 text-xs font-medium text-purple-700 bg-white border border-purple-300 rounded hover:bg-purple-50"
-                        >
-                            View Details
-                        </button>
-                        ${invoice.status === 'unpaid' || invoice.status === 'overdue' ? `
-                            <button 
-                                onclick="event.stopPropagation(); sendPaymentLink('${invoice.id}')"
-                                class="flex-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-white border border-blue-300 rounded hover:bg-blue-50"
-                            >
-                                Send Link
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        }
-
-        function sendPaymentLink(invoiceId) {
-            alert(`Sending payment link for ${invoiceId}...`);
-        }
-
-        // Load invoices - try multiple approaches to ensure it runs
-        if (document.readyState === 'complete') {
-            console.log('Document already loaded, calling loadInvoices() immediately');
-            loadInvoices();
-        } else {
-            window.addEventListener('load', function() {
-                console.log('Window load event fired, calling loadInvoices()');
-                loadInvoices();
-            });
+            
+            // Navigate to invoice creation page with quote ID
+            window.location.href = `invoice_create_simple.html?quoteId=${quoteId}`;
         }
     </script>
 </body>
 </html>
+

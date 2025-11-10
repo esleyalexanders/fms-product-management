@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Invoice - Simplified - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <button 
+                                onclick="window.location.href='quote_edit_simple.html'"
+                                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                            </button>
+                            <h1 class="text-3xl font-bold text-gray-900">Create Invoice</h1>
+                            <span class="px-3 py-1.5 text-sm font-medium rounded-full bg-purple-100 text-purple-700">💰 New</span>
+                        </div>
+                        <div class="flex items-center gap-3 flex-wrap ml-14">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span class="text-sm text-gray-600">From Quote:</span>
+                                <span id="quoteIdDisplay" class="text-lg font-semibold text-purple-600">Q-2024-001</span>
+                            </div>
+                            <span class="text-gray-300">|</span>
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                <span id="customerNameDisplay" class="font-medium">Alice Anderson</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="bg-purple-50 border-l-4 border-purple-500 p-4 mb-4">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm text-purple-800 font-medium mb-1">Full Amount Invoice</p>
+                        <p class="text-xs text-purple-700">This will create an invoice for the complete quote amount. Customer must pay the full amount.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Invoice Details -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Quote Summary -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quote Summary</h2>
+                        
+                        <!-- Quote Items Preview -->
+                        <div class="space-y-3 mb-4">
+                            <div id="quoteItemsPreview" class="space-y-2">
+                                <!-- Items will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Totals -->
+                        <div class="border-t border-gray-200 pt-3 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-medium" id="quoteSubtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Tax</span>
+                                <span class="font-medium" id="quoteTax">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-base font-bold border-t border-gray-300 pt-2">
+                                <span class="text-gray-900">Total Amount</span>
+                                <span class="text-purple-600" id="quoteTotal">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-purple-50 rounded-lg">
+                            <p class="text-sm text-purple-800">
+                                <strong>Note:</strong> The entire quote amount will be invoiced. No partial invoicing available.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Details -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Invoice Details</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Invoice Number
+                                    <span class="text-xs text-gray-500 font-normal">(Auto-generated)</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="invoiceNumber"
+                                    value="INV-2024-001"
+                                    readonly
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Invoice Date <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="date" 
+                                    id="invoiceDate"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Due Date <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="date" 
+                                    id="dueDate"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Payment Terms</label>
+                                <select 
+                                    id="paymentTerms"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                >
+                                    <option value="due_on_receipt">Due on Receipt</option>
+                                    <option value="net_7">Net 7 Days</option>
+                                    <option value="net_15">Net 15 Days</option>
+                                    <option value="net_30" selected>Net 30 Days</option>
+                                    <option value="net_60">Net 60 Days</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Payment Model <span class="text-red-500">*</span>
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-3 p-3 border-2 border-purple-300 bg-purple-50 rounded-lg cursor-pointer">
+                                        <input type="radio" name="paymentModel" value="full" checked class="mt-1" onchange="updatePaymentModel()" />
+                                        <div class="flex-1">
+                                            <div class="font-semibold text-gray-900">Full Payment (Upfront)</div>
+                                            <div class="text-xs text-gray-600 mt-1">Customer pays entire amount upfront before service begins</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                        <input type="radio" name="paymentModel" value="deposit" class="mt-1" onchange="updatePaymentModel()" />
+                                        <div class="flex-1">
+                                            <div class="font-semibold text-gray-900">Down Payment (Deposit)</div>
+                                            <div class="text-xs text-gray-600 mt-1">Customer pays deposit now, remaining balance later</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                        <input type="radio" name="paymentModel" value="subscription" class="mt-1" onchange="updatePaymentModel()" />
+                                        <div class="flex-1">
+                                            <div class="font-semibold text-gray-900">Subscription (Recurring)</div>
+                                            <div class="text-xs text-gray-600 mt-1">Automatic recurring invoices at regular intervals</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Subscription Settings (shown when subscription selected) -->
+                            <div id="subscriptionSection" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Subscription Settings <span class="text-red-500">*</span>
+                                </label>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Billing Frequency</label>
+                                        <select id="billingFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option value="weekly">Weekly</option>
+                                            <option value="biweekly">Bi-weekly (Every 2 weeks)</option>
+                                            <option value="monthly" selected>Monthly</option>
+                                            <option value="quarterly">Quarterly (Every 3 months)</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription Start Date</label>
+                                        <input type="date" id="subscriptionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription End (Optional)</label>
+                                        <select id="subscriptionEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="toggleEndDate()">
+                                            <option value="ongoing">Ongoing (No end date)</option>
+                                            <option value="after_cycles">After specific number of cycles</option>
+                                            <option value="end_date">Specific end date</option>
+                                        </select>
+                                    </div>
+                                    <div id="cyclesInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">Number of Billing Cycles</label>
+                                        <input type="number" id="billingCycles" min="1" placeholder="e.g., 12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div id="endDateInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">End Date</label>
+                                        <input type="date" id="subscriptionEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 bg-green-50 rounded">
+                                        <input type="checkbox" id="autoCharge" checked class="rounded text-green-600" />
+                                        <label for="autoCharge" class="text-xs text-green-800">
+                                            <strong>Auto-charge enabled</strong> - Automatically charge customer on billing date
+                                        </label>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Next Invoice:</strong> <span id="nextInvoiceDate">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deposit Amount (shown when deposit selected) -->
+                            <div id="depositSection" class="hidden">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Deposit Amount <span class="text-red-500">*</span>
+                                </label>
+                                <div class="space-y-2">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <input 
+                                                    type="number" 
+                                                    id="depositAmount"
+                                                    placeholder="0.00"
+                                                    min="0"
+                                                    step="0.01"
+                                                    class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositCalculation()"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <input 
+                                                    type="number" 
+                                                    id="depositPercentage"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    max="100"
+                                                    step="1"
+                                                    class="w-full pr-8 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositFromPercentage()"
+                                                />
+                                                <span class="absolute right-3 top-2.5 text-gray-500">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="setDepositPercentage(25)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">25%</button>
+                                        <button type="button" onclick="setDepositPercentage(50)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">50%</button>
+                                        <button type="button" onclick="setDepositPercentage(75)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">75%</button>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Remaining Balance:</strong> <span id="remainingBalance">$0.00</span> (due after service completion)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Accepted Payment Methods <span class="text-red-500">*</span>
+                                </label>
+                                <div id="paymentMethodsContainer" class="space-y-2">
+                                    <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="stripe">
+                                        <input type="checkbox" id="paymentStripe" value="stripe" checked class="rounded text-purple-600" />
+                                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Stripe</span>
+                                        <span class="ml-auto text-xs text-purple-600 font-medium" id="stripeTag"></span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="paypal">
+                                        <input type="checkbox" id="paymentPaypal" value="paypal" checked class="rounded text-purple-600" />
+                                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">PayPal</span>
+                                        <span class="ml-auto text-xs text-purple-600 font-medium" id="paypalTag"></span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="google_wallet">
+                                        <input type="checkbox" id="paymentGoogleWallet" value="google_wallet" class="rounded text-purple-600" />
+                                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Google Wallet</span>
+                                        <span class="ml-auto text-xs text-purple-600 font-medium" id="googleWalletTag"></span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="apple_pay">
+                                        <input type="checkbox" id="paymentApplePay" value="apple_pay" class="rounded text-purple-600" />
+                                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Apple Pay</span>
+                                        <span class="ml-auto text-xs text-purple-600 font-medium" id="applePayTag"></span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="cash">
+                                        <input type="checkbox" id="paymentCash" value="cash" class="rounded text-purple-600" />
+                                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        <span class="text-sm font-medium">Cash</span>
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2" id="paymentMethodHint">Select at least one payment method</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Invoice Notes</label>
+                                <textarea 
+                                    id="invoiceNotes"
+                                    rows="3"
+                                    placeholder="Payment instructions, terms, or special notes..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Summary & Actions -->
+                <div class="space-y-4">
+                    
+                    <!-- Invoice Summary -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Invoice Summary</h2>
+                        
+                        <div class="space-y-3 mb-4">
+                            <div class="p-3 bg-purple-50 rounded-lg">
+                                <div class="text-xs text-purple-600 mb-1">Invoice Amount</div>
+                                <div class="text-2xl font-bold text-purple-700" id="invoiceAmount">$0.00</div>
+                            </div>
+
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Payment Model</span>
+                                    <span class="text-gray-900 font-medium" id="paymentModelDisplay">Full Payment</span>
+                                </div>
+                                <div id="depositInfo" class="hidden">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-gray-600">Deposit Amount</span>
+                                        <span class="text-gray-900 font-semibold" id="depositAmountDisplay">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-gray-600">Remaining Balance</span>
+                                        <span class="text-gray-600" id="remainingBalanceDisplay">$0.00</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Status</span>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">Unpaid</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-2">
+                            <button 
+                                id="createInvoiceBtn"
+                                class="w-full bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Create Invoice
+                            </button>
+                            <button 
+                                onclick="window.location.href='quote_edit_simple.html'"
+                                class="w-full bg-gray-100 text-gray-700 py-2.5 rounded-lg hover:bg-gray-200 text-sm font-medium"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+
+                        <!-- Help Text -->
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-xs text-blue-800">
+                                <strong>What happens next?</strong><br>
+                                1. Invoice will be created<br>
+                                2. Payment link will be generated<br>
+                                3. You can send it to customer
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Invoice Created Successfully!</h3>
+                <p class="text-sm text-gray-600 mb-6">
+                    Invoice <strong id="createdInvoiceNumber"></strong> has been created for the full quote amount.
+                </p>
+                <div class="flex gap-3">
+                    <button 
+                        onclick="window.location.href='invoice_detail_simple.html'"
+                        class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium"
+                    >
+                        View Invoice
+                    </button>
+                    <button 
+                        onclick="window.location.href='quote_list_simple.html'"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                    >
+                        Back to Quotes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock quote data (would come from URL parameter or API)
+        const quoteData = {
+            id: 'Q-2024-001',
+            customerName: 'Alice Anderson',
+            customerEmail: 'alice.a@email.com',
+            items: [
+                {
+                    id: 1,
+                    name: 'Math Tutoring - Grade 10',
+                    description: '4 sessions per month',
+                    quantity: 4,
+                    unitPrice: 50.00,
+                    total: 200.00
+                },
+                {
+                    id: 2,
+                    name: 'Science Tutoring - Grade 10',
+                    description: '2 sessions per month',
+                    quantity: 2,
+                    unitPrice: 55.00,
+                    total: 110.00
+                }
+            ],
+            subtotal: 310.00,
+            tax: 31.00,
+            total: 341.00
+        };
+
+        // Initialize page
+        function initializePage() {
+            // Set today's date as invoice date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('invoiceDate').value = today;
+            
+            // Set due date to 30 days from now
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+            
+            // Load quote data
+            loadQuoteData();
+        }
+
+        // Load quote data
+        function loadQuoteData() {
+            // Update header
+            document.getElementById('quoteIdDisplay').textContent = quoteData.id;
+            document.getElementById('customerNameDisplay').textContent = quoteData.customerName;
+            
+            // Populate items
+            const itemsContainer = document.getElementById('quoteItemsPreview');
+            itemsContainer.innerHTML = quoteData.items.map(item => `
+                <div class="flex justify-between items-start p-2 bg-gray-50 rounded">
+                    <div class="flex-1">
+                        <div class="font-medium text-sm text-gray-900">${item.name}</div>
+                        <div class="text-xs text-gray-600">${item.description}</div>
+                        <div class="text-xs text-gray-500 mt-1">Qty: ${item.quantity} × $${item.unitPrice.toFixed(2)}</div>
+                    </div>
+                    <div class="text-sm font-semibold text-gray-900">$${item.total.toFixed(2)}</div>
+                </div>
+            `).join('');
+            
+            // Update totals
+            document.getElementById('quoteSubtotal').textContent = `$${quoteData.subtotal.toFixed(2)}`;
+            document.getElementById('quoteTax').textContent = `$${quoteData.tax.toFixed(2)}`;
+            document.getElementById('quoteTotal').textContent = `$${quoteData.total.toFixed(2)}`;
+            document.getElementById('invoiceAmount').textContent = `$${quoteData.total.toFixed(2)}`;
+        }
+
+        // Payment method constraints based on payment model
+        const paymentMethodConstraints = {
+            full: {
+                allowed: ['stripe', 'paypal', 'google_wallet', 'apple_pay', 'cash'],
+                hint: 'All payment methods available for full payment'
+            },
+            deposit: {
+                allowed: ['stripe', 'paypal', 'cash'],
+                hint: 'Deposit payments support Stripe, PayPal, and Cash only',
+                reason: 'Digital wallets not supported for deposit payments'
+            },
+            subscription: {
+                allowed: ['stripe', 'paypal'],
+                required: true,
+                hint: 'Subscription requires auto-charge capable methods (Stripe or PayPal)',
+                reason: 'Only Stripe and PayPal support recurring automatic charges'
+            }
+        };
+
+        // Payment model functions
+        function updatePaymentModel() {
+            const model = document.querySelector('input[name="paymentModel"]:checked').value;
+            const depositSection = document.getElementById('depositSection');
+            const subscriptionSection = document.getElementById('subscriptionSection');
+            const depositInfo = document.getElementById('depositInfo');
+            const paymentModelDisplay = document.getElementById('paymentModelDisplay');
+            
+            // Hide all sections first
+            depositSection.classList.add('hidden');
+            subscriptionSection.classList.add('hidden');
+            depositInfo.classList.add('hidden');
+            
+            if (model === 'deposit') {
+                depositSection.classList.remove('hidden');
+                depositInfo.classList.remove('hidden');
+                paymentModelDisplay.textContent = 'Down Payment';
+            } else if (model === 'subscription') {
+                subscriptionSection.classList.remove('hidden');
+                paymentModelDisplay.textContent = 'Subscription';
+                // Set default subscription start date to today
+                document.getElementById('subscriptionStartDate').value = new Date().toISOString().split('T')[0];
+                calculateNextInvoiceDate();
+            } else {
+                paymentModelDisplay.textContent = 'Full Payment';
+                document.getElementById('invoiceAmount').textContent = `$${quoteData.total.toFixed(2)}`;
+            }
+            
+            // Update payment method constraints
+            updatePaymentMethodConstraints(model);
+        }
+
+        function updatePaymentMethodConstraints(model) {
+            const constraints = paymentMethodConstraints[model];
+            const allMethods = ['stripe', 'paypal', 'google_wallet', 'apple_pay', 'cash'];
+            const hintElement = document.getElementById('paymentMethodHint');
+            
+            // Update hint text
+            hintElement.textContent = constraints.hint;
+            if (constraints.reason) {
+                hintElement.textContent += ` (${constraints.reason})`;
+            }
+            
+            // Update each payment method
+            allMethods.forEach(method => {
+                const checkbox = document.getElementById(`payment${method.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')}`);
+                const label = checkbox.closest('label');
+                const tag = document.getElementById(`${method.replace('_', '')}Tag`);
+                
+                if (constraints.allowed.includes(method)) {
+                    // Enable method
+                    checkbox.disabled = false;
+                    label.classList.remove('opacity-50', 'cursor-not-allowed');
+                    label.classList.add('cursor-pointer', 'hover:bg-gray-50');
+                    
+                    // Add tag for subscription required methods
+                    if (model === 'subscription' && tag) {
+                        tag.textContent = 'Required for auto-charge';
+                    } else if (tag) {
+                        tag.textContent = '';
+                    }
+                } else {
+                    // Disable method
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                    label.classList.add('opacity-50', 'cursor-not-allowed');
+                    label.classList.remove('cursor-pointer', 'hover:bg-gray-50');
+                    
+                    if (tag) {
+                        tag.textContent = '';
+                    }
+                }
+            });
+            
+            // For subscription, ensure at least one allowed method is checked
+            if (model === 'subscription') {
+                const stripeChecked = document.getElementById('paymentStripe').checked;
+                const paypalChecked = document.getElementById('paymentPaypal').checked;
+                
+                if (!stripeChecked && !paypalChecked) {
+                    document.getElementById('paymentStripe').checked = true;
+                }
+            }
+        }
+
+        function toggleEndDate() {
+            const endType = document.getElementById('subscriptionEnd').value;
+            const cyclesInput = document.getElementById('cyclesInput');
+            const endDateInput = document.getElementById('endDateInput');
+            
+            cyclesInput.classList.add('hidden');
+            endDateInput.classList.add('hidden');
+            
+            if (endType === 'after_cycles') {
+                cyclesInput.classList.remove('hidden');
+            } else if (endType === 'end_date') {
+                endDateInput.classList.remove('hidden');
+            }
+            
+            calculateNextInvoiceDate();
+        }
+
+        function calculateNextInvoiceDate() {
+            const startDate = new Date(document.getElementById('subscriptionStartDate').value);
+            const frequency = document.getElementById('billingFrequency').value;
+            
+            if (!startDate || isNaN(startDate)) {
+                document.getElementById('nextInvoiceDate').textContent = '-';
+                return;
+            }
+            
+            const nextDate = new Date(startDate);
+            
+            switch(frequency) {
+                case 'weekly':
+                    nextDate.setDate(nextDate.getDate() + 7);
+                    break;
+                case 'biweekly':
+                    nextDate.setDate(nextDate.getDate() + 14);
+                    break;
+                case 'monthly':
+                    nextDate.setMonth(nextDate.getMonth() + 1);
+                    break;
+                case 'quarterly':
+                    nextDate.setMonth(nextDate.getMonth() + 3);
+                    break;
+                case 'yearly':
+                    nextDate.setFullYear(nextDate.getFullYear() + 1);
+                    break;
+            }
+            
+            document.getElementById('nextInvoiceDate').textContent = nextDate.toLocaleDateString();
+        }
+
+        function updateDepositCalculation() {
+            const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+            const total = quoteData.total;
+            const percentage = (depositAmount / total * 100).toFixed(0);
+            const remaining = total - depositAmount;
+            
+            document.getElementById('depositPercentage').value = percentage;
+            document.getElementById('remainingBalance').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('depositAmountDisplay').textContent = `$${depositAmount.toFixed(2)}`;
+            document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('invoiceAmount').textContent = `$${depositAmount.toFixed(2)}`;
+        }
+
+        function updateDepositFromPercentage() {
+            const percentage = parseFloat(document.getElementById('depositPercentage').value) || 0;
+            const total = quoteData.total;
+            const depositAmount = (total * percentage / 100);
+            const remaining = total - depositAmount;
+            
+            document.getElementById('depositAmount').value = depositAmount.toFixed(2);
+            document.getElementById('remainingBalance').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('depositAmountDisplay').textContent = `$${depositAmount.toFixed(2)}`;
+            document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('invoiceAmount').textContent = `$${depositAmount.toFixed(2)}`;
+        }
+
+        function setDepositPercentage(percent) {
+            document.getElementById('depositPercentage').value = percent;
+            updateDepositFromPercentage();
+        }
+
+        // Create invoice
+        document.getElementById('createInvoiceBtn').addEventListener('click', function() {
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            const dueDate = document.getElementById('dueDate').value;
+            
+            // Validation
+            if (!invoiceDate || !dueDate) {
+                alert('Please fill in all required fields (Invoice Date and Due Date)');
+                return;
+            }
+            
+            if (new Date(dueDate) < new Date(invoiceDate)) {
+                alert('Due date must be after invoice date');
+                return;
+            }
+            
+            // Get payment model
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked').value;
+            let invoiceAmount = quoteData.total;
+            let depositAmount = 0;
+            let remainingBalance = 0;
+            let subscriptionData = null;
+            
+            // Validate deposit if selected
+            if (paymentModel === 'deposit') {
+                depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+                
+                if (depositAmount <= 0) {
+                    alert('Please enter a valid deposit amount');
+                    return;
+                }
+                
+                if (depositAmount > quoteData.total) {
+                    alert('Deposit amount cannot exceed total amount');
+                    return;
+                }
+                
+                invoiceAmount = depositAmount;
+                remainingBalance = quoteData.total - depositAmount;
+            }
+            
+            // Validate subscription if selected
+            if (paymentModel === 'subscription') {
+                const startDate = document.getElementById('subscriptionStartDate').value;
+                const frequency = document.getElementById('billingFrequency').value;
+                const endType = document.getElementById('subscriptionEnd').value;
+                
+                if (!startDate) {
+                    alert('Please select a subscription start date');
+                    return;
+                }
+                
+                subscriptionData = {
+                    frequency: frequency,
+                    startDate: startDate,
+                    endType: endType,
+                    autoCharge: document.getElementById('autoCharge').checked
+                };
+                
+                if (endType === 'after_cycles') {
+                    const cycles = parseInt(document.getElementById('billingCycles').value);
+                    if (!cycles || cycles <= 0) {
+                        alert('Please enter a valid number of billing cycles');
+                        return;
+                    }
+                    subscriptionData.billingCycles = cycles;
+                } else if (endType === 'end_date') {
+                    const endDate = document.getElementById('subscriptionEndDate').value;
+                    if (!endDate) {
+                        alert('Please select a subscription end date');
+                        return;
+                    }
+                    if (new Date(endDate) <= new Date(startDate)) {
+                        alert('End date must be after start date');
+                        return;
+                    }
+                    subscriptionData.endDate = endDate;
+                }
+            }
+            
+            // Validate payment methods
+            const paymentMethods = [];
+            if (document.getElementById('paymentStripe').checked) paymentMethods.push('stripe');
+            if (document.getElementById('paymentPaypal').checked) paymentMethods.push('paypal');
+            if (document.getElementById('paymentGoogleWallet').checked) paymentMethods.push('google_wallet');
+            if (document.getElementById('paymentApplePay').checked) paymentMethods.push('apple_pay');
+            if (document.getElementById('paymentCash').checked) paymentMethods.push('cash');
+            
+            if (paymentMethods.length === 0) {
+                alert('Please select at least one payment method');
+                return;
+            }
+            
+            // Validate payment methods against constraints
+            const constraints = paymentMethodConstraints[paymentModel];
+            const invalidMethods = paymentMethods.filter(method => !constraints.allowed.includes(method));
+            
+            if (invalidMethods.length > 0) {
+                alert(`Invalid payment methods for ${paymentModel} payment model. ${constraints.reason || ''}`);
+                return;
+            }
+            
+            // For subscription, ensure at least one auto-charge capable method
+            if (paymentModel === 'subscription') {
+                const hasAutoCharge = paymentMethods.some(m => ['stripe', 'paypal'].includes(m));
+                if (!hasAutoCharge) {
+                    alert('Subscription requires at least one auto-charge capable payment method (Stripe or PayPal)');
+                    return;
+                }
+            }
+            
+            // Simulate invoice creation
+            const invoiceNumber = document.getElementById('invoiceNumber').value;
+            const paymentTerms = document.getElementById('paymentTerms').value;
+            const notes = document.getElementById('invoiceNotes').value;
+            
+            const invoiceData = {
+                invoiceNumber: invoiceNumber,
+                quoteId: quoteData.id,
+                customerId: quoteData.customerId,
+                customerName: quoteData.customerName,
+                customerEmail: quoteData.customerEmail,
+                invoiceDate: invoiceDate,
+                dueDate: dueDate,
+                paymentTerms: paymentTerms,
+                paymentModel: paymentModel,
+                paymentMethods: paymentMethods,
+                notes: notes,
+                items: quoteData.items,
+                subtotal: quoteData.subtotal,
+                tax: quoteData.tax,
+                total: quoteData.total,
+                invoiceAmount: invoiceAmount,
+                depositAmount: depositAmount,
+                remainingBalance: remainingBalance,
+                subscription: subscriptionData,
+                status: 'unpaid',
+                paidAmount: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            console.log('Creating invoice:', invoiceData);
+            
+            // In real app: API call to create invoice
+            // await fetch('/api/invoices', { method: 'POST', body: JSON.stringify(invoiceData) });
+            
+            // Show success modal
+            document.getElementById('createdInvoiceNumber').textContent = invoiceNumber;
+            document.getElementById('successModal').classList.remove('hidden');
+            
+            // Update quote status to 'invoiced'
+            // In real app: Update quote.financialStatus = 'invoiced'
+        });
+
+        // Update due date when payment terms change
+        document.getElementById('paymentTerms').addEventListener('change', function() {
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            if (!invoiceDate) return;
+            
+            const terms = this.value;
+            const date = new Date(invoiceDate);
+            
+            switch(terms) {
+                case 'due_on_receipt':
+                    // Same as invoice date
+                    break;
+                case 'net_7':
+                    date.setDate(date.getDate() + 7);
+                    break;
+                case 'net_15':
+                    date.setDate(date.getDate() + 15);
+                    break;
+                case 'net_30':
+                    date.setDate(date.getDate() + 30);
+                    break;
+                case 'net_60':
+                    date.setDate(date.getDate() + 60);
+                    break;
+            }
+            
+            document.getElementById('dueDate').value = date.toISOString().split('T')[0];
+        });
+
+        // Add event listeners for subscription fields
+        document.getElementById('subscriptionStartDate')?.addEventListener('change', calculateNextInvoiceDate);
+        document.getElementById('billingFrequency')?.addEventListener('change', calculateNextInvoiceDate);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>
