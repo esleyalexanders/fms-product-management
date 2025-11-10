@@ -588,7 +588,7 @@
                         <button 
                             id="createQuoteBtn"
                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                            onclick="window.location.href='quote_create.html'"
+                            onclick="window.location.href='quote_create_simple.html'"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -1300,24 +1300,24 @@ function renderQuotes() {
                         </div>
                         
                         <!-- Quote ID -->
-                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-sm font-semibold text-blue-600 quote-id">${quote.id}</div>
                         </div>
                         
                         <!-- Customer -->
-                        <div class="col-span-2 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-2 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-sm font-semibold text-gray-900">${quote.customerName}</div>
                             <div class="text-xs text-gray-500 mt-0.5 truncate" title="${quote.customerEmail}">${quote.customerEmail}</div>
                         </div>
                         
                         <!-- Date -->
-                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-sm text-gray-900">${formatDate(quote.dateCreated)}</div>
                             <div class="text-xs text-gray-500 mt-0.5">Valid: ${formatDate(quote.validUntil)}</div>
                         </div>
                         
                         <!-- Created By -->
-                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="flex items-center gap-1">
                                 <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">
                                     ${quote.createdBy.split(' ').map(n => n[0]).join('')}
@@ -1326,12 +1326,12 @@ function renderQuotes() {
                         </div>
                         
                         <!-- Status -->
-                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             ${getStatusBadge(quote.status)}
                         </div>
                         
                         <!-- Amount & Payment -->
-                        <div class="col-span-2 text-right quote-card-clickable" onclick="window.location.href='quote_detail.html?id=${quote.id}'">
+                        <div class="col-span-2 text-right quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-lg font-bold text-gray-900">$${quote.total.toFixed(2)}</div>
                             <div class="flex items-center justify-end gap-1 mt-1">
                                 ${getPaymentStatusBadge(quote.paymentStatus, quote.amountInvoiced, quote.amountPaid, quote.total)}
