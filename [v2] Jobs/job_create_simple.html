@@ -29,13 +29,13 @@
                             </div>
                         </div>
                         <button 
-                            onclick="window.location.href='../[v2] Quotes/quote_edit.html'"
+                            onclick="goBackToSimpleQuote()"
                             class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
-                            Back to Quote
+                            Back to Invoice
                         </button>
                     </div>
                 </div>
@@ -192,7 +192,7 @@
                             
                             <!-- Actions -->
                             <div class="pt-2">
-                                <a href="../[v2] Quotes/quote_edit.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2">
+                                <a href="../[v2] Quotes/quote_simple/quote_edit_simple.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -234,5 +234,46 @@
     </div>
 
     <script src="job_create_simple_script.js"></script>
+    
+    <script>
+        // Navigation functions for simple quote integration
+        function goBackToSimpleQuote() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const invoiceId = urlParams.get('invoiceId');
+            const quoteId = urlParams.get('quoteId');
+            
+            // Navigate back to the appropriate simple quote screen
+            if (invoiceId) {
+                window.location.href = '../[v2] Quotes/quote_simple/invoice_detail_simple.html?id=' + invoiceId;
+            } else if (quoteId) {
+                window.location.href = '../[v2] Quotes/quote_simple/quote_edit_simple.html?id=' + quoteId;
+            } else {
+                // Default fallback to invoice list
+                window.location.href = '../[v2] Quotes/quote_simple/invoice_list_simple.html';
+            }
+        }
+        
+        // Update create job button to handle simple quote workflow
+        document.getElementById('createJobBtn').addEventListener('click', function() {
+            // Mock job creation - replace with actual implementation
+            const jobData = {
+                id: 'JOB-' + Date.now(),
+                quoteId: new URLSearchParams(window.location.search).get('quoteId') || 'Q-2024-001',
+                status: 'scheduled',
+                createdAt: new Date().toISOString()
+            };
+            
+            // Save job data (mock)
+            localStorage.setItem('currentJob', JSON.stringify(jobData));
+            
+            // Show success message
+            if (confirm('Job created successfully!\n\nJob ID: ' + jobData.id + '\n\nWould you like to return to the invoice?')) {
+                goBackToSimpleQuote();
+            } else {
+                // Stay on job creation or go to job list
+                window.location.href = 'job_list.html';
+            }
+        });
+    </script>
 </body>
 </html>

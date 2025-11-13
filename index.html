@@ -3,274 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Franchise Management System - Home</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="home-styles.css">
+    <title>FMS Product Management - HTML Catalog</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .file-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .file-item a {
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: 500;
+            display: block;
+        }
+        .file-item a:hover {
+            color: #1abc9c;
+        }
+        .file-path {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .stats {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .category-count {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
-    <!-- System Update Banner -->
-    <div class="limited-offer-banner">
-        <div class="banner-content-left">
+    <div class="container">
+        <h1>🗂️ FMS Product Management - HTML File Catalog</h1>
+        
+        <div class="stats">
+            <strong>Total HTML Files: 48</strong> | 
+            <em>Last Updated: November 2024</em>
         </div>
-        <div class="banner-content-center">
-            <i class="fas fa-star"></i>
-            <span class="banner-text"><strong>New Feature:</strong> You can now schedule recurring jobs.</span>
+
+        <h2>🏠 Main Pages <span class="category-count">7</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./home.html">Home</a>
+                <div class="file-path">./home.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./landing-page.html">Landing Page</a>
+                <div class="file-path">./landing-page.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./landing_page_about.html">Landing Page About</a>
+                <div class="file-path">./landing_page_about.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./landing_page_no2.html">Landing Page No2</a>
+                <div class="file-path">./landing_page_no2.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./landing_page_services.html">Landing Page Services</a>
+                <div class="file-path">./landing_page_services.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./franchise_owner_login.html">Franchise Owner Login</a>
+                <div class="file-path">./franchise_owner_login.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./tenant-login.html">Tenant Login</a>
+                <div class="file-path">./tenant-login.html</div>
+            </div>
         </div>
-        <div class="banner-content-right">
-            <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+
+        <h2>👥 Customer Management <span class="category-count">3</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./Customer Management/customer-list.html">Customer List</a>
+                <div class="file-path">./Customer Management/customer-list.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./Customer Management/customer-create.html">Customer Create</a>
+                <div class="file-path">./Customer Management/customer-create.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./Customer Management/customer-edit.html">Customer Edit</a>
+                <div class="file-path">./Customer Management/customer-edit.html</div>
+            </div>
         </div>
+
+        <h2>🔧 Jobs Management (v2) <span class="category-count">10</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_list.html">Job List</a>
+                <div class="file-path">./[v2] Jobs/job_list.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_create_simple.html">Job Create Simple</a>
+                <div class="file-path">./[v2] Jobs/job_create_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_create_simple_content.html">Job Create Simple Content</a>
+                <div class="file-path">./[v2] Jobs/job_create_simple_content.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_create_from_quote.html">Job Create From Quote</a>
+                <div class="file-path">./[v2] Jobs/job_create_from_quote.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_detail.html">Job Detail</a>
+                <div class="file-path">./[v2] Jobs/job_detail.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_schedule.html">Job Schedule</a>
+                <div class="file-path">./[v2] Jobs/job_schedule.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_schedule_assign.html">Job Schedule Assign</a>
+                <div class="file-path">./[v2] Jobs/job_schedule_assign.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_schedule_assignment.html">Job Schedule Assignment</a>
+                <div class="file-path">./[v2] Jobs/job_schedule_assignment.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/job_split_items.html">Job Split Items</a>
+                <div class="file-path">./[v2] Jobs/job_split_items.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Jobs/TEST_SECTIONS.html">Test Sections</a>
+                <div class="file-path">./[v2] Jobs/TEST_SECTIONS.html</div>
+            </div>
+        </div>
+
+        <h2>💰 Quotes & Invoices (v2) <span class="category-count">15</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_list.html">Quote List</a>
+                <div class="file-path">./[v2] Quotes/quote_list.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_list_v2.html">Quote List v2</a>
+                <div class="file-path">./[v2] Quotes/quote_list_v2.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_create.html">Quote Create</a>
+                <div class="file-path">./[v2] Quotes/quote_create.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_edit.html">Quote Edit</a>
+                <div class="file-path">./[v2] Quotes/quote_edit.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/invoice_create.html">Invoice Create</a>
+                <div class="file-path">./[v2] Quotes/invoice_create.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/invoice_detail.html">Invoice Detail</a>
+                <div class="file-path">./[v2] Quotes/invoice_detail.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/demo-viewer.html">Demo Viewer</a>
+                <div class="file-path">./[v2] Quotes/demo-viewer.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/demo-scenario-viewer.html">Demo Scenario Viewer</a>
+                <div class="file-path">./[v2] Quotes/demo-scenario-viewer.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/flowchart-viewer.html">Flowchart Viewer</a>
+                <div class="file-path">./[v2] Quotes/flowchart-viewer.html</div>
+            </div>
+        </div>
+
+        <h3>📋 Simple Quote System <span class="category-count">7</span></h3>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/quote_list_simple.html">Quote List Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/quote_list_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/quote_create_simple.html">Quote Create Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/quote_create_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/quote_edit_simple.html">Quote Edit Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/quote_edit_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/invoice_list_simple.html">Invoice List Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/invoice_list_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/invoice_create_simple.html">Invoice Create Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/invoice_create_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/invoice_detail_simple.html">Invoice Detail Simple</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/invoice_detail_simple.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./[v2] Quotes/quote_simple/customer_billing_setup.html">Customer Billing Setup</a>
+                <div class="file-path">./[v2] Quotes/quote_simple/customer_billing_setup.html</div>
+            </div>
+        </div>
+
+        <h2>👨‍💼 Team Management <span class="category-count">7</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./manage-team.html">Manage Team</a>
+                <div class="file-path">./manage-team.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/manage-team-create.html">Team Create</a>
+                <div class="file-path">./manage-team/manage-team-create.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/manage-team-detail.html">Team Detail</a>
+                <div class="file-path">./manage-team/manage-team-detail.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/manage-team-edit.html">Team Edit</a>
+                <div class="file-path">./manage-team/manage-team-edit.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/manage-team-permission.html">Team Permission</a>
+                <div class="file-path">./manage-team/manage-team-permission.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/manage-team-roles.html">Team Roles</a>
+                <div class="file-path">./manage-team/manage-team-roles.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./manage-team/business-requirements.html">Business Requirements</a>
+                <div class="file-path">./manage-team/business-requirements.html</div>
+            </div>
+        </div>
+
+        <h2>⚙️ Admin & Settings <span class="category-count">6</span></h2>
+        <div class="file-grid">
+            <div class="file-item">
+                <a href="./admin/pricebook.html">Pricebook</a>
+                <div class="file-path">./admin/pricebook.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./admin/pricebook-create.html">Pricebook Create</a>
+                <div class="file-path">./admin/pricebook-create.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./admin/pricebook-edit.html">Pricebook Edit</a>
+                <div class="file-path">./admin/pricebook-edit.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./add-product.html">Add Product</a>
+                <div class="file-path">./add-product.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./design-settings.html">Design Settings</a>
+                <div class="file-path">./design-settings.html</div>
+            </div>
+            <div class="file-item">
+                <a href="./tenant_schedule.html">Tenant Schedule</a>
+                <div class="file-path">./tenant_schedule.html</div>
+            </div>
+        </div>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #dee2e6; text-align: center; color: #6c757d;">
+            <p>📁 FMS Product Management System | HTML File Catalog</p>
+            <p><em>Navigate through all HTML pages in the project</em></p>
+        </footer>
     </div>
-
-    <!-- Main Container -->
-    <div class="app-container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-store"></i>
-                    <div class="logo-text-wrapper">
-                        <span class="logo-text" id="storeName">My Store</span>
-                        <button class="edit-store-btn" title="Edit store name">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-nav">
-                <div class="nav-section-label">MAIN</div>
-                <a href="index.html" class="nav-item active" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Schedule</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-inbox"></i>
-                    <span>Requests</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-file-contract"></i>
-                    <span>Quotes</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-briefcase"></i>
-                    <span>Jobs</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <span>Invoices</span>
-                </div>
-
-            <div class="sidebar-footer">
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
-                </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <h1 class="page-title">Good afternoon, John</h1>
-                    <p class="page-subtitle">Tuesday, October 3</p>
-                </div>
-                <div class="header-right">
-                    <div class="sidebar-nav">
-                        <div class="nav-section-label">MAIN</div>
-                        <a href="index.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                        <a href="quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                        <a href="tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                        <a href="manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                        <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                    </div>
-                </div>
-            </header>
-
-                <!-- Welcome Section -->
-                <section class="welcome-section">
-                    <div class="welcome-card">
-                        <h2 class="section-title">
-                            <i class="fas fa-rocket"></i>
-                            Welcome to Franchise Management System
-                        </h2>
-                        <p class="welcome-subtitle">Let's get you up and running</p>
-                    </div>
-                </section>
-
-                <!-- Quick Actions Grid -->
-                <section class="quick-actions-section">
-                    <div class="section-header">
-                        <h3 class="section-title-small">Quick Actions</h3>
-                    </div>
-                    <div class="actions-grid">
-                        <div class="action-card">
-                            <div class="action-icon product">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Add your first product</h4>
-                                <p>Start by adding a product and a few key details. Not ready? Start with a sample product</p>
-                                <div class="card-actions">
-                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Add product</button></a>
-                                    <button class="btn-secondary">Import</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="action-card">
-                            <div class="action-icon design">
-                                <i class="fas fa-palette"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Design your store</h4>
-                                <p>Describe your business to generate custom themes or browse pre-designed themes</p>
-                                <div class="theme-input-group">
-                                    <input type="text" placeholder="Modern handmade jewelry" class="theme-input">
-                                    <button class="btn-generate">
-                                        <i class="fas fa-magic"></i>
-                                        Generate
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Payment, Shipping & Domain Section -->
-                <section class="setup-options-section">
-                    <div class="setup-grid">
-                        <div class="setup-card">
-                            <div class="setup-header">
-                                <div class="setup-icon-wrapper">
-                                    <i class="fas fa-check-circle success-icon"></i>
-                                </div>
-                                <div>
-                                    <h4>Payment options</h4>
-                                </div>
-                            </div>
-                            <div class="payment-methods">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/paypal.svg" alt="PayPal" class="payment-icon">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" class="payment-icon">
-                                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" class="payment-icon">
-                            </div>
-                            <p class="setup-description">Domestic and more</p>
-                            <button class="btn-link">Edit</button>
-                        </div>
-
-                        <div class="setup-card">
-                            <div class="setup-header">
-                                <div class="setup-icon-wrapper">
-                                    <i class="fas fa-globe"></i>
-                                </div>
-                                <div>
-                                    <h4>Customize your domain</h4>
-                                </div>
-                            </div>
-                            <div class="domain-info">
-                                <code class="domain-name">vxiadu-wt.myshopify.com</code>
-                                <button class="btn-copy">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            </div>
-                            <button class="btn-link">Customize</button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Service-Based Business Setup -->
-                <section class="service-setup-section">
-                    <div class="service-card">
-                        <div class="service-content">
-                            <div class="service-badge">
-                                <span class="progress-indicator">0 of 3 tasks complete</span>
-                            </div>
-                            <h3 class="service-title">Set up your service-based business</h3>
-                            <p class="service-description">Follow these tasks to efficiently manage bookings, payments, and offer a seamless experience for your customers.</p>
-                            
-                            <div class="task-list">
-                                <div class="task-item">
-                                    <div class="task-checkbox">
-                                        <input type="checkbox" id="task1">
-                                        <label for="task1"></label>
-                                    </div>
-                                    <div class="task-content">
-                                        <h5>First task: Add your first service</h5>
-                                    </div>
-                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-task-action">Get started</button></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="service-illustration">
-                            <div class="illustration-box">
-                                <i class="fas fa-calendar-check"></i>
-                                <i class="fas fa-comments"></i>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Today's Appointments Section -->
-                <section class="appointments-section">
-                    <div class="appointments-header">
-                        <h3 class="section-title-small">Today's appointments</h3>
-                    </div>
-                    <div class="appointments-card">
-                        <div class="appointment-tabs">
-                            <button class="tab-btn active">Total <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Active <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Completed <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Overdue <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Remaining <span class="tab-count">0</span></button>
-                        </div>
-                        
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                            <p class="empty-message">This is where you will get an overview of your appointments for today once they are scheduled.</p>
-                            <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Schedule a Job</button></a>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- All Caught Up -->
-                <section class="caught-up-section">
-                    <div class="caught-up-card">
-                        <i class="fas fa-check-circle"></i>
-                        <span>All caught up</span>
-                    </div>
-                </section>
-
-                <!-- Helpful Resources Section -->
-                <section class="resources-section">
-                    <h3 class="section-title-small">Is this helpful so far?</h3>
-                    <div class="feedback-buttons">
-                        <button class="feedback-btn">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                        <button class="feedback-btn">
-                            <i class="fas fa-thumbs-down"></i>
-                        </button>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
-
-    <script src="home-script.js"></script>
 </body>
 </html>

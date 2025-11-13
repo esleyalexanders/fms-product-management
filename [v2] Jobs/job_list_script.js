@@ -1,4 +1,5 @@
 // Job List - JavaScript
+console.log('📄 job_list_script.js loaded successfully');
 
 // Sample job data
 const jobs = [
@@ -111,12 +112,17 @@ function filterAndSortJobs() {
 
 // Render jobs
 function renderJobs() {
+    console.log('🔄 Rendering jobs...');
     filterAndSortJobs();
     updateStats();
     
     const container = document.getElementById('jobsList');
     const emptyState = document.getElementById('emptyState');
     const resultsCount = document.getElementById('resultsCount');
+    
+    console.log('📋 Filtered jobs:', filteredJobs.length);
+    console.log('🎯 Container found:', !!container);
+    console.log('📭 Empty state found:', !!emptyState);
     
     resultsCount.textContent = `Showing ${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''}`;
     
@@ -195,44 +201,59 @@ function updateStats() {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Job List initialized');
+    console.log('📊 Sample jobs loaded:', jobs.length);
+    
     // Search
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        searchTerm = e.target.value;
-        renderJobs();
-    });
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            searchTerm = e.target.value;
+            renderJobs();
+        });
+    }
     
     // Status filter
-    document.getElementById('statusFilter').addEventListener('change', function(e) {
-        statusFilter = e.target.value;
-        renderJobs();
-    });
+    const statusFilterEl = document.getElementById('statusFilter');
+    if (statusFilterEl) {
+        statusFilterEl.addEventListener('change', function(e) {
+            statusFilter = e.target.value;
+            renderJobs();
+        });
+    }
     
     // Sort
-    document.getElementById('sortBy').addEventListener('change', function(e) {
-        sortBy = e.target.value;
-        renderJobs();
-    });
+    const sortByEl = document.getElementById('sortBy');
+    if (sortByEl) {
+        sortByEl.addEventListener('change', function(e) {
+            sortBy = e.target.value;
+            renderJobs();
+        });
+    }
     
     // Clear filters
-    document.getElementById('clearFiltersBtn').addEventListener('click', function() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('statusFilter').value = '';
-        document.getElementById('sortBy').value = 'date_desc';
-        searchTerm = '';
-        statusFilter = '';
-        sortBy = 'date_desc';
-        renderJobs();
-    });
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            if (searchInput) searchInput.value = '';
+            if (statusFilterEl) statusFilterEl.value = '';
+            if (sortByEl) sortByEl.value = 'date_desc';
+            searchTerm = '';
+            statusFilter = '';
+            sortBy = 'date_desc';
+            renderJobs();
+        });
+    }
     
     // Export
-    document.getElementById('exportBtn').addEventListener('click', function() {
-        alert('Export functionality - would export jobs to CSV/Excel');
-    });
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', function() {
+            alert('Export functionality - would export jobs to CSV/Excel');
+        });
+    }
     
-    // Calendar view
-    document.getElementById('calendarViewBtn').addEventListener('click', function() {
-        alert('Calendar view - would show jobs in calendar format');
-    });
+    // Note: Calendar/Schedule button now uses onclick in HTML, no need for event listener here
     
     // Initial render
     renderJobs();

@@ -88,6 +88,11 @@ function renderWeekView() {
     // Add empty cell for time column
     const timeHeaderCell = document.createElement('div');
     timeHeaderCell.className = 'p-3 bg-gray-100 border-r border-gray-200';
+    timeHeaderCell.style.width = '80px';
+    timeHeaderCell.style.height = '60px';
+    timeHeaderCell.style.display = 'flex';
+    timeHeaderCell.style.alignItems = 'center';
+    timeHeaderCell.style.justifyContent = 'center';
     timeHeaderCell.innerHTML = '<div class="text-xs font-semibold text-gray-600">Time</div>';
     header.appendChild(timeHeaderCell);
     
@@ -101,7 +106,11 @@ function renderWeekView() {
         const isToday = date.toDateString() === today.toDateString();
         
         const dayHeader = document.createElement('div');
-        dayHeader.className = `p-3 text-center text-sm ${isToday ? 'bg-blue-50 border-l-2 border-r-2 border-blue-500' : ''}`;
+        dayHeader.className = `p-3 text-center text-sm border-r border-gray-200 ${isToday ? 'bg-blue-50 border-l-2 border-r-2 border-blue-500' : ''}`;
+        dayHeader.style.height = '60px';
+        dayHeader.style.display = 'flex';
+        dayHeader.style.flexDirection = 'column';
+        dayHeader.style.justifyContent = 'center';
         
         dayHeader.innerHTML = `
             <div class="font-semibold ${isToday ? 'text-blue-700' : 'text-gray-700'}">${dayNames[i]}</div>
@@ -112,14 +121,18 @@ function renderWeekView() {
         header.appendChild(dayHeader);
     }
     
-    // Update header grid layout
-    header.className = 'grid grid-cols-8 bg-gray-50 border-b border-gray-200';
+    // Update header grid layout to match time grid
+    header.className = 'bg-gray-50 border-b border-gray-200';
+    header.style.display = 'grid';
+    header.style.gridTemplateColumns = '80px repeat(7, 1fr)';
+    header.style.border = '1px solid #e5e7eb';
+    header.style.borderBottom = '1px solid #e5e7eb';
     
     // Render time grid
     renderTimeGrid(startOfWeek);
     
     // Add current time indicator for week view
-    addCurrentTimeIndicator('week');
+    // addCurrentTimeIndicator('week'); // Temporarily hidden
 }
 
 function renderTimeGrid(startOfWeek) {
@@ -260,8 +273,8 @@ function createJobBlock(job, index = 0, hasConflict = false) {
     
     // Position multiple jobs in the same slot
     const topOffset = index * 20;
-    jobBlock.style.top = `${2 + topOffset}px`;
-    jobBlock.style.height = '18px';
+    jobBlock.style.top = `${4 + topOffset}px`;
+    jobBlock.style.height = '16px';
     
     // Add conflict indicator
     if (hasConflict) {
@@ -288,7 +301,7 @@ function createJobBlock(job, index = 0, hasConflict = false) {
     jobBlock.innerHTML = `
         <div class="flex items-center justify-between">
             <div class="flex items-center min-w-0 flex-1">
-                <span class="text-xs font-medium truncate mr-1">${job.customerName}</span>
+                <span class="text-xs font-medium truncate mr-1">${getDisplayName(job)}</span>
                 <div class="flex items-center">${staffAvatars}</div>
                 ${hasConflict ? '<span class="text-red-600 ml-1">⚠️</span>' : ''}
             </div>
@@ -332,7 +345,7 @@ function renderDayView() {
     renderDaySchedule();
     
     // Add current time indicator for day view
-    addCurrentTimeIndicator('day');
+    // addCurrentTimeIndicator('day'); // Temporarily hidden
 }
 
 function renderDaySchedule() {
@@ -536,12 +549,12 @@ function createDayJobCard(job) {
             <div class="font-semibold text-sm">${job.scheduleTime}</div>
             <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
         </div>
-        <div class="font-medium text-sm mb-1">${job.customerName}</div>
+        <div class="font-medium text-sm mb-1">${getDisplayName(job)}</div>
         <div class="text-xs text-gray-600 mb-2">${job.description}</div>
         <div class="flex items-center justify-between">
             <div class="flex items-center">
                 ${staffAvatars}
-                <span class="text-xs text-gray-600">${job.assignedStaff.join(', ')}</span>
+                <span class="text-xs text-gray-600">for ${job.customerName}</span>
             </div>
             <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)}">
                 ${job.status.replace('_', ' ').toUpperCase()}
@@ -564,13 +577,27 @@ function createDayJobCard(job) {
 }
 
 function getStatusBadgeColor(status) {
-    const colors = {
-        scheduled: 'bg-blue-100 text-blue-800',
-        created: 'bg-gray-100 text-gray-800',
-        completed: 'bg-green-100 text-green-800',
-        on_hold: 'bg-orange-100 text-orange-800'
-    };
-    return colors[status] || colors.created;
+    switch (status) {
+        case 'scheduled': return 'bg-blue-100 text-blue-800';
+        case 'completed': return 'bg-green-100 text-green-800';
+        case 'on_hold': return 'bg-orange-100 text-orange-800';
+        case 'created': return 'bg-gray-100 text-gray-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+}
+
+function getDisplayName(job) {
+    // Display staff names instead of customer name
+    if (job.assignedStaff && job.assignedStaff.length > 0) {
+        if (job.assignedStaff.length === 1) {
+            return job.assignedStaff[0];
+        } else if (job.assignedStaff.length === 2) {
+            return job.assignedStaff.join(' & ');
+        } else {
+            return `${job.assignedStaff[0]} +${job.assignedStaff.length - 1}`;
+        }
+    }
+    return 'Unassigned';
 }
 
 function renderMonthView() {
@@ -655,7 +682,7 @@ function createWeekDayCell(date) {
         
         jobCard.innerHTML = `
             <div class="text-xs font-semibold mb-1">${job.scheduleTime}</div>
-            <div class="text-sm font-medium mb-1">${job.customerName}</div>
+            <div class="text-sm font-medium mb-1">${getDisplayName(job)}</div>
             <div class="text-xs text-gray-600 mb-2">${job.description}</div>
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -744,7 +771,7 @@ function renderUnscheduledJobs() {
                 </svg>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-semibold text-gray-900">${job.id}</p>
-                    <p class="text-xs text-gray-600 truncate">${job.customerName}</p>
+                    <p class="text-xs text-gray-600 truncate">${getDisplayName(job)}</p>
                     <p class="text-xs text-gray-500 truncate">${job.description}</p>
                     <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
                 </div>
@@ -819,27 +846,32 @@ function openScheduleModal(jobId) {
     selectedJob = jobs.find(j => j.id === jobId);
     if (!selectedJob) return;
     
-    selectedStaff = [];
-    
     const modal = document.getElementById('scheduleModal');
-    const details = document.getElementById('scheduleJobDetails');
     
-    details.innerHTML = `
-        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-            <h3 class="font-semibold text-gray-900 mb-2">${selectedJob.id}</h3>
-            <p class="text-sm text-gray-700">Customer: ${selectedJob.customerName}</p>
-            <p class="text-sm text-gray-700">Total: $${selectedJob.total.toFixed(2)}</p>
-        </div>
-    `;
+    // Populate modal content using the unified structure
+    document.getElementById('scheduleModalJobTitle').textContent = getDisplayName(selectedJob);
+    document.getElementById('scheduleModalJobId').textContent = selectedJob.id;
+    document.getElementById('scheduleModalCustomerName').textContent = selectedJob.customerName;
+    document.getElementById('scheduleModalJobValue').textContent = `$${selectedJob.total.toFixed(2)}`;
     
     // Set default date to today
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('scheduleDate').value = today;
-    document.getElementById('scheduleDate').min = today;
+    document.getElementById('scheduleModalEditDate').value = today;
+    document.getElementById('scheduleModalEditDate').min = today;
+    document.getElementById('scheduleModalEditTime').value = '09:00';
     
-    renderSelectedStaff();
-    loadRecommendedStaff();
-    initStaffSearch();
+    // Status badge
+    const statusElement = document.getElementById('scheduleModalStatus');
+    statusElement.textContent = 'UNSCHEDULED';
+    statusElement.className = 'px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium';
+    
+    // Initialize staff assignment
+    window.scheduleModalJobStaff = [...selectedJob.assignedStaff]; // Copy current staff
+    updateScheduleModalStaffDisplay();
+    initializeScheduleModalStaffSearch();
+    
+    // Description
+    document.getElementById('scheduleModalDescription').textContent = selectedJob.description;
     
     modal.classList.remove('hidden');
 }
@@ -853,8 +885,8 @@ function closeScheduleModal() {
 function confirmSchedule() {
     if (!selectedJob) return;
     
-    const date = document.getElementById('scheduleDate').value;
-    const time = document.getElementById('scheduleTime').value;
+    const date = document.getElementById('scheduleModalEditDate').value;
+    const time = document.getElementById('scheduleModalEditTime').value;
     
     if (!date) {
         alert('Please select a date');
@@ -865,7 +897,7 @@ function confirmSchedule() {
     selectedJob.scheduleDate = date;
     selectedJob.scheduleTime = time;
     selectedJob.status = 'scheduled';
-    selectedJob.assignedStaff = selectedStaff.map(s => s.name);
+    selectedJob.assignedStaff = [...window.scheduleModalJobStaff];
     
     closeScheduleModal();
     renderCalendar();
@@ -1527,48 +1559,51 @@ function addWeekTimeIndicator(now, today, currentHour, currentMinute) {
     // Check if current time is within our display range (8 AM - 7 PM)
     if (currentHour < 8 || currentHour >= 19) return;
     
-    // Find Wednesday (Nov 13, 2024) column - it should be column 3 (Wed)
-    let todayColumn = 3; // Wednesday is always column 3 in our week view
-    
-    // Calculate position - more precise calculation
-    const hoursSinceStart = currentHour - 8; // 8 AM is our start
-    const minuteProgress = currentMinute / 60;
-    const totalProgress = hoursSinceStart + minuteProgress;
-    
     // Wait for grid to be fully rendered
     setTimeout(() => {
-        // Get the actual grid cells to calculate position more accurately
-        const timeLabels = grid.querySelectorAll('.time-label');
+        // Find a specific time slot to use as reference for positioning
         const timeSlots = grid.querySelectorAll('.time-slot');
-        
-        if (timeLabels.length === 0 || timeSlots.length === 0) {
-            console.log('❌ Grid not ready, retrying...');
+        if (timeSlots.length === 0) {
+            console.log('❌ No time slots found');
             return;
         }
         
-        // Each row in the time grid represents 1 hour
-        // Find the row that corresponds to our current hour
-        const targetRowIndex = Math.floor(totalProgress);
-        const minuteOffset = (totalProgress - targetRowIndex) * 60; // Convert back to pixels within the hour
+        // The grid has 12 rows (8 AM to 7 PM) and 7 columns (Sun-Sat)
+        // Wednesday is column 3 (0-indexed)
+        const wednesdayColumn = 3;
         
-        // Get the position of the target row
-        const targetRow = Math.min(targetRowIndex, timeLabels.length - 1);
-        const baseTop = targetRow * 60; // Each row is 60px
-        const finalTop = baseTop + minuteOffset;
+        // Calculate which row we should be in (0-11 for 8 AM to 7 PM)
+        const targetHourRow = currentHour - 8; // 0-based row index
         
-        // Calculate column position
-        const timeColumnWidth = 60;
-        const remainingWidth = grid.offsetWidth - timeColumnWidth;
-        const columnWidth = remainingWidth / 7;
-        const leftPosition = timeColumnWidth + (todayColumn * columnWidth);
+        // Find the Wednesday time slot for the current hour
+        const targetSlotIndex = (targetHourRow * 7) + wednesdayColumn;
+        const targetSlot = timeSlots[targetSlotIndex];
+        
+        if (!targetSlot) {
+            console.log('❌ Target slot not found, index:', targetSlotIndex);
+            return;
+        }
+        
+        // Get the position of the target slot
+        const slotRect = targetSlot.getBoundingClientRect();
+        const gridRect = grid.getBoundingClientRect();
+        
+        // Calculate position relative to grid
+        const relativeTop = slotRect.top - gridRect.top;
+        const relativeLeft = slotRect.left - gridRect.left;
+        const slotWidth = slotRect.width;
+        
+        // Add minute offset within the hour (each hour slot is ~60px tall)
+        const minuteOffset = (currentMinute / 60) * 60; // 60px per hour
+        const finalTop = relativeTop + minuteOffset;
         
         const indicator = document.createElement('div');
         indicator.className = 'current-time-line';
         indicator.style.cssText = `
             position: absolute;
             top: ${finalTop}px;
-            left: ${leftPosition}px;
-            width: ${columnWidth}px;
+            left: ${relativeLeft}px;
+            width: ${slotWidth}px;
             height: 2px;
             background: #dc2626;
             z-index: 100;
@@ -1610,10 +1645,11 @@ function addWeekTimeIndicator(now, today, currentHour, currentMinute) {
         grid.appendChild(indicator);
         
         console.log('🔴 Time indicator added at:', timeLabel);
-        console.log('📍 Position - Top:', finalTop, 'Left:', leftPosition);
-        console.log('⏰ Time calculation - Hours since 8AM:', hoursSinceStart, 'Minutes progress:', minuteProgress);
-        console.log('📊 Grid info - Total progress:', totalProgress, 'Target row:', targetRow, 'Minute offset:', minuteOffset);
-    }, 100); // Small delay to ensure grid is rendered
+        console.log('📍 Using slot index:', targetSlotIndex, 'for hour:', currentHour);
+        console.log('📍 Position - Top:', finalTop, 'Left:', relativeLeft);
+        console.log('📏 Slot dimensions - Width:', slotWidth, 'Height:', slotRect.height);
+        console.log('⏰ Minute offset:', minuteOffset);
+    }, 200); // Increased delay to ensure grid is fully rendered
 }
 
 function addDayTimeIndicator(now, today, currentHour, currentMinute) {
@@ -1754,31 +1790,18 @@ function showJobModal(job) {
     const modal = document.getElementById('jobDetailsModal');
     
     // Populate modal content
-    document.getElementById('modalJobTitle').textContent = job.customerName;
+    document.getElementById('modalJobTitle').textContent = getDisplayName(job);
     document.getElementById('modalJobId').textContent = job.id;
-    document.getElementById('modalCustomerName').textContent = job.customerName;
+    document.getElementById('modalCustomerName').textContent = `Customer: ${job.customerName}`;
     document.getElementById('modalJobValue').textContent = `$${job.total.toFixed(2)}`;
     
-    // Format and display schedule
+    // Populate editable date and time fields
     if (job.scheduleDate) {
-        const scheduleDate = new Date(job.scheduleDate).toLocaleDateString('en-US', { 
-            weekday: 'long',
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        });
-        document.getElementById('modalScheduleDate').textContent = scheduleDate;
-        
-        // Format time
-        const time = job.scheduleTime;
-        const [hours, minutes] = time.split(':');
-        const hour12 = hours > 12 ? hours - 12 : hours;
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        const displayTime = `${hour12}:${minutes || '00'} ${ampm}`;
-        document.getElementById('modalScheduleTime').textContent = displayTime;
+        document.getElementById('modalEditDate').value = job.scheduleDate;
+        document.getElementById('modalEditTime').value = job.scheduleTime || '09:00';
     } else {
-        document.getElementById('modalScheduleDate').textContent = 'Not scheduled';
-        document.getElementById('modalScheduleTime').textContent = '';
+        document.getElementById('modalEditDate').value = '';
+        document.getElementById('modalEditTime').value = '09:00';
     }
     
     // Status badge
@@ -1786,42 +1809,15 @@ function showJobModal(job) {
     statusElement.textContent = job.status.replace('_', ' ').toUpperCase();
     statusElement.className = `px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeColor(job.status)}`;
     
-    // Staff list
-    const staffListElement = document.getElementById('modalStaffList');
-    if (job.assignedStaff.length > 0) {
-        const staffCards = job.assignedStaff.map(staffName => {
-            const staff = availableStaff.find(s => s.name === staffName);
-            if (staff) {
-                const colorMap = {
-                    'blue': 'bg-blue-500',
-                    'green': 'bg-green-500',
-                    'purple': 'bg-purple-500',
-                    'red': 'bg-red-500',
-                    'pink': 'bg-pink-500'
-                };
-                return `
-                    <div class="flex items-center gap-2 bg-white p-2 rounded-lg border">
-                        <div class="w-8 h-8 ${colorMap[staff.color]} rounded-full flex items-center justify-center text-white font-bold text-xs">
-                            ${staff.avatar}
-                        </div>
-                        <div>
-                            <div class="font-medium text-sm">${staff.name}</div>
-                            <div class="text-xs text-gray-600">${staff.role}</div>
-                        </div>
-                    </div>
-                `;
-            }
-            return `<div class="text-sm text-gray-600">${staffName}</div>`;
-        }).join('');
-        staffListElement.innerHTML = staffCards;
-    } else {
-        staffListElement.innerHTML = '<div class="text-sm text-gray-500 italic">No staff assigned</div>';
-    }
+    // Initialize staff assignment
+    window.modalJobStaff = [...job.assignedStaff]; // Copy current staff
+    updateModalStaffDisplay();
+    initializeModalStaffSearch();
     
     // Description
     document.getElementById('modalDescription').textContent = job.description;
     
-    // Store current job for "View Full Details" button
+    // Store current job for editing
     window.currentModalJob = job;
     
     // Show modal
@@ -1835,6 +1831,177 @@ function closeJobModal() {
     const modal = document.getElementById('jobDetailsModal');
     modal.classList.add('hidden');
     window.currentModalJob = null;
+    window.modalJobStaff = [];
+    
+    // Clear staff search
+    document.getElementById('modalStaffSearch').value = '';
+    document.getElementById('modalStaffAutocomplete').classList.add('hidden');
+}
+
+function updateModalStaffDisplay() {
+    const container = document.getElementById('modalCurrentStaff');
+    
+    if (!window.modalJobStaff || window.modalJobStaff.length === 0) {
+        container.innerHTML = '<div class="text-sm text-gray-500 italic">No staff assigned</div>';
+        return;
+    }
+    
+    const colorMap = {
+        'Alice Anderson': 'bg-blue-500',
+        'Benjamin Brooks': 'bg-green-500',
+        'Catherine Chen': 'bg-purple-500',
+        'Daniel Davis': 'bg-red-500',
+        'Emily Evans': 'bg-pink-500'
+    };
+    
+    const staffCards = window.modalJobStaff.map(staffName => {
+        const staff = availableStaff.find(s => s.name === staffName);
+        const bgColor = colorMap[staffName] || 'bg-gray-500';
+        
+        return `
+            <div class="flex items-center gap-2 bg-white p-2 rounded-lg border">
+                <div class="w-6 h-6 ${bgColor} rounded-full flex items-center justify-center text-white font-bold text-xs">
+                    ${staff ? staff.avatar : staffName.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div class="flex-1">
+                    <div class="font-medium text-sm">${staffName}</div>
+                    <div class="text-xs text-gray-600">${staff ? staff.role : 'Staff'}</div>
+                </div>
+                <button 
+                    onclick="removeModalStaff('${staffName}')" 
+                    class="p-1 hover:bg-red-100 rounded text-red-600"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = staffCards;
+}
+
+function initializeModalStaffSearch() {
+    const searchInput = document.getElementById('modalStaffSearch');
+    const autocomplete = document.getElementById('modalStaffAutocomplete');
+    
+    // Clear previous event listeners
+    searchInput.replaceWith(searchInput.cloneNode(true));
+    const newSearchInput = document.getElementById('modalStaffSearch');
+    
+    newSearchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+            autocomplete.classList.add('hidden');
+            return;
+        }
+        
+        // Filter available staff (not already assigned)
+        const availableForSelection = availableStaff.filter(staff => 
+            !window.modalJobStaff.includes(staff.name) &&
+            (staff.name.toLowerCase().includes(query) || staff.role.toLowerCase().includes(query))
+        );
+        
+        if (availableForSelection.length === 0) {
+            autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No staff found</div>';
+            autocomplete.classList.remove('hidden');
+            return;
+        }
+        
+        const colorMap = {
+            'blue': 'bg-blue-500',
+            'green': 'bg-green-500',
+            'purple': 'bg-purple-500',
+            'red': 'bg-red-500',
+            'pink': 'bg-pink-500'
+        };
+        
+        autocomplete.innerHTML = availableForSelection.map(staff => `
+            <button 
+                onclick="addModalStaff('${staff.name}')" 
+                class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left"
+            >
+                <div class="w-6 h-6 ${colorMap[staff.color]} rounded-full flex items-center justify-center text-white font-bold text-xs">
+                    ${staff.avatar}
+                </div>
+                <div>
+                    <div class="font-medium text-sm text-gray-900">${staff.name}</div>
+                    <div class="text-xs text-gray-500">${staff.role}</div>
+                </div>
+            </button>
+        `).join('');
+        
+        autocomplete.classList.remove('hidden');
+    });
+    
+    // Close autocomplete when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!newSearchInput.contains(e.target) && !autocomplete.contains(e.target)) {
+            autocomplete.classList.add('hidden');
+        }
+    });
+}
+
+function addModalStaff(staffName) {
+    if (!window.modalJobStaff.includes(staffName)) {
+        window.modalJobStaff.push(staffName);
+        updateModalStaffDisplay();
+        
+        // Clear search
+        document.getElementById('modalStaffSearch').value = '';
+        document.getElementById('modalStaffAutocomplete').classList.add('hidden');
+    }
+}
+
+function removeModalStaff(staffName) {
+    window.modalJobStaff = window.modalJobStaff.filter(name => name !== staffName);
+    updateModalStaffDisplay();
+}
+
+function saveJobChanges() {
+    if (!window.currentModalJob) return;
+    
+    const newDate = document.getElementById('modalEditDate').value;
+    const newTime = document.getElementById('modalEditTime').value;
+    
+    // Validate inputs
+    if (!newDate || !newTime) {
+        alert('Please fill in both date and time');
+        return;
+    }
+    
+    // Update the job
+    const job = window.currentModalJob;
+    const oldDate = job.scheduleDate;
+    const oldTime = job.scheduleTime;
+    const oldStaff = [...job.assignedStaff];
+    
+    job.scheduleDate = newDate;
+    job.scheduleTime = newTime;
+    job.assignedStaff = [...window.modalJobStaff];
+    job.status = job.scheduleDate ? 'scheduled' : 'created';
+    
+    // Close modal
+    closeJobModal();
+    
+    // Refresh calendar
+    renderCalendar();
+    renderUnscheduledJobs();
+    
+    // Show success message
+    const changes = [];
+    if (oldDate !== newDate || oldTime !== newTime) {
+        changes.push('schedule updated');
+    }
+    if (JSON.stringify(oldStaff) !== JSON.stringify(job.assignedStaff)) {
+        changes.push('staff assignment updated');
+    }
+    
+    if (changes.length > 0) {
+        showNotification(`✅ Job ${job.id}: ${changes.join(' and ')}`);
+    }
 }
 
 function viewFullJobDetails() {
@@ -1860,6 +2027,125 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeJobModal();
+        closeScheduleModal();
         hideJobTooltip();
     }
 });
+
+// Schedule Modal Staff Management Functions
+function updateScheduleModalStaffDisplay() {
+    const container = document.getElementById('scheduleModalCurrentStaff');
+    if (!window.scheduleModalJobStaff) {
+        window.scheduleModalJobStaff = [];
+    }
+    
+    if (window.scheduleModalJobStaff.length === 0) {
+        container.innerHTML = '<div class="text-sm text-gray-500 italic">No staff assigned</div>';
+        return;
+    }
+    
+    const colorMap = {
+        'blue': 'bg-blue-500',
+        'green': 'bg-green-500', 
+        'purple': 'bg-purple-500',
+        'red': 'bg-red-500',
+        'pink': 'bg-pink-500'
+    };
+    
+    container.innerHTML = window.scheduleModalJobStaff.map(staffName => {
+        const staff = availableStaff.find(s => s.name === staffName);
+        if (!staff) return '';
+        
+        return `
+            <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2">
+                <div class="w-5 h-5 ${colorMap[staff.color]} rounded-full flex items-center justify-center text-white font-bold text-xs">
+                    ${staff.avatar}
+                </div>
+                <span class="text-sm font-medium text-gray-900">${staff.name}</span>
+                <button onclick="removeScheduleModalStaff('${staff.name}')" class="ml-auto text-red-500 hover:text-red-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+function initializeScheduleModalStaffSearch() {
+    const searchInput = document.getElementById('scheduleModalStaffSearch');
+    const autocomplete = document.getElementById('scheduleModalStaffAutocomplete');
+    
+    if (!searchInput || !autocomplete) return;
+    
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length === 0) {
+            autocomplete.classList.add('hidden');
+            return;
+        }
+        
+        // Filter available staff (not already assigned)
+        const availableForSelection = availableStaff.filter(staff => 
+            !window.scheduleModalJobStaff.includes(staff.name) &&
+            (staff.name.toLowerCase().includes(query) || staff.role.toLowerCase().includes(query))
+        );
+        
+        if (availableForSelection.length === 0) {
+            autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No staff found</div>';
+            autocomplete.classList.remove('hidden');
+            return;
+        }
+        
+        const colorMap = {
+            'blue': 'bg-blue-500',
+            'green': 'bg-green-500',
+            'purple': 'bg-purple-500',
+            'red': 'bg-red-500',
+            'pink': 'bg-pink-500'
+        };
+        
+        autocomplete.innerHTML = availableForSelection.map(staff => `
+            <button 
+                onclick="addScheduleModalStaff('${staff.name}')" 
+                class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left"
+            >
+                <div class="w-6 h-6 ${colorMap[staff.color]} rounded-full flex items-center justify-center text-white font-bold text-xs">
+                    ${staff.avatar}
+                </div>
+                <div>
+                    <div class="font-medium text-sm text-gray-900">${staff.name}</div>
+                    <div class="text-xs text-gray-500">${staff.role}</div>
+                </div>
+            </button>
+        `).join('');
+        
+        autocomplete.classList.remove('hidden');
+    });
+    
+    // Close autocomplete when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !autocomplete.contains(e.target)) {
+            autocomplete.classList.add('hidden');
+        }
+    });
+}
+
+function addScheduleModalStaff(staffName) {
+    if (!window.scheduleModalJobStaff.includes(staffName)) {
+        window.scheduleModalJobStaff.push(staffName);
+        updateScheduleModalStaffDisplay();
+        
+        // Clear search and hide autocomplete
+        const searchInput = document.getElementById('scheduleModalStaffSearch');
+        const autocomplete = document.getElementById('scheduleModalStaffAutocomplete');
+        if (searchInput) searchInput.value = '';
+        if (autocomplete) autocomplete.classList.add('hidden');
+    }
+}
+
+function removeScheduleModalStaff(staffName) {
+    window.scheduleModalJobStaff = window.scheduleModalJobStaff.filter(name => name !== staffName);
+    updateScheduleModalStaffDisplay();
+}
