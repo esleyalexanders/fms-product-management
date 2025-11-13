@@ -1467,8 +1467,93 @@
             // In a real implementation, this would generate and download a PDF
         }
 
+        // Load cloned quote data
+        function loadClonedQuoteData(quoteId) {
+            // In a real application, this would fetch from API
+            // For now, using mock data from the quote list
+            const mockQuoteData = {
+                'Q-2024-001': {
+                    customerId: 1,
+                    customerName: 'Alice Anderson',
+                    items: [
+                        { id: 1, name: 'Math Tutoring - Grade 10', description: '4 sessions per month', quantity: 4, unitPrice: 50.00 },
+                        { id: 2, name: 'Science Tutoring - Grade 10', description: '2 sessions per month', quantity: 2, unitPrice: 55.00 }
+                    ],
+                    notes: 'Original quote notes',
+                    depositRequired: true,
+                    depositType: 'percentage',
+                    depositValue: 50
+                },
+                'Q-2024-002': {
+                    customerId: 2,
+                    customerName: 'Bob Brown',
+                    items: [
+                        { id: 1, name: 'English Tutoring', description: 'Weekly sessions', quantity: 4, unitPrice: 60.00 }
+                    ],
+                    notes: '',
+                    depositRequired: false
+                }
+            };
+            
+            const quoteData = mockQuoteData[quoteId];
+            if (!quoteData) return;
+            
+            // Pre-fill customer
+            const customer = customers.find(c => c.id === quoteData.customerId);
+            if (customer) {
+                selectCustomer(customer);
+            }
+            
+            // Pre-fill items
+            quoteData.items.forEach(item => {
+                state.quoteItems.push({
+                    id: Date.now() + Math.random(),
+                    name: item.name,
+                    description: item.description,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice,
+                    total: item.quantity * item.unitPrice
+                });
+            });
+            renderQuoteItems();
+            updateTotals();
+            
+            // Pre-fill notes
+            if (quoteData.notes) {
+                document.getElementById('internalNotes').value = quoteData.notes;
+            }
+            
+            // Pre-fill deposit settings
+            if (quoteData.depositRequired) {
+                document.getElementById('depositRequiredCheckbox').checked = true;
+                toggleDepositSection();
+                state.depositRequired = true;
+                state.depositType = quoteData.depositType;
+                state.depositValue = quoteData.depositValue;
+                
+                if (quoteData.depositType === 'percentage') {
+                    document.getElementById('depositPercentage').value = quoteData.depositValue;
+                } else {
+                    document.getElementById('depositAmount').value = quoteData.depositValue;
+                }
+                updateDepositCalculation();
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if cloning a quote
+            const urlParams = new URLSearchParams(window.location.search);
+            const cloneId = urlParams.get('clone');
+            
+            if (cloneId) {
+                // Load the quote data to clone (in real app, fetch from API)
+                loadClonedQuoteData(cloneId);
+                // Update header to indicate cloning
+                document.querySelector('h1').textContent = 'Clone Quote';
+                document.querySelector('.bg-blue-100').innerHTML = '📋 Clone from ' + cloneId;
+            }
+            
             // Set default valid until date (14 days from now)
             const validUntil = new Date();
             validUntil.setDate(validUntil.getDate() + 14);

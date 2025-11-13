@@ -1,60 +1,93 @@
 // Job Create Simple - JavaScript
 
-// Load main content on page load
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        // Load the main content template (with cache busting)
-        const response = await fetch('job_create_simple_content.html?v=' + Date.now());
-        
-        if (!response.ok) {
-            throw new Error('Failed to load content');
-        }
-        
-        const html = await response.text();
-        document.getElementById('mainContent').innerHTML = html;
-        
-        console.log('✅ Content loaded successfully');
-        console.log('📊 Grid container found:', document.querySelector('.grid.grid-cols-1') ? 'Yes' : 'No');
-        console.log('👤 Customer card found:', document.querySelector('.sticky.top-4') ? 'Yes' : 'No');
-        console.log('📝 Notes section found:', document.querySelector('#internalNotes') ? 'Yes' : 'No');
-        console.log('📋 Total cards in left column:', document.querySelectorAll('.lg\\:col-span-8 > .bg-white').length);
-        
-        // Debug: Check what's actually in the DOM
-        console.log('🔍 DEBUG: Right column exists?', document.querySelector('.lg\\:col-span-4') ? 'Yes' : 'No');
-        console.log('🔍 DEBUG: Notes card exists?', document.querySelector('h2') ? Array.from(document.querySelectorAll('h2')).map(h => h.textContent) : 'No h2 tags');
-        console.log('🔍 DEBUG: Total .bg-white cards:', document.querySelectorAll('.bg-white').length);
-        
-        // Initialize event listeners after content is loaded
-        initializeEventListeners();
-        
-        // Set minimum date to today
-        const today = new Date().toISOString().split('T')[0];
-        const dateInput = document.getElementById('scheduleDate');
-        if (dateInput) {
-            dateInput.setAttribute('min', today);
-        }
-        
-        // Load sample data for testing
-        loadSampleData();
-    } catch (error) {
-        console.error('Error loading content:', error);
-        // Show error message
-        document.getElementById('mainContent').innerHTML = `
-            <div class="bg-red-50 border-l-4 border-red-500 p-4">
-                <div class="flex items-start gap-3">
-                    <svg class="w-5 h-5 text-red-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div>
-                        <p class="text-sm text-red-800 font-medium">Failed to load form content</p>
-                        <p class="text-sm text-red-700 mt-1">
-                            Please open this page using a web server (e.g., Live Server extension) or check that job_create_simple_content.html exists in the same directory.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        `;
+// ============================================================================
+// QUOTE SELECTION FUNCTIONALITY
+// ============================================================================
+
+// Mock quotes database
+const mockQuotesDatabase = [
+    {
+        id: 'Q-2024-001',
+        customer: 'Sarah Johnson',
+        customerEmail: 'sarah.j@email.com',
+        customerPhone: '+61 400 123 456',
+        items: 5,
+        total: 1650.00,
+        createdDate: '2024-11-10',
+        status: 'Approved',
+        description: 'Complete Tutoring Package - Math, Science, English'
+    },
+    {
+        id: 'Q-2024-002',
+        customer: 'Michael Chen',
+        customerEmail: 'michael.chen@email.com',
+        customerPhone: '+61 400 123 457',
+        items: 3,
+        total: 950.00,
+        createdDate: '2024-11-09',
+        status: 'Pending',
+        description: 'Physics and Chemistry Tutoring Sessions'
+    },
+    {
+        id: 'Q-2024-003',
+        customer: 'Emma Wilson',
+        customerEmail: 'emma.wilson@email.com',
+        customerPhone: '+61 400 123 458',
+        items: 2,
+        total: 600.00,
+        createdDate: '2024-11-08',
+        status: 'Approved',
+        description: 'English Literature and Writing Support'
+    },
+    {
+        id: 'Q-2024-004',
+        customer: 'David Brown',
+        customerEmail: 'david.brown@email.com',
+        customerPhone: '+61 400 123 459',
+        items: 4,
+        total: 1200.00,
+        createdDate: '2024-11-07',
+        status: 'Approved',
+        description: 'Advanced Mathematics Package'
+    },
+    {
+        id: 'Q-2024-005',
+        customer: 'Lisa Garcia',
+        customerEmail: 'lisa.garcia@email.com',
+        customerPhone: '+61 400 123 460',
+        items: 6,
+        total: 1800.00,
+        createdDate: '2024-11-06',
+        status: 'Draft',
+        description: 'Comprehensive Science and Math Program'
     }
+];
+
+let selectedQuote = mockQuotesDatabase[0]; // Default to first quote
+
+// Load main content on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Page loaded successfully');
+    console.log('📊 Grid container found:', document.querySelector('.grid.grid-cols-1') ? 'Yes' : 'No');
+    console.log('👤 Customer card found:', document.querySelector('.sticky.top-4') ? 'Yes' : 'No');
+    console.log('📝 Notes section found:', document.querySelector('#internalNotes') ? 'Yes' : 'No');
+    console.log('🔘 Change Quote button found:', document.querySelector('#changeQuoteBtn') ? 'Yes' : 'No');
+    
+    // Initialize event listeners
+    initializeEventListeners();
+    
+    // Initialize quote selection
+    initializeQuoteSelection();
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('scheduleDate');
+    if (dateInput) {
+        dateInput.setAttribute('min', today);
+    }
+    
+    // Load sample data for testing (but skip staff loading to avoid errors)
+    loadSampleDataSimple();
 });
 
 function initializeEventListeners() {
@@ -85,67 +118,7 @@ function initializeEventListeners() {
     if (cancelSplitBtn) cancelSplitBtn.addEventListener('click', hideSplitModal);
     if (confirmSplitBtn) confirmSplitBtn.addEventListener('click', redirectToMultipleJobs);
     
-    // Priority radio buttons - update border colors
-    const priorityInputs = document.querySelectorAll('input[name="priority"]');
-    priorityInputs.forEach(input => {
-        input.addEventListener('change', updatePriorityBorders);
-    });
-    
-    // Assignment Mode Tabs
-    const assignStaffTab = document.getElementById('assignStaffTab');
-    const assignTeamTab = document.getElementById('assignTeamTab');
-    
-    if (assignStaffTab) assignStaffTab.addEventListener('click', () => switchAssignmentMode('staff'));
-    if (assignTeamTab) assignTeamTab.addEventListener('click', () => switchAssignmentMode('team'));
-    
-    // Staff search functionality
-    const staffSearchInput = document.getElementById('staffSearchInput');
-    const clearStaffSearchBtn = document.getElementById('clearStaffSearchBtn');
-    const refreshRecommendationsBtn = document.getElementById('refreshRecommendations');
-    const removeStaffBtn = document.getElementById('removeStaffBtn');
-    
-    if (staffSearchInput) {
-        staffSearchInput.addEventListener('input', handleStaffSearch);
-        staffSearchInput.addEventListener('focus', () => {
-            // Trigger search if there's already a value
-            if (staffSearchInput.value.trim()) {
-                handleStaffSearch({ target: staffSearchInput });
-            }
-        });
-    }
-    
-    // Close autocomplete when clicking outside
-    document.addEventListener('click', (e) => {
-        const autocomplete = document.getElementById('staffAutocomplete');
-        const searchInput = document.getElementById('staffSearchInput');
-        if (autocomplete && searchInput && 
-            !autocomplete.contains(e.target) && 
-            e.target !== searchInput) {
-            autocomplete.classList.add('hidden');
-        }
-    });
-    
-    if (clearStaffSearchBtn) {
-        clearStaffSearchBtn.addEventListener('click', clearStaffSearch);
-    }
-    
-    if (refreshRecommendationsBtn) {
-        refreshRecommendationsBtn.addEventListener('click', loadRecommendedStaff);
-    }
-    
-    if (removeStaffBtn) {
-        removeStaffBtn.addEventListener('click', removeSelectedStaff);
-    }
-    
-    // Load recommended staff on page load
-    loadRecommendedStaff();
-    
-    // Close autocomplete when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#staffSearchInput') && !e.target.closest('#staffAutocomplete')) {
-            document.getElementById('staffAutocomplete').classList.add('hidden');
-        }
-    });
+    // Note: Staff assignment functionality removed in simplified UI
 }
 
 function showSplitModal() {
@@ -1303,4 +1276,387 @@ function loadSampleData() {
     }, 500);
     
     console.log('✅ Sample data loaded for testing');
+}
+
+// Simplified sample data loading (without staff functionality)
+function loadSampleDataSimple() {
+    // Job Details
+    const jobNameInput = document.getElementById('jobName');
+    if (jobNameInput) {
+        jobNameInput.value = 'Complete Tutoring Package - Sarah Johnson';
+    }
+    
+    // Priority - set to Medium (default)
+    const prioritySelect = document.getElementById('priority');
+    if (prioritySelect) {
+        prioritySelect.value = 'medium';
+    }
+    
+    // Internal Notes
+    const internalNotesInput = document.getElementById('internalNotes');
+    if (internalNotesInput) {
+        internalNotesInput.value = 'High priority client. Student preparing for final exams. Please ensure all materials are ready before the session.';
+    }
+    
+    console.log('✅ Simplified sample data loaded');
+}
+
+// ============================================================================
+// QUOTE SELECTION FUNCTIONS
+// ============================================================================
+
+function initializeQuoteSelection() {
+    console.log('🔧 Initializing quote selection...');
+    
+    const changeQuoteBtn = document.getElementById('changeQuoteBtn');
+    const closeModalBtn = document.getElementById('closeQuoteModal');
+    const quoteSearchInput = document.getElementById('quoteSearchInput');
+    const modal = document.getElementById('quoteSearchModal');
+    
+    console.log('🔘 Change Quote button:', changeQuoteBtn ? 'Found' : 'Not found');
+    console.log('❌ Close Modal button:', closeModalBtn ? 'Found' : 'Not found');
+    console.log('🔍 Search input:', quoteSearchInput ? 'Found' : 'Not found');
+    console.log('📋 Modal:', modal ? 'Found' : 'Not found');
+    
+    if (changeQuoteBtn) {
+        changeQuoteBtn.addEventListener('click', function(e) {
+            console.log('🔘 Change Quote button clicked!');
+            e.preventDefault();
+            showQuoteModal();
+        });
+        console.log('✅ Change Quote button event listener added');
+    }
+    
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', hideQuoteModal);
+    }
+    
+    if (quoteSearchInput) {
+        quoteSearchInput.addEventListener('input', handleQuoteSearch);
+    }
+    
+    // Close modal when clicking outside
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('quoteSearchModal');
+        if (modal && e.target === modal) {
+            hideQuoteModal();
+        }
+    });
+    
+    // Initialize with selected quote
+    updateSelectedQuoteDisplay();
+    console.log('✅ Quote selection initialized');
+}
+
+function handleQuoteSearch(e) {
+    const query = e.target.value.toLowerCase().trim();
+    const resultsContainer = document.getElementById('quoteSearchResults');
+    
+    let quotesToShow = mockQuotesDatabase;
+    
+    if (query) {
+        // Filter quotes
+        quotesToShow = mockQuotesDatabase.filter(quote => 
+            quote.id.toLowerCase().includes(query) ||
+            quote.customer.toLowerCase().includes(query) ||
+            quote.description.toLowerCase().includes(query)
+        );
+    }
+    
+    if (quotesToShow.length === 0) {
+        resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500">No quotes found</div>';
+        return;
+    }
+    
+    // Sort by date (newest first)
+    quotesToShow.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+    
+    resultsContainer.innerHTML = quotesToShow.map(quote => createQuoteModalCard(quote)).join('');
+    
+    // Add click handlers
+    resultsContainer.querySelectorAll('[data-quote-id]').forEach(card => {
+        card.addEventListener('click', () => {
+            const quoteId = card.dataset.quoteId;
+            const quote = mockQuotesDatabase.find(q => q.id === quoteId);
+            if (quote) {
+                selectQuote(quote);
+                hideQuoteModal();
+            }
+        });
+    });
+}
+
+function createQuoteModalCard(quote) {
+    const statusColors = {
+        'Approved': 'bg-green-100 text-green-700',
+        'Pending': 'bg-yellow-100 text-yellow-700',
+        'Draft': 'bg-gray-100 text-gray-700'
+    };
+    
+    const statusColor = statusColors[quote.status] || statusColors['Draft'];
+    
+    return `
+        <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-colors" data-quote-id="${quote.id}">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-semibold text-gray-900">${quote.id}</span>
+                        <span class="px-2 py-1 text-xs rounded-full ${statusColor}">${quote.status}</span>
+                    </div>
+                    <p class="text-sm text-gray-700 font-medium mb-1">${quote.customer}</p>
+                    <p class="text-xs text-gray-600 mb-2">${quote.description}</p>
+                    <div class="flex items-center gap-4 text-xs text-gray-500">
+                        <span>${quote.items} items</span>
+                        <span class="font-medium text-emerald-600">$${quote.total.toFixed(2)}</span>
+                        <span>${formatDate(quote.createdDate)}</span>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+        </div>
+    `;
+}
+
+function showQuoteModal() {
+    console.log('📋 showQuoteModal called');
+    const modal = document.getElementById('quoteSearchModal');
+    const searchInput = document.getElementById('quoteSearchInput');
+    
+    console.log('📋 Modal element:', modal ? 'Found' : 'Not found');
+    console.log('🔍 Search input element:', searchInput ? 'Found' : 'Not found');
+    
+    if (modal) {
+        console.log('📋 Removing hidden class from modal');
+        modal.classList.remove('hidden');
+        
+        // Load all quotes initially
+        console.log('📋 Loading initial quotes');
+        handleQuoteSearch({ target: { value: '' } });
+        
+        // Focus search input
+        if (searchInput) {
+            setTimeout(() => {
+                console.log('🔍 Focusing search input');
+                searchInput.focus();
+            }, 100);
+        }
+        
+        console.log('✅ Modal should now be visible');
+    } else {
+        console.error('❌ Modal element not found!');
+    }
+}
+
+function hideQuoteModal() {
+    const modal = document.getElementById('quoteSearchModal');
+    const searchInput = document.getElementById('quoteSearchInput');
+    
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    
+    if (searchInput) {
+        searchInput.value = '';
+    }
+}
+
+function showRecentQuotes() {
+    const autocomplete = document.getElementById('quoteAutocomplete');
+    const recentQuotes = mockQuotesDatabase
+        .filter(q => q.status === 'Approved')
+        .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+        .slice(0, 5);
+    
+    if (recentQuotes.length === 0) {
+        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500 text-center">No recent quotes available</div>';
+    } else {
+        autocomplete.innerHTML = `
+            <div class="p-2 text-xs font-medium text-gray-500 bg-gray-50 border-b">Recent Approved Quotes</div>
+            ${recentQuotes.map(quote => createQuoteResultCard(quote)).join('')}
+        `;
+        
+        // Add click handlers
+        autocomplete.querySelectorAll('[data-quote-id]').forEach(card => {
+            card.addEventListener('click', () => {
+                const quoteId = card.dataset.quoteId;
+                const quote = mockQuotesDatabase.find(q => q.id === quoteId);
+                if (quote) {
+                    selectQuote(quote);
+                }
+            });
+        });
+    }
+    
+    autocomplete.classList.remove('hidden');
+}
+
+function selectQuote(quote) {
+    selectedQuote = quote;
+    updateSelectedQuoteDisplay();
+    updateQuoteInfoBar();
+    updateCustomerInfo();
+    updateInfoBanner();
+    
+    // Clear search
+    const searchInput = document.getElementById('quoteSearchInput');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    // Hide autocomplete
+    const autocomplete = document.getElementById('quoteAutocomplete');
+    if (autocomplete) {
+        autocomplete.classList.add('hidden');
+    }
+    
+    // Hide recent quotes section
+    const recentSection = document.getElementById('recentQuotesSection');
+    if (recentSection) {
+        recentSection.classList.add('hidden');
+    }
+    
+    showSuccessToast(`Quote ${quote.id} selected successfully!`);
+}
+
+function updateSelectedQuoteDisplay() {
+    const quoteIdEl = document.getElementById('selectedQuoteId');
+    
+    if (quoteIdEl) {
+        quoteIdEl.textContent = `${selectedQuote.id} • ${selectedQuote.customer} • $${selectedQuote.total.toFixed(2)}`;
+    }
+    
+    // Update summary section
+    updateCustomerInfo();
+}
+
+function updateQuoteInfoBar() {
+    // Update the quote info bar at the top
+    const elements = {
+        quoteId: document.querySelector('.bg-gray-50 .font-semibold'),
+        customer: document.querySelectorAll('.bg-gray-50 .font-semibold')[1],
+        total: document.querySelectorAll('.bg-gray-50 .font-semibold')[2]
+    };
+    
+    if (elements.quoteId) elements.quoteId.textContent = selectedQuote.id;
+    if (elements.customer) elements.customer.textContent = selectedQuote.customer;
+    if (elements.total) elements.total.textContent = `${selectedQuote.items} items • $${selectedQuote.total.toFixed(2)}`;
+}
+
+function updateCustomerInfo() {
+    console.log('🔄 Updating customer info...');
+    
+    // Update customer name in summary
+    const customerNameEl = document.querySelector('.bg-gray-50 .font-semibold.text-gray-900');
+    console.log('👤 Customer name element:', customerNameEl ? 'Found' : 'Not found');
+    if (customerNameEl) {
+        customerNameEl.textContent = selectedQuote.customer;
+        console.log('✅ Updated customer name to:', selectedQuote.customer);
+    }
+    
+    // Update email and phone links
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+    const phoneLink = document.querySelector('a[href^="tel:"]');
+    
+    console.log('📧 Email link:', emailLink ? 'Found' : 'Not found');
+    console.log('📞 Phone link:', phoneLink ? 'Found' : 'Not found');
+    
+    if (emailLink) {
+        emailLink.href = `mailto:${selectedQuote.customerEmail}`;
+    }
+    
+    if (phoneLink) {
+        phoneLink.href = `tel:${selectedQuote.customerPhone}`;
+    }
+    
+    // Check if quote summary section exists
+    const quoteSummarySection = document.querySelector('.bg-emerald-50');
+    console.log('💚 Quote summary section:', quoteSummarySection ? 'Found' : 'Not found');
+    
+    if (quoteSummarySection) {
+        // Update quote details in summary
+        const quoteDetailsEls = quoteSummarySection.querySelectorAll('.flex.justify-between .font-medium, .flex.justify-between .font-semibold');
+        console.log('📊 Quote detail elements found:', quoteDetailsEls.length);
+        
+        if (quoteDetailsEls.length >= 3) {
+            quoteDetailsEls[0].textContent = selectedQuote.id;
+            quoteDetailsEls[1].textContent = `${selectedQuote.items} items`;
+            quoteDetailsEls[2].textContent = `$${selectedQuote.total.toFixed(2)}`;
+            console.log('✅ Updated quote details');
+        } else {
+            console.log('❌ Not enough quote detail elements found');
+        }
+    } else {
+        console.log('❌ Quote summary section (.bg-emerald-50) not found in DOM');
+        // Let's check what elements do exist
+        const allElements = document.querySelectorAll('.bg-emerald-50, .emerald, [class*="emerald"]');
+        console.log('🔍 Elements with emerald classes:', allElements.length);
+    }
+}
+
+function updateInfoBanner() {
+    const titleEl = document.getElementById('infoBannerTitle');
+    const textEl = document.getElementById('infoBannerText');
+    
+    if (titleEl) {
+        titleEl.textContent = `Creating job from quote ${selectedQuote.id}`;
+    }
+    
+    if (textEl) {
+        textEl.textContent = `All quote line items will be included in this job. You can adjust the details below before creating the job.`;
+    }
+}
+
+function showQuoteSelection() {
+    const searchInput = document.getElementById('quoteSearchInput');
+    if (searchInput) {
+        searchInput.focus();
+        showRecentQuotes();
+    }
+}
+
+function loadRecentQuotes() {
+    const recentSection = document.getElementById('recentQuotesSection');
+    const recentList = document.getElementById('recentQuotesList');
+    
+    if (!recentList) return;
+    
+    const recentQuotes = mockQuotesDatabase
+        .filter(q => q.status === 'Approved' && q.id !== selectedQuote.id)
+        .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+        .slice(0, 3);
+    
+    if (recentQuotes.length === 0) {
+        recentList.innerHTML = '<div class="p-3 text-sm text-gray-500 text-center">No other recent quotes available</div>';
+        return;
+    }
+    
+    recentList.innerHTML = recentQuotes.map(quote => `
+        <button onclick="selectQuote(mockQuotesDatabase.find(q => q.id === '${quote.id}'))" 
+                class="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-semibold text-gray-900 text-sm">${quote.id}</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">${quote.status}</span>
+                    </div>
+                    <p class="text-sm text-gray-700">${quote.customer}</p>
+                    <p class="text-xs text-gray-500">${quote.items} items • $${quote.total.toFixed(2)}</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+        </button>
+    `).join('');
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric' 
+    });
 }

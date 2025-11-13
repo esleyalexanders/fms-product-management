@@ -1564,7 +1564,6 @@ function toggleDropdown(event, quoteId) {
 document.addEventListener('click', function(event) {
     if (!event.target.closest('.dropdown-container')) {
         document.querySelectorAll('.dropdown-menu').forEach(d => {
-            d.classList.remove('show');
         });
     }
 });
@@ -1572,14 +1571,14 @@ document.addEventListener('click', function(event) {
 // Edit quote
 function editQuote(quoteId) {
     console.log('Edit quote:', quoteId);
-    window.location.href = `quote_create.html?id=${quoteId}`;
+    window.location.href = `quote_edit_simple.html?id=${quoteId}`;
 }
 
 // Clone quote
 function cloneQuote(quoteId) {
     console.log('Clone quote:', quoteId);
     if (confirm('Create a copy of this quote?')) {
-        window.location.href = `quote_create.html?clone=${quoteId}`;
+        window.location.href = `quote_create_simple.html?clone=${quoteId}`;
     }
 }
 
@@ -1964,9 +1963,8 @@ function createInvoice(quoteId) {
     if (!quote) return;
     
     if (confirm(`Create invoice for quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will create an invoice for the FULL quote amount.`)) {
-        // TODO: Navigate to invoice creation page
-        alert('Invoice creation page coming soon!');
-        // window.location.href = `invoice_create.html?quoteId=${quoteId}`;
+        // Navigate to invoice creation page
+        window.location.href = `invoice_create_simple.html?quoteId=${quoteId}`;
     }
 }
 
@@ -1974,9 +1972,8 @@ function viewInvoice(quoteId) {
     const quote = state.quotes.find(q => q.id === quoteId);
     if (!quote) return;
     
-    alert(`View invoice for quote ${quoteId}\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\n(Invoice detail page coming soon)`);
-    // TODO: Navigate to invoice detail page
-    // window.location.href = `invoice_detail.html?quoteId=${quoteId}`;
+    // Navigate to invoice detail page
+    window.location.href = `invoice_detail_simple.html?quoteId=${quoteId}`;
 }
 
 function sendPaymentLink(quoteId) {
@@ -2007,9 +2004,8 @@ function convertToJob(quoteId) {
         quote.status = 'converted';
         filterAndRender();
         updateCounts();
-        alert('Quote converted to job successfully!\n\n(Job creation page coming soon)');
-        // TODO: Navigate to job creation page
-        // window.location.href = `../[v2] Jobs/job_create.html?quoteId=${quoteId}`;
+        // Navigate to job creation page
+        window.location.href = `../../[v2] Jobs/job_create_simple.html?quoteId=${quoteId}`;
     }
 }
 
@@ -2020,9 +2016,8 @@ function viewJob(quoteId) {
 }
 
 function viewQuote(quoteId) {
-    alert(`View quote details for ${quoteId}\n\n(Quote detail page coming soon)`);
-    // TODO: Navigate to quote detail page
-    // window.location.href = `quote_detail.html?id=${quoteId}`;
+    // Navigate to quote edit/detail page
+    window.location.href = `quote_edit_simple.html?id=${quoteId}`;
 }
 
 function downloadPDF(quoteId) {
