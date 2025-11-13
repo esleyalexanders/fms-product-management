@@ -255,24 +255,40 @@
         
         // Update create job button to handle simple quote workflow
         document.getElementById('createJobBtn').addEventListener('click', function() {
-            // Mock job creation - replace with actual implementation
+            // Collect form data
+            const jobName = document.getElementById('jobName').value || 'Job from Quote Q-2024-001';
+            const priority = document.getElementById('priority').value;
+            const internalNotes = document.getElementById('internalNotes').value;
+            
+            // Generate job ID with proper format
+            const timestamp = Date.now();
+            const jobId = 'JOB-2024-' + String(timestamp).slice(-6);
+            
+            // Create comprehensive job data
             const jobData = {
-                id: 'JOB-' + Date.now(),
+                id: jobId,
+                name: jobName,
                 quoteId: new URLSearchParams(window.location.search).get('quoteId') || 'Q-2024-001',
+                priority: priority,
+                notes: internalNotes,
                 status: 'scheduled',
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                customer: {
+                    name: 'Sarah Johnson',
+                    email: 'sarah.j@email.com',
+                    phone: '+61400123456'
+                }
             };
             
-            // Save job data (mock)
+            // Save job data to localStorage for the job details page
             localStorage.setItem('currentJob', JSON.stringify(jobData));
+            localStorage.setItem('job_' + jobId, JSON.stringify(jobData));
             
-            // Show success message
-            if (confirm('Job created successfully!\n\nJob ID: ' + jobData.id + '\n\nWould you like to return to the invoice?')) {
-                goBackToSimpleQuote();
-            } else {
-                // Stay on job creation or go to job list
-                window.location.href = 'job_list.html';
-            }
+            // Show success message and navigate to job details
+            alert('Job created successfully!\n\nJob ID: ' + jobId + '\n\nRedirecting to job details...');
+            
+            // Navigate to job details page with the job ID
+            window.location.href = 'job_detail.html?id=' + jobId;
         });
     </script>
 </body>

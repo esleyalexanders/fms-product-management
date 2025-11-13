@@ -2,8 +2,34 @@
 // JOB DETAIL SCRIPT
 // ============================================================================
 
-// Sample job data
-const jobData = {
+// Load job data from URL parameter and localStorage
+function loadJobData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobId = urlParams.get('id');
+    
+    if (jobId) {
+        // Try to load from localStorage first
+        const savedJob = localStorage.getItem('job_' + jobId);
+        if (savedJob) {
+            return JSON.parse(savedJob);
+        }
+        
+        // Try to load from currentJob if it matches
+        const currentJob = localStorage.getItem('currentJob');
+        if (currentJob) {
+            const parsedJob = JSON.parse(currentJob);
+            if (parsedJob.id === jobId) {
+                return parsedJob;
+            }
+        }
+    }
+    
+    // Return default sample data if no job found
+    return null;
+}
+
+// Sample job data (fallback)
+const defaultJobData = {
     id: 'JOB-2024-001',
     quoteId: 'Q-2024-001',
     customer: {
@@ -88,6 +114,9 @@ const jobData = {
     ]
 };
 
+// Initialize job data
+let jobData = loadJobData() || defaultJobData;
+
 // Related jobs from the same quote
 const relatedJobs = [
     {
@@ -115,12 +144,75 @@ const relatedJobs = [
 
 // Available staff for assignment
 const availableStaff = [
-    { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', avatar: 'JS', color: 'blue', assigned: true },
-    { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', avatar: 'ED', color: 'purple', assigned: true },
-    { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', avatar: 'MB', color: 'green', assigned: false },
-    { id: 'staff-4', name: 'Sarah Wilson', role: 'General Tutor', avatar: 'SW', color: 'orange', assigned: false },
-    { id: 'staff-5', name: 'David Lee', role: 'Math Tutor', avatar: 'DL', color: 'red', assigned: false }
+    { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', avatar: 'JS', color: 'blue', assigned: true, skills: ['Math', 'Algebra', 'Calculus'] },
+    { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', avatar: 'ED', color: 'purple', assigned: true, skills: ['Physics', 'Chemistry', 'Biology'] },
+    { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', avatar: 'MB', color: 'green', assigned: false, skills: ['English', 'Literature', 'Writing'] },
+    { id: 'staff-4', name: 'Sarah Wilson', role: 'General Tutor', avatar: 'SW', color: 'orange', assigned: false, skills: ['Math', 'English', 'General'] },
+    { id: 'staff-5', name: 'David Lee', role: 'Math Tutor', avatar: 'DL', color: 'red', assigned: false, skills: ['Math', 'Statistics', 'Geometry'] }
 ];
+
+// Available teams for assignment
+const availableTeams = [
+    { 
+        id: 'team-1', 
+        name: 'Math & Science Team', 
+        type: 'team',
+        avatar: 'MST', 
+        color: 'indigo',
+        skills: ['Math', 'Science', 'Physics', 'Chemistry'],
+        members: [
+            { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', avatar: 'JS' },
+            { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', avatar: 'ED' },
+            { id: 'staff-5', name: 'David Lee', role: 'Math Tutor', avatar: 'DL' }
+        ]
+    },
+    { 
+        id: 'team-2', 
+        name: 'English & Literature Team', 
+        type: 'team',
+        avatar: 'ELT', 
+        color: 'pink',
+        skills: ['English', 'Literature', 'Writing', 'Grammar'],
+        members: [
+            { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', avatar: 'MB' },
+            { id: 'staff-4', name: 'Sarah Wilson', role: 'General Tutor', avatar: 'SW' }
+        ]
+    },
+    { 
+        id: 'team-3', 
+        name: 'All Subjects Team', 
+        type: 'team',
+        avatar: 'AST', 
+        color: 'gray',
+        skills: ['Math', 'Science', 'English', 'General'],
+        members: [
+            { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', avatar: 'JS' },
+            { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', avatar: 'ED' },
+            { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', avatar: 'MB' },
+            { id: 'staff-4', name: 'Sarah Wilson', role: 'General Tutor', avatar: 'SW' },
+            { id: 'staff-5', name: 'David Lee', role: 'Math Tutor', avatar: 'DL' }
+        ]
+    }
+];
+
+// Combined assignable entities (staff + teams)
+function getAssignableEntities() {
+    const individuals = availableStaff.map(staff => ({
+        ...staff,
+        type: 'individual',
+        displayName: `${staff.name} (User)`
+    }));
+    
+    const teams = availableTeams.map(team => ({
+        ...team,
+        displayName: `${team.name} (Team)`
+    }));
+    
+    return [...individuals, ...teams];
+}
+
+// Selected assignments tracking
+let selectedAssignments = [];
 
 // ============================================================================
 // TAX & CALCULATION HELPERS
@@ -863,6 +955,270 @@ function cancelJob() {
         // setTimeout(() => {
         //     window.location.href = 'job_list.html';
         // }, 2000);
+    }
+}
+
+// ============================================================================
+// UNIFIED ASSIGNMENT FUNCTIONS
+// ============================================================================
+
+function initializeUnifiedAssignment() {
+    const searchInput = document.getElementById('assignmentSearchInput');
+    const autocompleteDiv = document.getElementById('assignmentAutocomplete');
+    
+    if (!searchInput || !autocompleteDiv) return;
+    
+    // Search input handler
+    searchInput.addEventListener('input', handleAssignmentSearch);
+    
+    // Close autocomplete when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !autocompleteDiv.contains(e.target)) {
+            autocompleteDiv.classList.add('hidden');
+        }
+    });
+    
+    // Initialize display
+    renderSelectedAssignments();
+    loadRecommendedAssignments();
+}
+
+function handleAssignmentSearch(e) {
+    const query = e.target.value.toLowerCase().trim();
+    const autocomplete = document.getElementById('assignmentAutocomplete');
+    
+    if (!query) {
+        autocomplete.classList.add('hidden');
+        return;
+    }
+    
+    const entities = getAssignableEntities();
+    const filtered = entities.filter(entity => 
+        entity.name.toLowerCase().includes(query) || 
+        entity.role?.toLowerCase().includes(query) ||
+        entity.skills?.some(skill => skill.toLowerCase().includes(query)) ||
+        entity.displayName.toLowerCase().includes(query)
+    );
+    
+    if (filtered.length === 0) {
+        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No matches found</div>';
+        autocomplete.classList.remove('hidden');
+        return;
+    }
+    
+    autocomplete.innerHTML = filtered.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+        
+        return `
+            <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left">
+                <div class="w-10 h-10 ${colorClass} rounded-full flex items-center justify-center font-semibold text-sm">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                    ${entity.skills ? `<p class="text-xs text-gray-500">${entity.skills.join(', ')}</p>` : ''}
+                </div>
+            </button>
+        `;
+    }).join('');
+    
+    autocomplete.classList.remove('hidden');
+}
+
+function selectAssignment(entityId, entityType) {
+    const entities = getAssignableEntities();
+    const entity = entities.find(e => e.id === entityId);
+    
+    if (!entity) return;
+    
+    // Check if already selected
+    if (selectedAssignments.find(s => s.id === entityId)) {
+        showToast('Already selected', 'error');
+        return;
+    }
+    
+    selectedAssignments.push(entity);
+    renderSelectedAssignments();
+    
+    // Clear search
+    document.getElementById('assignmentSearchInput').value = '';
+    document.getElementById('assignmentAutocomplete').classList.add('hidden');
+    
+    showToast(`${entity.displayName} added to assignment`, 'success');
+}
+
+function removeAssignment(entityId) {
+    selectedAssignments = selectedAssignments.filter(s => s.id !== entityId);
+    renderSelectedAssignments();
+}
+
+function renderSelectedAssignments() {
+    const container = document.getElementById('selectedAssignmentsList');
+    const countEl = document.getElementById('selectedAssignmentsCount');
+    
+    if (!container || !countEl) return;
+    
+    countEl.textContent = selectedAssignments.length;
+    
+    if (selectedAssignments.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">No assignments selected yet</p>';
+        return;
+    }
+    
+    container.innerHTML = selectedAssignments.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+        
+        let html = `
+            <div class="flex items-center gap-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                </div>
+                <button onclick="removeAssignment('${entity.id}')" class="p-1 hover:bg-red-100 rounded">
+                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        // Add team members display if it's a team
+        if (entity.type === 'team' && entity.members) {
+            html += `
+                <div class="ml-11 mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p class="text-xs font-medium text-gray-700 mb-2">Team Members:</p>
+                    <div class="space-y-1">
+                        ${entity.members.map(member => `
+                            <div class="flex items-center gap-2 text-xs">
+                                <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center font-semibold text-gray-600">
+                                    ${member.avatar}
+                                </div>
+                                <span class="text-gray-700">${member.name}</span>
+                                <span class="text-gray-500">• ${member.role}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        return html;
+    }).join('');
+}
+
+function loadRecommendedAssignments() {
+    const container = document.getElementById('recommendedAssignmentsList');
+    if (!container) return;
+    
+    const entities = getAssignableEntities();
+    // Get entities not already selected
+    const recommended = entities.filter(e => !selectedAssignments.find(sel => sel.id === e.id)).slice(0, 3);
+    
+    if (recommended.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">All available assignments selected</p>';
+        return;
+    }
+    
+    container.innerHTML = recommended.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+        
+        return `
+            <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left">
+                <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+            </button>
+        `;
+    }).join('');
+}
+
+// ============================================================================
+// DURATION CALCULATION
+// ============================================================================
+
+function calculateDuration() {
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    const durationDisplay = document.getElementById('calculatedDuration');
+    
+    if (!startTimeInput || !endTimeInput || !durationDisplay) return;
+    
+    const startTime = startTimeInput.value;
+    const endTime = endTimeInput.value;
+    
+    if (!startTime || !endTime) {
+        durationDisplay.textContent = '--';
+        return;
+    }
+    
+    // Parse times
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    
+    // Convert to minutes
+    const startMinutes = startHour * 60 + startMin;
+    let endMinutes = endHour * 60 + endMin;
+    
+    // Handle overnight shifts (end time next day)
+    if (endMinutes <= startMinutes) {
+        endMinutes += 24 * 60; // Add 24 hours
+    }
+    
+    // Calculate duration in minutes
+    const durationMinutes = endMinutes - startMinutes;
+    
+    // Convert back to hours and minutes
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+    
+    // Format display
+    if (hours === 0) {
+        durationDisplay.textContent = `${minutes} minutes`;
+    } else if (minutes === 0) {
+        durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+    } else {
+        durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minutes`;
     }
 }
 

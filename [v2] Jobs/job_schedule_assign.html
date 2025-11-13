@@ -89,60 +89,57 @@
                     </section>
 
                     <section>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Estimated duration</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Time Range</p>
                         <div class="grid grid-cols-2 gap-4 max-w-xl">
                             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                <label class="block text-xs text-gray-600 uppercase tracking-wide mb-2">Hours</label>
+                                <label class="block text-xs text-gray-600 uppercase tracking-wide mb-2">Start Time</label>
                                 <input 
-                                    type="number" 
-                                    id="durationHours"
-                                    placeholder="0"
-                                    min="0"
-                                    max="24"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-xl font-semibold bg-white"
+                                    type="time" 
+                                    id="startTime"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold bg-white"
+                                    onchange="calculateDuration()"
                                 />
                             </div>
                             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                <label class="block text-xs text-gray-600 uppercase tracking-wide mb-2">Minutes</label>
+                                <label class="block text-xs text-gray-600 uppercase tracking-wide mb-2">End Time</label>
                                 <input 
-                                    type="number" 
-                                    id="durationMinutes"
-                                    placeholder="0"
-                                    min="0"
-                                    max="59"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-xl font-semibold bg-white"
+                                    type="time" 
+                                    id="endTime"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold bg-white"
+                                    onchange="calculateDuration()"
                                 />
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">Auto-calculated from line items: 6 hours</p>
+                        
+                        <!-- Calculated Duration Display -->
+                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                <span class="text-sm font-medium text-blue-800">Calculated Duration:</span>
+                                <span id="calculatedDuration" class="text-sm font-semibold text-blue-900">--</span>
+                            </div>
+                            <p class="text-xs text-blue-600 mt-1">Duration is automatically calculated based on start and end times</p>
+                        </div>
                     </section>
 
                 </div>
             </div>
             
-            <!-- Staff Assignment Card -->
+            <!-- Assignment Card -->
             <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center mb-4">
                     <label class="flex items-center gap-2 text-lg font-semibold text-gray-900">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                         Assignment <span class="text-sm text-gray-500 font-normal">(Optional)</span>
                     </label>
-                    
-                    <!-- Assignment Type Tabs -->
-                    <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
-                        <button id="assignStaffTab" class="px-3 py-1.5 text-sm font-medium rounded bg-white text-blue-600 shadow-sm">
-                            Staff
-                        </button>
-                        <button id="assignTeamTab" class="px-3 py-1.5 text-sm font-medium rounded text-gray-600 hover:text-gray-900">
-                            Team
-                        </button>
-                    </div>
                 </div>
                         
-                <!-- Staff Assignment Mode (Unified - allows single or multiple) -->
-                <div id="staffAssignmentMode">
+                <!-- Unified Assignment Search -->
+                <div id="unifiedAssignmentMode">
                     <div class="mb-3">
                         <div class="relative">
                             <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,90 +147,38 @@
                             </svg>
                             <input 
                                 type="text" 
-                                id="staffSearchInput"
-                                placeholder="Search staff by name or skills..."
+                                id="assignmentSearchInput"
+                                placeholder="Search staff or teams by name, skills, or role..."
                                 class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 autocomplete="off"
                             />
-                            <div id="staffAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                <!-- Staff search results -->
+                            <div id="assignmentAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                <!-- Unified search results -->
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Selected Staff List -->
-                    <div id="selectedStaffContainer" class="mb-3">
-                        <p class="text-xs font-semibold text-gray-700 mb-2">Selected Staff (<span id="selectedStaffCount">0</span>)</p>
-                        <div id="selectedStaffList" class="space-y-2">
-                            <!-- Selected staff will appear here -->
+                    <!-- Selected Assignments List -->
+                    <div id="selectedAssignmentsContainer" class="mb-3">
+                        <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments (<span id="selectedAssignmentsCount">0</span>)</p>
+                        <div id="selectedAssignmentsList" class="space-y-2">
+                            <!-- Selected assignments will appear here -->
                         </div>
                     </div>
                     
-                    <!-- Recommended Staff Section -->
-                    <div id="recommendedStaffSection" class="mb-3">
+                    <!-- Recommended Assignments Section -->
+                    <div id="recommendedAssignmentsSection" class="mb-3">
                         <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-medium text-gray-700">✨ Recommended Staff</p>
-                            <button id="refreshRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                            <p class="text-xs font-medium text-gray-700">✨ Recommended Assignments</p>
+                            <button id="refreshAssignmentRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                 </svg>
                                 Refresh
                             </button>
                         </div>
-                        <div id="recommendedStaffList" class="space-y-2">
-                            <!-- Recommended staff cards will be populated here -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Team Assignment Mode -->
-                <div id="teamAssignmentMode" class="hidden">
-                    <div class="space-y-2 mb-3">
-                        <!-- Team Selection Cards -->
-                        <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
-                            <input type="radio" name="team" value="math-team" class="text-indigo-600 focus:ring-indigo-500">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <div class="flex -space-x-2">
-                                        <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">J</div>
-                                        <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">M</div>
-                                        <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">E</div>
-                                    </div>
-                                    <span class="font-semibold text-gray-900 text-sm">Math & Science Team</span>
-                                </div>
-                                <p class="text-xs text-gray-600">John Smith, Michael Chen, Emily Davis • 3 members</p>
-                                <div class="flex gap-1 mt-1">
-                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Math</span>
-                                    <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Science</span>
-                                </div>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
-                            <input type="radio" name="team" value="english-team" class="text-indigo-600 focus:ring-indigo-500">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <div class="flex -space-x-2">
-                                        <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">S</div>
-                                        <div class="w-6 h-6 bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">D</div>
-                                    </div>
-                                    <span class="font-semibold text-gray-900 text-sm">English & Literature Team</span>
-                                </div>
-                                <p class="text-xs text-gray-600">Sarah Williams, David Brown • 2 members</p>
-                                <div class="flex gap-1 mt-1">
-                                    <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-xs rounded">English</span>
-                                    <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">Literature</span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
-                        <div class="flex items-start gap-2">
-                            <svg class="w-4 h-4 text-indigo-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <p class="text-xs text-indigo-700">Team assignment allows flexible scheduling. Any team member can handle the job based on availability.</p>
+                        <div id="recommendedAssignmentsList" class="space-y-2">
+                            <!-- Recommended assignments will be populated here -->
                         </div>
                     </div>
                 </div>
@@ -281,29 +226,67 @@
             { id: 'staff-2', name: 'Benjamin Brooks', role: 'Science Tutor', skills: ['Physics', 'Chemistry', 'Biology'], avatar: 'BB', color: 'green', availability: 'medium' },
             { id: 'staff-3', name: 'Catherine Chen', role: 'English Tutor', skills: ['English', 'Literature', 'Writing'], avatar: 'CC', color: 'purple', availability: 'high' },
             { id: 'staff-4', name: 'Daniel Davis', role: 'Math Tutor', skills: ['Math', 'Statistics', 'Geometry'], avatar: 'DD', color: 'red', availability: 'low' },
-            { id: 'staff-5', name: 'Emily Evans', role: 'Science Tutor', skills: ['Biology', 'Chemistry', 'Lab Work'], avatar: 'EE', color: 'pink', availability: 'high' },
-            { id: 'staff-6', name: 'Frank Foster', role: 'History Tutor', skills: ['History', 'Social Studies', 'Geography'], avatar: 'FF', color: 'orange', availability: 'medium' },
-            { id: 'staff-7', name: 'Grace Garcia', role: 'Language Tutor', skills: ['Spanish', 'French', 'ESL'], avatar: 'GG', color: 'indigo', availability: 'high' },
-            { id: 'staff-8', name: 'Henry Harris', role: 'Math Tutor', skills: ['Math', 'Trigonometry', 'Calculus'], avatar: 'HH', color: 'blue', availability: 'medium' },
-            { id: 'staff-9', name: 'Isabella Ivanov', role: 'Art Tutor', skills: ['Drawing', 'Painting', 'Design'], avatar: 'II', color: 'purple', availability: 'high' },
-            { id: 'staff-10', name: 'James Johnson', role: 'Computer Science Tutor', skills: ['Programming', 'Python', 'Java'], avatar: 'JJ', color: 'green', availability: 'low' }
+            { id: 'staff-5', name: 'Emily Evans', role: 'Science Tutor', skills: ['Biology', 'Chemistry', 'Lab Work'], avatar: 'EE', color: 'pink', availability: 'high' }
         ];
 
-        // Selected staff tracking
-        let selectedStaff = [];
+        // Available teams for assignment
+        const availableTeams = [
+            { 
+                id: 'team-1', 
+                name: 'Math & Science Team', 
+                type: 'team',
+                avatar: 'MST', 
+                color: 'indigo',
+                skills: ['Math', 'Science', 'Physics', 'Chemistry'],
+                members: [
+                    { id: 'staff-1', name: 'Alice Anderson', role: 'Math Tutor', avatar: 'AA' },
+                    { id: 'staff-2', name: 'Benjamin Brooks', role: 'Science Tutor', avatar: 'BB' }
+                ]
+            },
+            { 
+                id: 'team-2', 
+                name: 'English & Literature Team', 
+                type: 'team',
+                avatar: 'ELT', 
+                color: 'pink',
+                skills: ['English', 'Literature', 'Writing', 'Grammar'],
+                members: [
+                    { id: 'staff-3', name: 'Catherine Chen', role: 'English Tutor', avatar: 'CC' }
+                ]
+            }
+        ];
+
+        // Combined assignable entities (staff + teams)
+        function getAssignableEntities() {
+            const individuals = availableStaff.map(staff => ({
+                ...staff,
+                type: 'individual',
+                displayName: `${staff.name} (User)`
+            }));
+            
+            const teams = availableTeams.map(team => ({
+                ...team,
+                displayName: `${team.name} (Team)`
+            }));
+            
+            return [...individuals, ...teams];
+        }
+
+        // Selected assignments tracking
+        let selectedAssignments = [];
 
         // ============================================================================
-        // STAFF SEARCH & AUTOCOMPLETE
+        // UNIFIED ASSIGNMENT FUNCTIONS
         // ============================================================================
-        
-        function initializeStaffSearch() {
-            const searchInput = document.getElementById('staffSearchInput');
-            const autocompleteDiv = document.getElementById('staffAutocomplete');
+
+        function initializeUnifiedAssignment() {
+            const searchInput = document.getElementById('assignmentSearchInput');
+            const autocompleteDiv = document.getElementById('assignmentAutocomplete');
             
             if (!searchInput || !autocompleteDiv) return;
             
             // Search input handler
-            searchInput.addEventListener('input', handleStaffSearch);
+            searchInput.addEventListener('input', handleAssignmentSearch);
             
             // Close autocomplete when clicking outside
             document.addEventListener('click', function(e) {
@@ -311,29 +294,36 @@
                     autocompleteDiv.classList.add('hidden');
                 }
             });
+            
+            // Initialize display
+            renderSelectedAssignments();
+            loadRecommendedAssignments();
         }
-        
-        function handleStaffSearch(e) {
+
+        function handleAssignmentSearch(e) {
             const query = e.target.value.toLowerCase().trim();
-            const autocomplete = document.getElementById('staffAutocomplete');
+            const autocomplete = document.getElementById('assignmentAutocomplete');
             
             if (!query) {
                 autocomplete.classList.add('hidden');
                 return;
             }
             
-            const filtered = availableStaff.filter(staff => 
-                staff.name.toLowerCase().includes(query) || 
-                staff.role.toLowerCase().includes(query)
+            const entities = getAssignableEntities();
+            const filtered = entities.filter(entity => 
+                entity.name.toLowerCase().includes(query) || 
+                entity.role?.toLowerCase().includes(query) ||
+                entity.skills?.some(skill => skill.toLowerCase().includes(query)) ||
+                entity.displayName.toLowerCase().includes(query)
             );
             
             if (filtered.length === 0) {
-                autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No staff found</div>';
+                autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No matches found</div>';
                 autocomplete.classList.remove('hidden');
                 return;
             }
             
-            autocomplete.innerHTML = filtered.map(staff => {
+            autocomplete.innerHTML = filtered.map(entity => {
                 const colorMap = {
                     'blue': 'bg-blue-100 text-blue-600',
                     'purple': 'bg-purple-100 text-purple-600',
@@ -341,18 +331,20 @@
                     'orange': 'bg-orange-100 text-orange-600',
                     'red': 'bg-red-100 text-red-600',
                     'pink': 'bg-pink-100 text-pink-600',
-                    'indigo': 'bg-indigo-100 text-indigo-600'
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
                 };
-                const colorClass = colorMap[staff.color] || colorMap['blue'];
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
                 
                 return `
-                    <button onclick="selectStaff('${staff.id}')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left">
+                    <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left">
                         <div class="w-10 h-10 ${colorClass} rounded-full flex items-center justify-center font-semibold text-sm">
-                            ${staff.avatar}
+                            ${entity.avatar}
                         </div>
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-900 text-sm">${staff.name}</p>
-                            <p class="text-xs text-gray-600">${staff.role}</p>
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                            ${entity.skills ? `<p class="text-xs text-gray-500">${entity.skills.join(', ')}</p>` : ''}
                         </div>
                     </button>
                 `;
@@ -360,44 +352,46 @@
             
             autocomplete.classList.remove('hidden');
         }
-        
-        function selectStaff(staffId) {
-            const staff = availableStaff.find(s => s.id === staffId);
-            if (!staff) return;
+
+        function selectAssignment(entityId, entityType) {
+            const entities = getAssignableEntities();
+            const entity = entities.find(e => e.id === entityId);
+            
+            if (!entity) return;
             
             // Check if already selected
-            if (selectedStaff.find(s => s.id === staffId)) {
-                alert('Staff already selected');
+            if (selectedAssignments.find(s => s.id === entityId)) {
+                alert('Already selected');
                 return;
             }
             
-            selectedStaff.push(staff);
-            renderSelectedStaff();
+            selectedAssignments.push(entity);
+            renderSelectedAssignments();
             
             // Clear search
-            document.getElementById('staffSearchInput').value = '';
-            document.getElementById('staffAutocomplete').classList.add('hidden');
+            document.getElementById('assignmentSearchInput').value = '';
+            document.getElementById('assignmentAutocomplete').classList.add('hidden');
         }
-        
-        function removeSelectedStaff(staffId) {
-            selectedStaff = selectedStaff.filter(s => s.id !== staffId);
-            renderSelectedStaff();
+
+        function removeAssignment(entityId) {
+            selectedAssignments = selectedAssignments.filter(s => s.id !== entityId);
+            renderSelectedAssignments();
         }
-        
-        function renderSelectedStaff() {
-            const container = document.getElementById('selectedStaffList');
-            const countEl = document.getElementById('selectedStaffCount');
+
+        function renderSelectedAssignments() {
+            const container = document.getElementById('selectedAssignmentsList');
+            const countEl = document.getElementById('selectedAssignmentsCount');
             
             if (!container || !countEl) return;
             
-            countEl.textContent = selectedStaff.length;
+            countEl.textContent = selectedAssignments.length;
             
-            if (selectedStaff.length === 0) {
-                container.innerHTML = '<p class="text-xs text-gray-500 italic">No staff selected yet</p>';
+            if (selectedAssignments.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 italic">No assignments selected yet</p>';
                 return;
             }
             
-            container.innerHTML = selectedStaff.map(staff => {
+            container.innerHTML = selectedAssignments.map(entity => {
                 const colorMap = {
                     'blue': 'bg-blue-100 text-blue-600',
                     'purple': 'bg-purple-100 text-purple-600',
@@ -405,46 +399,66 @@
                     'orange': 'bg-orange-100 text-orange-600',
                     'red': 'bg-red-100 text-red-600',
                     'pink': 'bg-pink-100 text-pink-600',
-                    'indigo': 'bg-indigo-100 text-indigo-600'
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
                 };
-                const colorClass = colorMap[staff.color] || colorMap['blue'];
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
                 
-                return `
+                let html = `
                     <div class="flex items-center gap-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                         <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
-                            ${staff.avatar}
+                            ${entity.avatar}
                         </div>
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-900 text-sm">${staff.name}</p>
-                            <p class="text-xs text-gray-600">${staff.role}</p>
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
                         </div>
-                        <button onclick="removeSelectedStaff('${staff.id}')" class="p-1 hover:bg-red-100 rounded">
+                        <button onclick="removeAssignment('${entity.id}')" class="p-1 hover:bg-red-100 rounded">
                             <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
                 `;
+                
+                // Add team members display if it's a team
+                if (entity.type === 'team' && entity.members) {
+                    html += `
+                        <div class="ml-11 mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                            <p class="text-xs font-medium text-gray-700 mb-2">Team Members:</p>
+                            <div class="space-y-1">
+                                ${entity.members.map(member => `
+                                    <div class="flex items-center gap-2 text-xs">
+                                        <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center font-semibold text-gray-600">
+                                            ${member.avatar}
+                                        </div>
+                                        <span class="text-gray-700">${member.name}</span>
+                                        <span class="text-gray-500">• ${member.role}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return html;
             }).join('');
         }
-        
-        // ============================================================================
-        // RECOMMENDED STAFF
-        // ============================================================================
-        
-        function loadRecommendedStaff() {
-            const container = document.getElementById('recommendedStaffList');
+
+        function loadRecommendedAssignments() {
+            const container = document.getElementById('recommendedAssignmentsList');
             if (!container) return;
             
-            // Get staff not already selected
-            const recommended = availableStaff.filter(s => !selectedStaff.find(sel => sel.id === s.id)).slice(0, 3);
+            const entities = getAssignableEntities();
+            // Get entities not already selected
+            const recommended = entities.filter(e => !selectedAssignments.find(sel => sel.id === e.id)).slice(0, 3);
             
             if (recommended.length === 0) {
-                container.innerHTML = '<p class="text-xs text-gray-500 italic">All staff selected</p>';
+                container.innerHTML = '<p class="text-xs text-gray-500 italic">All available assignments selected</p>';
                 return;
             }
             
-            container.innerHTML = recommended.map(staff => {
+            container.innerHTML = recommended.map(entity => {
                 const colorMap = {
                     'blue': 'bg-blue-100 text-blue-600',
                     'purple': 'bg-purple-100 text-purple-600',
@@ -452,18 +466,19 @@
                     'orange': 'bg-orange-100 text-orange-600',
                     'red': 'bg-red-100 text-red-600',
                     'pink': 'bg-pink-100 text-pink-600',
-                    'indigo': 'bg-indigo-100 text-indigo-600'
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
                 };
-                const colorClass = colorMap[staff.color] || colorMap['blue'];
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
                 
                 return `
-                    <button onclick="selectStaff('${staff.id}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left">
+                    <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left">
                         <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
-                            ${staff.avatar}
+                            ${entity.avatar}
                         </div>
                         <div class="flex-1">
-                            <p class="font-semibold text-gray-900 text-sm">${staff.name}</p>
-                            <p class="text-xs text-gray-600">${staff.role}</p>
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
                         </div>
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -472,31 +487,53 @@
                 `;
             }).join('');
         }
-        
+
         // ============================================================================
-        // ASSIGNMENT MODE SWITCHING
+        // DURATION CALCULATION
         // ============================================================================
-        
-        function switchAssignmentMode(mode) {
-            const staffTab = document.getElementById('assignStaffTab');
-            const teamTab = document.getElementById('assignTeamTab');
-            const staffMode = document.getElementById('staffAssignmentMode');
-            const teamMode = document.getElementById('teamAssignmentMode');
+
+        function calculateDuration() {
+            const startTimeInput = document.getElementById('startTime');
+            const endTimeInput = document.getElementById('endTime');
+            const durationDisplay = document.getElementById('calculatedDuration');
             
-            if (mode === 'staff') {
-                staffTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
-                staffTab.classList.remove('text-gray-600');
-                teamTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
-                teamTab.classList.add('text-gray-600');
-                staffMode.classList.remove('hidden');
-                teamMode.classList.add('hidden');
+            if (!startTimeInput || !endTimeInput || !durationDisplay) return;
+            
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+            
+            if (!startTime || !endTime) {
+                durationDisplay.textContent = '--';
+                return;
+            }
+            
+            // Parse times
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const [endHour, endMin] = endTime.split(':').map(Number);
+            
+            // Convert to minutes
+            const startMinutes = startHour * 60 + startMin;
+            let endMinutes = endHour * 60 + endMin;
+            
+            // Handle overnight shifts (end time next day)
+            if (endMinutes <= startMinutes) {
+                endMinutes += 24 * 60; // Add 24 hours
+            }
+            
+            // Calculate duration in minutes
+            const durationMinutes = endMinutes - startMinutes;
+            
+            // Convert back to hours and minutes
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
+            
+            // Format display
+            if (hours === 0) {
+                durationDisplay.textContent = `${minutes} minutes`;
+            } else if (minutes === 0) {
+                durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
             } else {
-                teamTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm');
-                teamTab.classList.remove('text-gray-600');
-                staffTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm');
-                staffTab.classList.add('text-gray-600');
-                teamMode.classList.remove('hidden');
-                staffMode.classList.add('hidden');
+                durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minutes`;
             }
         }
         
@@ -505,30 +542,17 @@
         // ============================================================================
         
         document.addEventListener('DOMContentLoaded', function() {
-            const staffTab = document.getElementById('assignStaffTab');
-            const teamTab = document.getElementById('assignTeamTab');
-            const refreshBtn = document.getElementById('refreshRecommendations');
+            // Initialize unified assignment system
+            initializeUnifiedAssignment();
             
-            // Initialize tabs
-            if (staffTab) staffTab.addEventListener('click', () => switchAssignmentMode('staff'));
-            if (teamTab) teamTab.addEventListener('click', () => switchAssignmentMode('team'));
-            
-            // Initialize staff search
-            initializeStaffSearch();
-            
-            // Load recommended staff
-            loadRecommendedStaff();
-            
-            // Refresh recommendations button
+            // Initialize refresh button for recommendations
+            const refreshBtn = document.getElementById('refreshAssignmentRecommendations');
             if (refreshBtn) {
                 refreshBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    loadRecommendedStaff();
+                    loadRecommendedAssignments();
                 });
             }
-            
-            // Initialize selected staff list
-            renderSelectedStaff();
         });
     </script>
 </body>

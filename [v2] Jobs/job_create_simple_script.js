@@ -235,8 +235,8 @@ function getFormData() {
         priority: document.querySelector('input[name="priority"]:checked').value,
         scheduleDate: document.getElementById('scheduleDate').value || null,
         scheduleTime: document.getElementById('scheduleTime').value || null,
-        durationHours: parseInt(document.getElementById('durationHours').value) || 0,
-        durationMinutes: parseInt(document.getElementById('durationMinutes').value) || 0,
+        startTime: document.getElementById('startTime').value || null,
+        endTime: document.getElementById('endTime').value || null,
         assignedTeam: document.getElementById('assignedTeam').value || null,
         internalNotes: document.getElementById('internalNotes').value || '',
         // Quote data (would come from API in real implementation)
@@ -305,24 +305,30 @@ function validateForm() {
         }
     }
     
-    // Duration validation
-    const durationHours = parseInt(document.getElementById('durationHours').value) || 0;
-    const durationMinutes = parseInt(document.getElementById('durationMinutes').value) || 0;
+    // Time range validation
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
     
-    if (durationHours < 0 || durationHours > 24) {
-        errors.push('Duration hours must be between 0 and 24');
-        document.getElementById('durationHours').classList.add('border-red-500');
-        isValid = false;
-    } else {
-        document.getElementById('durationHours').classList.remove('border-red-500');
-    }
-    
-    if (durationMinutes < 0 || durationMinutes > 59) {
-        errors.push('Duration minutes must be between 0 and 59');
-        document.getElementById('durationMinutes').classList.add('border-red-500');
-        isValid = false;
-    } else {
-        document.getElementById('durationMinutes').classList.remove('border-red-500');
+    if (startTime && endTime) {
+        const [startHour, startMin] = startTime.split(':').map(Number);
+        const [endHour, endMin] = endTime.split(':').map(Number);
+        
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+        
+        // Check if end time is before start time (same day)
+        if (endMinutes <= startMinutes) {
+            // Allow overnight shifts, but warn if duration seems too long
+            const durationMinutes = (endMinutes + 24 * 60) - startMinutes;
+            if (durationMinutes > 16 * 60) { // More than 16 hours
+                errors.push('Duration seems unusually long. Please verify start and end times.');
+                document.getElementById('startTime').classList.add('border-yellow-500');
+                document.getElementById('endTime').classList.add('border-yellow-500');
+            }
+        } else {
+            document.getElementById('startTime').classList.remove('border-yellow-500');
+            document.getElementById('endTime').classList.remove('border-yellow-500');
+        }
     }
     
     // Show errors if any
@@ -1257,11 +1263,11 @@ function loadSampleData() {
         scheduleTimeInput.value = '10:00';
     }
     
-    // Duration
-    const durationHoursInput = document.getElementById('durationHours');
-    const durationMinutesInput = document.getElementById('durationMinutes');
-    if (durationHoursInput) durationHoursInput.value = '6';
-    if (durationMinutesInput) durationMinutesInput.value = '0';
+    // Time Range
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    if (startTimeInput) startTimeInput.value = '09:00';
+    if (endTimeInput) endTimeInput.value = '15:00';
     
     // Internal Notes
     const internalNotesInput = document.getElementById('internalNotes');
@@ -1659,4 +1665,53 @@ function formatDate(dateString) {
         day: 'numeric', 
         year: 'numeric' 
     });
+}
+
+// ============================================================================
+// DURATION CALCULATION
+// ============================================================================
+
+function calculateDuration() {
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    const durationDisplay = document.getElementById('calculatedDuration');
+    
+    if (!startTimeInput || !endTimeInput || !durationDisplay) return;
+    
+    const startTime = startTimeInput.value;
+    const endTime = endTimeInput.value;
+    
+    if (!startTime || !endTime) {
+        durationDisplay.textContent = '--';
+        return;
+    }
+    
+    // Parse times
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    
+    // Convert to minutes
+    const startMinutes = startHour * 60 + startMin;
+    let endMinutes = endHour * 60 + endMin;
+    
+    // Handle overnight shifts (end time next day)
+    if (endMinutes <= startMinutes) {
+        endMinutes += 24 * 60; // Add 24 hours
+    }
+    
+    // Calculate duration in minutes
+    const durationMinutes = endMinutes - startMinutes;
+    
+    // Convert back to hours and minutes
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+    
+    // Format display
+    if (hours === 0) {
+        durationDisplay.textContent = `${minutes} minutes`;
+    } else if (minutes === 0) {
+        durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+    } else {
+        durationDisplay.textContent = `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minutes`;
+    }
 }

@@ -272,65 +272,62 @@
                             </div>
                         </div>
                         
-                        <!-- Duration Estimate -->
+                        <!-- Time Range -->
                         <div>
                             <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Estimated Duration
+                                Time Range
                             </label>
                             <div class="grid grid-cols-2 gap-4 max-w-md">
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Hours</label>
+                                    <label class="block text-xs text-gray-600 mb-1">Start Time</label>
                                     <input 
-                                        type="number" 
-                                        id="durationHours"
-                                        placeholder="0"
-                                        min="0"
-                                        max="24"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-2xl font-semibold"
+                                        type="time" 
+                                        id="startTime"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold"
+                                        onchange="calculateDuration()"
                                     />
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Minutes</label>
+                                    <label class="block text-xs text-gray-600 mb-1">End Time</label>
                                     <input 
-                                        type="number" 
-                                        id="durationMinutes"
-                                        placeholder="0"
-                                        min="0"
-                                        max="59"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-2xl font-semibold"
+                                        type="time" 
+                                        id="endTime"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold"
+                                        onchange="calculateDuration()"
                                     />
                                 </div>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2">Auto-calculated from line items: 6 hours</p>
+                            
+                            <!-- Calculated Duration Display -->
+                            <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-blue-800">Calculated Duration:</span>
+                                    <span id="calculatedDuration" class="text-sm font-semibold text-blue-900">--</span>
+                                </div>
+                                <p class="text-xs text-blue-600 mt-1">Duration is automatically calculated based on start and end times</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Staff Assignment Card -->
+                    <!-- Assignment Card -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center mb-4">
                             <label class="flex items-center gap-2 text-lg font-semibold text-gray-900">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                                 Assignment <span class="text-sm text-gray-500 font-normal">(Optional)</span>
                             </label>
-                            
-                            <!-- Assignment Type Tabs -->
-                            <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
-                                <button id="assignStaffTab" class="px-3 py-1.5 text-sm font-medium rounded bg-white text-blue-600 shadow-sm">
-                                    Staff
-                                </button>
-                                <button id="assignTeamTab" class="px-3 py-1.5 text-sm font-medium rounded text-gray-600 hover:text-gray-900">
-                                    Team
-                                </button>
-                            </div>
                         </div>
                                 
-                        <!-- Staff Assignment Mode (Unified - allows single or multiple) -->
-                        <div id="staffAssignmentMode">
+                        <!-- Unified Assignment Search -->
+                        <div id="unifiedAssignmentMode">
                             <div class="mb-3">
                                 <div class="relative">
                                     <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,90 +335,38 @@
                                     </svg>
                                     <input 
                                         type="text" 
-                                        id="staffSearchInput"
-                                        placeholder="Search staff by name or skills..."
+                                        id="assignmentSearchInput"
+                                        placeholder="Search staff or teams by name, skills, or role..."
                                         class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         autocomplete="off"
                                     />
-                                    <div id="staffAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                        <!-- Staff search results -->
+                                    <div id="assignmentAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        <!-- Unified search results -->
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Selected Staff List -->
-                            <div id="selectedStaffContainer" class="mb-3">
-                                <p class="text-xs font-semibold text-gray-700 mb-2">Selected Staff (<span id="selectedStaffCount">0</span>)</p>
-                                <div id="selectedStaffList" class="space-y-2">
-                                    <!-- Selected staff will appear here -->
+                            <!-- Selected Assignments List -->
+                            <div id="selectedAssignmentsContainer" class="mb-3">
+                                <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments (<span id="selectedAssignmentsCount">0</span>)</p>
+                                <div id="selectedAssignmentsList" class="space-y-2">
+                                    <!-- Selected assignments will appear here -->
                                 </div>
                             </div>
                             
-                            <!-- Recommended Staff Section -->
-                            <div id="recommendedStaffSection" class="mb-3">
+                            <!-- Recommended Assignments Section -->
+                            <div id="recommendedAssignmentsSection" class="mb-3">
                                 <div class="flex items-center justify-between mb-2">
-                                    <p class="text-xs font-medium text-gray-700">✨ Recommended Staff</p>
-                                    <button id="refreshRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                    <p class="text-xs font-medium text-gray-700">✨ Recommended Assignments</p>
+                                    <button id="refreshAssignmentRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                         </svg>
                                         Refresh
                                     </button>
                                 </div>
-                                <div id="recommendedStaffList" class="space-y-2">
-                                    <!-- Recommended staff cards will be populated here -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Team Assignment Mode -->
-                        <div id="teamAssignmentMode" class="hidden">
-                            <div class="space-y-2 mb-3">
-                                <!-- Team Selection Cards -->
-                                <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
-                                    <input type="radio" name="team" value="math-team" class="text-indigo-600 focus:ring-indigo-500">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <div class="flex -space-x-2">
-                                                <div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">J</div>
-                                                <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">M</div>
-                                                <div class="w-6 h-6 bg-purple-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">E</div>
-                                            </div>
-                                            <span class="font-semibold text-gray-900 text-sm">Math & Science Team</span>
-                                        </div>
-                                        <p class="text-xs text-gray-600">John Smith, Michael Chen, Emily Davis • 3 members</p>
-                                        <div class="flex gap-1 mt-1">
-                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Math</span>
-                                            <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Science</span>
-                                        </div>
-                                    </div>
-                                </label>
-                                
-                                <label class="flex items-center gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-400 transition-colors">
-                                    <input type="radio" name="team" value="english-team" class="text-indigo-600 focus:ring-indigo-500">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <div class="flex -space-x-2">
-                                                <div class="w-6 h-6 bg-pink-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">S</div>
-                                                <div class="w-6 h-6 bg-orange-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">D</div>
-                                            </div>
-                                            <span class="font-semibold text-gray-900 text-sm">English & Literature Team</span>
-                                        </div>
-                                        <p class="text-xs text-gray-600">Sarah Williams, David Brown • 2 members</p>
-                                        <div class="flex gap-1 mt-1">
-                                            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-xs rounded">English</span>
-                                            <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">Literature</span>
-                                        </div>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
-                                <div class="flex items-start gap-2">
-                                    <svg class="w-4 h-4 text-indigo-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="text-xs text-indigo-700">Team assignment allows flexible scheduling. Any team member can handle the job based on availability.</p>
+                                <div id="recommendedAssignmentsList" class="space-y-2">
+                                    <!-- Recommended assignments will be populated here -->
                                 </div>
                             </div>
                         </div>
@@ -667,13 +612,67 @@
             }
         }
         
-        // Initialize assignment tabs
-        document.addEventListener('DOMContentLoaded', function() {
-            const staffTab = document.getElementById('assignStaffTab');
-            const teamTab = document.getElementById('assignTeamTab');
+        // Initialize page with job data
+        function initializeJobDetails() {
+            // Update page title
+            document.title = `${jobData.name || jobData.id} - Job Details - FMS`;
             
-            if (staffTab) staffTab.addEventListener('click', () => switchAssignmentMode('staff'));
-            if (teamTab) teamTab.addEventListener('click', () => switchAssignmentMode('team'));
+            // Update job ID and name in the page
+            const jobIdElements = document.querySelectorAll('[data-job-id]');
+            jobIdElements.forEach(el => el.textContent = jobData.id);
+            
+            const jobNameElements = document.querySelectorAll('[data-job-name]');
+            jobNameElements.forEach(el => el.textContent = jobData.name || 'Untitled Job');
+            
+            // Update customer information
+            const customerNameElements = document.querySelectorAll('[data-customer-name]');
+            customerNameElements.forEach(el => el.textContent = jobData.customer?.name || 'Unknown Customer');
+            
+            // Update priority badge
+            const priorityElements = document.querySelectorAll('[data-job-priority]');
+            priorityElements.forEach(el => {
+                const priority = jobData.priority || 'medium';
+                el.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
+                el.className = el.className.replace(/bg-\w+-100 text-\w+-800/g, '');
+                if (priority === 'high') {
+                    el.classList.add('bg-red-100', 'text-red-800');
+                } else if (priority === 'low') {
+                    el.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    el.classList.add('bg-blue-100', 'text-blue-800');
+                }
+            });
+            
+            // Update status badge
+            const statusElements = document.querySelectorAll('[data-job-status]');
+            statusElements.forEach(el => {
+                const status = jobData.status || 'pending';
+                el.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            });
+            
+            // Update notes if present
+            const notesElements = document.querySelectorAll('[data-job-notes]');
+            notesElements.forEach(el => {
+                el.textContent = jobData.notes || 'No additional notes provided.';
+            });
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize job details first
+            initializeJobDetails();
+            
+            // Initialize unified assignment system
+            initializeUnifiedAssignment();
+            
+            // Initialize refresh button for recommendations
+            const refreshBtn = document.getElementById('refreshAssignmentRecommendations');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loadRecommendedAssignments();
+                });
+            }
         });
     </script>
 </body>
