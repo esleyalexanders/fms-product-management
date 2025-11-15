@@ -564,7 +564,7 @@
                             </div>
 
                             <!-- Deposit Amount (shown when deposit selected) -->
-                            <div id="depositSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                            <div id="paymentDepositSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
                                 <h3 class="text-sm font-medium text-gray-700 mb-3">Deposit Amount</h3>
                                 <div class="space-y-2">
                                     <div class="flex gap-2">
@@ -608,6 +608,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                         <!-- Accepted Payment Methods Section -->
@@ -615,47 +616,22 @@
                             <h2 class="text-lg font-semibold text-gray-900 mb-4">Accepted Payment Methods</h2>
                             
                             <div id="paymentMethodsContainer" class="space-y-2">
-                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="stripe">
-                                    <input type="checkbox" id="paymentStripe" value="stripe" checked class="rounded text-purple-600" />
+                                <label class="flex items-center gap-2 p-2 border-2 border-purple-300 bg-purple-50 rounded hover:bg-purple-100 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" id="paymentStripe" value="stripe" checked class="text-purple-600" onchange="updatePaymentMethodsDisplay()" />
                                     <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                                     </svg>
                                     <span class="text-sm font-medium">Stripe</span>
-                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="stripeTag"></span>
                                 </label>
-                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="paypal">
-                                    <input type="checkbox" id="paymentPaypal" value="paypal" checked class="rounded text-purple-600" />
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                    </svg>
-                                    <span class="text-sm font-medium">PayPal</span>
-                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="paypalTag"></span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="google_wallet">
-                                    <input type="checkbox" id="paymentGoogleWallet" value="google_wallet" class="rounded text-purple-600" />
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Google Wallet</span>
-                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="googleWalletTag"></span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="apple_pay">
-                                    <input type="checkbox" id="paymentApplePay" value="apple_pay" class="rounded text-purple-600" />
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span class="text-sm font-medium">Apple Pay</span>
-                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="applePayTag"></span>
-                                </label>
-                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="cash">
-                                    <input type="checkbox" id="paymentCash" value="cash" class="rounded text-purple-600" />
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" id="paymentCash" value="cash" class="text-purple-600" onchange="updatePaymentMethodsDisplay()" />
                                     <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
                                     <span class="text-sm font-medium">Cash</span>
                                 </label>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2" id="paymentMethodHint">Select at least one payment method</p>
+                            <p class="text-xs text-gray-500 mt-2" id="paymentMethodHint">Select one payment method</p>
                         </div>
 
                         <!-- Payment Terms Section -->
@@ -685,6 +661,109 @@
                                         placeholder="Payment instructions, terms, or special notes..."
                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                                     ></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Distribution Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-2">Invoice Distribution</h2>
+                                <div class="text-xs text-gray-500">
+                                    Configure how invoices are distributed among multiple payers. This applies to your selected payment model.
+                                </div>
+                            </div>
+
+                            <!-- Invoice Distribution Table -->
+                            <div class="space-y-4">
+                                <!-- Add Payer Section -->
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-gray-700">Payers</label>
+                                    <div class="flex items-center gap-2">
+                                        <select id="contactSelector" class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option value="">Select contact to add...</option>
+                                            <option value="contact1">John Smith - john@company.com</option>
+                                            <option value="contact2">Sarah Johnson - sarah@business.com</option>
+                                            <option value="contact3">Mike Wilson - mike@corp.com</option>
+                                            <option value="quick-add">+ Quick Add New Contact</option>
+                                        </select>
+                                        <button 
+                                            id="addSelectedPayerBtn"
+                                            class="px-3 py-1 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-colors"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Payers Table -->
+                                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                    <table class="w-full">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Contact</th>
+                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Percentage</th>
+                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Amount</th>
+                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="payersTableBody" class="bg-white divide-y divide-gray-200">
+                                            <!-- Default Primary Contact Row -->
+                                            <tr id="primaryPayerRow">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center">
+                                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-sm font-medium text-gray-900">Primary Contact</div>
+                                                            <div class="text-xs text-gray-500">contact@company.com</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    <input 
+                                                        type="number" 
+                                                        value="100" 
+                                                        min="0" 
+                                                        max="100" 
+                                                        class="w-16 px-2 py-1 text-center border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                        onchange="updatePayerCalculations()"
+                                                    />
+                                                    <span class="text-xs text-gray-500 ml-1">%</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-right">
+                                                    <span class="text-sm font-medium text-gray-900" id="primaryPayerAmount">$2,500.00</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">Primary</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Summary Row -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="font-medium text-gray-700">Total:</span>
+                                        <div class="flex items-center gap-4">
+                                            <span id="totalPercentage" class="font-medium text-gray-900">100%</span>
+                                            <span id="totalAmount" class="font-bold text-gray-900">$2,500.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Validation Warning -->
+                                <div id="distributionValidationWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <div class="flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                        <p class="text-xs text-yellow-800" id="distributionValidationMessage">Total percentage must equal 100%</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -764,199 +843,113 @@
                                 <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">From Quote</span>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                <button 
-                                    onclick="createFullInvoice()"
-                                    class="p-4 border-2 border-purple-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-colors text-left"
-                                >
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Payment Configuration Summary -->
+                            <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-sm font-semibold text-gray-900">Current Payment Configuration</h3>
+                                    <button 
+                                        onclick="switchTab('paymentConfig')"
+                                        class="text-xs text-purple-600 hover:text-purple-700 font-medium"
+                                    >
+                                        Edit Settings
+                                    </button>
+                                </div>
+                                
+                                <div class="space-y-2">
+                                    <div class="p-2 bg-purple-50 rounded">
+                                        <div class="text-xs text-purple-600 mb-1">Payment Model</div>
+                                        <div class="text-sm font-medium text-purple-700" id="invoiceTabPaymentModel">Full Payment</div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div id="invoiceTabDepositInfo" class="hidden">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Deposit Amount</span>
+                                                <span class="text-gray-900 font-medium" id="invoiceTabDepositAmount">$0.00</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Remaining Balance</span>
+                                                <span class="text-gray-600" id="invoiceTabRemainingBalance">$0.00</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Payment Terms</span>
+                                            <span class="text-gray-900 font-medium" id="invoiceTabPaymentTerms">Net 30 Days</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Payment Methods</span>
+                                            <span class="text-gray-900 font-medium" id="invoiceTabPaymentMethods">2 selected</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Invoice List -->
+                        <div class="space-y-3" id="invoiceList">
+                            <!-- Sample Invoice Items (will be populated dynamically) -->
+                            <div class="p-4 border border-gray-200 rounded-lg">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                             </svg>
                                         </div>
-                                        <span class="font-semibold text-gray-900">Full Invoice</span>
+                                        <div>
+                                            <div class="font-medium text-gray-900">INV-2024-001</div>
+                                            <div class="text-xs text-gray-500">Full Invoice • Created Nov 15, 2024</div>
+                                        </div>
                                     </div>
-                                    <p class="text-xs text-gray-600">Invoice for the complete quote amount</p>
-                                </button>
-                                
-                                <button 
-                                    onclick="createDepositInvoice()"
-                                    class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors text-left"
-                                >
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <span class="font-semibold text-gray-900">Deposit Invoice</span>
+                                    <div class="text-right">
+                                        <div class="font-semibold text-gray-900">$2,500.00</div>
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">Pending</span>
                                     </div>
-                                    <p class="text-xs text-gray-600">Invoice for deposit/down payment</p>
-                                </button>
-                                
-                                <button 
-                                    onclick="createPartialInvoice()"
-                                    class="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors text-left"
-                                >
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                            </svg>
-                                        </div>
-                                        <span class="font-semibold text-gray-900">Partial Invoice</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-gray-500">Due: Dec 15, 2024</span>
+                                        <span class="text-gray-500">Net 30 Days</span>
                                     </div>
-                                    <p class="text-xs text-gray-600">Invoice for selected items only</p>
-                                </button>
-                            </div>
-                            
-                            <!-- Preview Invoices Button -->
-                            <div class="mb-4">
-                                <button 
-                                    onclick="showInvoicePreview()"
-                                    class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                    Preview All Invoices
-                                </button>
-                            </div>
-                            
-                            <!-- Payment Configuration Summary -->
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <div class="flex items-start gap-2 mb-3">
-                                    <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div class="flex-1">
-                                        <p class="font-medium text-blue-800 text-sm mb-2">Payment Configuration Summary</p>
-                                        <div class="space-y-2 text-xs text-blue-700">
-                                            <div class="flex justify-between">
-                                                <span>Payment Model:</span>
-                                                <span class="font-medium" id="invoicePaymentModel">Full Payment</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span>Payment Terms:</span>
-                                                <span class="font-medium" id="invoicePaymentTerms">Net 30 Days</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span>Payment Methods:</span>
-                                                <span class="font-medium" id="invoicePaymentMethods">2 selected</span>
-                                            </div>
-                                            <div id="invoiceDepositInfo" class="hidden">
-                                                <div class="flex justify-between">
-                                                    <span>Deposit Amount:</span>
-                                                    <span class="font-medium" id="invoiceDepositAmount">$0.00</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-2 pt-2 border-t border-blue-300">
-                                            <button 
-                                                onclick="switchTab('paymentConfig')"
-                                                class="text-xs text-blue-700 hover:text-blue-800 underline"
-                                            >
-                                                Configure Payment Settings →
-                                            </button>
-                                        </div>
+                                    <div class="flex items-center gap-2">
+                                        <button class="text-blue-600 hover:text-blue-700 font-medium">View</button>
+                                        <button class="text-gray-600 hover:text-gray-700 font-medium">Edit</button>
+                                        <button class="text-red-600 hover:text-red-700 font-medium">Delete</button>
+                                        <button 
+                                            onclick="sendBulkInvoices()"
+                                            class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors font-medium"
+                                        >
+                                            Send All
+                                        </button>
+                                        <button 
+                                            onclick="previewInvoices()"
+                                            class="px-3 py-1 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors font-medium"
+                                        >
+                                            Preview
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Split Invoice Section -->
-                        <div class="bg-white rounded-lg shadow-sm p-6">
-                            <div class="mb-4">
-                                <h2 class="text-lg font-semibold text-gray-900">Split Invoice</h2>
-                                <p class="text-xs text-gray-500 mt-1">Create separate invoices for multiple payers</p>
-                            </div>
 
-                            <!-- Split Configuration -->
-                            <div id="splitInvoiceConfig" class="space-y-4">
-                                <!-- Split Method -->
-                                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Split Method</label>
-                                    <div class="flex gap-2">
-                                        <button 
-                                            id="splitByPercentage" 
-                                            class="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-purple-600 text-white"
-                                        >
-                                            By Percentage
-                                        </button>
-                                        <button 
-                                            id="splitByAmount" 
-                                            class="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
-                                        >
-                                            By Amount
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Payers List -->
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <label class="text-sm font-medium text-gray-700">Payers</label>
-                                        <button 
-                                            id="addPayerBtn"
-                                            class="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
-                                        >
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                            </svg>
-                                            Add Payer
-                                        </button>
-                                    </div>
-                                    <div id="payersList" class="space-y-3">
-                                        <!-- Payers will be added here -->
-                                    </div>
-                                </div>
-
-                                <!-- Split Summary -->
-                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                                    <div class="text-xs font-medium text-gray-700 mb-2">Split Summary</div>
-                                    <div class="space-y-1 text-xs">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Total Amount:</span>
-                                            <span id="splitTotalAmount" class="font-medium">$0.00</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Allocated:</span>
-                                            <span id="splitAllocatedAmount" class="font-medium">$0.00</span>
-                                        </div>
-                                        <div class="flex justify-between border-t border-gray-300 pt-1 mt-1">
-                                            <span class="text-gray-600">Remaining:</span>
-                                            <span id="splitRemainingAmount" class="font-medium text-red-600">$0.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Validation Warning -->
-                                <div id="splitValidationWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <div class="flex items-start gap-2">
-                                        <svg class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                        </svg>
-                                        <p class="text-xs text-yellow-800" id="splitValidationMessage">Please allocate the full amount across all payers.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Existing Invoices Section -->
+                        <!-- Invoice Management Section -->
                         <div class="bg-white rounded-lg shadow-sm p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-semibold text-gray-900">Existing Invoices</h2>
-                                <button 
-                                    onclick="refreshInvoices()"
-                                    class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                    </svg>
-                                    Refresh
-                                </button>
+                                <h2 class="text-lg font-semibold text-gray-900">Invoice Management</h2>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium" id="invoiceCount">0 Invoices</span>
+                                    <button 
+                                        onclick="refreshInvoices()"
+                                        class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                        Refresh
+                                    </button>
+                                </div>
                             </div>
                             
                             <div id="invoicesList" class="space-y-3">
@@ -968,7 +961,21 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                                 <p class="text-sm font-medium text-gray-700 mb-1">No invoices created yet</p>
-                                <p class="text-xs text-gray-500">Create your first invoice using the options above</p>
+                                <p class="text-xs text-gray-500">Click "Create Invoices" to generate invoices based on your payment configuration</p>
+                            </div>
+
+                            <!-- Bulk Actions -->
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="selectAllInvoices" class="rounded" />
+                                    <label for="selectAllInvoices" class="text-sm text-gray-700">Select All</label>
+                                    <span class="text-xs text-gray-500">•</span>
+                                    <button class="text-xs text-blue-600 hover:text-blue-700">Export</button>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">Send All</button>
+                                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700">Preview</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1022,6 +1029,15 @@
                             <div class="border-t border-gray-200 pt-3 mt-3">
                                 <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Actions</h3>
                                 <div class="space-y-2">
+                                    <button 
+                                        onclick="createInvoices()"
+                                        class="w-full bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Create Invoices
+                                    </button>
                                     <button 
                                         onclick="sendPaymentReminder()"
                                         class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
@@ -2192,16 +2208,27 @@
             updateSummary();
             
             // Catalog search autocomplete
-            document.getElementById('catalogSearchInput').addEventListener('input', function(e) {
-                renderCatalogAutocomplete(e.target.value);
-            });
+            const catalogSearchInput = document.getElementById('catalogSearchInput');
+            const clearCatalogSearchBtn = document.getElementById('clearCatalogSearchBtn');
+            
+            if (catalogSearchInput) {
+                catalogSearchInput.addEventListener('input', function(e) {
+                    renderCatalogAutocomplete(e.target.value);
+                });
+            }
             
             // Clear catalog search button
-            document.getElementById('clearCatalogSearchBtn').addEventListener('click', function() {
-                document.getElementById('catalogSearchInput').value = '';
-                document.getElementById('catalogAutocomplete').classList.add('hidden');
-                document.getElementById('clearCatalogSearchBtn').classList.add('hidden');
-            });
+            if (clearCatalogSearchBtn) {
+                clearCatalogSearchBtn.addEventListener('click', function() {
+                    const catalogSearchInput = document.getElementById('catalogSearchInput');
+                    const catalogAutocomplete = document.getElementById('catalogAutocomplete');
+                    const clearCatalogSearchBtn = document.getElementById('clearCatalogSearchBtn');
+                    
+                    if (catalogSearchInput) catalogSearchInput.value = '';
+                    if (catalogAutocomplete) catalogAutocomplete.classList.add('hidden');
+                    if (clearCatalogSearchBtn) clearCatalogSearchBtn.classList.add('hidden');
+                });
+            }
             
             // Close catalog autocomplete when clicking outside
             document.addEventListener('click', function(e) {
@@ -2215,65 +2242,94 @@
             // EDIT MODE: Customer management disabled - customer is locked to existing quote
             
             // Quote contact selector change
-            document.getElementById('quoteContactSelect').addEventListener('change', function(e) {
-                const value = e.target.value;
-                const customer = state.selectedCustomer;
-                
-                if (value === 'primary') {
-                    state.selectedQuoteContact = {
-                        type: 'primary',
-                        name: customer.name,
-                        email: customer.email,
-                        phone: customer.phone
-                    };
-                } else if (value.startsWith('secondary-')) {
-                    const index = parseInt(value.split('-')[1]);
-                    const contact = customer.secondaryContacts[index];
-                    state.selectedQuoteContact = {
-                        type: 'secondary',
-                        name: contact.name,
-                        email: contact.email,
-                        phone: contact.phone,
-                        role: contact.role
-                    };
-                }
-                
-                console.log('Quote contact changed:', state.selectedQuoteContact);
-            });
+            const quoteContactSelect = document.getElementById('quoteContactSelect');
+            if (quoteContactSelect) {
+                quoteContactSelect.addEventListener('change', function(e) {
+                    const value = e.target.value;
+                    const customer = state.selectedCustomer;
+                    
+                    if (value === 'primary') {
+                        state.quoteContact = customer.primaryContact;
+                    } else if (value === 'add_new') {
+                        // In real implementation, open add contact modal
+                        alert('Add new contact functionality would be implemented here');
+                    } else {
+                        // Find secondary contact
+                        const contact = customer.secondaryContacts?.find(c => c.id === value);
+                        if (contact) {
+                            state.quoteContact = contact;
+                        }
+                    }
+                    
+                    updateQuoteContactDisplay();
+                });
+            }
             
             // Service address toggle
-            document.getElementById('sameAsBilling').addEventListener('change', function(e) {
-                const isChecked = e.target.checked;
-                document.getElementById('serviceAddressFields').classList.toggle('hidden', isChecked);
-                document.getElementById('serviceAddressDisplay').style.display = isChecked ? 'block' : 'none';
-                
-                if (!isChecked) {
-                    // Clear custom address fields
-                    document.getElementById('serviceStreet').value = '';
-                    document.getElementById('serviceAddressNotes').value = '';
-                }
-            });
+            const sameAsBilling = document.getElementById('sameAsBilling');
+            if (sameAsBilling) {
+                sameAsBilling.addEventListener('change', function(e) {
+                    const isChecked = e.target.checked;
+                    const serviceAddressFields = document.getElementById('serviceAddressFields');
+                    const serviceAddressDisplay = document.getElementById('serviceAddressDisplay');
+                    
+                    if (serviceAddressFields) {
+                        serviceAddressFields.classList.toggle('hidden', isChecked);
+                    }
+                    if (serviceAddressDisplay) {
+                        serviceAddressDisplay.style.display = isChecked ? 'block' : 'none';
+                    }
+                    
+                    if (isChecked && state.selectedCustomer && serviceAddressDisplay) {
+                        // Copy billing address to service address
+                        serviceAddressDisplay.innerHTML = `
+                            <div class="text-sm text-gray-700">
+                                ${state.selectedCustomer.address}<br>
+                                ${state.selectedCustomer.city}, ${state.selectedCustomer.state} ${state.selectedCustomer.zip}
+                            </div>
+                        `;
+                    }
+                });
+            }
             
             // Deposit changes
-            document.getElementById('requireDeposit').addEventListener('change', function(e) {
-                state.depositRequired = e.target.checked;
-                document.getElementById('depositSection').classList.toggle('hidden', !e.target.checked);
-                updateSummary();
-            });
+            const requireDeposit = document.getElementById('requireDeposit');
+            const depositType = document.getElementById('depositType');
+            const depositValue = document.getElementById('depositValue');
             
-            document.getElementById('depositType').addEventListener('change', function(e) {
-                state.depositType = e.target.value;
-                document.getElementById('depositValue').step = e.target.value === 'percentage' ? '1' : '0.01';
-                updateSummary();
-            });
+            if (requireDeposit) {
+                requireDeposit.addEventListener('change', function(e) {
+                    state.depositRequired = e.target.checked;
+                    const depositSection = document.getElementById('depositSection');
+                    if (depositSection) {
+                        depositSection.classList.toggle('hidden', !e.target.checked);
+                    }
+                    updateSummary();
+                });
+            }
             
-            document.getElementById('depositValue').addEventListener('input', function(e) {
-                state.depositValue = Number(e.target.value);
-                updateSummary();
-            });
+            if (depositType) {
+                depositType.addEventListener('change', function(e) {
+                    state.depositType = e.target.value;
+                    const depositValueEl = document.getElementById('depositValue');
+                    if (depositValueEl) {
+                        depositValueEl.step = e.target.value === 'percentage' ? '1' : '0.01';
+                    }
+                    updateSummary();
+                });
+            }
+            
+            if (depositValue) {
+                depositValue.addEventListener('input', function(e) {
+                    state.depositValue = Number(e.target.value);
+                    updateSummary();
+                });
+            }
             
             // Create quote button
-            document.getElementById('createQuoteBtn').addEventListener('click', function() {
+            const createQuoteBtn = document.getElementById('createQuoteBtn');
+            if (createQuoteBtn) {
+                createQuoteBtn.addEventListener('click', function() {
                 if (!state.selectedCustomer) {
                     alert('Please select a customer');
                     return;
@@ -2327,10 +2383,13 @@
                 alert(`Quote created successfully for ${state.selectedCustomer.name}!\nQuote will be sent to: ${contactName}`);
                 // In real implementation: redirect to quotes list or quote detail page
                 // window.location.href = 'quotes.html';
-            });
+                });
+            }
             
             // Save draft button
-            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+            const saveDraftBtn = document.getElementById('saveDraftBtn');
+            if (saveDraftBtn) {
+                saveDraftBtn.addEventListener('click', function() {
                 // Create draft quote data
                 const draftData = {
                     customer: state.selectedCustomer,
@@ -2352,50 +2411,97 @@
                 alert('Quote saved as draft!');
                 // In real implementation: redirect to quotes list
                 // window.location.href = 'quotes.html';
-            });
+                });
+            }
             
             // Preview button
-            document.getElementById('previewBtn').addEventListener('click', showPreview);
+            const previewBtn = document.getElementById('previewBtn');
+            if (previewBtn) {
+                previewBtn.addEventListener('click', showPreview);
+            }
             
             // Preview modal buttons
-            document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
-            document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
+            const closePreviewBtn = document.getElementById('closePreviewBtn');
+            const downloadPreviewBtn = document.getElementById('downloadPreviewBtn');
+            
+            if (closePreviewBtn) {
+                closePreviewBtn.addEventListener('click', hidePreview);
+            }
+            if (downloadPreviewBtn) {
+                downloadPreviewBtn.addEventListener('click', downloadPreviewPDF);
+            }
             
             // Invoice preview modal buttons
-            document.getElementById('closeInvoicePreviewBtn').addEventListener('click', hideInvoicePreview);
-            document.getElementById('createAllInvoicesBtn').addEventListener('click', createAllInvoicesFromPreview);
+            const closeInvoicePreviewBtn = document.getElementById('closeInvoicePreviewBtn');
+            const createAllInvoicesBtn = document.getElementById('createAllInvoicesBtn');
+            
+            if (closeInvoicePreviewBtn) {
+                closeInvoicePreviewBtn.addEventListener('click', hideInvoicePreview);
+            }
+            if (createAllInvoicesBtn) {
+                createAllInvoicesBtn.addEventListener('click', createAllInvoicesFromPreview);
+            }
             
             // Price modification modal event listeners
-            document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);
-            document.getElementById('cancelPriceModBtn').addEventListener('click', cancelPriceModification);
-            document.getElementById('savePriceModBtn').addEventListener('click', confirmPriceModification);
+            const closePriceModModal = document.getElementById('closePriceModModal');
+            const cancelPriceModBtn = document.getElementById('cancelPriceModBtn');
+            const savePriceModBtn = document.getElementById('savePriceModBtn');
+            const priceModModal = document.getElementById('priceModModal');
+            
+            if (closePriceModModal) {
+                closePriceModModal.addEventListener('click', cancelPriceModification);
+            }
+            if (cancelPriceModBtn) {
+                cancelPriceModBtn.addEventListener('click', cancelPriceModification);
+            }
+            if (savePriceModBtn) {
+                savePriceModBtn.addEventListener('click', confirmPriceModification);
+            }
             
             // Close modal on background click
-            document.getElementById('priceModModal').addEventListener('click', function(e) {
-                if (e.target.id === 'priceModModal') {
-                    cancelPriceModification();
-                }
-            });
-            
-            // Close modal on Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !document.getElementById('priceModModal').classList.contains('hidden')) {
-                    cancelPriceModification();
-                }
-            });
+            if (priceModModal) {
+                priceModModal.addEventListener('click', function(e) {
+                    if (e.target.id === 'priceModModal') {
+                        cancelPriceModification();
+                    }
+                });
+                
+                // Close modal on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && !priceModModal.classList.contains('hidden')) {
+                        cancelPriceModification();
+                    }
+                });
+            }
 
             // Payment configuration event listeners
-            document.getElementById('savePaymentConfigBtn').addEventListener('click', savePaymentConfiguration);
-            document.getElementById('defaultPaymentTerms').addEventListener('change', updatePaymentTermsDisplay);
+            const savePaymentConfigBtn = document.getElementById('savePaymentConfigBtn');
+            const defaultPaymentTerms = document.getElementById('defaultPaymentTerms');
+            const subscriptionStartDate = document.getElementById('subscriptionStartDate');
+            const billingFrequency = document.getElementById('billingFrequency');
             
-            // Payment method checkboxes
-            document.querySelectorAll('#paymentMethodsContainer input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updatePaymentMethodsDisplay);
-            });
+            if (savePaymentConfigBtn) {
+                savePaymentConfigBtn.addEventListener('click', savePaymentConfiguration);
+            }
+            if (defaultPaymentTerms) {
+                defaultPaymentTerms.addEventListener('change', updatePaymentTermsDisplay);
+            }
+            
+            // Payment method radio buttons
+            const paymentMethodsContainer = document.getElementById('paymentMethodsContainer');
+            if (paymentMethodsContainer) {
+                document.querySelectorAll('#paymentMethodsContainer input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', updatePaymentMethodsDisplay);
+                });
+            }
             
             // Subscription date changes
-            document.getElementById('subscriptionStartDate').addEventListener('change', calculateNextInvoiceDate);
-            document.getElementById('billingFrequency').addEventListener('change', calculateNextInvoiceDate);
+            if (subscriptionStartDate) {
+                subscriptionStartDate.addEventListener('change', calculateNextInvoiceDate);
+            }
+            if (billingFrequency) {
+                billingFrequency.addEventListener('change', calculateNextInvoiceDate);
+            }
             
             // Initialize payment configuration displays
             updatePaymentModel();
@@ -2408,6 +2514,9 @@
 
             // Initialize split invoice functionality
             initializeSplitInvoice();
+
+            // Initialize invoice distribution functionality
+            initializeDistribution();
 
             // Initial render
             renderQuoteItems();
@@ -2483,38 +2592,41 @@
         // Payment model functions
         function updatePaymentModel() {
             const model = document.querySelector('input[name="paymentModel"]:checked').value;
-            const depositSection = document.getElementById('depositSection');
+            console.log('Payment model changed to:', model); // Debug log
+            const depositSection = document.getElementById('paymentDepositSection');
             const subscriptionSection = document.getElementById('subscriptionSection');
             const depositInfo = document.getElementById('depositInfo');
             const paymentModelDisplay = document.getElementById('paymentModelDisplay');
             
+            console.log('Deposit section element:', depositSection); // Debug log
+            
             // Hide all sections first
-            depositSection.classList.add('hidden');
-            subscriptionSection.classList.add('hidden');
-            depositInfo.classList.add('hidden');
+            if (depositSection) depositSection.classList.add('hidden');
+            if (subscriptionSection) subscriptionSection.classList.add('hidden');
+            if (depositInfo) depositInfo.classList.add('hidden');
             
             if (model === 'deposit') {
-                depositSection.classList.remove('hidden');
-                depositInfo.classList.remove('hidden');
-                paymentModelDisplay.textContent = 'Down Payment';
+                if (depositSection) depositSection.classList.remove('hidden');
+                if (depositInfo) depositInfo.classList.remove('hidden');
+                if (paymentModelDisplay) paymentModelDisplay.textContent = 'Down Payment';
             } else if (model === 'subscription') {
-                subscriptionSection.classList.remove('hidden');
-                paymentModelDisplay.textContent = 'Subscription';
+                if (subscriptionSection) subscriptionSection.classList.remove('hidden');
+                if (paymentModelDisplay) paymentModelDisplay.textContent = 'Subscription';
                 // Set default subscription start date to today
-                document.getElementById('subscriptionStartDate').value = new Date().toISOString().split('T')[0];
+                const startDateInput = document.getElementById('subscriptionStartDate');
+                if (startDateInput) startDateInput.value = new Date().toISOString().split('T')[0];
                 calculateNextInvoiceDate();
             } else {
-                paymentModelDisplay.textContent = 'Full Payment';
+                if (paymentModelDisplay) paymentModelDisplay.textContent = 'Full Payment';
             }
             
-            // Update payment method constraints
-            updatePaymentMethodConstraints(model);
+            // Update payment methods display
             updatePaymentMethodsDisplay();
             
             // Update invoice tab summary
-            const invoiceModelDisplay = document.getElementById('invoicePaymentModel');
-            const invoiceDepositInfo = document.getElementById('invoiceDepositInfo');
-            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            const invoiceModelDisplay = document.getElementById('invoiceTabPaymentModel');
+            const invoiceDepositInfo = document.getElementById('invoiceTabDepositInfo');
+            const invoiceDepositAmount = document.getElementById('invoiceTabDepositAmount');
             
             if (invoiceModelDisplay) {
                 if (model === 'deposit') {
@@ -2536,59 +2648,6 @@
                     if (invoiceDepositInfo) {
                         invoiceDepositInfo.classList.add('hidden');
                     }
-                }
-            }
-        }
-
-        function updatePaymentMethodConstraints(model) {
-            const constraints = paymentMethodConstraints[model];
-            const allMethods = ['stripe', 'paypal', 'google_wallet', 'apple_pay', 'cash'];
-            const hintElement = document.getElementById('paymentMethodHint');
-            
-            // Update hint text
-            hintElement.textContent = constraints.hint;
-            if (constraints.reason) {
-                hintElement.textContent += ` (${constraints.reason})`;
-            }
-            
-            // Update each payment method
-            allMethods.forEach(method => {
-                const checkbox = document.getElementById(`payment${method.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')}`);
-                const label = checkbox.closest('label');
-                const tag = document.getElementById(`${method.replace('_', '')}Tag`);
-                
-                if (constraints.allowed.includes(method)) {
-                    // Enable method
-                    checkbox.disabled = false;
-                    label.classList.remove('opacity-50', 'cursor-not-allowed');
-                    label.classList.add('cursor-pointer', 'hover:bg-gray-50');
-                    
-                    // Add tag for subscription required methods
-                    if (model === 'subscription' && tag) {
-                        tag.textContent = 'Required for auto-charge';
-                    } else if (tag) {
-                        tag.textContent = '';
-                    }
-                } else {
-                    // Disable method
-                    checkbox.disabled = true;
-                    checkbox.checked = false;
-                    label.classList.add('opacity-50', 'cursor-not-allowed');
-                    label.classList.remove('cursor-pointer', 'hover:bg-gray-50');
-                    
-                    if (tag) {
-                        tag.textContent = '';
-                    }
-                }
-            });
-            
-            // For subscription, ensure at least one allowed method is checked
-            if (model === 'subscription') {
-                const stripeChecked = document.getElementById('paymentStripe').checked;
-                const paypalChecked = document.getElementById('paymentPaypal').checked;
-                
-                if (!stripeChecked && !paypalChecked) {
-                    document.getElementById('paymentStripe').checked = true;
                 }
             }
         }
@@ -2654,9 +2713,13 @@
             document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
             
             // Update invoice tab summary
-            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            const invoiceDepositAmount = document.getElementById('invoiceTabDepositAmount');
+            const invoiceRemainingBalance = document.getElementById('invoiceTabRemainingBalance');
             if (invoiceDepositAmount) {
                 invoiceDepositAmount.textContent = `$${depositAmount.toFixed(2)}`;
+            }
+            if (invoiceRemainingBalance) {
+                invoiceRemainingBalance.textContent = `$${remaining.toFixed(2)}`;
             }
         }
 
@@ -2672,9 +2735,13 @@
             document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
             
             // Update invoice tab summary
-            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            const invoiceDepositAmount = document.getElementById('invoiceTabDepositAmount');
+            const invoiceRemainingBalance = document.getElementById('invoiceTabRemainingBalance');
             if (invoiceDepositAmount) {
                 invoiceDepositAmount.textContent = `$${depositAmount.toFixed(2)}`;
+            }
+            if (invoiceRemainingBalance) {
+                invoiceRemainingBalance.textContent = `$${remaining.toFixed(2)}`;
             }
         }
 
@@ -2699,43 +2766,41 @@
             display.textContent = termsText;
             
             // Update invoice tab summary
-            const invoiceTermsDisplay = document.getElementById('invoicePaymentTerms');
+            const invoiceTermsDisplay = document.getElementById('invoiceTabPaymentTerms');
             if (invoiceTermsDisplay) {
                 invoiceTermsDisplay.textContent = termsText;
             }
         }
 
         function updatePaymentMethodsDisplay() {
-            const checkboxes = document.querySelectorAll('#paymentMethodsContainer input[type="checkbox"]:checked');
-            const count = checkboxes.length;
-            document.getElementById('paymentMethodsDisplay').textContent = `${count} selected`;
+            const selectedRadio = document.querySelector('#paymentMethodsContainer input[type="radio"]:checked');
+            const selectedMethod = selectedRadio ? selectedRadio.value : 'None';
+            const displayText = selectedMethod === 'stripe' ? 'Stripe' : selectedMethod === 'cash' ? 'Cash' : 'None selected';
+            
+            document.getElementById('paymentMethodsDisplay').textContent = displayText;
             
             // Update invoice tab summary
-            const invoiceMethodsDisplay = document.getElementById('invoicePaymentMethods');
+            const invoiceMethodsDisplay = document.getElementById('invoiceTabPaymentMethods');
             if (invoiceMethodsDisplay) {
-                invoiceMethodsDisplay.textContent = `${count} selected`;
+                invoiceMethodsDisplay.textContent = displayText;
             }
         }
 
         function savePaymentConfiguration() {
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked').value;
-            const paymentMethods = [];
             
-            // Collect selected payment methods
-            if (document.getElementById('paymentStripe').checked) paymentMethods.push('stripe');
-            if (document.getElementById('paymentPaypal').checked) paymentMethods.push('paypal');
-            if (document.getElementById('paymentGoogleWallet').checked) paymentMethods.push('google_wallet');
-            if (document.getElementById('paymentApplePay').checked) paymentMethods.push('apple_pay');
-            if (document.getElementById('paymentCash').checked) paymentMethods.push('cash');
+            // Get selected payment method (single selection)
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
             
-            if (paymentMethods.length === 0) {
-                alert('Please select at least one payment method');
+            if (!paymentMethod) {
+                alert('Please select a payment method');
                 return;
             }
             
             const paymentConfig = {
                 paymentModel: paymentModel,
-                paymentMethods: paymentMethods,
+                paymentMethod: paymentMethod,
                 paymentTerms: document.getElementById('defaultPaymentTerms').value,
                 paymentInstructions: document.getElementById('paymentInstructions').value
             };
@@ -2834,29 +2899,6 @@
                 // Navigate to invoice creation with full amount
                 const quoteId = document.getElementById('quoteIdBadge').textContent;
                 window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=full&amount=${remainingAmount}`;
-            }
-        }
-
-        function createDepositInvoice() {
-            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value;
-            
-            if (paymentModel !== 'deposit') {
-                alert('Please configure deposit settings in the Payment Configuration tab first.');
-                switchTab('paymentConfig');
-                return;
-            }
-            
-            const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
-            
-            if (depositAmount <= 0) {
-                alert('Please set a valid deposit amount in the Payment Configuration tab.');
-                switchTab('paymentConfig');
-                return;
-            }
-            
-            if (confirm(`Create a deposit invoice for $${depositAmount.toFixed(2)}?`)) {
-                const quoteId = document.getElementById('quoteIdBadge').textContent;
-                window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=deposit&amount=${depositAmount}`;
             }
         }
 
@@ -3058,6 +3100,29 @@
         function downloadInvoiceReport() {
             alert('Invoice report download would be implemented here.');
             // In real implementation, generate and download PDF report
+        }
+
+        function createDepositInvoice() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value;
+            
+            if (paymentModel !== 'deposit') {
+                alert('Please configure deposit settings in the Payment Configuration tab first.');
+                switchTab('paymentConfig');
+                return;
+            }
+            
+            const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+            
+            if (depositAmount <= 0) {
+                alert('Please set a valid deposit amount in the Payment Configuration tab.');
+                switchTab('paymentConfig');
+                return;
+            }
+            
+            if (confirm(`Create a deposit invoice for $${depositAmount.toFixed(2)}?`)) {
+                const quoteId = document.getElementById('quoteIdBadge').textContent;
+                window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=deposit&amount=${depositAmount}`;
+            }
         }
 
         // ============================================================================
@@ -3321,6 +3386,16 @@
         let payerIdCounter = 1;
 
         function initializeSplitInvoice() {
+            // Check if split invoice elements exist
+            const splitByPercentage = document.getElementById('splitByPercentage');
+            const splitByAmount = document.getElementById('splitByAmount');
+            const addPayerBtn = document.getElementById('addPayerBtn');
+            
+            if (!splitByPercentage || !splitByAmount || !addPayerBtn) {
+                // Split invoice elements don't exist, skip initialization
+                return;
+            }
+            
             // Add default 2 payers on initialization
             if (payers.length === 0) {
                 addPayer();
@@ -3328,32 +3403,36 @@
             }
 
             // Split Method Buttons
-            document.getElementById('splitByPercentage').addEventListener('click', function() {
+            splitByPercentage.addEventListener('click', function() {
                 splitMethod = 'percentage';
                 this.classList.add('bg-purple-600', 'text-white');
                 this.classList.remove('bg-white', 'border', 'border-gray-300', 'text-gray-700');
                 
                 const amountBtn = document.getElementById('splitByAmount');
-                amountBtn.classList.remove('bg-purple-600', 'text-white');
-                amountBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                if (amountBtn) {
+                    amountBtn.classList.remove('bg-purple-600', 'text-white');
+                    amountBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                }
                 
                 renderPayers();
             });
 
-            document.getElementById('splitByAmount').addEventListener('click', function() {
+            splitByAmount.addEventListener('click', function() {
                 splitMethod = 'amount';
                 this.classList.add('bg-purple-600', 'text-white');
                 this.classList.remove('bg-white', 'border', 'border-gray-300', 'text-gray-700');
                 
                 const percentBtn = document.getElementById('splitByPercentage');
-                percentBtn.classList.remove('bg-purple-600', 'text-white');
-                percentBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                if (percentBtn) {
+                    percentBtn.classList.remove('bg-purple-600', 'text-white');
+                    percentBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                }
                 
                 renderPayers();
             });
 
             // Add Payer Button
-            document.getElementById('addPayerBtn').addEventListener('click', addPayer);
+            addPayerBtn.addEventListener('click', addPayer);
         }
 
         function addPayer() {
@@ -3593,7 +3672,464 @@
             // Check if amounts match (with small tolerance for rounding)
             return Math.abs(totalAmount - allocatedAmount) < 0.01;
         }
+
+        // ============================================================================
+        // INVOICE DISTRIBUTION FUNCTIONALITY
+        // ============================================================================
+
+        // Store payers data
+        let distributionPayers = [
+            {
+                id: 'primary',
+                name: 'Primary Contact',
+                email: 'contact@company.com',
+                percentage: 100,
+                amount: 0, // Will be calculated based on total
+                isPrimary: true
+            }
+        ];
+
+        // Available contacts for selection
+        const availableContacts = {
+            'contact1': { name: 'John Smith', email: 'john@company.com' },
+            'contact2': { name: 'Sarah Johnson', email: 'sarah@business.com' },
+            'contact3': { name: 'Mike Wilson', email: 'mike@corp.com' }
+        };
+
+        // Add selected payer to the table
+        function addSelectedPayer() {
+            const selector = document.getElementById('contactSelector');
+            const selectedValue = selector.value;
+            
+            if (!selectedValue) {
+                alert('Please select a contact to add');
+                return;
+            }
+
+            // Handle quick add option
+            if (selectedValue === 'quick-add') {
+                openQuickAddModal();
+                return;
+            }
+
+            const contact = availableContacts[selectedValue];
+            if (!contact) {
+                alert('Invalid contact selected');
+                return;
+            }
+
+            // Check if contact already exists
+            const exists = distributionPayers.find(p => p.email === contact.email);
+            if (exists) {
+                alert('This contact is already added');
+                return;
+            }
+
+            // Add new payer
+            const newPayer = {
+                id: selectedValue,
+                name: contact.name,
+                email: contact.email,
+                percentage: 0,
+                amount: 0,
+                isPrimary: false
+            };
+
+            distributionPayers.push(newPayer);
+            
+            // Reset primary contact to share the percentage
+            const totalAmount = calculateTotal();
+            if (distributionPayers.length === 2) {
+                distributionPayers[0].percentage = 50;
+                distributionPayers[0].amount = totalAmount * 0.5;
+                newPayer.percentage = 50;
+                newPayer.amount = totalAmount * 0.5;
+            } else {
+                // Distribute evenly among all payers
+                const evenPercentage = Math.floor(100 / distributionPayers.length);
+                distributionPayers.forEach((payer, index) => {
+                    payer.percentage = evenPercentage;
+                    payer.amount = totalAmount * (evenPercentage / 100);
+                });
+                // Give remainder to primary
+                const remainder = 100 - (evenPercentage * distributionPayers.length);
+                distributionPayers[0].percentage += remainder;
+                distributionPayers[0].amount = totalAmount * (distributionPayers[0].percentage / 100);
+            }
+
+            // Clear selector and refresh table
+            selector.value = '';
+            renderPayersTable();
+            updateDistributionSummary();
+        }
+
+        // Remove payer from table
+        function removePayer(payerId) {
+            if (payerId === 'primary') {
+                alert('Cannot remove primary contact');
+                return;
+            }
+
+            distributionPayers = distributionPayers.filter(p => p.id !== payerId);
+            
+            // Redistribute percentages
+            if (distributionPayers.length === 1) {
+                distributionPayers[0].percentage = 100;
+            }
+            
+            renderPayersTable();
+            updateDistributionSummary();
+        }
+
+        // Update payer percentage (and sync amount)
+        function updatePayerPercentage(payerId, newPercentage) {
+            const payer = distributionPayers.find(p => p.id === payerId);
+            if (payer) {
+                payer.percentage = parseFloat(newPercentage) || 0;
+                // Sync amount based on percentage
+                const totalAmount = calculateTotal();
+                payer.amount = (totalAmount * payer.percentage / 100);
+                
+                renderPayersTable();
+                updateDistributionSummary();
+            }
+        }
+
+        // Update payer amount (and sync percentage)
+        function updatePayerAmount(payerId, newAmount) {
+            const payer = distributionPayers.find(p => p.id === payerId);
+            if (payer) {
+                payer.amount = parseFloat(newAmount) || 0;
+                // Sync percentage based on amount
+                const totalAmount = calculateTotal();
+                payer.percentage = totalAmount > 0 ? (payer.amount / totalAmount * 100) : 0;
+                
+                renderPayersTable();
+                updateDistributionSummary();
+            }
+        }
+
+        // Render the payers table
+        function renderPayersTable() {
+            const tbody = document.getElementById('payersTableBody');
+            tbody.innerHTML = '';
+
+            distributionPayers.forEach(payer => {
+                const totalAmount = calculateTotal();
+                const payerAmount = (totalAmount * payer.percentage / 100);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-3">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${payer.name}</div>
+                                <div class="text-xs text-gray-500">${payer.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <input 
+                            type="number" 
+                            value="${payer.percentage.toFixed(1)}" 
+                            min="0" 
+                            max="100" 
+                            step="0.1"
+                            class="w-16 px-2 py-1 text-center border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            onchange="updatePayerPercentage('${payer.id}', this.value)"
+                        />
+                        <span class="text-xs text-gray-500 ml-1">%</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <div class="relative">
+                            <span class="absolute left-2 top-1.5 text-gray-500 text-sm">$</span>
+                            <input 
+                                type="number" 
+                                value="${payerAmount.toFixed(2)}" 
+                                min="0" 
+                                step="0.01"
+                                class="w-24 pl-6 pr-2 py-1 text-center border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                onchange="updatePayerAmount('${payer.id}', this.value)"
+                            />
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        ${payer.isPrimary ? 
+                            '<span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">Primary</span>' :
+                            `<button onclick="removePayer('${payer.id}')" class="text-red-600 hover:text-red-700 text-xs font-medium">Remove</button>`
+                        }
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update distribution summary
+        function updateDistributionSummary() {
+            const totalPercentage = distributionPayers.reduce((sum, p) => sum + p.percentage, 0);
+            const totalAmount = calculateTotal();
+            
+            document.getElementById('totalPercentage').textContent = `${totalPercentage}%`;
+            document.getElementById('totalAmount').textContent = `$${totalAmount.toFixed(2)}`;
+            
+            // Show/hide validation warning
+            const warningDiv = document.getElementById('distributionValidationWarning');
+            const warningMessage = document.getElementById('distributionValidationMessage');
+            
+            if (totalPercentage !== 100) {
+                warningDiv.classList.remove('hidden');
+                if (totalPercentage < 100) {
+                    warningMessage.textContent = `Total percentage is ${totalPercentage}%. Please allocate the remaining ${100 - totalPercentage}%.`;
+                } else {
+                    warningMessage.textContent = `Total percentage is ${totalPercentage}%. Please reduce by ${totalPercentage - 100}%.`;
+                }
+            } else {
+                warningDiv.classList.add('hidden');
+            }
+            
+            // Update percentage color
+            const percentageSpan = document.getElementById('totalPercentage');
+            if (totalPercentage === 100) {
+                percentageSpan.classList.remove('text-red-600');
+                percentageSpan.classList.add('text-green-600');
+            } else {
+                percentageSpan.classList.remove('text-green-600');
+                percentageSpan.classList.add('text-red-600');
+            }
+        }
+
+        // Initialize distribution on page load
+        function initializeDistribution() {
+            // Set initial amount for primary contact
+            const totalAmount = calculateTotal();
+            distributionPayers[0].amount = totalAmount;
+            
+            renderPayersTable();
+            updateDistributionSummary();
+            
+            // Add event listener to the Add button
+            const addBtn = document.getElementById('addSelectedPayerBtn');
+            if (addBtn) {
+                addBtn.addEventListener('click', addSelectedPayer);
+            }
+
+            // Initialize quick add modal
+            initializeQuickAddModal();
+        }
+
+        // ============================================================================
+        // QUICK ADD CONTACT MODAL FUNCTIONALITY
+        // ============================================================================
+
+        let quickAddContactCounter = 1000; // Start from 1000 to avoid conflicts
+
+        function openQuickAddModal() {
+            const modal = document.getElementById('quickAddContactModal');
+            modal.classList.remove('hidden');
+            // Clear form
+            document.getElementById('quickAddContactForm').reset();
+            // Focus on name field
+            document.getElementById('quickAddName').focus();
+        }
+
+        function closeQuickAddModal() {
+            const modal = document.getElementById('quickAddContactModal');
+            modal.classList.add('hidden');
+        }
+
+        function initializeQuickAddModal() {
+            // Close button
+            document.getElementById('closeQuickAddModal').addEventListener('click', closeQuickAddModal);
+            document.getElementById('cancelQuickAdd').addEventListener('click', closeQuickAddModal);
+
+            // Close on background click
+            document.getElementById('quickAddContactModal').addEventListener('click', (e) => {
+                if (e.target.id === 'quickAddContactModal') {
+                    closeQuickAddModal();
+                }
+            });
+
+            // Form submission
+            document.getElementById('quickAddContactForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleQuickAddSubmit();
+            });
+        }
+
+        function handleQuickAddSubmit() {
+            const name = document.getElementById('quickAddName').value.trim();
+            const email = document.getElementById('quickAddEmail').value.trim();
+            const phone = document.getElementById('quickAddPhone').value.trim();
+            const company = document.getElementById('quickAddCompany').value.trim();
+            const role = document.getElementById('quickAddRole').value.trim();
+
+            // Validation
+            if (!name || !email) {
+                alert('Please fill in the required fields (Name and Email)');
+                return;
+            }
+
+            // Check if email already exists
+            const exists = distributionPayers.find(p => p.email === email);
+            if (exists) {
+                alert('A contact with this email already exists');
+                return;
+            }
+
+            // Create new contact ID
+            const contactId = `quick-${quickAddContactCounter++}`;
+            
+            // Add to available contacts
+            availableContacts[contactId] = { 
+                name: name, 
+                email: email, 
+                phone: phone,
+                company: company,
+                role: role
+            };
+
+            // Add to dropdown (before the quick-add option)
+            const selector = document.getElementById('contactSelector');
+            const quickAddOption = selector.querySelector('option[value="quick-add"]');
+            const newOption = document.createElement('option');
+            newOption.value = contactId;
+            newOption.textContent = `${name} - ${email}`;
+            selector.insertBefore(newOption, quickAddOption);
+
+            // Create new payer
+            const newPayer = {
+                id: contactId,
+                name: name,
+                email: email,
+                phone: phone,
+                company: company,
+                role: role,
+                percentage: 0,
+                amount: 0,
+                isPrimary: false
+            };
+
+            distributionPayers.push(newPayer);
+            
+            // Auto-distribute percentages
+            const totalAmount = calculateTotal();
+            if (distributionPayers.length === 2) {
+                distributionPayers[0].percentage = 50;
+                distributionPayers[0].amount = totalAmount * 0.5;
+                newPayer.percentage = 50;
+                newPayer.amount = totalAmount * 0.5;
+            } else {
+                // Distribute evenly among all payers
+                const evenPercentage = Math.floor(100 / distributionPayers.length);
+                distributionPayers.forEach((payer, index) => {
+                    payer.percentage = evenPercentage;
+                    payer.amount = totalAmount * (evenPercentage / 100);
+                });
+                // Give remainder to primary
+                const remainder = 100 - (evenPercentage * distributionPayers.length);
+                distributionPayers[0].percentage += remainder;
+                distributionPayers[0].amount = totalAmount * (distributionPayers[0].percentage / 100);
+            }
+
+            // Update UI
+            renderPayersTable();
+            updateDistributionSummary();
+            closeQuickAddModal();
+
+            // Show success message
+            alert(`Contact "${name}" added successfully!`);
+        }
     </script>
+
+    <!-- Quick Add Contact Modal -->
+    <div id="quickAddContactModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Quick Add Contact</h3>
+                    <button id="closeQuickAddModal" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="quickAddContactForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name *</label>
+                        <input 
+                            type="text" 
+                            id="quickAddName" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                            placeholder="John Doe"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                        <input 
+                            type="email" 
+                            id="quickAddEmail" 
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                            placeholder="john@example.com"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input 
+                            type="tel" 
+                            id="quickAddPhone" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                            placeholder="+1 234 567 8900"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                        <input 
+                            type="text" 
+                            id="quickAddCompany" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                            placeholder="ABC Corp"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Role/Relationship</label>
+                        <input 
+                            type="text" 
+                            id="quickAddRole" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                            placeholder="e.g., Manager, Partner, Assistant"
+                        >
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button 
+                            type="button" 
+                            id="cancelQuickAdd"
+                            class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit"
+                            class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                            Add Contact
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
