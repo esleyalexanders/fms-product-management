@@ -79,8 +79,38 @@
                 </div>
             </div>
 
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-lg shadow-sm mb-4">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                        <button 
+                            id="quoteDetailsTab"
+                            class="tab-button active py-4 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600"
+                            onclick="switchTab('quoteDetails')"
+                        >
+                            Quote Details
+                        </button>
+                        <button 
+                            id="paymentConfigTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            onclick="switchTab('paymentConfig')"
+                        >
+                            Payment Configuration
+                        </button>
+                        <button 
+                            id="invoicesTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            onclick="switchTab('invoices')"
+                        >
+                            Invoices
+                        </button>
+                    </nav>
+                </div>
+            </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Quote Details Tab Content -->
+            <div id="quoteDetailsContent" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 <!-- Left Column - Customer & Services -->
                 <div class="lg:col-span-2 space-y-4">
@@ -450,6 +480,581 @@
                     </div>
                 </div>
             </div>
+            </div>
+
+            <!-- Payment Configuration Tab Content -->
+            <div id="paymentConfigContent" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    
+                    <!-- Left Column - Payment Configuration -->
+                    <div class="lg:col-span-2 space-y-4">
+                        
+                        <!-- Payment Model Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Model</h2>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 p-3 border-2 border-purple-300 bg-purple-50 rounded-lg cursor-pointer">
+                                    <input type="radio" name="paymentModel" value="full" checked class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Full Payment (Upfront)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Customer pays entire amount upfront before service begins</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                    <input type="radio" name="paymentModel" value="deposit" class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Down Payment (Deposit)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Customer pays deposit now, remaining balance later</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                    <input type="radio" name="paymentModel" value="subscription" class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Subscription (Recurring)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Automatic recurring invoices at regular intervals</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Subscription Settings (shown when subscription selected) -->
+                            <div id="subscriptionSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Subscription Settings</h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Billing Frequency</label>
+                                        <select id="billingFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option value="weekly">Weekly</option>
+                                            <option value="biweekly">Bi-weekly (Every 2 weeks)</option>
+                                            <option value="monthly" selected>Monthly</option>
+                                            <option value="quarterly">Quarterly (Every 3 months)</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription Start Date</label>
+                                        <input type="date" id="subscriptionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription End (Optional)</label>
+                                        <select id="subscriptionEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="toggleEndDate()">
+                                            <option value="ongoing">Ongoing (No end date)</option>
+                                            <option value="after_cycles">After specific number of cycles</option>
+                                            <option value="end_date">Specific end date</option>
+                                        </select>
+                                    </div>
+                                    <div id="cyclesInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">Number of Billing Cycles</label>
+                                        <input type="number" id="billingCycles" min="1" placeholder="e.g., 12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div id="endDateInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">End Date</label>
+                                        <input type="date" id="subscriptionEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 bg-green-50 rounded">
+                                        <input type="checkbox" id="autoCharge" checked class="rounded text-green-600" />
+                                        <label for="autoCharge" class="text-xs text-green-800">
+                                            <strong>Auto-charge enabled</strong> - Automatically charge customer on billing date
+                                        </label>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Next Invoice:</strong> <span id="nextInvoiceDate">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deposit Amount (shown when deposit selected) -->
+                            <div id="depositSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Deposit Amount</h3>
+                                <div class="space-y-2">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <input 
+                                                    type="number" 
+                                                    id="depositAmount"
+                                                    placeholder="0.00"
+                                                    min="0"
+                                                    step="0.01"
+                                                    class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositCalculation()"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <input 
+                                                    type="number" 
+                                                    id="depositPercentage"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    max="100"
+                                                    step="1"
+                                                    class="w-full pr-8 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositFromPercentage()"
+                                                />
+                                                <span class="absolute right-3 top-2.5 text-gray-500">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="setDepositPercentage(25)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">25%</button>
+                                        <button type="button" onclick="setDepositPercentage(50)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">50%</button>
+                                        <button type="button" onclick="setDepositPercentage(75)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">75%</button>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Remaining Balance:</strong> <span id="remainingBalance">$0.00</span> (due after service completion)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accepted Payment Methods Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Accepted Payment Methods</h2>
+                            
+                            <div id="paymentMethodsContainer" class="space-y-2">
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="stripe">
+                                    <input type="checkbox" id="paymentStripe" value="stripe" checked class="rounded text-purple-600" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Stripe</span>
+                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="stripeTag"></span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="paypal">
+                                    <input type="checkbox" id="paymentPaypal" value="paypal" checked class="rounded text-purple-600" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">PayPal</span>
+                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="paypalTag"></span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="google_wallet">
+                                    <input type="checkbox" id="paymentGoogleWallet" value="google_wallet" class="rounded text-purple-600" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Google Wallet</span>
+                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="googleWalletTag"></span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="apple_pay">
+                                    <input type="checkbox" id="paymentApplePay" value="apple_pay" class="rounded text-purple-600" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Apple Pay</span>
+                                    <span class="ml-auto text-xs text-purple-600 font-medium" id="applePayTag"></span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" data-payment-method="cash">
+                                    <input type="checkbox" id="paymentCash" value="cash" class="rounded text-purple-600" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Cash</span>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2" id="paymentMethodHint">Select at least one payment method</p>
+                        </div>
+
+                        <!-- Payment Terms Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Terms</h2>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Payment Terms</label>
+                                    <select 
+                                        id="defaultPaymentTerms"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    >
+                                        <option value="due_on_receipt">Due on Receipt</option>
+                                        <option value="net_7">Net 7 Days</option>
+                                        <option value="net_15">Net 15 Days</option>
+                                        <option value="net_30" selected>Net 30 Days</option>
+                                        <option value="net_60">Net 60 Days</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Instructions</label>
+                                    <textarea 
+                                        id="paymentInstructions"
+                                        rows="3"
+                                        placeholder="Payment instructions, terms, or special notes..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Payment Summary -->
+                    <div class="space-y-4">
+                        
+                        <!-- Payment Configuration Summary -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Configuration Summary</h2>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="p-3 bg-purple-50 rounded-lg">
+                                    <div class="text-xs text-purple-600 mb-1">Payment Model</div>
+                                    <div class="text-lg font-bold text-purple-700" id="paymentModelDisplay">Full Payment</div>
+                                </div>
+
+                                <div class="space-y-2 text-sm">
+                                    <div id="depositInfo" class="hidden">
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-gray-600">Deposit Amount</span>
+                                            <span class="text-gray-900 font-semibold" id="depositAmountDisplay">$0.00</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-gray-600">Remaining Balance</span>
+                                            <span class="text-gray-600" id="remainingBalanceDisplay">$0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Payment Terms</span>
+                                        <span class="text-gray-900 font-medium" id="paymentTermsDisplay">Net 30 Days</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Payment Methods</span>
+                                        <span class="text-gray-900 font-medium" id="paymentMethodsDisplay">2 selected</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-2">
+                                <button 
+                                    id="savePaymentConfigBtn"
+                                    class="w-full bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center gap-2"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                                    </svg>
+                                    Save Payment Configuration
+                                </button>
+                            </div>
+
+                            <!-- Help Text -->
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                <p class="text-xs text-blue-800">
+                                    <strong>Payment Configuration</strong><br>
+                                    These settings will be applied when creating invoices from this quote.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Tab Content -->
+            <div id="invoicesContent" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    
+                    <!-- Left Column - Invoice Management -->
+                    <div class="lg:col-span-2 space-y-4">
+                        
+                        <!-- Create New Invoice Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900">Create New Invoice</h2>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">From Quote</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <button 
+                                    onclick="createFullInvoice()"
+                                    class="p-4 border-2 border-purple-200 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-colors text-left"
+                                >
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-gray-900">Full Invoice</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Invoice for the complete quote amount</p>
+                                </button>
+                                
+                                <button 
+                                    onclick="createDepositInvoice()"
+                                    class="p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors text-left"
+                                >
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-gray-900">Deposit Invoice</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Invoice for deposit/down payment</p>
+                                </button>
+                                
+                                <button 
+                                    onclick="createPartialInvoice()"
+                                    class="p-4 border-2 border-green-200 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors text-left"
+                                >
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="font-semibold text-gray-900">Partial Invoice</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600">Invoice for selected items only</p>
+                                </button>
+                            </div>
+                            
+                            <!-- Preview Invoices Button -->
+                            <div class="mb-4">
+                                <button 
+                                    onclick="showInvoicePreview()"
+                                    class="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    Preview All Invoices
+                                </button>
+                            </div>
+                            
+                            <!-- Payment Configuration Summary -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex items-start gap-2 mb-3">
+                                    <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-blue-800 text-sm mb-2">Payment Configuration Summary</p>
+                                        <div class="space-y-2 text-xs text-blue-700">
+                                            <div class="flex justify-between">
+                                                <span>Payment Model:</span>
+                                                <span class="font-medium" id="invoicePaymentModel">Full Payment</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span>Payment Terms:</span>
+                                                <span class="font-medium" id="invoicePaymentTerms">Net 30 Days</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span>Payment Methods:</span>
+                                                <span class="font-medium" id="invoicePaymentMethods">2 selected</span>
+                                            </div>
+                                            <div id="invoiceDepositInfo" class="hidden">
+                                                <div class="flex justify-between">
+                                                    <span>Deposit Amount:</span>
+                                                    <span class="font-medium" id="invoiceDepositAmount">$0.00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 pt-2 border-t border-blue-300">
+                                            <button 
+                                                onclick="switchTab('paymentConfig')"
+                                                class="text-xs text-blue-700 hover:text-blue-800 underline"
+                                            >
+                                                Configure Payment Settings →
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Split Invoice Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900">Split Invoice</h2>
+                                <p class="text-xs text-gray-500 mt-1">Create separate invoices for multiple payers</p>
+                            </div>
+
+                            <!-- Split Configuration -->
+                            <div id="splitInvoiceConfig" class="space-y-4">
+                                <!-- Split Method -->
+                                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Split Method</label>
+                                    <div class="flex gap-2">
+                                        <button 
+                                            id="splitByPercentage" 
+                                            class="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-purple-600 text-white"
+                                        >
+                                            By Percentage
+                                        </button>
+                                        <button 
+                                            id="splitByAmount" 
+                                            class="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                                        >
+                                            By Amount
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Payers List -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <label class="text-sm font-medium text-gray-700">Payers</label>
+                                        <button 
+                                            id="addPayerBtn"
+                                            class="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                                        >
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Add Payer
+                                        </button>
+                                    </div>
+                                    <div id="payersList" class="space-y-3">
+                                        <!-- Payers will be added here -->
+                                    </div>
+                                </div>
+
+                                <!-- Split Summary -->
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                    <div class="text-xs font-medium text-gray-700 mb-2">Split Summary</div>
+                                    <div class="space-y-1 text-xs">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Total Amount:</span>
+                                            <span id="splitTotalAmount" class="font-medium">$0.00</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Allocated:</span>
+                                            <span id="splitAllocatedAmount" class="font-medium">$0.00</span>
+                                        </div>
+                                        <div class="flex justify-between border-t border-gray-300 pt-1 mt-1">
+                                            <span class="text-gray-600">Remaining:</span>
+                                            <span id="splitRemainingAmount" class="font-medium text-red-600">$0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Validation Warning -->
+                                <div id="splitValidationWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <div class="flex items-start gap-2">
+                                        <svg class="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                        <p class="text-xs text-yellow-800" id="splitValidationMessage">Please allocate the full amount across all payers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Existing Invoices Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900">Existing Invoices</h2>
+                                <button 
+                                    onclick="refreshInvoices()"
+                                    class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Refresh
+                                </button>
+                            </div>
+                            
+                            <div id="invoicesList" class="space-y-3">
+                                <!-- Invoices will be populated here -->
+                            </div>
+                            
+                            <div id="noInvoicesState" class="text-center py-8 text-gray-500">
+                                <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 mb-1">No invoices created yet</p>
+                                <p class="text-xs text-gray-500">Create your first invoice using the options above</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Invoice Summary -->
+                    <div class="space-y-4">
+                        
+                        <!-- Invoice Summary -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Invoice Summary</h2>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="p-3 bg-gray-50 rounded-lg">
+                                    <div class="text-xs text-gray-600 mb-1">Quote Total</div>
+                                    <div class="text-2xl font-bold text-gray-900" id="invoiceQuoteTotal">$0.00</div>
+                                </div>
+
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Total Invoiced</span>
+                                        <span class="font-medium text-gray-900" id="totalInvoiced">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Total Paid</span>
+                                        <span class="font-medium text-green-600" id="totalPaid">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Outstanding</span>
+                                        <span class="font-medium text-red-600" id="totalOutstanding">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between border-t border-gray-200 pt-2">
+                                        <span class="text-gray-600">Remaining to Invoice</span>
+                                        <span class="font-semibold text-blue-600" id="remainingToInvoice">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Invoice Status -->
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-gray-700">Invoice Status</span>
+                                    <span id="invoiceStatusBadge" class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">Not Invoiced</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="invoiceProgressBar" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="invoiceProgressText">0% of quote amount invoiced</p>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="border-t border-gray-200 pt-3 mt-3">
+                                <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Actions</h3>
+                                <div class="space-y-2">
+                                    <button 
+                                        onclick="sendPaymentReminder()"
+                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                                    >
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                        Send Payment Reminder
+                                    </button>
+                                    <button 
+                                        onclick="viewPaymentHistory()"
+                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                                    >
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                        </svg>
+                                        View Payment History
+                                    </button>
+                                    <button 
+                                        onclick="downloadInvoiceReport()"
+                                        class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                                    >
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        Download Invoice Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -524,6 +1129,38 @@
                     <button id="savePriceModBtn" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
                         Save Changes
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Preview Modal -->
+    <div id="invoicePreviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6 sticky top-0 bg-white pb-4 border-b">
+                    <h3 class="text-xl font-semibold text-gray-900">Invoice Preview</h3>
+                    <div class="flex gap-2">
+                        <button 
+                            id="createAllInvoicesBtn"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center gap-2"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Create All Invoices
+                        </button>
+                        <button 
+                            id="closeInvoicePreviewBtn"
+                            class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+
+                <div id="invoicePreviewContent" class="space-y-6">
+                    <!-- Invoice previews will be populated here -->
                 </div>
             </div>
         </div>
@@ -1724,6 +2361,10 @@
             document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
             document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
             
+            // Invoice preview modal buttons
+            document.getElementById('closeInvoicePreviewBtn').addEventListener('click', hideInvoicePreview);
+            document.getElementById('createAllInvoicesBtn').addEventListener('click', createAllInvoicesFromPreview);
+            
             // Price modification modal event listeners
             document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);
             document.getElementById('cancelPriceModBtn').addEventListener('click', cancelPriceModification);
@@ -1742,6 +2383,31 @@
                     cancelPriceModification();
                 }
             });
+
+            // Payment configuration event listeners
+            document.getElementById('savePaymentConfigBtn').addEventListener('click', savePaymentConfiguration);
+            document.getElementById('defaultPaymentTerms').addEventListener('change', updatePaymentTermsDisplay);
+            
+            // Payment method checkboxes
+            document.querySelectorAll('#paymentMethodsContainer input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updatePaymentMethodsDisplay);
+            });
+            
+            // Subscription date changes
+            document.getElementById('subscriptionStartDate').addEventListener('change', calculateNextInvoiceDate);
+            document.getElementById('billingFrequency').addEventListener('change', calculateNextInvoiceDate);
+            
+            // Initialize payment configuration displays
+            updatePaymentModel();
+            updatePaymentTermsDisplay();
+            updatePaymentMethodsDisplay();
+
+            // Initialize invoice management
+            loadInvoices();
+            updateInvoiceSummary();
+
+            // Initialize split invoice functionality
+            initializeSplitInvoice();
 
             // Initial render
             renderQuoteItems();
@@ -1764,6 +2430,1168 @@
             
             // Navigate to invoice creation page with quote ID
             window.location.href = `invoice_create_simple.html?quoteId=${quoteId}`;
+        }
+
+        // ============================================================================
+        // TAB SWITCHING FUNCTIONALITY
+        // ============================================================================
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active', 'border-blue-500', 'text-blue-600');
+                button.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Content').classList.remove('hidden');
+            
+            // Add active class to selected tab button
+            const activeButton = document.getElementById(tabName + 'Tab');
+            activeButton.classList.add('active', 'border-blue-500', 'text-blue-600');
+            activeButton.classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        // ============================================================================
+        // PAYMENT CONFIGURATION FUNCTIONALITY
+        // ============================================================================
+
+        // Payment method constraints based on payment model
+        const paymentMethodConstraints = {
+            full: {
+                allowed: ['stripe', 'paypal', 'google_wallet', 'apple_pay', 'cash'],
+                hint: 'All payment methods available for full payment'
+            },
+            deposit: {
+                allowed: ['stripe', 'paypal', 'cash'],
+                hint: 'Deposit payments support Stripe, PayPal, and Cash only',
+                reason: 'Digital wallets not supported for deposit payments'
+            },
+            subscription: {
+                allowed: ['stripe', 'paypal'],
+                required: true,
+                hint: 'Subscription requires auto-charge capable methods (Stripe or PayPal)',
+                reason: 'Only Stripe and PayPal support recurring automatic charges'
+            }
+        };
+
+        // Payment model functions
+        function updatePaymentModel() {
+            const model = document.querySelector('input[name="paymentModel"]:checked').value;
+            const depositSection = document.getElementById('depositSection');
+            const subscriptionSection = document.getElementById('subscriptionSection');
+            const depositInfo = document.getElementById('depositInfo');
+            const paymentModelDisplay = document.getElementById('paymentModelDisplay');
+            
+            // Hide all sections first
+            depositSection.classList.add('hidden');
+            subscriptionSection.classList.add('hidden');
+            depositInfo.classList.add('hidden');
+            
+            if (model === 'deposit') {
+                depositSection.classList.remove('hidden');
+                depositInfo.classList.remove('hidden');
+                paymentModelDisplay.textContent = 'Down Payment';
+            } else if (model === 'subscription') {
+                subscriptionSection.classList.remove('hidden');
+                paymentModelDisplay.textContent = 'Subscription';
+                // Set default subscription start date to today
+                document.getElementById('subscriptionStartDate').value = new Date().toISOString().split('T')[0];
+                calculateNextInvoiceDate();
+            } else {
+                paymentModelDisplay.textContent = 'Full Payment';
+            }
+            
+            // Update payment method constraints
+            updatePaymentMethodConstraints(model);
+            updatePaymentMethodsDisplay();
+            
+            // Update invoice tab summary
+            const invoiceModelDisplay = document.getElementById('invoicePaymentModel');
+            const invoiceDepositInfo = document.getElementById('invoiceDepositInfo');
+            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            
+            if (invoiceModelDisplay) {
+                if (model === 'deposit') {
+                    invoiceModelDisplay.textContent = 'Down Payment';
+                    if (invoiceDepositInfo) {
+                        invoiceDepositInfo.classList.remove('hidden');
+                        const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+                        if (invoiceDepositAmount) {
+                            invoiceDepositAmount.textContent = `$${depositAmount.toFixed(2)}`;
+                        }
+                    }
+                } else if (model === 'subscription') {
+                    invoiceModelDisplay.textContent = 'Subscription';
+                    if (invoiceDepositInfo) {
+                        invoiceDepositInfo.classList.add('hidden');
+                    }
+                } else {
+                    invoiceModelDisplay.textContent = 'Full Payment';
+                    if (invoiceDepositInfo) {
+                        invoiceDepositInfo.classList.add('hidden');
+                    }
+                }
+            }
+        }
+
+        function updatePaymentMethodConstraints(model) {
+            const constraints = paymentMethodConstraints[model];
+            const allMethods = ['stripe', 'paypal', 'google_wallet', 'apple_pay', 'cash'];
+            const hintElement = document.getElementById('paymentMethodHint');
+            
+            // Update hint text
+            hintElement.textContent = constraints.hint;
+            if (constraints.reason) {
+                hintElement.textContent += ` (${constraints.reason})`;
+            }
+            
+            // Update each payment method
+            allMethods.forEach(method => {
+                const checkbox = document.getElementById(`payment${method.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')}`);
+                const label = checkbox.closest('label');
+                const tag = document.getElementById(`${method.replace('_', '')}Tag`);
+                
+                if (constraints.allowed.includes(method)) {
+                    // Enable method
+                    checkbox.disabled = false;
+                    label.classList.remove('opacity-50', 'cursor-not-allowed');
+                    label.classList.add('cursor-pointer', 'hover:bg-gray-50');
+                    
+                    // Add tag for subscription required methods
+                    if (model === 'subscription' && tag) {
+                        tag.textContent = 'Required for auto-charge';
+                    } else if (tag) {
+                        tag.textContent = '';
+                    }
+                } else {
+                    // Disable method
+                    checkbox.disabled = true;
+                    checkbox.checked = false;
+                    label.classList.add('opacity-50', 'cursor-not-allowed');
+                    label.classList.remove('cursor-pointer', 'hover:bg-gray-50');
+                    
+                    if (tag) {
+                        tag.textContent = '';
+                    }
+                }
+            });
+            
+            // For subscription, ensure at least one allowed method is checked
+            if (model === 'subscription') {
+                const stripeChecked = document.getElementById('paymentStripe').checked;
+                const paypalChecked = document.getElementById('paymentPaypal').checked;
+                
+                if (!stripeChecked && !paypalChecked) {
+                    document.getElementById('paymentStripe').checked = true;
+                }
+            }
+        }
+
+        function toggleEndDate() {
+            const endType = document.getElementById('subscriptionEnd').value;
+            const cyclesInput = document.getElementById('cyclesInput');
+            const endDateInput = document.getElementById('endDateInput');
+            
+            cyclesInput.classList.add('hidden');
+            endDateInput.classList.add('hidden');
+            
+            if (endType === 'after_cycles') {
+                cyclesInput.classList.remove('hidden');
+            } else if (endType === 'end_date') {
+                endDateInput.classList.remove('hidden');
+            }
+            
+            calculateNextInvoiceDate();
+        }
+
+        function calculateNextInvoiceDate() {
+            const startDate = new Date(document.getElementById('subscriptionStartDate').value);
+            const frequency = document.getElementById('billingFrequency').value;
+            
+            if (!startDate || isNaN(startDate)) {
+                document.getElementById('nextInvoiceDate').textContent = '-';
+                return;
+            }
+            
+            const nextDate = new Date(startDate);
+            
+            switch(frequency) {
+                case 'weekly':
+                    nextDate.setDate(nextDate.getDate() + 7);
+                    break;
+                case 'biweekly':
+                    nextDate.setDate(nextDate.getDate() + 14);
+                    break;
+                case 'monthly':
+                    nextDate.setMonth(nextDate.getMonth() + 1);
+                    break;
+                case 'quarterly':
+                    nextDate.setMonth(nextDate.getMonth() + 3);
+                    break;
+                case 'yearly':
+                    nextDate.setFullYear(nextDate.getFullYear() + 1);
+                    break;
+            }
+            
+            document.getElementById('nextInvoiceDate').textContent = nextDate.toLocaleDateString();
+        }
+
+        function updateDepositCalculation() {
+            const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+            const total = calculateTotal();
+            const percentage = (depositAmount / total * 100).toFixed(0);
+            const remaining = total - depositAmount;
+            
+            document.getElementById('depositPercentage').value = percentage;
+            document.getElementById('remainingBalance').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('depositAmountDisplay').textContent = `$${depositAmount.toFixed(2)}`;
+            document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
+            
+            // Update invoice tab summary
+            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            if (invoiceDepositAmount) {
+                invoiceDepositAmount.textContent = `$${depositAmount.toFixed(2)}`;
+            }
+        }
+
+        function updateDepositFromPercentage() {
+            const percentage = parseFloat(document.getElementById('depositPercentage').value) || 0;
+            const total = calculateTotal();
+            const depositAmount = (total * percentage / 100);
+            const remaining = total - depositAmount;
+            
+            document.getElementById('depositAmount').value = depositAmount.toFixed(2);
+            document.getElementById('remainingBalance').textContent = `$${remaining.toFixed(2)}`;
+            document.getElementById('depositAmountDisplay').textContent = `$${depositAmount.toFixed(2)}`;
+            document.getElementById('remainingBalanceDisplay').textContent = `$${remaining.toFixed(2)}`;
+            
+            // Update invoice tab summary
+            const invoiceDepositAmount = document.getElementById('invoiceDepositAmount');
+            if (invoiceDepositAmount) {
+                invoiceDepositAmount.textContent = `$${depositAmount.toFixed(2)}`;
+            }
+        }
+
+        function setDepositPercentage(percent) {
+            document.getElementById('depositPercentage').value = percent;
+            updateDepositFromPercentage();
+        }
+
+        function updatePaymentTermsDisplay() {
+            const terms = document.getElementById('defaultPaymentTerms').value;
+            const display = document.getElementById('paymentTermsDisplay');
+            
+            const termsMap = {
+                'due_on_receipt': 'Due on Receipt',
+                'net_7': 'Net 7 Days',
+                'net_15': 'Net 15 Days',
+                'net_30': 'Net 30 Days',
+                'net_60': 'Net 60 Days'
+            };
+            
+            const termsText = termsMap[terms] || 'Net 30 Days';
+            display.textContent = termsText;
+            
+            // Update invoice tab summary
+            const invoiceTermsDisplay = document.getElementById('invoicePaymentTerms');
+            if (invoiceTermsDisplay) {
+                invoiceTermsDisplay.textContent = termsText;
+            }
+        }
+
+        function updatePaymentMethodsDisplay() {
+            const checkboxes = document.querySelectorAll('#paymentMethodsContainer input[type="checkbox"]:checked');
+            const count = checkboxes.length;
+            document.getElementById('paymentMethodsDisplay').textContent = `${count} selected`;
+            
+            // Update invoice tab summary
+            const invoiceMethodsDisplay = document.getElementById('invoicePaymentMethods');
+            if (invoiceMethodsDisplay) {
+                invoiceMethodsDisplay.textContent = `${count} selected`;
+            }
+        }
+
+        function savePaymentConfiguration() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked').value;
+            const paymentMethods = [];
+            
+            // Collect selected payment methods
+            if (document.getElementById('paymentStripe').checked) paymentMethods.push('stripe');
+            if (document.getElementById('paymentPaypal').checked) paymentMethods.push('paypal');
+            if (document.getElementById('paymentGoogleWallet').checked) paymentMethods.push('google_wallet');
+            if (document.getElementById('paymentApplePay').checked) paymentMethods.push('apple_pay');
+            if (document.getElementById('paymentCash').checked) paymentMethods.push('cash');
+            
+            if (paymentMethods.length === 0) {
+                alert('Please select at least one payment method');
+                return;
+            }
+            
+            const paymentConfig = {
+                paymentModel: paymentModel,
+                paymentMethods: paymentMethods,
+                paymentTerms: document.getElementById('defaultPaymentTerms').value,
+                paymentInstructions: document.getElementById('paymentInstructions').value
+            };
+            
+            // Add subscription data if applicable
+            if (paymentModel === 'subscription') {
+                const startDate = document.getElementById('subscriptionStartDate').value;
+                if (!startDate) {
+                    alert('Please select a subscription start date');
+                    return;
+                }
+                
+                paymentConfig.subscription = {
+                    frequency: document.getElementById('billingFrequency').value,
+                    startDate: startDate,
+                    endType: document.getElementById('subscriptionEnd').value,
+                    autoCharge: document.getElementById('autoCharge').checked
+                };
+                
+                const endType = document.getElementById('subscriptionEnd').value;
+                if (endType === 'after_cycles') {
+                    const cycles = parseInt(document.getElementById('billingCycles').value);
+                    if (!cycles || cycles <= 0) {
+                        alert('Please enter a valid number of billing cycles');
+                        return;
+                    }
+                    paymentConfig.subscription.billingCycles = cycles;
+                } else if (endType === 'end_date') {
+                    const endDate = document.getElementById('subscriptionEndDate').value;
+                    if (!endDate) {
+                        alert('Please select a subscription end date');
+                        return;
+                    }
+                    paymentConfig.subscription.endDate = endDate;
+                }
+            }
+            
+            // Add deposit data if applicable
+            if (paymentModel === 'deposit') {
+                const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+                if (depositAmount <= 0) {
+                    alert('Please enter a valid deposit amount');
+                    return;
+                }
+                
+                paymentConfig.deposit = {
+                    amount: depositAmount,
+                    percentage: parseFloat(document.getElementById('depositPercentage').value) || 0
+                };
+            }
+            
+            console.log('Saving payment configuration:', paymentConfig);
+            alert('Payment configuration saved successfully!');
+            
+            // In real implementation, save to server
+            // await fetch('/api/quotes/payment-config', { method: 'POST', body: JSON.stringify(paymentConfig) });
+        }
+
+        // ============================================================================
+        // INVOICE MANAGEMENT FUNCTIONALITY
+        // ============================================================================
+
+        // Mock invoice data for the quote
+        let quoteInvoices = [
+            {
+                id: 'INV-2024-001',
+                type: 'full',
+                amount: 341.00,
+                status: 'paid',
+                paidAmount: 341.00,
+                dueDate: '2024-01-15',
+                createdDate: '2024-01-01',
+                paymentDate: '2024-01-10'
+            },
+            {
+                id: 'INV-2024-002', 
+                type: 'deposit',
+                amount: 170.50,
+                status: 'unpaid',
+                paidAmount: 0,
+                dueDate: '2024-02-15',
+                createdDate: '2024-02-01'
+            }
+        ];
+
+        function createFullInvoice() {
+            const quoteTotal = calculateTotal();
+            const remainingAmount = getRemainingToInvoice();
+            
+            if (remainingAmount <= 0) {
+                alert('This quote has already been fully invoiced.');
+                return;
+            }
+            
+            if (confirm(`Create a full invoice for $${remainingAmount.toFixed(2)}?`)) {
+                // Navigate to invoice creation with full amount
+                const quoteId = document.getElementById('quoteIdBadge').textContent;
+                window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=full&amount=${remainingAmount}`;
+            }
+        }
+
+        function createDepositInvoice() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value;
+            
+            if (paymentModel !== 'deposit') {
+                alert('Please configure deposit settings in the Payment Configuration tab first.');
+                switchTab('paymentConfig');
+                return;
+            }
+            
+            const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+            
+            if (depositAmount <= 0) {
+                alert('Please set a valid deposit amount in the Payment Configuration tab.');
+                switchTab('paymentConfig');
+                return;
+            }
+            
+            if (confirm(`Create a deposit invoice for $${depositAmount.toFixed(2)}?`)) {
+                const quoteId = document.getElementById('quoteIdBadge').textContent;
+                window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=deposit&amount=${depositAmount}`;
+            }
+        }
+
+        function createPartialInvoice() {
+            alert('Partial invoice creation will open an item selection interface.');
+            // In real implementation, this would open a modal to select specific items
+            const quoteId = document.getElementById('quoteIdBadge').textContent;
+            window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=partial`;
+        }
+
+        function refreshInvoices() {
+            loadInvoices();
+            updateInvoiceSummary();
+        }
+
+        function loadInvoices() {
+            const invoicesList = document.getElementById('invoicesList');
+            const noInvoicesState = document.getElementById('noInvoicesState');
+            
+            if (quoteInvoices.length === 0) {
+                invoicesList.innerHTML = '';
+                noInvoicesState.classList.remove('hidden');
+                return;
+            }
+            
+            noInvoicesState.classList.add('hidden');
+            
+            invoicesList.innerHTML = quoteInvoices.map(invoice => {
+                const statusColors = {
+                    'paid': 'bg-green-100 text-green-800',
+                    'unpaid': 'bg-red-100 text-red-800',
+                    'partial': 'bg-yellow-100 text-yellow-800',
+                    'overdue': 'bg-red-100 text-red-800'
+                };
+                
+                const typeLabels = {
+                    'full': 'Full Invoice',
+                    'deposit': 'Deposit Invoice', 
+                    'partial': 'Partial Invoice'
+                };
+                
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-gray-900">${invoice.id}</span>
+                                <span class="px-2 py-1 text-xs rounded-full ${statusColors[invoice.status]}">${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-gray-900">$${invoice.amount.toFixed(2)}</div>
+                                ${invoice.paidAmount > 0 ? `<div class="text-xs text-green-600">Paid: $${invoice.paidAmount.toFixed(2)}</div>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <span>${typeLabels[invoice.type]}</span>
+                            <span>Due: ${new Date(invoice.dueDate).toLocaleDateString()}</span>
+                        </div>
+                        
+                        <div class="flex gap-2 mt-3">
+                            <button 
+                                onclick="viewInvoice('${invoice.id}')"
+                                class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50"
+                            >
+                                View
+                            </button>
+                            <button 
+                                onclick="sendInvoice('${invoice.id}')"
+                                class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50"
+                            >
+                                Send
+                            </button>
+                            ${invoice.status === 'unpaid' ? `
+                                <button 
+                                    onclick="recordPayment('${invoice.id}')"
+                                    class="flex-1 px-3 py-1.5 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Record Payment
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateInvoiceSummary() {
+            const quoteTotal = calculateTotal();
+            const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            const totalPaid = quoteInvoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
+            const totalOutstanding = totalInvoiced - totalPaid;
+            const remainingToInvoice = quoteTotal - totalInvoiced;
+            
+            // Update summary displays
+            document.getElementById('invoiceQuoteTotal').textContent = `$${quoteTotal.toFixed(2)}`;
+            document.getElementById('totalInvoiced').textContent = `$${totalInvoiced.toFixed(2)}`;
+            document.getElementById('totalPaid').textContent = `$${totalPaid.toFixed(2)}`;
+            document.getElementById('totalOutstanding').textContent = `$${totalOutstanding.toFixed(2)}`;
+            document.getElementById('remainingToInvoice').textContent = `$${remainingToInvoice.toFixed(2)}`;
+            
+            // Update progress bar
+            const invoiceProgress = (totalInvoiced / quoteTotal) * 100;
+            document.getElementById('invoiceProgressBar').style.width = `${invoiceProgress}%`;
+            document.getElementById('invoiceProgressText').textContent = `${invoiceProgress.toFixed(0)}% of quote amount invoiced`;
+            
+            // Update status badge
+            const statusBadge = document.getElementById('invoiceStatusBadge');
+            if (totalInvoiced === 0) {
+                statusBadge.textContent = 'Not Invoiced';
+                statusBadge.className = 'px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium';
+            } else if (remainingToInvoice > 0) {
+                statusBadge.textContent = 'Partially Invoiced';
+                statusBadge.className = 'px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium';
+            } else {
+                statusBadge.textContent = 'Fully Invoiced';
+                statusBadge.className = 'px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium';
+            }
+        }
+
+        function getRemainingToInvoice() {
+            const quoteTotal = calculateTotal();
+            const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            return quoteTotal - totalInvoiced;
+        }
+
+        function viewInvoice(invoiceId) {
+            // Navigate to invoice detail page
+            window.location.href = `invoice_detail_simple.html?id=${invoiceId}`;
+        }
+
+        function sendInvoice(invoiceId) {
+            const invoice = quoteInvoices.find(inv => inv.id === invoiceId);
+            if (invoice) {
+                alert(`Invoice ${invoiceId} sent to customer!`);
+                // In real implementation, send email to customer
+            }
+        }
+
+        function recordPayment(invoiceId) {
+            const invoice = quoteInvoices.find(inv => inv.id === invoiceId);
+            if (invoice) {
+                const paymentAmount = prompt(`Record payment for ${invoiceId}\\nOutstanding amount: $${(invoice.amount - invoice.paidAmount).toFixed(2)}\\n\\nEnter payment amount:`);
+                
+                if (paymentAmount && !isNaN(paymentAmount)) {
+                    const amount = parseFloat(paymentAmount);
+                    if (amount > 0 && amount <= (invoice.amount - invoice.paidAmount)) {
+                        invoice.paidAmount += amount;
+                        
+                        if (invoice.paidAmount >= invoice.amount) {
+                            invoice.status = 'paid';
+                            invoice.paymentDate = new Date().toISOString().split('T')[0];
+                        } else {
+                            invoice.status = 'partial';
+                        }
+                        
+                        loadInvoices();
+                        updateInvoiceSummary();
+                        alert(`Payment of $${amount.toFixed(2)} recorded for ${invoiceId}`);
+                    } else {
+                        alert('Invalid payment amount');
+                    }
+                }
+            }
+        }
+
+        function sendPaymentReminder() {
+            const unpaidInvoices = quoteInvoices.filter(inv => inv.status === 'unpaid' || inv.status === 'partial');
+            
+            if (unpaidInvoices.length === 0) {
+                alert('No unpaid invoices to send reminders for.');
+                return;
+            }
+            
+            alert(`Payment reminder sent for ${unpaidInvoices.length} unpaid invoice(s)!`);
+            // In real implementation, send reminder emails
+        }
+
+        function viewPaymentHistory() {
+            const paidInvoices = quoteInvoices.filter(inv => inv.paidAmount > 0);
+            
+            if (paidInvoices.length === 0) {
+                alert('No payment history available.');
+                return;
+            }
+            
+            let historyText = 'Payment History:\\n\\n';
+            paidInvoices.forEach(invoice => {
+                historyText += `${invoice.id}: $${invoice.paidAmount.toFixed(2)}`;
+                if (invoice.paymentDate) {
+                    historyText += ` (${new Date(invoice.paymentDate).toLocaleDateString()})`;
+                }
+                historyText += '\\n';
+            });
+            
+            alert(historyText);
+            // In real implementation, open a detailed payment history modal
+        }
+
+        function downloadInvoiceReport() {
+            alert('Invoice report download would be implemented here.');
+            // In real implementation, generate and download PDF report
+        }
+
+        // ============================================================================
+        // INVOICE PREVIEW FUNCTIONALITY
+        // ============================================================================
+
+        function showInvoicePreview() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
+            const quoteTotal = calculateTotal();
+            const invoicesToCreate = generateInvoicePreview(paymentModel, quoteTotal);
+            
+            if (invoicesToCreate.length === 0) {
+                alert('No invoices to create. Please configure payment settings first.');
+                return;
+            }
+            
+            renderInvoicePreview(invoicesToCreate);
+            document.getElementById('invoicePreviewModal').classList.remove('hidden');
+        }
+
+        function generateInvoicePreview(paymentModel, quoteTotal) {
+            const invoices = [];
+            const today = new Date();
+            const quoteId = document.getElementById('quoteIdBadge').textContent;
+            
+            if (paymentModel === 'full') {
+                const remainingAmount = getRemainingToInvoice();
+                if (remainingAmount > 0) {
+                    invoices.push({
+                        id: `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+                        type: 'Full Invoice',
+                        description: 'Invoice for complete quote amount',
+                        amount: remainingAmount,
+                        dueDate: calculateDueDate(today),
+                        items: state.quoteItems,
+                        color: 'purple'
+                    });
+                }
+            } else if (paymentModel === 'deposit') {
+                const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+                const remainingAmount = quoteTotal - depositAmount;
+                
+                if (depositAmount > 0) {
+                    // Deposit invoice
+                    invoices.push({
+                        id: `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+                        type: 'Deposit Invoice',
+                        description: 'Down payment invoice',
+                        amount: depositAmount,
+                        dueDate: calculateDueDate(today),
+                        items: state.quoteItems.map(item => ({...item, isDeposit: true})),
+                        color: 'blue'
+                    });
+                    
+                    // Remaining balance invoice
+                    if (remainingAmount > 0) {
+                        const balanceDueDate = new Date(today);
+                        balanceDueDate.setDate(balanceDueDate.getDate() + 30); // 30 days after deposit
+                        
+                        invoices.push({
+                            id: `INV-${new Date().getFullYear()}-${String(Date.now() + 1).slice(-3)}`,
+                            type: 'Balance Invoice',
+                            description: 'Remaining balance after deposit',
+                            amount: remainingAmount,
+                            dueDate: calculateDueDate(balanceDueDate),
+                            items: state.quoteItems.map(item => ({...item, isBalance: true})),
+                            color: 'green'
+                        });
+                    }
+                }
+            } else if (paymentModel === 'subscription') {
+                const frequency = document.getElementById('billingFrequency')?.value || 'monthly';
+                const startDate = new Date(document.getElementById('subscriptionStartDate')?.value || today);
+                const endType = document.getElementById('subscriptionEnd')?.value || 'ongoing';
+                
+                let cycles = 12; // Default to 12 cycles for preview
+                if (endType === 'after_cycles') {
+                    cycles = parseInt(document.getElementById('billingCycles')?.value) || 12;
+                } else if (endType === 'end_date') {
+                    const endDate = new Date(document.getElementById('subscriptionEndDate')?.value);
+                    cycles = calculateCyclesBetweenDates(startDate, endDate, frequency);
+                }
+                
+                const cycleAmount = quoteTotal / cycles;
+                
+                for (let i = 0; i < Math.min(cycles, 6); i++) { // Show max 6 invoices in preview
+                    const invoiceDate = new Date(startDate);
+                    addTimeToDate(invoiceDate, frequency, i);
+                    
+                    invoices.push({
+                        id: `INV-${new Date().getFullYear()}-${String(Date.now() + i).slice(-3)}`,
+                        type: `Subscription Invoice #${i + 1}`,
+                        description: `${frequency.charAt(0).toUpperCase() + frequency.slice(1)} recurring invoice`,
+                        amount: cycleAmount,
+                        dueDate: calculateDueDate(invoiceDate),
+                        items: state.quoteItems.map(item => ({...item, isSubscription: true, cycle: i + 1})),
+                        color: 'indigo'
+                    });
+                }
+                
+                if (cycles > 6) {
+                    invoices.push({
+                        id: '...',
+                        type: `+ ${cycles - 6} more invoices`,
+                        description: `Total of ${cycles} subscription invoices`,
+                        amount: cycleAmount * (cycles - 6),
+                        dueDate: '...',
+                        items: [],
+                        color: 'gray',
+                        isPlaceholder: true
+                    });
+                }
+            }
+            
+            return invoices;
+        }
+
+        function renderInvoicePreview(invoices) {
+            const content = document.getElementById('invoicePreviewContent');
+            const totalAmount = invoices.reduce((sum, inv) => sum + (inv.isPlaceholder ? 0 : inv.amount), 0);
+            
+            content.innerHTML = `
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-semibold text-blue-900">Invoice Summary</h4>
+                            <p class="text-sm text-blue-700">Based on current payment configuration</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-blue-900">$${totalAmount.toFixed(2)}</div>
+                            <div class="text-sm text-blue-700">${invoices.filter(inv => !inv.isPlaceholder).length} invoice(s)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    ${invoices.map(invoice => `
+                        <div class="border-2 border-${invoice.color}-200 rounded-lg p-6 ${invoice.isPlaceholder ? 'opacity-60' : ''}">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-${invoice.color}-100 rounded-full flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-${invoice.color}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-semibold text-gray-900">${invoice.id}</h5>
+                                        <p class="text-sm text-${invoice.color}-600 font-medium">${invoice.type}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xl font-bold text-gray-900">$${invoice.amount.toFixed(2)}</div>
+                                    ${!invoice.isPlaceholder ? `<div class="text-sm text-gray-500">Due: ${invoice.dueDate}</div>` : ''}
+                                </div>
+                            </div>
+                            
+                            <p class="text-sm text-gray-600 mb-4">${invoice.description}</p>
+                            
+                            ${!invoice.isPlaceholder && invoice.items.length > 0 ? `
+                                <div class="border-t border-gray-200 pt-3">
+                                    <h6 class="text-xs font-medium text-gray-700 mb-2">Items (${invoice.items.length})</h6>
+                                    <div class="space-y-1 max-h-32 overflow-y-auto">
+                                        ${invoice.items.slice(0, 3).map(item => `
+                                            <div class="flex justify-between text-xs text-gray-600">
+                                                <span>${item.name}</span>
+                                                <span>$${(item.customPrice || item.price).toFixed(2)}</span>
+                                            </div>
+                                        `).join('')}
+                                        ${invoice.items.length > 3 ? `<div class="text-xs text-gray-500">+ ${invoice.items.length - 3} more items</div>` : ''}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function calculateDueDate(fromDate) {
+            const terms = document.getElementById('defaultPaymentTerms')?.value || 'net_30';
+            const dueDate = new Date(fromDate);
+            
+            switch(terms) {
+                case 'due_on_receipt':
+                    return dueDate.toLocaleDateString();
+                case 'net_7':
+                    dueDate.setDate(dueDate.getDate() + 7);
+                    break;
+                case 'net_15':
+                    dueDate.setDate(dueDate.getDate() + 15);
+                    break;
+                case 'net_30':
+                    dueDate.setDate(dueDate.getDate() + 30);
+                    break;
+                case 'net_60':
+                    dueDate.setDate(dueDate.getDate() + 60);
+                    break;
+            }
+            
+            return dueDate.toLocaleDateString();
+        }
+
+        function calculateCyclesBetweenDates(startDate, endDate, frequency) {
+            const diffTime = Math.abs(endDate - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            switch(frequency) {
+                case 'weekly': return Math.floor(diffDays / 7);
+                case 'biweekly': return Math.floor(diffDays / 14);
+                case 'monthly': return Math.floor(diffDays / 30);
+                case 'quarterly': return Math.floor(diffDays / 90);
+                case 'yearly': return Math.floor(diffDays / 365);
+                default: return 12;
+            }
+        }
+
+        function addTimeToDate(date, frequency, multiplier) {
+            switch(frequency) {
+                case 'weekly':
+                    date.setDate(date.getDate() + (7 * multiplier));
+                    break;
+                case 'biweekly':
+                    date.setDate(date.getDate() + (14 * multiplier));
+                    break;
+                case 'monthly':
+                    date.setMonth(date.getMonth() + multiplier);
+                    break;
+                case 'quarterly':
+                    date.setMonth(date.getMonth() + (3 * multiplier));
+                    break;
+                case 'yearly':
+                    date.setFullYear(date.getFullYear() + multiplier);
+                    break;
+            }
+        }
+
+        function hideInvoicePreview() {
+            document.getElementById('invoicePreviewModal').classList.add('hidden');
+        }
+
+        function createAllInvoicesFromPreview() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
+            
+            if (confirm(`Create all invoices based on the ${paymentModel} payment model?`)) {
+                // In real implementation, this would create all the invoices
+                alert('All invoices created successfully!');
+                hideInvoicePreview();
+                
+                // Refresh the invoices list
+                refreshInvoices();
+            }
+        }
+
+        // ============================================================================
+        // SPLIT INVOICE FUNCTIONALITY
+        // ============================================================================
+
+        let splitInvoiceEnabled = true; // Always enabled now
+        let splitMethod = 'percentage'; // 'percentage' or 'amount'
+        let payers = [];
+        let payerIdCounter = 1;
+
+        function initializeSplitInvoice() {
+            // Add default 2 payers on initialization
+            if (payers.length === 0) {
+                addPayer();
+                addPayer();
+            }
+
+            // Split Method Buttons
+            document.getElementById('splitByPercentage').addEventListener('click', function() {
+                splitMethod = 'percentage';
+                this.classList.add('bg-purple-600', 'text-white');
+                this.classList.remove('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                
+                const amountBtn = document.getElementById('splitByAmount');
+                amountBtn.classList.remove('bg-purple-600', 'text-white');
+                amountBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                
+                renderPayers();
+            });
+
+            document.getElementById('splitByAmount').addEventListener('click', function() {
+                splitMethod = 'amount';
+                this.classList.add('bg-purple-600', 'text-white');
+                this.classList.remove('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                
+                const percentBtn = document.getElementById('splitByPercentage');
+                percentBtn.classList.remove('bg-purple-600', 'text-white');
+                percentBtn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                
+                renderPayers();
+            });
+
+            // Add Payer Button
+            document.getElementById('addPayerBtn').addEventListener('click', addPayer);
+        }
+
+        function addPayer() {
+            const payer = {
+                id: payerIdCounter++,
+                name: '',
+                email: '',
+                phone: '',
+                value: splitMethod === 'percentage' ? 50 : 0
+            };
+            payers.push(payer);
+            renderPayers();
+            updateSplitSummary();
+        }
+
+        function removePayer(payerId) {
+            payers = payers.filter(p => p.id !== payerId);
+            renderPayers();
+            updateSplitSummary();
+        }
+
+        function renderPayers() {
+            const container = document.getElementById('payersList');
+            container.innerHTML = '';
+
+            payers.forEach((payer, index) => {
+                const payerCard = createPayerCard(payer, index);
+                container.appendChild(payerCard);
+            });
+        }
+
+        function createPayerCard(payer, index) {
+            const div = document.createElement('div');
+            div.className = 'border border-gray-300 rounded-lg p-3 bg-gray-50';
+            
+            const inputLabel = splitMethod === 'percentage' ? '%' : '$';
+            const inputPlaceholder = splitMethod === 'percentage' ? '50' : '0.00';
+            
+            // Generate contact options from existing customer data
+            let contactOptions = '<option value="">-- Select Existing Contact or Add New --</option>';
+            if (state.selectedCustomer && state.selectedCustomer.secondaryContacts) {
+                // Add primary contact
+                contactOptions += `<option value="primary">${state.selectedCustomer.name} (Primary)</option>`;
+                
+                // Add secondary contacts
+                state.selectedCustomer.secondaryContacts.forEach((contact, idx) => {
+                    contactOptions += `<option value="secondary-${idx}">${contact.name} - ${contact.role}</option>`;
+                });
+            }
+            contactOptions += '<option value="new">+ Add New Contact</option>';
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-medium text-gray-700">Payer ${index + 1}</span>
+                    ${payers.length > 1 ? `
+                        <button 
+                            onclick="removePayer(${payer.id})"
+                            class="text-red-600 hover:text-red-700 text-sm"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    ` : ''}
+                </div>
+                <div class="space-y-2">
+                    <!-- Contact Selector -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Select Contact</label>
+                        <select 
+                            id="contactSelect-${payer.id}"
+                            onchange="selectContact(${payer.id}, this.value)"
+                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                        >
+                            ${contactOptions}
+                        </select>
+                    </div>
+                    
+                    <!-- Manual Input Fields -->
+                    <div id="manualFields-${payer.id}">
+                        <input 
+                            type="text" 
+                            placeholder="Name"
+                            value="${payer.name}"
+                            onchange="updatePayerField(${payer.id}, 'name', this.value)"
+                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                        <input 
+                            type="email" 
+                            placeholder="Email"
+                            value="${payer.email}"
+                            onchange="updatePayerField(${payer.id}, 'email', this.value)"
+                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                        />
+                        <input 
+                            type="tel" 
+                            placeholder="Phone (optional)"
+                            value="${payer.phone}"
+                            onchange="updatePayerField(${payer.id}, 'phone', this.value)"
+                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                        />
+                    </div>
+                    
+                    <!-- Amount/Percentage -->
+                    <div class="flex items-center gap-2 pt-2 border-t border-gray-200">
+                        <label class="text-xs text-gray-600">Amount:</label>
+                        <input 
+                            type="number" 
+                            placeholder="${inputPlaceholder}"
+                            value="${payer.value}"
+                            onchange="updatePayerField(${payer.id}, 'value', parseFloat(this.value) || 0)"
+                            min="0"
+                            step="${splitMethod === 'percentage' ? '1' : '0.01'}"
+                            ${splitMethod === 'percentage' ? 'max="100"' : ''}
+                            class="flex-1 px-2 py-1.5 border border-gray-300 rounded text-sm text-right focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                        <span class="text-sm font-medium text-gray-600 w-6">${inputLabel}</span>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function selectContact(payerId, contactId) {
+            if (contactId === 'new') {
+                // Clear fields for new contact
+                updatePayerField(payerId, 'name', '');
+                updatePayerField(payerId, 'email', '');
+                updatePayerField(payerId, 'phone', '');
+                return;
+            }
+            
+            if (contactId === '') {
+                // No selection
+                return;
+            }
+            
+            let contact = null;
+            
+            if (contactId === 'primary') {
+                contact = {
+                    name: state.selectedCustomer.name,
+                    email: state.selectedCustomer.email,
+                    phone: state.selectedCustomer.phone
+                };
+            } else if (contactId.startsWith('secondary-')) {
+                const index = parseInt(contactId.split('-')[1]);
+                contact = state.selectedCustomer.secondaryContacts[index];
+            }
+            
+            if (contact) {
+                // Populate fields with contact data
+                updatePayerField(payerId, 'name', contact.name);
+                updatePayerField(payerId, 'email', contact.email);
+                updatePayerField(payerId, 'phone', contact.phone || '');
+                
+                // Update the input fields visually
+                const manualFields = document.getElementById(`manualFields-${payerId}`);
+                if (manualFields) {
+                    manualFields.querySelector('input[type="text"]').value = contact.name;
+                    manualFields.querySelector('input[type="email"]').value = contact.email;
+                    manualFields.querySelector('input[type="tel"]').value = contact.phone || '';
+                }
+            }
+        }
+
+        function updatePayerField(payerId, field, value) {
+            const payer = payers.find(p => p.id === payerId);
+            if (payer) {
+                payer[field] = value;
+                updateSplitSummary();
+            }
+        }
+
+        function updateSplitSummary() {
+            // Get total quote amount
+            const totalAmount = calculateTotal();
+
+            // Calculate allocated amount
+            let allocatedAmount = 0;
+            if (splitMethod === 'percentage') {
+                const totalPercentage = payers.reduce((sum, p) => sum + (parseFloat(p.value) || 0), 0);
+                allocatedAmount = (totalPercentage / 100) * totalAmount;
+            } else {
+                allocatedAmount = payers.reduce((sum, p) => sum + (parseFloat(p.value) || 0), 0);
+            }
+
+            const remainingAmount = totalAmount - allocatedAmount;
+
+            // Update UI
+            document.getElementById('splitTotalAmount').textContent = `$${totalAmount.toFixed(2)}`;
+            document.getElementById('splitAllocatedAmount').textContent = `$${allocatedAmount.toFixed(2)}`;
+            document.getElementById('splitRemainingAmount').textContent = `$${remainingAmount.toFixed(2)}`;
+
+            // Show/hide validation warning
+            const warningDiv = document.getElementById('splitValidationWarning');
+            const warningMessage = document.getElementById('splitValidationMessage');
+            
+            if (Math.abs(remainingAmount) > 0.01) {
+                warningDiv.classList.remove('hidden');
+                if (remainingAmount > 0) {
+                    warningMessage.textContent = `⚠️ Total must equal $${totalAmount.toFixed(2)}. Please allocate the remaining $${remainingAmount.toFixed(2)}.`;
+                } else {
+                    warningMessage.textContent = `⚠️ Total must equal $${totalAmount.toFixed(2)}. You've exceeded by $${Math.abs(remainingAmount).toFixed(2)}.`;
+                }
+            } else {
+                warningDiv.classList.add('hidden');
+            }
+
+            // Update remaining amount color
+            const remainingSpan = document.getElementById('splitRemainingAmount');
+            if (Math.abs(remainingAmount) < 0.01) {
+                remainingSpan.classList.remove('text-red-600');
+                remainingSpan.classList.add('text-green-600');
+            } else {
+                remainingSpan.classList.remove('text-green-600');
+                remainingSpan.classList.add('text-red-600');
+            }
+        }
+
+        function isSplitAmountValid() {
+            if (!splitInvoiceEnabled || payers.length === 0) {
+                return true;
+            }
+
+            const totalAmount = calculateTotal();
+            let allocatedAmount = 0;
+            
+            if (splitMethod === 'percentage') {
+                const totalPercentage = payers.reduce((sum, p) => sum + (parseFloat(p.value) || 0), 0);
+                allocatedAmount = (totalPercentage / 100) * totalAmount;
+            } else {
+                allocatedAmount = payers.reduce((sum, p) => sum + (parseFloat(p.value) || 0), 0);
+            }
+
+            // Check if amounts match (with small tolerance for rounding)
+            return Math.abs(totalAmount - allocatedAmount) < 0.01;
         }
     </script>
 </body>
