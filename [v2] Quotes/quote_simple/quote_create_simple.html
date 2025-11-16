@@ -60,15 +60,6 @@
                         >
                             Save Draft
                         </button>
-                        <button 
-                            id="previewBtn"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Preview
-                        </button>
                     </div>
                 </div>
             </div>
@@ -357,14 +348,6 @@
                                     <span class="text-sm font-medium text-red-600" id="lineItemDiscountAmount">-$0.00</span>
                                 </div>
                             </div>
-
-
-                            <div id="approvalWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded p-2 flex items-start gap-2">
-                                <svg class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                </svg>
-                                <p class="text-xs text-yellow-800">Manager approval required (discount >20%)</p>
-                            </div>
                             
                             <!-- Tax Breakdown by Category -->
                             <div class="border-t border-gray-200 pt-3">
@@ -375,47 +358,6 @@
                                 <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
                                     <span class="text-sm text-gray-600">Total Tax</span>
                                     <span class="text-sm font-medium" id="taxAmount">$0.00</span>
-                                </div>
-                            </div>
-
-                            <!-- Deposit Section -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="checkbox" id="requireDeposit" class="rounded" />
-                                        <span class="text-gray-700 font-medium">Require Deposit</span>
-                                    </label>
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                
-                                <div id="depositSection" class="hidden space-y-2">
-                                    <div class="flex items-center gap-2">
-                                        <select 
-                                            id="depositType"
-                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
-                                        >
-                                            <option value="percentage">%</option>
-                                            <option value="fixed">$</option>
-                                        </select>
-                                        <input 
-                                            type="number"
-                                            id="depositValue"
-                                            value="50"
-                                            class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm text-right"
-                                            min="0"
-                                            step="1"
-                                        />
-                                    </div>
-                                    <div class="flex justify-between text-sm bg-green-50 p-2 rounded">
-                                        <span class="text-gray-700">Deposit Required:</span>
-                                        <span class="font-semibold text-green-700" id="depositAmount">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between text-xs text-gray-600">
-                                        <span>Balance Due:</span>
-                                        <span id="balanceDue">$0.00</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -485,32 +427,6 @@
         </div>
     </div>
 
-    <!-- Quote Preview Modal (PDF-like) -->
-    <div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4 sticky top-0 bg-white pb-4 border-b">
-                    <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
-                    <div class="flex gap-2">
-                        <button id="downloadPreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            Download PDF
-                        </button>
-                        <button id="closePreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
-                            Close
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="previewContent" class="bg-white p-8" style="font-family: 'Helvetica', 'Arial', sans-serif;">
-                    <!-- PDF-like content will be populated here -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Price Modification Modal -->
     <div id="priceModModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
@@ -544,7 +460,7 @@
                     <textarea 
                         id="priceModComment"
                         rows="3"
-                        placeholder="Enter reason for price modification (required for approval)"
+                        placeholder="Enter reason for price modification (required for record keeping)"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     ></textarea>
                 </div>
@@ -569,10 +485,6 @@
             selectedQuoteContact: null, // Will store the contact for this quote (primary or secondary)
             showNewCustomerForm: false,
             quoteItems: [],
-            depositRequired: false,
-            depositType: 'percentage',
-            depositValue: 50,
-            approvalRequired: false,
             currentPriceModIndex: null,
             currentPriceModNewValue: null
         };
@@ -734,21 +646,6 @@
             }, 0);
         }
         
-        // Calculate deposit amount
-        function calculateDeposit() {
-            if (!state.depositRequired) return 0;
-            const total = calculateTotal();
-            if (state.depositType === 'percentage') {
-                return total * (state.depositValue / 100);
-            }
-            return Math.min(state.depositValue, total);
-        }
-        
-        // Calculate balance due after deposit
-        function calculateBalanceDue() {
-            return calculateTotal() - calculateDeposit();
-        }
-        
         // Get tax breakdown by category
         function getTaxBreakdown() {
             const breakdown = {
@@ -804,23 +701,6 @@
             // Total tax
             const totalTax = calculateTax();
             document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
-
-            // Update deposit display
-            if (state.depositRequired) {
-                document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
-                document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
-            }
-
-            // Check approval requirement based on line item discounts
-            const lineItemDiscountTotal = calculateLineItemDiscounts();
-            const subtotal = calculateSubtotal();
-            const discountPercent = subtotal > 0 ? (lineItemDiscountTotal / (subtotal + lineItemDiscountTotal)) * 100 : 0;
-            state.approvalRequired = discountPercent > 20;
-            
-            const approvalWarning = document.getElementById('approvalWarning');
-            if (approvalWarning) {
-                approvalWarning.classList.toggle('hidden', !state.approvalRequired);
-            }
             
             updateCreateButton();
         }
@@ -1298,175 +1178,6 @@
             state.quoteItems[index].notes = value;
         }
 
-        // Preview function
-        function showPreview() {
-            if (!state.selectedCustomer || state.quoteItems.length === 0) {
-                alert('Please select a customer and add items to the quote first.');
-                return;
-            }
-
-            const validUntil = document.getElementById('validUntilDate').value;
-            const customerNotes = document.getElementById('customerNotes').value;
-            const internalNotes = document.getElementById('internalNotes').value;
-
-            // Get current date
-            const currentDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            // Build line items HTML
-            const lineItemsHTML = state.quoteItems.map(item => `
-                <tr class="border-b border-gray-200">
-                    <td class="py-2 px-1" style="width: 35%;">
-                        <div class="font-medium text-gray-900">${item.name}</div>
-                        <div class="text-xs text-gray-600 mt-1">${item.id}</div>
-                        ${item.notes ? `<div class="text-xs text-gray-500 italic mt-1">${item.notes}</div>` : ''}
-                    </td>
-                    <td class="py-2 px-1 text-center text-gray-700">${item.quantity} ${item.unit}</td>
-                    <td class="py-2 px-1 text-right text-gray-700">$${item.customPrice.toFixed(2)}</td>
-                    <td class="py-2 px-1 text-right font-medium">$${(item.customPrice * item.quantity).toFixed(2)}</td>
-                </tr>
-            `).join('');
-
-            // Format tax breakdown
-            const taxBreakdown = getTaxBreakdown();
-            const taxBreakdownHTML = `
-                ${taxBreakdown.taxable_gst > 0 ? `<div class="flex justify-between text-sm py-1"><span>GST (10%):</span><span>$${taxBreakdown.taxable_gst.toFixed(2)}</span></div>` : ''}
-                ${taxBreakdown.gst_free > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>GST-Free Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'gst_free').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
-                ${taxBreakdown.input_taxed > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>Input-Taxed Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'input_taxed').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
-            `;
-
-            // Build preview HTML
-            const previewHTML = `
-                <!-- Company Header -->
-                <div class="border-b-2 border-gray-800 pb-4 mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h1 class="text-3xl font-bold text-gray-900 mb-1">SUNSHINE TUTORING</h1>
-                            <p class="text-sm text-gray-600">Tutoring Excellence Since 2015</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-lg font-bold">QUOTE</p>
-                            <p class="text-sm text-gray-600">Date: ${currentDate}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Customer Details -->
-                <div class="grid grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Bill To:</h3>
-                        <div class="text-sm text-gray-700">
-                            <p class="font-medium">${state.selectedCustomer.name}</p>
-                            ${state.selectedCustomer.company ? `<p>${state.selectedCustomer.company}</p>` : ''}
-                            <p>${state.selectedCustomer.email}</p>
-                            <p>${state.selectedCustomer.phone}</p>
-                            ${state.selectedCustomer.address ? `<p class="mt-2">${state.selectedCustomer.address}</p>` : ''}
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Quote Details:</h3>
-                        <div class="text-sm text-gray-700">
-                            <p><span class="font-medium">Quote ID:</span> Q-2024-001</p>
-                            <p><span class="font-medium">Valid Until:</span> ${validUntil ? new Date(validUntil).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
-                            <p class="mt-2 text-xs text-gray-500">Melbourne East Branch</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Line Items Table -->
-                <div class="mb-6">
-                    <table class="w-full text-sm" style="min-width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr class="bg-gray-100 border-b-2 border-gray-800">
-                                <th class="text-left py-2 px-1 font-semibold text-gray-900" style="width: 35%;">Description</th>
-                                <th class="text-center py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Quantity</th>
-                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 20%;">Unit Price</th>
-                                <th class="text-right py-2 px-1 font-semibold text-gray-900" style="width: 25%;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${lineItemsHTML}
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Summary -->
-                <div class="flex justify-end mb-6">
-                    <div class="w-64">
-                        <div class="border-t border-gray-300 pt-3">
-                            <div class="flex justify-between text-sm py-1">
-                                <span class="text-gray-700">Subtotal:</span>
-                                <span class="font-medium">$${calculateSubtotal().toFixed(2)}</span>
-                            </div>
-                            ${calculateLineItemDiscounts() > 0 ? `
-                                <div class="flex justify-between text-sm py-1">
-                                    <span class="text-gray-700">Line Item Discounts:</span>
-                                    <span class="text-red-600">-$${calculateLineItemDiscounts().toFixed(2)}</span>
-                                </div>
-                            ` : ''}
-                            <div class="border-t border-gray-300 mt-2 pt-2">
-                                ${taxBreakdownHTML}
-                                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
-                                    <span class="text-sm font-semibold">Total Tax:</span>
-                                    <span class="text-sm font-semibold">$${calculateTax().toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <div class="border-t-2 border-gray-800 mt-2 pt-2">
-                                <div class="flex justify-between">
-                                    <span class="text-lg font-bold text-gray-900">TOTAL:</span>
-                                    <span class="text-lg font-bold text-gray-900">$${calculateTotal().toFixed(2)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notes -->
-                ${customerNotes ? `
-                    <div class="border-t border-gray-300 pt-4 mb-4">
-                        <h4 class="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Notes:</h4>
-                        <p class="text-sm text-gray-700 whitespace-pre-wrap">${customerNotes}</p>
-                    </div>
-                ` : ''}
-
-                <!-- Footer -->
-                <div class="border-t-2 border-gray-800 pt-4 mt-6">
-                    <div class="grid grid-cols-2 gap-6 text-xs text-gray-600">
-                        <div>
-                            <p class="font-semibold text-gray-900 mb-1">Sunshine Tutoring - Melbourne East</p>
-                            <p>123 Education Street, Melbourne VIC 3000</p>
-                            <p>Phone: (03) 1234 5678</p>
-                            <p>Email: melbourne@sunshinetutoring.com.au</p>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-900 mb-1">Payment Information</p>
-                            <p>ABN: 12 345 678 901</p>
-                            <p>Valid for 30 days from date of issue</p>
-                            <p class="mt-2 text-gray-500">Terms and conditions apply</p>
-                        </div>
-                    </div>
-                </div>
-
-                ${internalNotes ? `
-                    <div class="mt-6 pt-4 border-t-2 border-dashed border-red-300 bg-red-50 p-3 rounded">
-                        <p class="text-xs font-semibold text-red-700 mb-1">INTERNAL NOTES (Not visible to customer):</p>
-                        <p class="text-xs text-red-600 whitespace-pre-wrap">${internalNotes}</p>
-                    </div>
-                ` : ''}
-            `;
-
-            document.getElementById('previewContent').innerHTML = previewHTML;
-            document.getElementById('previewModal').classList.remove('hidden');
-        }
-
-        function hidePreview() {
-            document.getElementById('previewModal').classList.add('hidden');
-        }
-
-        function downloadPreviewPDF() {
-            alert('PDF download functionality would be implemented here');
-            // In a real implementation, this would generate and download a PDF
-        }
-
         // Load cloned quote data
         function loadClonedQuoteData(quoteId) {
             // In a real application, this would fetch from API
@@ -1479,10 +1190,7 @@
                         { id: 1, name: 'Math Tutoring - Grade 10', description: '4 sessions per month', quantity: 4, unitPrice: 50.00 },
                         { id: 2, name: 'Science Tutoring - Grade 10', description: '2 sessions per month', quantity: 2, unitPrice: 55.00 }
                     ],
-                    notes: 'Original quote notes',
-                    depositRequired: true,
-                    depositType: 'percentage',
-                    depositValue: 50
+                    notes: 'Original quote notes'
                 },
                 'Q-2024-002': {
                     customerId: 2,
@@ -1490,8 +1198,7 @@
                     items: [
                         { id: 1, name: 'English Tutoring', description: 'Weekly sessions', quantity: 4, unitPrice: 60.00 }
                     ],
-                    notes: '',
-                    depositRequired: false
+                    notes: ''
                 }
             };
             
@@ -1521,22 +1228,6 @@
             // Pre-fill notes
             if (quoteData.notes) {
                 document.getElementById('internalNotes').value = quoteData.notes;
-            }
-            
-            // Pre-fill deposit settings
-            if (quoteData.depositRequired) {
-                document.getElementById('depositRequiredCheckbox').checked = true;
-                toggleDepositSection();
-                state.depositRequired = true;
-                state.depositType = quoteData.depositType;
-                state.depositValue = quoteData.depositValue;
-                
-                if (quoteData.depositType === 'percentage') {
-                    document.getElementById('depositPercentage').value = quoteData.depositValue;
-                } else {
-                    document.getElementById('depositAmount').value = quoteData.depositValue;
-                }
-                updateDepositCalculation();
             }
         }
 
@@ -1735,24 +1426,6 @@
                 }
             });
             
-            // Deposit changes
-            document.getElementById('requireDeposit').addEventListener('change', function(e) {
-                state.depositRequired = e.target.checked;
-                document.getElementById('depositSection').classList.toggle('hidden', !e.target.checked);
-                updateSummary();
-            });
-            
-            document.getElementById('depositType').addEventListener('change', function(e) {
-                state.depositType = e.target.value;
-                document.getElementById('depositValue').step = e.target.value === 'percentage' ? '1' : '0.01';
-                updateSummary();
-            });
-            
-            document.getElementById('depositValue').addEventListener('input', function(e) {
-                state.depositValue = Number(e.target.value);
-                updateSummary();
-            });
-            
             // Create quote button
             document.getElementById('createQuoteBtn').addEventListener('click', function() {
                 if (!state.selectedCustomer) {
@@ -1834,13 +1507,6 @@
                 // In real implementation: redirect to quotes list
                 // window.location.href = 'quotes.html';
             });
-            
-            // Preview button
-            document.getElementById('previewBtn').addEventListener('click', showPreview);
-            
-            // Preview modal buttons
-            document.getElementById('closePreviewBtn').addEventListener('click', hidePreview);
-            document.getElementById('downloadPreviewBtn').addEventListener('click', downloadPreviewPDF);
             
             // Price modification modal event listeners
             document.getElementById('closePriceModModal').addEventListener('click', cancelPriceModification);

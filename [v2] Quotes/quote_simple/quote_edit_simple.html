@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Quote - FMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
@@ -40,7 +41,7 @@
                         </div>
                         <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
                     </div>
-                    <div class="flex gap-2">
+                    <div id="headerActions" class="flex gap-2">
                         <button 
                             onclick="window.location.href='quote_list_simple.html'"
                             class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
@@ -50,34 +51,13 @@
                             </svg>
                             Back to Quotes
                         </button>
-                        <button 
-                            id="saveDraftBtn"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-                        >
-                            Save Changes
-                        </button>
-                        <button 
-                            id="createInvoiceBtn"
-                            onclick="createInvoiceFromQuote()"
-                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Create Invoice
-                        </button>
-                        <button 
-                            id="createQuoteBtn"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                            Update & Send Quote
-                        </button>
+                        <!-- Dynamic action buttons will be inserted here -->
                     </div>
                 </div>
             </div>
+
+            <!-- Status Information Banner (for non-editable statuses) -->
+            <div id="statusInfoBanner" class="hidden mb-4"></div>
 
             <!-- Tab Navigation -->
             <div class="bg-white rounded-lg shadow-sm mb-4">
@@ -337,14 +317,6 @@
                                 </div>
                             </div>
 
-
-                            <div id="approvalWarning" class="hidden bg-yellow-50 border border-yellow-200 rounded p-2 flex items-start gap-2">
-                                <svg class="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                </svg>
-                                <p class="text-xs text-yellow-800">Manager approval required (discount >20%)</p>
-                            </div>
-
                             <!-- Tax Breakdown by Category -->
                             <div class="border-t border-gray-200 pt-3">
                                 <div class="text-xs text-gray-600 mb-2">Tax Breakdown:</div>
@@ -354,47 +326,6 @@
                                 <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
                                     <span class="text-sm text-gray-600">Total Tax</span>
                                     <span class="text-sm font-medium" id="taxAmount">$0.00</span>
-                                </div>
-                            </div>
-
-                            <!-- Deposit Section -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="checkbox" id="requireDeposit" class="rounded" />
-                                        <span class="text-gray-700 font-medium">Require Deposit</span>
-                                    </label>
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                
-                                <div id="depositSection" class="hidden space-y-2">
-                                    <div class="flex items-center gap-2">
-                                        <select 
-                                            id="depositType"
-                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
-                                        >
-                                            <option value="percentage">%</option>
-                                            <option value="fixed">$</option>
-                                        </select>
-                                        <input 
-                                            type="number"
-                                            id="depositValue"
-                                            value="50"
-                                            class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm text-right"
-                                            min="0"
-                                            step="1"
-                                        />
-                                    </div>
-                                    <div class="flex justify-between text-sm bg-green-50 p-2 rounded">
-                                        <span class="text-gray-700">Deposit Required:</span>
-                                        <span class="font-semibold text-green-700" id="depositAmount">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between text-xs text-gray-600">
-                                        <span>Balance Due:</span>
-                                        <span id="balanceDue">$0.00</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -437,45 +368,9 @@
                                 ></textarea>
                             </div>
                         </div>
-                        <!-- Action Buttons -->
-                        <div class="mt-4 space-y-2">
-                            <button 
-                                id="saveChangesBtn"
-                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-                                </svg>
-                                Save Changes
-                            </button>
-                            <button 
-                                id="resendQuoteBtn"
-                                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                </svg>
-                                Resend Quote
-                            </button>
-                            <button 
-                                id="downloadPdfBtn"
-                                class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Download PDF
-                            </button>
-                            <button 
-                                id="createInvoiceSidebarBtn"
-                                onclick="createInvoiceFromQuote()"
-                                class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Create Invoice
-                            </button>
+                        <!-- Action Buttons (Dynamic based on status) -->
+                        <div id="sidebarActions" class="mt-4 space-y-2">
+                            <!-- Buttons will be dynamically populated based on status -->
                         </div>
                     </div>
                 </div>
@@ -804,25 +699,16 @@
                                 </div>
                             </div>
 
-                            <!-- Action Buttons -->
-                            <div class="space-y-2">
-                                <button 
-                                    id="savePaymentConfigBtn"
-                                    class="w-full bg-purple-600 text-white py-2.5 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center gap-2"
-                                >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                            <!-- Auto-save Indicator -->
+                            <div class="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                                     </svg>
-                                    Save Payment Configuration
-                                </button>
-                            </div>
-
-                            <!-- Help Text -->
-                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
-                                <p class="text-xs text-blue-800">
-                                    <strong>Payment Configuration</strong><br>
-                                    These settings will be applied when creating invoices from this quote.
-                                </p>
+                                    <p class="text-xs text-green-800">
+                                        <strong>Auto-saved</strong> - Changes are saved automatically
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -840,50 +726,43 @@
                         <div class="bg-white rounded-lg shadow-sm p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-lg font-semibold text-gray-900">Payment Configuration Summary</h2>
-                                <button class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium hover:bg-purple-200 transition-colors" onclick="switchToTab('paymentConfig')">Edit Settings</button>
+                                <button 
+                                    onclick="switchTab('paymentConfig')"
+                                    class="text-sm text-blue-600 hover:text-blue-700"
+                                >
+                                    Edit Settings
+                                </button>
                             </div>
                             
-                            <!-- Payment Configuration Summary -->
-                            <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                                <div class="flex items-center justify-between mb-3">
-                                    <h3 class="text-sm font-semibold text-gray-900">Current Payment Configuration</h3>
-                                    <button 
-                                        onclick="switchTab('paymentConfig')"
-                                        class="text-xs text-purple-600 hover:text-purple-700 font-medium"
-                                    >
-                                        Edit Settings
-                                    </button>
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <div class="text-xs text-gray-600 mb-1">Payment Model</div>
+                                        <div class="font-medium text-gray-900" id="invoiceTabPaymentModel">Full Payment</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-gray-600 mb-1">Payment Terms</div>
+                                        <div class="font-medium text-gray-900" id="invoiceTabPaymentTerms">Net 30 Days</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-gray-600 mb-1">Payment Methods</div>
+                                        <div class="font-medium text-gray-900" id="invoiceTabPaymentMethods">Stripe</div>
+                                    </div>
                                 </div>
                                 
-                                <div class="space-y-2">
-                                    <div class="p-2 bg-purple-50 rounded">
-                                        <div class="text-xs text-purple-600 mb-1">Payment Model</div>
-                                        <div class="text-sm font-medium text-purple-700" id="invoiceTabPaymentModel">Full Payment</div>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-2 text-xs">
-                                        <div id="invoiceTabDepositInfo" class="hidden">
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-600">Deposit Amount</span>
-                                                <span class="text-gray-900 font-medium" id="invoiceTabDepositAmount">$0.00</span>
-                                            </div>
-                                            <div class="flex justify-between">
-                                                <span class="text-gray-600">Remaining Balance</span>
-                                                <span class="text-gray-600" id="invoiceTabRemainingBalance">$0.00</span>
-                                            </div>
+                                <div id="invoiceTabDepositInfo" class="hidden mt-3 pt-3 border-t border-gray-200">
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="text-gray-600">Deposit Amount:</span>
+                                            <span class="font-medium text-gray-900 ml-2" id="invoiceTabDepositAmount">$0.00</span>
                                         </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Payment Terms</span>
-                                            <span class="text-gray-900 font-medium" id="invoiceTabPaymentTerms">Net 30 Days</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Payment Methods</span>
-                                            <span class="text-gray-900 font-medium" id="invoiceTabPaymentMethods">2 selected</span>
+                                        <div>
+                                            <span class="text-gray-600">Remaining Balance:</span>
+                                            <span class="font-medium text-gray-900 ml-2" id="invoiceTabRemainingBalance">$0.00</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
 
 
@@ -891,18 +770,42 @@
                         <!-- Invoice Management Section -->
                         <div class="bg-white rounded-lg shadow-sm p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-semibold text-gray-900">Invoice Management</h2>
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium" id="invoiceCount">0 Invoices</span>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h2 class="text-lg font-bold text-gray-900">Invoice Management</h2>
+                                            <p class="text-xs text-gray-500" id="invoiceCount">0 Invoices</p>
+                                        </div>
+                                    </div>
                                     <button 
                                         onclick="refreshInvoices()"
-                                        class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                                        class="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all flex items-center gap-2"
                                     >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                         </svg>
                                         Refresh
                                     </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Overdue Warning Banner -->
+                            <div id="overdueWarningBanner" class="hidden mb-4 bg-red-50 border-l-4 border-red-600 p-4 rounded">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <h3 class="text-sm font-bold text-red-800" id="overdueWarningTitle">Overdue Invoices</h3>
+                                        <p class="text-xs text-red-700 mt-1" id="overdueWarningMessage">You have overdue invoices that require immediate attention.</p>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -935,52 +838,52 @@
                     </div>
 
                     <!-- Right Column - Invoice Summary -->
-                    <div class="space-y-4">
+                    <div class="lg:col-span-1 space-y-4">
                         
                         <!-- Invoice Summary -->
                         <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
                             <h2 class="text-lg font-semibold text-gray-900 mb-4">Invoice Summary</h2>
                             
-                            <div class="space-y-3 mb-4">
-                                <div class="p-3 bg-gray-50 rounded-lg">
-                                    <div class="text-xs text-gray-600 mb-1">Quote Total</div>
-                                    <div class="text-2xl font-bold text-gray-900" id="invoiceQuoteTotal">$0.00</div>
-                                </div>
+                            <!-- Quote Total -->
+                            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                                <div class="text-xs text-gray-600 mb-1">Quote Total</div>
+                                <div class="text-2xl font-bold text-gray-900" id="invoiceQuoteTotal">$0.00</div>
+                            </div>
 
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Total Invoiced</span>
-                                        <span class="font-medium text-gray-900" id="totalInvoiced">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Total Paid</span>
-                                        <span class="font-medium text-green-600" id="totalPaid">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between">
-                                        <span class="text-gray-600">Outstanding</span>
-                                        <span class="font-medium text-red-600" id="totalOutstanding">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between border-t border-gray-200 pt-2">
-                                        <span class="text-gray-600">Remaining to Invoice</span>
-                                        <span class="font-semibold text-blue-600" id="remainingToInvoice">$0.00</span>
-                                    </div>
+                            <!-- Financial Breakdown -->
+                            <div class="space-y-2 text-sm mb-4">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total Invoiced</span>
+                                    <span class="font-medium text-gray-900" id="totalInvoiced">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total Paid</span>
+                                    <span class="font-medium text-green-600" id="totalPaid">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Outstanding</span>
+                                    <span class="font-medium text-red-600" id="totalOutstanding">$0.00</span>
+                                </div>
+                                <div class="flex justify-between border-t border-gray-200 pt-2">
+                                    <span class="text-gray-600">Remaining to Invoice</span>
+                                    <span class="font-semibold text-blue-600" id="remainingToInvoice">$0.00</span>
                                 </div>
                             </div>
 
                             <!-- Invoice Status -->
-                            <div class="border-t border-gray-200 pt-3">
+                            <div class="border-t border-gray-200 pt-3 mb-3">
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-sm font-medium text-gray-700">Invoice Status</span>
                                     <span id="invoiceStatusBadge" class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">Not Invoiced</span>
                                 </div>
                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div id="invoiceProgressBar" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                                    <div id="invoiceProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1" id="invoiceProgressText">0% of quote amount invoiced</p>
                             </div>
 
                             <!-- Quick Actions -->
-                            <div class="border-t border-gray-200 pt-3 mt-3">
+                            <div class="border-t border-gray-200 pt-3">
                                 <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Actions</h3>
                                 <div class="space-y-2">
                                     <button 
@@ -1010,17 +913,20 @@
                                         </svg>
                                         Download Invoice Report
                                     </button>
-                                    <button 
-                                        onclick="createInvoices()"
-                                        class="w-full bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
-                                    >
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                        </svg>
-                                        Create Invoices
-                                    </button>
                                 </div>
                             </div>
+                            
+                            <!-- Create Invoices Button -->
+                            <button 
+                                id="createInvoicesBtn"
+                                onclick="createInvoices()"
+                                class="w-full mt-4 px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Create Invoices
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1028,28 +934,92 @@
         </div>
     </div>
 
-    <!-- Quote Preview Modal (PDF-like) -->
-    <div id="previewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4 sticky top-0 bg-white pb-4 border-b">
-                    <h3 class="text-lg font-semibold text-gray-900">Quote Preview</h3>
-                    <div class="flex gap-2">
-                        <button id="downloadPreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            Download PDF
-                        </button>
-                        <button id="closePreviewBtn" class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
-                            Close
-                        </button>
+    <!-- PDF Preview Modal -->
+    <div id="pdfPreviewModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full mx-4 max-w-6xl max-h-[95vh] flex flex-col">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">PDF Preview</h3>
+                <div class="flex gap-2">
+                    <button id="downloadPdfFromPreview" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Download PDF
+                    </button>
+                    <button id="closePdfPreview" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-hidden">
+                <iframe id="pdfPreviewFrame" class="w-full h-full" style="min-height: 600px;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Record Payment Modal -->
+    <div id="recordPaymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full mx-4 max-w-md">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Confirm Full Payment</h3>
+                <p class="text-sm text-gray-500 mt-1">Record that this invoice has been paid in full</p>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <!-- Invoice Info -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-sm text-gray-600">Invoice Number</div>
+                        <div class="font-semibold text-gray-900" id="paymentInvoiceId">-</div>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-300">
+                        <div class="text-sm text-gray-600">Payment Amount</div>
+                        <div class="text-2xl font-bold text-green-600" id="paymentOutstanding">$0.00</div>
                     </div>
                 </div>
-                
-                <div id="previewContent" class="bg-white p-8" style="font-family: 'Helvetica', 'Arial', sans-serif;">
-                    <!-- PDF-like content will be populated here -->
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p class="text-sm text-blue-800">
+                        <strong>Note:</strong> This will record full payment for the outstanding amount and mark the invoice as paid.
+                    </p>
                 </div>
+                
+                <!-- Payment Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Date *</label>
+                    <input 
+                        type="date" 
+                        id="paymentDate" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <!-- Payment Notes (Optional) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notes (Optional)</label>
+                    <textarea 
+                        id="paymentNotes" 
+                        rows="3"
+                        placeholder="Add any additional notes about this payment..."
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    ></textarea>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+                <button 
+                    onclick="closeRecordPaymentModal()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="confirmRecordPayment()"
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
+                >
+                    Confirm Full Payment
+                </button>
             </div>
         </div>
     </div>
@@ -1087,7 +1057,7 @@
                     <textarea 
                         id="priceModComment"
                         rows="3"
-                        placeholder="Enter reason for price modification (required for approval)"
+                        placeholder="Enter reason for price modification (required for record keeping)"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     ></textarea>
                 </div>
@@ -1140,11 +1110,85 @@
         // Existing quote data (would normally come from server/API)
         const existingQuote = {
             id: 'Q-2024-001',
-            status: 'draft',
+            status: 'draft', // draft, sent, approved, rejected, expired, invoiced
             createdDate: '2024-10-20',
             validUntil: '2024-11-03',
             customerNotes: 'Thank you for your interest in our tutoring services.',
             internalNotes: 'Customer prefers morning sessions.'
+        };
+
+        // Status configuration for actions and permissions
+        const statusConfig = {
+            draft: {
+                label: '📝 Draft',
+                color: 'bg-yellow-100 text-yellow-700',
+                canEdit: true,
+                canDelete: true,
+                actions: [
+                    { id: 'save', label: 'Save Changes', color: 'gray', icon: 'save' },
+                    { id: 'send', label: 'Send Quote', color: 'blue', icon: 'send', primary: true },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
+                    { id: 'delete', label: 'Delete', color: 'red', icon: 'trash' }
+                ]
+            },
+            sent: {
+                label: '📤 Sent',
+                color: 'bg-blue-100 text-blue-700',
+                canEdit: true,
+                canDelete: false,
+                actions: [
+                    { id: 'save', label: 'Save Changes', color: 'gray', icon: 'save' },
+                    { id: 'resend', label: 'Resend Quote', color: 'green', icon: 'send' },
+                    { id: 'approve', label: 'Mark as Approved', color: 'green', icon: 'check', primary: true },
+                    { id: 'reject', label: 'Mark as Rejected', color: 'red', icon: 'x' },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' }
+                ]
+            },
+            approved: {
+                label: '✅ Approved',
+                color: 'bg-green-100 text-green-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'createInvoice', label: 'Create Invoice', color: 'purple', icon: 'invoice', primary: true },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
+                    { id: 'clone', label: 'Clone Quote', color: 'blue', icon: 'copy' }
+                ]
+            },
+            rejected: {
+                label: '❌ Rejected',
+                color: 'bg-red-100 text-red-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'clone', label: 'Clone Quote', color: 'blue', icon: 'copy', primary: true },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
+                    { id: 'archive', label: 'Archive', color: 'gray', icon: 'archive' }
+                ]
+            },
+            expired: {
+                label: '⏰ Expired',
+                color: 'bg-orange-100 text-orange-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'renew', label: 'Renew Quote', color: 'blue', icon: 'refresh', primary: true },
+                    { id: 'clone', label: 'Clone Quote', color: 'blue', icon: 'copy' },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
+                    { id: 'archive', label: 'Archive', color: 'gray', icon: 'archive' }
+                ]
+            },
+            invoiced: {
+                label: '💰 Invoiced',
+                color: 'bg-purple-100 text-purple-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'viewInvoices', label: 'View Invoices', color: 'purple', icon: 'invoice', primary: true },
+                    { id: 'createInvoice', label: 'Create Invoice', color: 'purple', icon: 'plus' },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' }
+                ]
+            }
         };
 
         // State management - Pre-populated with existing quote data for edit mode
@@ -1216,10 +1260,6 @@
                     scheduleNotes: ''
                 }
             ],
-            depositRequired: false,
-            depositType: 'percentage',
-            depositValue: 50,
-            approvalRequired: false,
             currentPriceModIndex: null,
             currentPriceModNewValue: null
         };
@@ -1298,6 +1338,700 @@
             { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
             { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
         ];
+
+        // ============================================================================
+        // STATUS MANAGEMENT FUNCTIONS
+        // ============================================================================
+
+        // Check if quote is expired
+        function isQuoteExpired() {
+            if (!existingQuote.validUntil) return false;
+            const validUntil = new Date(existingQuote.validUntil);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            validUntil.setHours(0, 0, 0, 0);
+            return validUntil < today;
+        }
+
+        // Get current effective status (auto-detect expired)
+        function getCurrentStatus() {
+            if (existingQuote.status !== 'expired' && isQuoteExpired()) {
+                // Auto-detect expired status and sync
+                existingQuote.status = 'expired';
+                state.quoteStatus = 'expired';
+                return 'expired';
+            }
+            // Always return from existingQuote as source of truth
+            return existingQuote.status;
+        }
+
+        // Get icon SVG for action
+        function getActionIcon(iconName) {
+            const icons = {
+                save: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>',
+                send: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>',
+                download: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>',
+                trash: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>',
+                check: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>',
+                x: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>',
+                invoice: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>',
+                copy: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>',
+                archive: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>',
+                refresh: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>',
+                plus: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>'
+            };
+            return icons[iconName] || icons.save;
+        }
+
+        // Get button color classes
+        function getButtonColor(color, isPrimary) {
+            const colors = {
+                gray: isPrimary ? 'bg-gray-600 text-white hover:bg-gray-700' : 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+                blue: 'bg-blue-600 text-white hover:bg-blue-700',
+                green: 'bg-green-600 text-white hover:bg-green-700',
+                red: 'bg-red-600 text-white hover:bg-red-700',
+                purple: 'bg-purple-600 text-white hover:bg-purple-700'
+            };
+            return colors[color] || colors.gray;
+        }
+
+        // Render action buttons based on current status
+        function renderStatusActions() {
+            const currentStatus = getCurrentStatus();
+            const config = statusConfig[currentStatus];
+            
+            if (!config) {
+                console.error('Invalid status:', currentStatus);
+                return;
+            }
+
+            // Update status badge
+            const statusBadge = document.getElementById('quoteStatusBadge');
+            statusBadge.textContent = config.label;
+            statusBadge.className = `px-2 py-1 text-xs rounded ${config.color}`;
+
+            // Get the header actions container
+            const headerActions = document.getElementById('headerActions');
+            
+            // Remove only the dynamic action buttons (not the back button)
+            const dynamicButtons = headerActions.querySelectorAll('button:not(:first-child)');
+            dynamicButtons.forEach(btn => btn.remove());
+
+            // Render action buttons in header
+            config.actions.forEach(action => {
+                const button = document.createElement('button');
+                button.className = `px-4 py-2 rounded-lg flex items-center gap-2 ${getButtonColor(action.color, action.primary)}`;
+                button.onclick = () => handleStatusAction(action.id);
+                
+                button.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        ${getActionIcon(action.icon)}
+                    </svg>
+                    ${action.label}
+                `;
+                
+                headerActions.appendChild(button);
+            });
+
+            // Also render action buttons in sidebar
+            const sidebarActions = document.getElementById('sidebarActions');
+            if (sidebarActions) {
+                sidebarActions.innerHTML = '';
+                
+                config.actions.forEach(action => {
+                    const button = document.createElement('button');
+                    button.className = `w-full py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${getButtonColor(action.color, action.primary)}`;
+                    button.onclick = () => handleStatusAction(action.id);
+                    
+                    button.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            ${getActionIcon(action.icon)}
+                        </svg>
+                        ${action.label}
+                    `;
+                    
+                    sidebarActions.appendChild(button);
+                });
+            }
+
+            // Show status info banner and enable/disable editing based on status
+            const banner = document.getElementById('statusInfoBanner');
+            
+            if (config.canEdit) {
+                enableEditing();
+                if (banner) banner.classList.add('hidden');
+            } else {
+                disableEditing();
+                
+                // Define informational banner messages
+                const bannerMessages = {
+                    approved: {
+                        color: 'bg-green-50 border-green-500',
+                        icon: '✅',
+                        title: 'Quote Approved',
+                        message: 'This quote has been approved by the customer. You can create invoices but cannot modify the quote details.'
+                    },
+                    rejected: {
+                        color: 'bg-red-50 border-red-500',
+                        icon: '❌',
+                        title: 'Quote Rejected',
+                        message: 'This quote was rejected by the customer. You can clone it to create a new quote with modifications.'
+                    },
+                    expired: {
+                        color: 'bg-orange-50 border-orange-500',
+                        icon: '⏰',
+                        title: 'Quote Expired',
+                        message: 'This quote has passed its validity date. You can renew it to extend the validity period or clone it to create a new quote.'
+                    },
+                    invoiced: {
+                        color: 'bg-purple-50 border-purple-500',
+                        icon: '💰',
+                        title: 'Quote Invoiced',
+                        message: 'Invoices have been created for this quote. Quote details are now locked.'
+                    }
+                };
+                
+                const bannerInfo = bannerMessages[currentStatus];
+                if (bannerInfo && banner) {
+                    banner.className = `p-4 border-l-4 rounded-lg ${bannerInfo.color}`;
+                    banner.innerHTML = `
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">${bannerInfo.icon}</span>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-900 mb-1">${bannerInfo.title}</h3>
+                                <p class="text-sm text-gray-700">${bannerInfo.message}</p>
+                            </div>
+                        </div>
+                    `;
+                    banner.classList.remove('hidden');
+                } else {
+                    if (banner) banner.classList.add('hidden');
+                }
+            }
+            
+            // Update tab visibility based on status
+            updateTabsVisibility();
+        }
+
+        // Enable editing for editable statuses
+        function enableEditing() {
+            // Enable Quote Details tab inputs
+            const quoteInputs = document.querySelectorAll('#quoteDetailsContent input, #quoteDetailsContent textarea, #quoteDetailsContent select');
+            quoteInputs.forEach(input => {
+                input.disabled = false;
+                input.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            });
+
+            // Enable add/remove item buttons
+            const catalogSearch = document.getElementById('catalogSearchInput');
+            if (catalogSearch) {
+                catalogSearch.disabled = false;
+                catalogSearch.placeholder = 'Type to search and add services or products...';
+            }
+
+            // Show remove item buttons
+            const removeButtons = document.querySelectorAll('[onclick^="removeQuoteItem"]');
+            removeButtons.forEach(btn => btn.style.display = '');
+            
+            // Enable Payment Configuration tab inputs
+            const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
+            paymentInputs.forEach(input => {
+                input.disabled = false;
+                input.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            });
+        }
+
+        // Disable editing for read-only statuses
+        function disableEditing() {
+            // Disable Quote Details tab inputs
+            const quoteInputs = document.querySelectorAll('#quoteDetailsContent input, #quoteDetailsContent textarea, #quoteDetailsContent select');
+            quoteInputs.forEach(input => {
+                input.disabled = true;
+                input.classList.add('bg-gray-100', 'cursor-not-allowed');
+            });
+
+            // Disable add/remove item buttons
+            const catalogSearch = document.getElementById('catalogSearchInput');
+            if (catalogSearch) {
+                catalogSearch.disabled = true;
+                catalogSearch.placeholder = 'Editing disabled for this status';
+            }
+
+            // Hide remove item buttons
+            const removeButtons = document.querySelectorAll('[onclick^="removeQuoteItem"]');
+            removeButtons.forEach(btn => btn.style.display = 'none');
+            
+            // Disable Payment Configuration tab inputs
+            const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
+            paymentInputs.forEach(input => {
+                input.disabled = true;
+                input.classList.add('bg-gray-100', 'cursor-not-allowed');
+            });
+        }
+
+        // Handle status action clicks
+        function handleStatusAction(actionId) {
+            switch(actionId) {
+                case 'save':
+                    saveQuoteChanges();
+                    break;
+                case 'send':
+                    sendQuote();
+                    break;
+                case 'resend':
+                    resendQuote();
+                    break;
+                case 'approve':
+                    approveQuote();
+                    break;
+                case 'reject':
+                    rejectQuote();
+                    break;
+                case 'createInvoice':
+                    createInvoiceFromQuote();
+                    break;
+                case 'download':
+                    previewQuotePDF();
+                    break;
+                case 'delete':
+                    deleteQuote();
+                    break;
+                case 'clone':
+                    cloneQuote();
+                    break;
+                case 'archive':
+                    archiveQuote();
+                    break;
+                case 'renew':
+                    renewQuote();
+                    break;
+                case 'viewInvoices':
+                    switchTab('invoices');
+                    break;
+                default:
+                    console.log('Action not implemented:', actionId);
+            }
+        }
+
+        // Action implementations
+        function saveQuoteChanges() {
+            console.log('Saving quote changes...', existingQuote.id);
+            
+            // Update quote data with current form values
+            existingQuote.validUntil = document.getElementById('validUntilDate').value;
+            existingQuote.customerNotes = document.getElementById('customerNotes').value;
+            existingQuote.internalNotes = document.getElementById('internalNotes').value;
+            
+            alert('Quote changes saved successfully!');
+            // In real implementation: save to server via API
+        }
+
+        function sendQuote() {
+            const email = state.selectedCustomer ? state.selectedCustomer.email : 'customer';
+            if (confirm('Send this quote to ' + email + '?')) {
+                existingQuote.status = 'sent';
+                state.quoteStatus = 'sent'; // Update state to sync with existingQuote
+                console.log('Quote sent:', existingQuote.id);
+                alert('Quote sent successfully!');
+                renderStatusActions();
+                // In real implementation: send email and update server
+            }
+        }
+
+        function resendQuote() {
+            const email = state.selectedCustomer ? state.selectedCustomer.email : 'customer';
+            if (confirm('Resend this quote to ' + email + '?')) {
+                console.log('Quote resent:', existingQuote.id);
+                alert('Quote resent successfully!');
+                // In real implementation: resend email
+            }
+        }
+
+        function approveQuote() {
+            if (confirm('Mark this quote as Approved? This will allow invoice creation.')) {
+                existingQuote.status = 'approved';
+                state.quoteStatus = 'approved'; // Update state to sync with existingQuote
+                console.log('Quote approved:', existingQuote.id);
+                alert('Quote marked as Approved! You can now create invoices.');
+                renderStatusActions();
+                // In real implementation: update server
+            }
+        }
+
+        function rejectQuote() {
+            if (confirm('Mark this quote as Rejected?')) {
+                existingQuote.status = 'rejected';
+                state.quoteStatus = 'rejected'; // Update state to sync with existingQuote
+                console.log('Quote rejected:', existingQuote.id);
+                alert('Quote marked as Rejected.');
+                renderStatusActions();
+                // In real implementation: update server
+            }
+        }
+
+        // Store the generated PDF globally for download
+        let generatedPdfBlob = null;
+
+        function generateQuotePDF() {
+            console.log('Generating PDF for quote:', existingQuote.id);
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+                
+                // Page settings
+                const pageWidth = doc.internal.pageSize.width;
+                const pageHeight = doc.internal.pageSize.height;
+                const margin = 20;
+                const contentWidth = pageWidth - (margin * 2);
+                let yPos = margin;
+                
+                // Colors
+                const primaryColor = [59, 130, 246]; // Blue
+                const darkColor = [31, 41, 55]; // Gray-800
+                const lightColor = [107, 114, 128]; // Gray-500
+                
+                // Helper function to add text with word wrap
+                const addWrappedText = (text, x, y, maxWidth, fontSize = 10) => {
+                    doc.setFontSize(fontSize);
+                    const lines = doc.splitTextToSize(text, maxWidth);
+                    doc.text(lines, x, y);
+                    return y + (lines.length * fontSize * 0.4);
+                };
+                
+                // Header - Company Name
+                doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.rect(0, 0, pageWidth, 40, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont(undefined, 'bold');
+                doc.text('SUNSHINE TUTORING', margin, 20);
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.text('Melbourne East Branch', margin, 28);
+                
+                // Quote Title and Status
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                const statusText = getCurrentStatus().toUpperCase();
+                const statusLabel = statusConfig[getCurrentStatus()]?.label || statusText;
+                doc.text('QUOTE', pageWidth - margin - 30, 20, { align: 'right' });
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'normal');
+                doc.text(statusLabel, pageWidth - margin - 30, 28, { align: 'right' });
+                
+                yPos = 50;
+                
+                // Quote ID and Date
+                doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'bold');
+                doc.text(`Quote #: ${existingQuote.id}`, margin, yPos);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Date: ${new Date(existingQuote.createdDate).toLocaleDateString('en-AU')}`, pageWidth - margin, yPos, { align: 'right' });
+                
+                yPos += 8;
+                doc.text(`Valid Until: ${new Date(existingQuote.validUntil).toLocaleDateString('en-AU')}`, pageWidth - margin, yPos, { align: 'right' });
+                
+                yPos += 15;
+                
+                // Customer Information Box
+                doc.setDrawColor(220, 220, 220);
+                doc.setFillColor(249, 250, 251);
+                doc.roundedRect(margin, yPos, contentWidth / 2 - 5, 35, 2, 2, 'FD');
+                
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(lightColor[0], lightColor[1], lightColor[2]);
+                doc.text('BILL TO:', margin + 5, yPos + 7);
+                
+                doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(10);
+                doc.text(state.selectedCustomer.name, margin + 5, yPos + 14);
+                
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(9);
+                doc.text(state.selectedCustomer.email, margin + 5, yPos + 20);
+                doc.text(state.selectedCustomer.phone, margin + 5, yPos + 26);
+                if (state.selectedCustomer.address) {
+                    doc.setFontSize(8);
+                    const addressLines = doc.splitTextToSize(state.selectedCustomer.address, contentWidth / 2 - 15);
+                    doc.text(addressLines, margin + 5, yPos + 31);
+                }
+                
+                yPos += 45;
+                
+                // Line Items Table Header
+                doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.rect(margin, yPos, contentWidth, 10, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(9);
+                doc.setFont(undefined, 'bold');
+                doc.text('Description', margin + 3, yPos + 7);
+                doc.text('Qty', margin + contentWidth * 0.60, yPos + 7);
+                doc.text('Unit Price', margin + contentWidth * 0.70, yPos + 7);
+                doc.text('Total', margin + contentWidth * 0.85, yPos + 7);
+                
+                yPos += 12;
+                
+                // Line Items
+                doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(9);
+                
+                state.quoteItems.forEach((item, index) => {
+                    // Check if we need a new page
+                    if (yPos > pageHeight - 60) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    
+                    // Item name
+                    const nameLines = doc.splitTextToSize(item.name, contentWidth * 0.55);
+                    doc.text(nameLines, margin + 3, yPos);
+                    
+                    // Quantity
+                    doc.text(`${item.quantity} ${item.unit}`, margin + contentWidth * 0.60, yPos);
+                    
+                    // Unit Price
+                    doc.text(`$${item.customPrice.toFixed(2)}`, margin + contentWidth * 0.70, yPos);
+                    
+                    // Line Total
+                    const lineTotal = item.customPrice * item.quantity;
+                    const discountAmount = item.discountType === 'percentage' 
+                        ? lineTotal * (item.discount / 100)
+                        : item.discount;
+                    const finalTotal = lineTotal - discountAmount;
+                    doc.text(`$${finalTotal.toFixed(2)}`, margin + contentWidth * 0.85, yPos);
+                    
+                    yPos += (nameLines.length * 4) + 2;
+                    
+                    // Item notes if any
+                    if (item.notes) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(lightColor[0], lightColor[1], lightColor[2]);
+                        const notesLines = doc.splitTextToSize(item.notes, contentWidth * 0.55);
+                        doc.text(notesLines, margin + 5, yPos);
+                        yPos += (notesLines.length * 3.5) + 1;
+                        doc.setFontSize(9);
+                        doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                    }
+                    
+                    // Discount if any
+                    if (item.discount > 0) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(34, 197, 94); // Green
+                        doc.text(`Discount: -$${discountAmount.toFixed(2)}`, margin + contentWidth * 0.85, yPos);
+                        yPos += 4;
+                        doc.setFontSize(9);
+                        doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                    }
+                    
+                    // Separator line
+                    if (index < state.quoteItems.length - 1) {
+                        doc.setDrawColor(230, 230, 230);
+                        doc.line(margin, yPos, pageWidth - margin, yPos);
+                        yPos += 5;
+                    }
+                });
+                
+                yPos += 8;
+                
+                // Summary Box
+                const summaryX = pageWidth - margin - 60;
+                const summaryWidth = 60;
+                
+                // Subtotal
+                doc.setFont(undefined, 'normal');
+                doc.text('Subtotal:', summaryX, yPos);
+                doc.text(`$${calculateSubtotal().toFixed(2)}`, summaryX + summaryWidth, yPos, { align: 'right' });
+                yPos += 6;
+                
+                // Line item discounts if any
+                const lineItemDiscounts = calculateLineItemDiscounts();
+                if (lineItemDiscounts > 0) {
+                    doc.setTextColor(34, 197, 94); // Green
+                    doc.text('Discounts:', summaryX, yPos);
+                    doc.text(`-$${lineItemDiscounts.toFixed(2)}`, summaryX + summaryWidth, yPos, { align: 'right' });
+                    doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                    yPos += 6;
+                }
+                
+                // Tax Breakdown
+                const taxBreakdown = getTaxBreakdown();
+                if (taxBreakdown.taxable_gst > 0) {
+                    doc.text('GST (10%):', summaryX, yPos);
+                    doc.text(`$${taxBreakdown.taxable_gst.toFixed(2)}`, summaryX + summaryWidth, yPos, { align: 'right' });
+                    yPos += 6;
+                }
+                
+                // Total Tax
+                doc.text('Total Tax:', summaryX, yPos);
+                doc.text(`$${calculateTax().toFixed(2)}`, summaryX + summaryWidth, yPos, { align: 'right' });
+                yPos += 8;
+                
+                // Total line
+                doc.setDrawColor(darkColor[0], darkColor[1], darkColor[2]);
+                doc.setLineWidth(0.5);
+                doc.line(summaryX, yPos - 2, summaryX + summaryWidth, yPos - 2);
+                
+                doc.setFont(undefined, 'bold');
+                doc.setFontSize(12);
+                doc.text('TOTAL:', summaryX, yPos);
+                doc.text(`$${calculateTotal().toFixed(2)}`, summaryX + summaryWidth, yPos, { align: 'right' });
+                
+                yPos += 15;
+                
+                // Customer Notes
+                if (existingQuote.customerNotes) {
+                    doc.setFontSize(9);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(lightColor[0], lightColor[1], lightColor[2]);
+                    doc.text('NOTES:', margin, yPos);
+                    yPos += 5;
+                    
+                    doc.setFont(undefined, 'normal');
+                    doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+                    doc.setFontSize(9);
+                    const notesLines = doc.splitTextToSize(existingQuote.customerNotes, contentWidth);
+                    doc.text(notesLines, margin, yPos);
+                    yPos += (notesLines.length * 4);
+                }
+                
+                // Footer
+                yPos = pageHeight - 30;
+                doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.setLineWidth(1);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                
+                yPos += 5;
+                doc.setFontSize(8);
+                doc.setTextColor(lightColor[0], lightColor[1], lightColor[2]);
+                doc.setFont(undefined, 'normal');
+                
+                // Left footer
+                doc.text('Sunshine Tutoring - Melbourne East', margin, yPos);
+                doc.text('123 Education Street, Melbourne VIC 3000', margin, yPos + 4);
+                doc.text('Phone: (03) 1234 5678 | Email: melbourne@sunshinetutoring.com.au', margin, yPos + 8);
+                
+                // Right footer
+                doc.text('ABN: 12 345 678 901', pageWidth - margin, yPos, { align: 'right' });
+                doc.text('www.sunshinetutoring.com.au', pageWidth - margin, yPos + 4, { align: 'right' });
+                
+                // Return the PDF document
+                return doc;
+        }
+
+        function previewQuotePDF() {
+            try {
+                // Generate the PDF
+                const doc = generateQuotePDF();
+                
+                // Create blob URL
+                const pdfBlob = doc.output('blob');
+                generatedPdfBlob = pdfBlob;
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                
+                // Show in preview modal
+                const iframe = document.getElementById('pdfPreviewFrame');
+                iframe.src = pdfUrl;
+                
+                // Show modal
+                document.getElementById('pdfPreviewModal').classList.remove('hidden');
+                
+                console.log('PDF preview opened');
+                
+            } catch (error) {
+                console.error('Error generating PDF preview:', error);
+                alert('Error generating PDF preview. Please try again.');
+            }
+        }
+
+        function downloadQuotePDF() {
+            try {
+                let doc;
+                
+                // If we have a cached blob from preview, use it
+                if (generatedPdfBlob) {
+                    // Download the cached blob
+                    const filename = `Quote_${existingQuote.id}_${state.selectedCustomer.name.replace(/\s+/g, '_')}.pdf`;
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(generatedPdfBlob);
+                    link.download = filename;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                } else {
+                    // Generate new PDF and download
+                    doc = generateQuotePDF();
+                    const filename = `Quote_${existingQuote.id}_${state.selectedCustomer.name.replace(/\s+/g, '_')}.pdf`;
+                    doc.save(filename);
+                }
+                
+                console.log('PDF downloaded successfully');
+                
+            } catch (error) {
+                console.error('Error downloading PDF:', error);
+                alert('Error downloading PDF. Please try again.');
+            }
+        }
+
+        function closePdfPreview() {
+            const modal = document.getElementById('pdfPreviewModal');
+            const iframe = document.getElementById('pdfPreviewFrame');
+            
+            // Revoke the blob URL to free memory
+            if (iframe.src) {
+                URL.revokeObjectURL(iframe.src);
+                iframe.src = '';
+            }
+            
+            modal.classList.add('hidden');
+            
+            // Clear cached blob
+            generatedPdfBlob = null;
+        }
+
+        function deleteQuote() {
+            const customerName = state.selectedCustomer ? state.selectedCustomer.name : 'Unknown';
+            if (confirm('Delete quote ' + existingQuote.id + ' for ' + customerName + '? This cannot be undone.')) {
+                console.log('Quote deleted:', existingQuote.id);
+                alert('Quote deleted successfully!');
+                setTimeout(() => {
+                    window.location.href = 'quote_list_simple.html';
+                }, 500);
+                // In real implementation: delete from server
+            }
+        }
+
+        function cloneQuote() {
+            if (confirm('Create a copy of this quote?')) {
+                window.location.href = `quote_create_simple.html?clone=${existingQuote.id}`;
+            }
+        }
+
+        function archiveQuote() {
+            if (confirm('Archive this quote?')) {
+                alert('Quote archived!');
+                window.location.href = 'quote_list_simple.html';
+                // In real implementation: archive on server
+            }
+        }
+
+        function renewQuote() {
+            if (confirm('Renew this quote with a new validity date?')) {
+                existingQuote.status = 'draft';
+                state.quoteStatus = 'draft'; // Update state to sync with existingQuote
+                // Set new validity date (30 days from now)
+                const newDate = new Date();
+                newDate.setDate(newDate.getDate() + 30);
+                existingQuote.validUntil = newDate.toISOString().split('T')[0];
+                document.getElementById('validUntilDate').value = existingQuote.validUntil;
+                alert('Quote renewed! Please update and send to customer.');
+                renderStatusActions();
+                // In real implementation: update server
+            }
+        }
 
         // Helper functions
         function getServices() {
@@ -1381,21 +2115,6 @@
             }, 0);
         }
         
-        // Calculate deposit amount
-        function calculateDeposit() {
-            if (!state.depositRequired) return 0;
-            const total = calculateTotal();
-            if (state.depositType === 'percentage') {
-                return total * (state.depositValue / 100);
-            }
-            return Math.min(state.depositValue, total);
-        }
-        
-        // Calculate balance due after deposit
-        function calculateBalanceDue() {
-            return calculateTotal() - calculateDeposit();
-        }
-        
         // Get tax breakdown by category
         function getTaxBreakdown() {
             const breakdown = {
@@ -1451,31 +2170,16 @@
             // Total tax
             const totalTax = calculateTax();
             document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
-
-            // Update deposit display
-            if (state.depositRequired) {
-                document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
-                document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
-            }
-
-            // Check approval requirement based on line item discounts
-            const lineItemDiscountTotal = calculateLineItemDiscounts();
-            const subtotal = calculateSubtotal();
-            const discountPercent = subtotal > 0 ? (lineItemDiscountTotal / (subtotal + lineItemDiscountTotal)) * 100 : 0;
-            state.approvalRequired = discountPercent > 20;
-            
-            const approvalWarning = document.getElementById('approvalWarning');
-            if (approvalWarning) {
-                approvalWarning.classList.toggle('hidden', !state.approvalRequired);
-            }
             
             updateCreateButton();
         }
 
         function updateCreateButton() {
             const createBtn = document.getElementById('createQuoteBtn');
-            const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
-            createBtn.disabled = !canCreate;
+            if (createBtn) {
+                const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
+                createBtn.disabled = !canCreate;
+            }
         }
 
         // Render functions
@@ -2104,30 +2808,38 @@
             document.getElementById('previewModal').classList.remove('hidden');
         }
 
-        function hidePreview() {
-            document.getElementById('previewModal').classList.add('hidden');
-        }
-
-        function downloadPreviewPDF() {
-            alert('PDF download functionality would be implemented here');
-            // In a real implementation, this would generate and download a PDF
-        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // EDIT MODE: Load existing quote data
-            // Set quote ID and status in header
+            // Set quote ID
             document.getElementById('quoteIdBadge').textContent = existingQuote.id;
-            const statusBadge = document.getElementById('quoteStatusBadge');
-            const statusMap = {
-                'draft': { class: 'bg-yellow-100 text-yellow-700', text: '📝 Draft' },
-                'sent': { class: 'bg-blue-100 text-blue-700', text: '📤 Sent' },
-                'approved': { class: 'bg-green-100 text-green-700', text: '✅ Approved' },
-                'rejected': { class: 'bg-red-100 text-red-700', text: '❌ Rejected' }
+            
+            // Developer helper: Test different statuses
+            console.log('%c🔧 Developer Tools', 'color: #3b82f6; font-weight: bold; font-size: 14px;');
+            console.log('Test different quote statuses by running:');
+            console.log('  testStatus("draft")    - Editable, can send/delete');
+            console.log('  testStatus("sent")     - Editable, can approve/reject');
+            console.log('  testStatus("approved") - Read-only, can create invoice');
+            console.log('  testStatus("rejected") - Read-only, can clone');
+            console.log('  testStatus("expired")  - Read-only, can renew/clone');
+            console.log('  testStatus("invoiced") - Read-only, view invoices');
+            
+            // Make testStatus function available globally
+            window.testStatus = function(status) {
+                if (statusConfig[status]) {
+                    existingQuote.status = status;
+                    state.quoteStatus = status; // Update state to sync with existingQuote
+                    // Re-enable editing first (in case coming from read-only status)
+                    enableEditing();
+                    
+                    // Re-render (this will disable again if needed)
+                    renderStatusActions();
+                    console.log(`✅ Status changed to: ${status}`);
+                } else {
+                    console.error('❌ Invalid status. Use: draft, sent, approved, rejected, expired, or invoiced');
+                }
             };
-            const statusInfo = statusMap[existingQuote.status] || statusMap['draft'];
-            statusBadge.className = `px-2 py-1 text-xs rounded ${statusInfo.class}`;
-            statusBadge.textContent = statusInfo.text;
             
             // Set valid until date from existing quote
             document.getElementById('validUntilDate').value = existingQuote.validUntil;
@@ -2160,6 +2872,9 @@
             // Render existing quote items
             renderQuoteItems();
             updateSummary();
+            
+            // Render status-based action buttons and update UI (AFTER items are rendered)
+            renderStatusActions();
             
             // Catalog search autocomplete
             const catalogSearchInput = document.getElementById('catalogSearchInput');
@@ -2246,40 +2961,6 @@
                 });
             }
             
-            // Deposit changes
-            const requireDeposit = document.getElementById('requireDeposit');
-            const depositType = document.getElementById('depositType');
-            const depositValue = document.getElementById('depositValue');
-            
-            if (requireDeposit) {
-                requireDeposit.addEventListener('change', function(e) {
-                    state.depositRequired = e.target.checked;
-                    const depositSection = document.getElementById('depositSection');
-                    if (depositSection) {
-                        depositSection.classList.toggle('hidden', !e.target.checked);
-                    }
-                    updateSummary();
-                });
-            }
-            
-            if (depositType) {
-                depositType.addEventListener('change', function(e) {
-                    state.depositType = e.target.value;
-                    const depositValueEl = document.getElementById('depositValue');
-                    if (depositValueEl) {
-                        depositValueEl.step = e.target.value === 'percentage' ? '1' : '0.01';
-                    }
-                    updateSummary();
-                });
-            }
-            
-            if (depositValue) {
-                depositValue.addEventListener('input', function(e) {
-                    state.depositValue = Number(e.target.value);
-                    updateSummary();
-                });
-            }
-            
             // Create quote button
             const createQuoteBtn = document.getElementById('createQuoteBtn');
             if (createQuoteBtn) {
@@ -2340,50 +3021,29 @@
                 });
             }
             
-            // Save draft button
-            const saveDraftBtn = document.getElementById('saveDraftBtn');
-            if (saveDraftBtn) {
-                saveDraftBtn.addEventListener('click', function() {
-                // Create draft quote data
-                const draftData = {
-                    customer: state.selectedCustomer,
-                    quoteContact: state.selectedQuoteContact, // Contact who will receive the quote
-                    items: state.quoteItems,
-                    subtotal: calculateSubtotal(),
-                    tax: calculateTax(),
-                    total: calculateTotal(),
-                    validUntil: document.getElementById('validUntilDate').value,
-                    customerNotes: document.getElementById('customerNotes').value,
-                    internalNotes: document.getElementById('internalNotes').value,
-                    status: 'draft',
-                    createdDate: new Date().toISOString()
-                };
-                
-                // Here you would normally save the draft to the server
-                console.log('Saving draft:', draftData);
-                
-                alert('Quote saved as draft!');
-                // In real implementation: redirect to quotes list
-                // window.location.href = 'quotes.html';
+            // PDF Preview modal buttons
+            const closePdfPreviewBtn = document.getElementById('closePdfPreview');
+            const downloadPdfFromPreviewBtn = document.getElementById('downloadPdfFromPreview');
+            
+            if (closePdfPreviewBtn) {
+                closePdfPreviewBtn.addEventListener('click', closePdfPreview);
+            }
+            if (downloadPdfFromPreviewBtn) {
+                downloadPdfFromPreviewBtn.addEventListener('click', function() {
+                    downloadQuotePDF();
+                    closePdfPreview();
                 });
             }
             
-            // Preview button
-            const previewBtn = document.getElementById('previewBtn');
-            if (previewBtn) {
-                previewBtn.addEventListener('click', showPreview);
-            }
-            
-            // Preview modal buttons
-            const closePreviewBtn = document.getElementById('closePreviewBtn');
-            const downloadPreviewBtn = document.getElementById('downloadPreviewBtn');
-            
-            if (closePreviewBtn) {
-                closePreviewBtn.addEventListener('click', hidePreview);
-            }
-            if (downloadPreviewBtn) {
-                downloadPreviewBtn.addEventListener('click', downloadPreviewPDF);
-            }
+            // Close PDF preview on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const pdfModal = document.getElementById('pdfPreviewModal');
+                    if (pdfModal && !pdfModal.classList.contains('hidden')) {
+                        closePdfPreview();
+                    }
+                }
+            });
             
             // Invoice preview modal buttons
             const closeInvoicePreviewBtn = document.getElementById('closeInvoicePreviewBtn');
@@ -2428,18 +3088,24 @@
                 });
             }
 
-            // Payment configuration event listeners
-            const savePaymentConfigBtn = document.getElementById('savePaymentConfigBtn');
+            // Payment configuration event listeners with autosave
             const defaultPaymentTerms = document.getElementById('defaultPaymentTerms');
             const subscriptionStartDate = document.getElementById('subscriptionStartDate');
             const billingFrequency = document.getElementById('billingFrequency');
             
-            if (savePaymentConfigBtn) {
-                savePaymentConfigBtn.addEventListener('click', savePaymentConfiguration);
-            }
+            // Autosave payment configuration on change
             if (defaultPaymentTerms) {
-                defaultPaymentTerms.addEventListener('change', updatePaymentTermsDisplay);
+                defaultPaymentTerms.addEventListener('change', function() {
+                    updatePaymentTermsDisplay();
+                    autoSavePaymentConfiguration();
+                });
             }
+            
+            // Add autosave to all payment config inputs
+            const paymentConfigInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent select, #paymentConfigContent textarea');
+            paymentConfigInputs.forEach(input => {
+                input.addEventListener('change', autoSavePaymentConfiguration);
+            });
             
             // Payment method radio buttons
             const paymentMethodsContainer = document.getElementById('paymentMethodsContainer');
@@ -2499,7 +3165,44 @@
         // TAB SWITCHING FUNCTIONALITY
         // ============================================================================
 
+        function updateTabsVisibility() {
+            const restrictedStatuses = ['expired', 'rejected', 'draft'];
+            const paymentConfigTab = document.getElementById('paymentConfigTab');
+            const invoicesTab = document.getElementById('invoicesTab');
+            
+            if (restrictedStatuses.includes(state.quoteStatus)) {
+                // Disable and gray out tabs
+                [paymentConfigTab, invoicesTab].forEach(tab => {
+                    tab.classList.add('opacity-50', 'cursor-not-allowed');
+                    tab.classList.remove('hover:text-gray-700', 'hover:border-gray-300');
+                });
+            } else {
+                // Enable tabs
+                [paymentConfigTab, invoicesTab].forEach(tab => {
+                    tab.classList.remove('opacity-50', 'cursor-not-allowed');
+                    tab.classList.add('hover:text-gray-700', 'hover:border-gray-300');
+                });
+            }
+        }
+
         function switchTab(tabName) {
+            // Check if expired/rejected/draft quotes can access Payment Configuration or Invoices tabs
+            const restrictedStatuses = ['expired', 'rejected', 'draft'];
+            const restrictedTabs = ['paymentConfig', 'invoices'];
+            
+            if (restrictedStatuses.includes(state.quoteStatus) && restrictedTabs.includes(tabName)) {
+                let message = '';
+                if (state.quoteStatus === 'expired') {
+                    message = '⏰ This quote has expired. Please renew or clone the quote before managing invoices or payment configuration.';
+                } else if (state.quoteStatus === 'rejected') {
+                    message = '❌ This quote has been rejected. Clone the quote to create a new one if needed.';
+                } else if (state.quoteStatus === 'draft') {
+                    message = '📝 This quote is still in draft. Send it to the customer and get approval before configuring payments or creating invoices.';
+                }
+                alert(message);
+                return; // Prevent tab switch
+            }
+            
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.add('hidden');
@@ -2740,76 +3443,60 @@
             }
         }
 
-        function savePaymentConfiguration() {
-            const paymentModel = document.querySelector('input[name="paymentModel"]:checked').value;
+        function autoSavePaymentConfiguration() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked');
+            if (!paymentModel) return; // Skip if not selected yet
             
             // Get selected payment method (single selection)
             const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
             const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
             
-            if (!paymentMethod) {
-                alert('Please select a payment method');
-                return;
-            }
-            
             const paymentConfig = {
-                paymentModel: paymentModel,
+                paymentModel: paymentModel.value,
                 paymentMethod: paymentMethod,
-                paymentTerms: document.getElementById('defaultPaymentTerms').value,
-                paymentInstructions: document.getElementById('paymentInstructions').value
+                paymentTerms: document.getElementById('defaultPaymentTerms')?.value,
+                paymentInstructions: document.getElementById('paymentInstructions')?.value
             };
             
             // Add subscription data if applicable
-            if (paymentModel === 'subscription') {
-                const startDate = document.getElementById('subscriptionStartDate').value;
-                if (!startDate) {
-                    alert('Please select a subscription start date');
-                    return;
-                }
+            if (paymentModel.value === 'subscription') {
+                const startDate = document.getElementById('subscriptionStartDate')?.value;
                 
                 paymentConfig.subscription = {
-                    frequency: document.getElementById('billingFrequency').value,
+                    frequency: document.getElementById('billingFrequency')?.value,
                     startDate: startDate,
-                    endType: document.getElementById('subscriptionEnd').value,
-                    autoCharge: document.getElementById('autoCharge').checked
+                    endType: document.getElementById('subscriptionEnd')?.value,
+                    autoCharge: document.getElementById('autoCharge')?.checked
                 };
                 
-                const endType = document.getElementById('subscriptionEnd').value;
+                const endType = document.getElementById('subscriptionEnd')?.value;
                 if (endType === 'after_cycles') {
-                    const cycles = parseInt(document.getElementById('billingCycles').value);
-                    if (!cycles || cycles <= 0) {
-                        alert('Please enter a valid number of billing cycles');
-                        return;
+                    const cycles = parseInt(document.getElementById('billingCycles')?.value);
+                    if (cycles && cycles > 0) {
+                        paymentConfig.subscription.billingCycles = cycles;
                     }
-                    paymentConfig.subscription.billingCycles = cycles;
                 } else if (endType === 'end_date') {
-                    const endDate = document.getElementById('subscriptionEndDate').value;
-                    if (!endDate) {
-                        alert('Please select a subscription end date');
-                        return;
+                    const endDate = document.getElementById('subscriptionEndDate')?.value;
+                    if (endDate) {
+                        paymentConfig.subscription.endDate = endDate;
                     }
-                    paymentConfig.subscription.endDate = endDate;
                 }
             }
             
             // Add deposit data if applicable
-            if (paymentModel === 'deposit') {
-                const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
-                if (depositAmount <= 0) {
-                    alert('Please enter a valid deposit amount');
-                    return;
+            if (paymentModel.value === 'deposit') {
+                const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+                if (depositAmount > 0) {
+                    paymentConfig.deposit = {
+                        amount: depositAmount,
+                        percentage: parseFloat(document.getElementById('depositPercentage')?.value) || 0
+                    };
                 }
-                
-                paymentConfig.deposit = {
-                    amount: depositAmount,
-                    percentage: parseFloat(document.getElementById('depositPercentage').value) || 0
-                };
             }
             
-            console.log('Saving payment configuration:', paymentConfig);
-            alert('Payment configuration saved successfully!');
+            console.log('Auto-saving payment configuration:', paymentConfig);
             
-            // In real implementation, save to server
+            // In real implementation, save to server silently
             // await fetch('/api/quotes/payment-config', { method: 'POST', body: JSON.stringify(paymentConfig) });
         }
 
@@ -2871,6 +3558,21 @@
         }
         
         function createInvoices() {
+            // Check if quote status allows invoice creation
+            const restrictedStatuses = ['expired', 'rejected', 'draft'];
+            if (restrictedStatuses.includes(state.quoteStatus)) {
+                let message = '';
+                if (state.quoteStatus === 'expired') {
+                    message = '⏰ Cannot create invoices for an expired quote.\n\nPlease renew the quote first to extend its validity period.';
+                } else if (state.quoteStatus === 'rejected') {
+                    message = '❌ Cannot create invoices for a rejected quote.\n\nThis quote was not accepted by the customer.';
+                } else if (state.quoteStatus === 'draft') {
+                    message = '📝 Cannot create invoices for a draft quote.\n\nPlease send the quote to the customer and wait for approval first.';
+                }
+                alert(message);
+                return;
+            }
+            
             const remainingAmount = getRemainingToInvoice();
             
             if (remainingAmount <= 0) {
@@ -2890,6 +3592,41 @@
         function loadInvoices() {
             const invoicesList = document.getElementById('invoicesList');
             const noInvoicesState = document.getElementById('noInvoicesState');
+            const invoiceCountEl = document.getElementById('invoiceCount');
+            
+            // Update invoice count
+            const activeInvoices = quoteInvoices.filter(inv => inv.status !== 'cancelled');
+            const cancelledCount = quoteInvoices.length - activeInvoices.length;
+            
+            // Count overdue invoices
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const overdueCount = activeInvoices.filter(inv => {
+                const dueDate = new Date(inv.dueDate);
+                dueDate.setHours(0, 0, 0, 0);
+                return inv.status === 'unpaid' && dueDate < today;
+            }).length;
+            
+            let countText = `${activeInvoices.length} Invoice${activeInvoices.length !== 1 ? 's' : ''}`;
+            if (overdueCount > 0) {
+                countText += ` <span class="text-red-600 font-bold">(${overdueCount} overdue)</span>`;
+            }
+            if (cancelledCount > 0) {
+                countText += ` <span class="text-gray-500">(${cancelledCount} cancelled)</span>`;
+            }
+            invoiceCountEl.innerHTML = countText;
+            
+            // Show/hide overdue warning banner
+            const overdueWarningBanner = document.getElementById('overdueWarningBanner');
+            if (overdueCount > 0) {
+                overdueWarningBanner.classList.remove('hidden');
+                document.getElementById('overdueWarningTitle').textContent = `${overdueCount} Overdue Invoice${overdueCount !== 1 ? 's' : ''}`;
+                document.getElementById('overdueWarningMessage').textContent = overdueCount === 1 
+                    ? 'You have 1 overdue invoice that requires immediate attention.'
+                    : `You have ${overdueCount} overdue invoices that require immediate attention.`;
+            } else {
+                overdueWarningBanner.classList.add('hidden');
+            }
             
             if (quoteInvoices.length === 0) {
                 invoicesList.innerHTML = '';
@@ -2901,10 +3638,9 @@
             
             invoicesList.innerHTML = quoteInvoices.map(invoice => {
                 const statusColors = {
-                    'paid': 'bg-green-100 text-green-800',
-                    'unpaid': 'bg-red-100 text-red-800',
-                    'partial': 'bg-yellow-100 text-yellow-800',
-                    'overdue': 'bg-red-100 text-red-800'
+                    'paid': 'bg-green-100 text-green-700',
+                    'unpaid': 'bg-red-100 text-red-700',
+                    'cancelled': 'bg-gray-100 text-gray-700'
                 };
                 
                 const typeLabels = {
@@ -2913,46 +3649,94 @@
                     'partial': 'Partial Invoice'
                 };
                 
+                const outstanding = invoice.amount - invoice.paidAmount;
+                
+                // Check if invoice is overdue
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const dueDate = new Date(invoice.dueDate);
+                dueDate.setHours(0, 0, 0, 0);
+                const isOverdue = invoice.status === 'unpaid' && dueDate < today;
+                
                 return `
-                    <div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-2">
-                                <span class="font-semibold text-gray-900">${invoice.id}</span>
-                                <span class="px-2 py-1 text-xs rounded-full ${statusColors[invoice.status]}">${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>
+                    <div class="bg-white border rounded-lg p-4 hover:shadow-sm transition-shadow ${invoice.status === 'cancelled' ? 'opacity-60' : ''} ${isOverdue ? 'border-red-400 border-2' : 'border-gray-200'}">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-lg font-semibold text-gray-900 ${invoice.status === 'cancelled' ? 'line-through' : ''}">${invoice.id}</span>
+                                <span class="px-2 py-0.5 text-xs rounded-full font-medium ${statusColors[invoice.status]}">${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</span>
+                                ${isOverdue ? `<span class="px-2 py-0.5 text-xs rounded-full font-bold bg-red-600 text-white flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    OVERDUE
+                                </span>` : ''}
                             </div>
                             <div class="text-right">
-                                <div class="font-semibold text-gray-900">$${invoice.amount.toFixed(2)}</div>
-                                ${invoice.paidAmount > 0 ? `<div class="text-xs text-green-600">Paid: $${invoice.paidAmount.toFixed(2)}</div>` : ''}
+                                <div class="text-xl font-bold text-gray-900 ${invoice.status === 'cancelled' ? 'line-through' : ''}">$${invoice.amount.toFixed(2)}</div>
+                                ${invoice.paidAmount > 0 && invoice.status !== 'cancelled' ? `<div class="text-sm text-green-600 font-medium">Paid: $${invoice.paidAmount.toFixed(2)}</div>` : ''}
                             </div>
                         </div>
                         
-                        <div class="flex items-center justify-between text-sm text-gray-600">
-                            <span>${typeLabels[invoice.type]}</span>
-                            <span>Due: ${new Date(invoice.dueDate).toLocaleDateString()}</span>
+                        <div class="flex items-center justify-between text-sm mb-3">
+                            <span class="font-medium text-gray-600">${typeLabels[invoice.type]}</span>
+                            <span class="${isOverdue ? 'text-red-600 font-bold' : 'text-gray-600'}">
+                                Due: ${new Date(invoice.dueDate).toLocaleDateString()}
+                                ${isOverdue ? ` (${Math.floor((today - dueDate) / (1000 * 60 * 60 * 24))} days ago)` : ''}
+                            </span>
                         </div>
                         
-                        <div class="flex gap-2 mt-3">
-                            <button 
-                                onclick="viewInvoice('${invoice.id}')"
-                                class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50"
-                            >
-                                View
-                            </button>
-                            <button 
-                                onclick="sendInvoice('${invoice.id}')"
-                                class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50"
-                            >
-                                Send
-                            </button>
-                            ${invoice.status === 'unpaid' ? `
+                        ${invoice.paymentMethod ? `
+                            <div class="text-xs text-gray-500 mb-3">
+                                Payment Method: <span class="font-medium">${invoice.paymentMethod}</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${invoice.status !== 'cancelled' ? `
+                            ${invoice.status === 'paid' ? `
+                                <!-- Paid Invoice: Only View button -->
                                 <button 
-                                    onclick="recordPayment('${invoice.id}')"
-                                    class="flex-1 px-3 py-1.5 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+                                    onclick="viewInvoice('${invoice.id}')"
+                                    class="w-full px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
-                                    Record Payment
+                                    View Invoice
                                 </button>
-                            ` : ''}
-                        </div>
+                            ` : `
+                                <!-- Unpaid Invoice: View and Send buttons -->
+                                <div class="grid grid-cols-2 gap-2 mb-2">
+                                    <button 
+                                        onclick="viewInvoice('${invoice.id}')"
+                                        class="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        View
+                                    </button>
+                                    <button 
+                                        onclick="sendInvoice('${invoice.id}')"
+                                        class="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button 
+                                        onclick="openRecordPaymentModal('${invoice.id}')"
+                                        class="px-4 py-2 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                    >
+                                        Confirm Payment
+                                    </button>
+                                    <button 
+                                        onclick="cancelInvoice('${invoice.id}')"
+                                        class="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                    >
+                                        Cancel Invoice
+                                    </button>
+                                </div>
+                            `}
+                        ` : `
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                                <p class="text-sm font-medium text-gray-700">⚠️ This invoice has been cancelled</p>
+                                ${invoice.cancelledDate ? `<p class="text-xs text-gray-500 mt-1">Cancelled on: ${new Date(invoice.cancelledDate).toLocaleDateString()}</p>` : ''}
+                            </div>
+                        `}
                     </div>
                 `;
             }).join('');
@@ -2960,8 +3744,10 @@
 
         function updateInvoiceSummary() {
             const quoteTotal = calculateTotal();
-            const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
-            const totalPaid = quoteInvoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
+            // Exclude cancelled invoices from calculations
+            const activeInvoices = quoteInvoices.filter(inv => inv.status !== 'cancelled');
+            const totalInvoiced = activeInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            const totalPaid = activeInvoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
             const totalOutstanding = totalInvoiced - totalPaid;
             const remainingToInvoice = Math.max(0, quoteTotal - totalInvoiced); // Cap at 0, can't be negative
             
@@ -3000,7 +3786,9 @@
 
         function getRemainingToInvoice() {
             const quoteTotal = calculateTotal();
-            const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            // Exclude cancelled invoices from calculations
+            const activeInvoices = quoteInvoices.filter(inv => inv.status !== 'cancelled');
+            const totalInvoiced = activeInvoices.reduce((sum, inv) => sum + inv.amount, 0);
             return Math.max(0, quoteTotal - totalInvoiced); // Cap at 0, can't invoice more than quote total
         }
 
@@ -3017,35 +3805,134 @@
             }
         }
 
-        function recordPayment(invoiceId) {
+        // Store current invoice being paid
+        let currentPaymentInvoiceId = null;
+
+        function openRecordPaymentModal(invoiceId) {
             const invoice = quoteInvoices.find(inv => inv.id === invoiceId);
-            if (invoice) {
-                const paymentAmount = prompt(`Record payment for ${invoiceId}\\nOutstanding amount: $${(invoice.amount - invoice.paidAmount).toFixed(2)}\\n\\nEnter payment amount:`);
+            if (!invoice) return;
+            
+            currentPaymentInvoiceId = invoiceId;
+            const outstanding = invoice.amount - invoice.paidAmount;
+            
+            // Populate modal
+            document.getElementById('paymentInvoiceId').textContent = invoice.id;
+            document.getElementById('paymentOutstanding').textContent = `$${outstanding.toFixed(2)}`;
+            document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('paymentNotes').value = '';
+            
+            // Show modal
+            document.getElementById('recordPaymentModal').classList.remove('hidden');
+        }
+
+        function closeRecordPaymentModal() {
+            document.getElementById('recordPaymentModal').classList.add('hidden');
+            currentPaymentInvoiceId = null;
+        }
+
+        function confirmRecordPayment() {
+            const invoice = quoteInvoices.find(inv => inv.id === currentPaymentInvoiceId);
+            if (!invoice) return;
+            
+            const date = document.getElementById('paymentDate').value;
+            const notes = document.getElementById('paymentNotes').value;
+            
+            // Validation
+            if (!date) {
+                alert('Please select a payment date');
+                return;
+            }
+            
+            // Calculate full outstanding amount
+            const outstanding = invoice.amount - invoice.paidAmount;
+            
+            // Confirm full payment
+            const confirmMsg = `Confirm full payment of $${outstanding.toFixed(2)} for invoice ${invoice.id}?`;
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            // Record full payment
+            invoice.paidAmount = invoice.amount; // Pay in full
+            invoice.paymentMethod = 'Manual Payment';
+            invoice.status = 'paid';
+            invoice.paymentDate = date;
+            if (notes) {
+                invoice.paymentNotes = notes;
+            }
+            
+            // Initialize payment history if it doesn't exist
+            if (!invoice.paymentHistory) {
+                invoice.paymentHistory = [];
+            }
+            
+            // Add to payment history
+            invoice.paymentHistory.push({
+                amount: outstanding,
+                method: 'Manual Payment',
+                date: date,
+                notes: notes || '',
+                recordedAt: new Date().toISOString()
+            });
+            
+            // Refresh UI
+            loadInvoices();
+            updateInvoiceSummary();
+            closeRecordPaymentModal();
+            
+            // Success message
+            alert(`✅ Payment of $${outstanding.toFixed(2)} recorded successfully for ${invoice.id}\\nInvoice is now marked as PAID.`);
+        }
+
+        // Keep the old function name for compatibility but redirect to new modal
+        function recordPayment(invoiceId) {
+            openRecordPaymentModal(invoiceId);
+        }
+
+        function cancelInvoice(invoiceId) {
+            const invoice = quoteInvoices.find(inv => inv.id === invoiceId);
+            if (!invoice) return;
+            
+            // Confirm cancellation
+            const confirmMessage = `Are you sure you want to cancel invoice ${invoiceId}?\n\n` +
+                `Amount: $${invoice.amount.toFixed(2)}\n` +
+                `Status: ${invoice.status}\n` +
+                (invoice.paidAmount > 0 ? `Paid Amount: $${invoice.paidAmount.toFixed(2)}\n\n` : '\n') +
+                `This action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            // Check if invoice has payments
+            if (invoice.paidAmount > 0) {
+                const refundConfirm = confirm(
+                    `⚠️ Warning: This invoice has received payments totaling $${invoice.paidAmount.toFixed(2)}.\n\n` +
+                    `Cancelling this invoice does not automatically process refunds. ` +
+                    `You will need to manually refund the customer if required.\n\n` +
+                    `Do you still want to cancel this invoice?`
+                );
                 
-                if (paymentAmount && !isNaN(paymentAmount)) {
-                    const amount = parseFloat(paymentAmount);
-                    if (amount > 0 && amount <= (invoice.amount - invoice.paidAmount)) {
-                        invoice.paidAmount += amount;
-                        
-                        if (invoice.paidAmount >= invoice.amount) {
-                            invoice.status = 'paid';
-                            invoice.paymentDate = new Date().toISOString().split('T')[0];
-                        } else {
-                            invoice.status = 'partial';
-                        }
-                        
-                        loadInvoices();
-                        updateInvoiceSummary();
-                        alert(`Payment of $${amount.toFixed(2)} recorded for ${invoiceId}`);
-                    } else {
-                        alert('Invalid payment amount');
-                    }
+                if (!refundConfirm) {
+                    return;
                 }
             }
+            
+            // Cancel the invoice
+            invoice.status = 'cancelled';
+            invoice.cancelledDate = new Date().toISOString().split('T')[0];
+            invoice.cancelledBy = 'Manager'; // In real app, use actual user info
+            
+            // Refresh UI
+            loadInvoices();
+            updateInvoiceSummary();
+            
+            // Success message
+            alert(`✅ Invoice ${invoiceId} has been cancelled successfully.`);
         }
 
         function sendPaymentReminder() {
-            const unpaidInvoices = quoteInvoices.filter(inv => inv.status === 'unpaid' || inv.status === 'partial');
+            const unpaidInvoices = quoteInvoices.filter(inv => inv.status === 'unpaid');
             
             if (unpaidInvoices.length === 0) {
                 alert('No unpaid invoices to send reminders for.');
@@ -3057,7 +3944,7 @@
         }
 
         function viewPaymentHistory() {
-            const paidInvoices = quoteInvoices.filter(inv => inv.paidAmount > 0);
+            const paidInvoices = quoteInvoices.filter(inv => inv.paidAmount > 0 && inv.status !== 'cancelled');
             
             if (paidInvoices.length === 0) {
                 alert('No payment history available.');
@@ -4146,3 +5033,4 @@
     </div>
 </body>
 </html>
+

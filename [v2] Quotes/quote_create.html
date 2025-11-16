@@ -378,47 +378,6 @@
                                 </div>
                             </div>
 
-                            <!-- Deposit Section -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <div class="flex items-center justify-between mb-2">
-                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="checkbox" id="requireDeposit" class="rounded" />
-                                        <span class="text-gray-700 font-medium">Require Deposit</span>
-                                    </label>
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                
-                                <div id="depositSection" class="hidden space-y-2">
-                                    <div class="flex items-center gap-2">
-                                        <select 
-                                            id="depositType"
-                                            class="px-2 py-1 border border-gray-300 rounded text-xs"
-                                        >
-                                            <option value="percentage">%</option>
-                                            <option value="fixed">$</option>
-                                        </select>
-                                        <input 
-                                            type="number"
-                                            id="depositValue"
-                                            value="50"
-                                            class="flex-1 px-2 py-1 border border-gray-300 rounded text-sm text-right"
-                                            min="0"
-                                            step="1"
-                                        />
-                                    </div>
-                                    <div class="flex justify-between text-sm bg-green-50 p-2 rounded">
-                                        <span class="text-gray-700">Deposit Required:</span>
-                                        <span class="font-semibold text-green-700" id="depositAmount">$0.00</span>
-                                    </div>
-                                    <div class="flex justify-between text-xs text-gray-600">
-                                        <span>Balance Due:</span>
-                                        <span id="balanceDue">$0.00</span>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="border-t-2 border-gray-300 pt-3">
                                 <div class="flex justify-between">
                                     <span class="font-bold text-gray-900 text-lg">Total</span>
@@ -569,9 +528,6 @@
             selectedQuoteContact: null, // Will store the contact for this quote (primary or secondary)
             showNewCustomerForm: false,
             quoteItems: [],
-            depositRequired: false,
-            depositType: 'percentage',
-            depositValue: 50,
             approvalRequired: false,
             currentPriceModIndex: null,
             currentPriceModNewValue: null
@@ -734,21 +690,6 @@
             }, 0);
         }
         
-        // Calculate deposit amount
-        function calculateDeposit() {
-            if (!state.depositRequired) return 0;
-            const total = calculateTotal();
-            if (state.depositType === 'percentage') {
-                return total * (state.depositValue / 100);
-            }
-            return Math.min(state.depositValue, total);
-        }
-        
-        // Calculate balance due after deposit
-        function calculateBalanceDue() {
-            return calculateTotal() - calculateDeposit();
-        }
-        
         // Get tax breakdown by category
         function getTaxBreakdown() {
             const breakdown = {
@@ -804,12 +745,6 @@
             // Total tax
             const totalTax = calculateTax();
             document.getElementById('taxAmount').textContent = `$${totalTax.toFixed(2)}`;
-
-            // Update deposit display
-            if (state.depositRequired) {
-                document.getElementById('depositAmount').textContent = `$${calculateDeposit().toFixed(2)}`;
-                document.getElementById('balanceDue').textContent = `$${calculateBalanceDue().toFixed(2)}`;
-            }
 
             // Check approval requirement based on line item discounts
             const lineItemDiscountTotal = calculateLineItemDiscounts();
@@ -1648,24 +1583,6 @@
                     document.getElementById('serviceStreet').value = '';
                     document.getElementById('serviceAddressNotes').value = '';
                 }
-            });
-            
-            // Deposit changes
-            document.getElementById('requireDeposit').addEventListener('change', function(e) {
-                state.depositRequired = e.target.checked;
-                document.getElementById('depositSection').classList.toggle('hidden', !e.target.checked);
-                updateSummary();
-            });
-            
-            document.getElementById('depositType').addEventListener('change', function(e) {
-                state.depositType = e.target.value;
-                document.getElementById('depositValue').step = e.target.value === 'percentage' ? '1' : '0.01';
-                updateSummary();
-            });
-            
-            document.getElementById('depositValue').addEventListener('input', function(e) {
-                state.depositValue = Number(e.target.value);
-                updateSummary();
             });
             
             // Create quote button
