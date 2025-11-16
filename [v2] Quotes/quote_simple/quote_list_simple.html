@@ -275,29 +275,6 @@
             height: 1rem;
         }
 
-        /* Financial summary panel */
-        .financial-panel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress-bar {
-            height: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: white;
-            border-radius: 9999px;
-            transition: width 0.3s ease;
-        }
-
         /* Collapsible section */
         .collapsible-content {
             max-height: 0;
@@ -310,7 +287,6 @@
         }
 
         /* Icon rotation transition */
-        #financialPanelIcon,
         #filterIcon {
             transition: transform 0.3s ease;
         }
@@ -669,70 +645,6 @@
                 </div>
             </div>
 
-            <!-- Financial Summary Panel (Collapsible) -->
-            <div class="financial-panel" id="financialPanel">
-                <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinancialPanel()">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        <div>
-                            <h3 class="text-base font-semibold">Financial Summary</h3>
-                            <p class="text-xs opacity-90">Track invoicing and payment progress</p>
-                        </div>
-                    </div>
-                    <button class="text-white hover:bg-white/20 rounded-lg p-2 transition">
-                        <svg class="w-5 h-5" id="financialPanelIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="collapsible-content" id="financialPanelContent">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                        <!-- Invoiced Progress -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Invoiced</span>
-                                <span class="text-xl font-bold" id="invoicedPercent">63%</span>
-                            </div>
-                            <div class="progress-bar mb-2">
-                                <div class="progress-fill" id="invoicedBar" style="width: 63%"></div>
-                            </div>
-                            <p class="text-xs opacity-80" id="invoicedAmount">$13600 of $21604</p>
-                        </div>
-
-                        <!-- Paid Progress -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Paid</span>
-                                <span class="text-xl font-bold" id="paidPercent">38%</span>
-                            </div>
-                            <div class="progress-bar mb-2">
-                                <div class="progress-fill" id="paidBar" style="width: 38%"></div>
-                            </div>
-                            <p class="text-xs opacity-80" id="paidAmount">$8155 of $21604</p>
-                        </div>
-
-                        <!-- Outstanding -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Outstanding</span>
-                                <span class="text-xl font-bold" id="outstandingTotal">$5505</span>
-                            </div>
-                            <div class="mt-6">
-                                <button class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                    </svg>
-                                    View Details
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Status Tabs -->
             <div class="bg-white rounded-lg shadow-sm mb-4 border border-gray-200">
                 <div class="flex overflow-x-auto custom-scrollbar">
@@ -810,7 +722,20 @@
                 <!-- Advanced Filters Panel -->
                 <div class="collapsible-content mt-4" id="moreFilters">
                     <div class="pt-4 border-t border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+                            <!-- Invoice Status Filter -->
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">Invoice Status</label>
+                                <select 
+                                    id="invoiceStatusFilter"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                >
+                                    <option value="">All</option>
+                                    <option value="not_invoiced">Not Invoiced</option>
+                                    <option value="invoiced">Invoiced</option>
+                                </select>
+                            </div>
+
                             <!-- Payment Status Filter -->
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">Payment Status</label>
@@ -818,12 +743,10 @@
                                     id="paymentStatusFilter"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
-                                    <option value="">All Payments</option>
-                                    <option value="not_invoiced">⚪ Not Invoiced</option>
-                                    <option value="partially_invoiced">🔵 Partial Invoice</option>
-                                    <option value="invoiced_unpaid">🟠 Unpaid</option>
-                                    <option value="partially_paid">🟡 Partially Paid</option>
-                                    <option value="fully_paid">🟢 Fully Paid</option>
+                                    <option value="">All</option>
+                                    <option value="unpaid">Unpaid</option>
+                                    <option value="partial">Partial</option>
+                                    <option value="paid">Paid</option>
                                 </select>
                             </div>
 
@@ -874,7 +797,24 @@
                                     <option value="1000-2000">$1,000 - $2,000</option>
                                     <option value="2000-5000">$2,000 - $5,000</option>
                                     <option value="5000+">$5,000+</option>
+                                    <option value="custom">Custom Range</option>
                                 </select>
+                                <div id="customRangeInputs" class="hidden mt-2 grid grid-cols-2 gap-2">
+                                    <input 
+                                        type="number" 
+                                        id="customMinAmount" 
+                                        placeholder="Min $" 
+                                        min="0"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <input 
+                                        type="number" 
+                                        id="customMaxAmount" 
+                                        placeholder="Max $" 
+                                        min="0"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -1044,10 +984,13 @@ const state = {
     itemsPerPage: 10,
     searchTerm: '',
     statusFilter: 'all',
+    invoiceStatusFilter: '',
     paymentStatusFilter: '',
     createdByFilter: [], // Changed to array for multi-select
     dateRangeFilter: '',
     amountRangeFilter: '',
+    customMinAmount: '',
+    customMaxAmount: '',
     sortBy: 'newest'
 };
 
@@ -1056,26 +999,30 @@ const teamMembers = ['John Smith', 'Sarah Williams', 'Mike Johnson'];
 
 // Sample data
 const quotes = [
-    {id: 'Q-2024-001', customerId: 2, customerName: 'Michael Chen', customerEmail: 'm.chen@email.com', customerPhone: '0423 456 789', createdBy: 'John Smith', dateCreated: '2024-10-25', validUntil: '2024-11-08', status: 'draft', total: 750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-002', customerId: 5, customerName: 'Lisa Anderson', customerEmail: 'lisa.a@email.com', customerPhone: '0456 789 012', createdBy: 'Sarah Williams', dateCreated: '2024-10-24', validUntil: '2024-11-07', status: 'draft', total: 1250.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-003', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-23', validUntil: '2024-11-06', status: 'sent', total: 412.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-004', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Mike Johnson', dateCreated: '2024-10-22', validUntil: '2024-11-05', status: 'sent', total: 850.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-005', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Sarah Williams', dateCreated: '2024-10-21', validUntil: '2024-11-04', status: 'sent', total: 920.75, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-006', customerId: 6, customerName: 'James Taylor', customerEmail: 'james.t@email.com', customerPhone: '0467 890 123', createdBy: 'John Smith', dateCreated: '2024-10-20', validUntil: '2024-11-03', status: 'sent', total: 1580.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-007', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'Mike Johnson', dateCreated: '2024-10-19', validUntil: '2024-11-02', status: 'accepted', total: 3250.00, paymentStatus: 'invoiced', amountInvoiced: 3250.00, amountPaid: 0},
-    {id: 'Q-2024-008', customerId: 7, customerName: 'Rachel Green', customerEmail: 'rachel.g@email.com', customerPhone: '0478 901 234', createdBy: 'Sarah Williams', dateCreated: '2024-10-18', validUntil: '2024-11-01', status: 'accepted', total: 2100.00, paymentStatus: 'invoiced', amountInvoiced: 2100.00, amountPaid: 0},
-    {id: 'Q-2024-009', customerId: 8, customerName: 'Tom Harris', customerEmail: 'tom.h@email.com', customerPhone: '0489 012 345', createdBy: 'John Smith', dateCreated: '2024-10-17', validUntil: '2024-10-31', status: 'accepted', total: 1750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-010', customerId: 9, customerName: 'Nina Patel', customerEmail: 'nina.p@email.com', customerPhone: '0490 123 456', createdBy: 'Mike Johnson', dateCreated: '2024-10-16', validUntil: '2024-10-30', status: 'declined', total: 890.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-10', validUntil: '2024-10-24', status: 'converted', total: 2800.00, paymentStatus: 'paid', amountInvoiced: 2800.00, amountPaid: 2800.00},
-    {id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2024-10-08', validUntil: '2024-10-22', status: 'converted', total: 1950.00, paymentStatus: 'paid', amountInvoiced: 1950.00, amountPaid: 1950.00},
-    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2024-10-05', validUntil: '2024-10-19', status: 'converted', total: 3100.00, paymentStatus: 'paid', amountInvoiced: 3100.00, amountPaid: 3100.00}
+    // Valid quotes (future dates)
+    {id: 'Q-2024-001', customerId: 2, customerName: 'Michael Chen', customerEmail: 'm.chen@email.com', customerPhone: '0423 456 789', createdBy: 'John Smith', dateCreated: '2025-11-05', validUntil: '2025-11-25', status: 'draft', total: 750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-002', customerId: 5, customerName: 'Lisa Anderson', customerEmail: 'lisa.a@email.com', customerPhone: '0456 789 012', createdBy: 'Sarah Williams', dateCreated: '2025-11-04', validUntil: '2025-11-22', status: 'draft', total: 1250.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-003', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2025-11-03', validUntil: '2025-11-20', status: 'sent', total: 412.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-004', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Mike Johnson', dateCreated: '2025-11-02', validUntil: '2025-11-19', status: 'sent', total: 850.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    // Expired quotes
+    {id: 'Q-2024-005', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Sarah Williams', dateCreated: '2025-10-21', validUntil: '2025-11-04', status: 'sent', total: 920.75, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-006', customerId: 6, customerName: 'James Taylor', customerEmail: 'james.t@email.com', customerPhone: '0467 890 123', createdBy: 'John Smith', dateCreated: '2025-10-20', validUntil: '2025-11-03', status: 'sent', total: 1580.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    // Valid quotes
+    {id: 'Q-2024-007', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'Mike Johnson', dateCreated: '2025-10-29', validUntil: '2025-11-18', status: 'accepted', total: 3250.00, paymentStatus: 'invoiced', amountInvoiced: 3250.00, amountPaid: 0},
+    {id: 'Q-2024-008', customerId: 7, customerName: 'Rachel Green', customerEmail: 'rachel.g@email.com', customerPhone: '0478 901 234', createdBy: 'Sarah Williams', dateCreated: '2025-10-28', validUntil: '2025-11-17', status: 'accepted', total: 2100.00, paymentStatus: 'invoiced', amountInvoiced: 2100.00, amountPaid: 0},
+    // Expired quote
+    {id: 'Q-2024-009', customerId: 8, customerName: 'Tom Harris', customerEmail: 'tom.h@email.com', customerPhone: '0489 012 345', createdBy: 'John Smith', dateCreated: '2025-10-17', validUntil: '2025-10-31', status: 'accepted', total: 1750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-010', customerId: 9, customerName: 'Nina Patel', customerEmail: 'nina.p@email.com', customerPhone: '0490 123 456', createdBy: 'Mike Johnson', dateCreated: '2025-10-16', validUntil: '2025-10-30', status: 'declined', total: 890.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    // Valid (converted quotes)
+    {id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2025-10-10', validUntil: '2025-12-10', status: 'converted', total: 2800.00, paymentStatus: 'paid', amountInvoiced: 2800.00, amountPaid: 2800.00},
+    {id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2025-10-08', validUntil: '2025-12-08', status: 'converted', total: 1950.00, paymentStatus: 'paid', amountInvoiced: 1950.00, amountPaid: 1950.00},
+    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2025-10-05', validUntil: '2025-12-05', status: 'converted', total: 3100.00, paymentStatus: 'paid', amountInvoiced: 3100.00, amountPaid: 3100.00}
 ];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     state.quotes = quotes;
     updateCounts();
-    updateFinancialSummary();
     filterAndRender();
     setupEventListeners();
 });
@@ -1092,14 +1039,26 @@ function getStatusBadge(status) {
     return badges[status] || badges.draft;
 }
 
-// Get payment status badge HTML - SIMPLIFIED (only 3 statuses)
+// Get invoice status badge HTML - Shows if quote has been invoiced
+function getInvoiceStatusBadge(amountInvoiced, total) {
+    if (amountInvoiced === 0) {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Not Invoiced</span>';
+    } else {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">✓ Invoiced</span>';
+    }
+}
+
+// Get payment status badge HTML - Shows payment status
 function getPaymentStatusBadge(paymentStatus, amountInvoiced, amountPaid, total) {
-    const badges = {
-        not_invoiced: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">⚪ Not Invoiced</span>',
-        invoiced: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">🟡 Invoiced</span>',
-        paid: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">🟢 Paid</span>'
-    };
-    return badges[paymentStatus] || badges.not_invoiced;
+    if (amountInvoiced === 0) {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">-</span>';
+    } else if (amountPaid === 0) {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Unpaid</span>';
+    } else if (amountPaid >= amountInvoiced) {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Paid</span>';
+    } else {
+        return '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Partial</span>';
+    }
 }
 
 // Get contextual actions based on status and payment
@@ -1121,27 +1080,30 @@ function getContextualActions(quote) {
             Mark as Approved
         </button>`;
     } else if (quote.status === 'accepted') {
-        // SIMPLIFIED: Only 3 payment statuses
+        // Determine primary action based on invoice and payment status
         let primaryAction = '';
-        if (quote.paymentStatus === 'not_invoiced') {
+        if (quote.amountInvoiced === 0) {
+            // Not invoiced yet
             primaryAction = `<button class="action-btn action-btn-primary" onclick="createInvoice('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 Create Invoice
             </button>`;
-        } else if (quote.paymentStatus === 'invoiced') {
+        } else if (quote.amountPaid >= quote.amountInvoiced) {
+            // Fully paid
+            primaryAction = `<button class="action-btn action-btn-secondary" onclick="viewInvoice('${quote.id}')">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                View Invoice
+            </button>`;
+        } else {
+            // Invoiced but not fully paid
             primaryAction = `<button class="action-btn action-btn-primary" onclick="viewInvoice('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-                View Invoice
-            </button>`;
-        } else if (quote.paymentStatus === 'paid') {
-            primaryAction = `<button class="action-btn action-btn-secondary" onclick="viewInvoice('${quote.id}')">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 View Invoice
             </button>`;
@@ -1285,7 +1247,8 @@ function renderQuotes() {
                     <div class="col-span-1">Created</div>
                     <div class="col-span-1">Created By</div>
                     <div class="col-span-1">Status</div>
-                    <div class="col-span-2 text-right">Amount</div>
+                    <div class="col-span-1">Invoiced</div>
+                    <div class="col-span-1 text-right">Amount</div>
                     <div class="col-span-3 text-right">Actions</div>
                 </div>
             </div>
@@ -1316,7 +1279,10 @@ function renderQuotes() {
                         <!-- Date -->
                         <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-sm text-gray-900">${formatDate(quote.dateCreated)}</div>
-                            <div class="text-xs text-gray-500 mt-0.5">Valid: ${formatDate(quote.validUntil)}</div>
+                            ${isQuoteExpired(quote.validUntil) 
+                                ? `<div class="text-xs text-red-600 font-semibold mt-0.5">⚠️ Expired: ${formatDate(quote.validUntil)}</div>`
+                                : `<div class="text-xs text-gray-500 mt-0.5">Valid: ${formatDate(quote.validUntil)}</div>`
+                            }
                         </div>
                         
                         <!-- Created By -->
@@ -1333,8 +1299,13 @@ function renderQuotes() {
                             ${getStatusBadge(quote.status)}
                         </div>
                         
+                        <!-- Invoice Status -->
+                        <div class="col-span-1 quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
+                            ${getInvoiceStatusBadge(quote.amountInvoiced, quote.total)}
+                        </div>
+                        
                         <!-- Amount & Payment -->
-                        <div class="col-span-2 text-right quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
+                        <div class="col-span-1 text-right quote-card-clickable" onclick="window.location.href='quote_edit_simple.html?id=${quote.id}'">
                             <div class="text-lg font-bold text-gray-900">$${quote.total.toFixed(2)}</div>
                             <div class="flex items-center justify-end gap-1 mt-1">
                                 ${getPaymentStatusBadge(quote.paymentStatus, quote.amountInvoiced, quote.amountPaid, quote.total)}
@@ -1367,6 +1338,15 @@ function formatDate(dateStr) {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+// Check if a quote is expired
+function isQuoteExpired(validUntilStr) {
+    const validUntil = new Date(validUntilStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    validUntil.setHours(0, 0, 0, 0);
+    return validUntil < today;
+}
+
 // Filter and render
 function filterAndRender() {
     let filtered = [...state.quotes];
@@ -1386,9 +1366,30 @@ function filterAndRender() {
         );
     }
     
+    // Invoice status filter
+    if (state.invoiceStatusFilter) {
+        filtered = filtered.filter(q => {
+            if (state.invoiceStatusFilter === 'not_invoiced') {
+                return q.amountInvoiced === 0;
+            } else if (state.invoiceStatusFilter === 'invoiced') {
+                return q.amountInvoiced > 0;
+            }
+            return true;
+        });
+    }
+    
     // Payment status filter
     if (state.paymentStatusFilter) {
-        filtered = filtered.filter(q => q.paymentStatus === state.paymentStatusFilter);
+        filtered = filtered.filter(q => {
+            if (state.paymentStatusFilter === 'unpaid') {
+                return q.amountInvoiced > 0 && q.amountPaid === 0;
+            } else if (state.paymentStatusFilter === 'partial') {
+                return q.amountPaid > 0 && q.amountPaid < q.amountInvoiced;
+            } else if (state.paymentStatusFilter === 'paid') {
+                return q.amountPaid >= q.amountInvoiced && q.amountInvoiced > 0;
+            }
+            return true;
+        });
     }
     
     // Created by filter (multi-select)
@@ -1408,6 +1409,10 @@ function filterAndRender() {
     if (state.amountRangeFilter) {
         if (state.amountRangeFilter === '5000+') {
             filtered = filtered.filter(q => q.total >= 5000);
+        } else if (state.amountRangeFilter === 'custom') {
+            const min = parseFloat(state.customMinAmount) || 0;
+            const max = parseFloat(state.customMaxAmount) || Infinity;
+            filtered = filtered.filter(q => q.total >= min && q.total <= max);
         } else {
             const [min, max] = state.amountRangeFilter.split('-').map(Number);
             filtered = filtered.filter(q => q.total >= min && q.total < max);
@@ -1468,27 +1473,6 @@ function updateCounts() {
     document.getElementById('monthlyQuotes').textContent = `+${monthlyQuotes.length} quotes`;
 }
 
-// Update financial summary
-function updateFinancialSummary() {
-    const total = state.quotes.reduce((sum, q) => sum + q.total, 0);
-    const invoiced = state.quotes.reduce((sum, q) => sum + q.amountInvoiced, 0);
-    const paid = state.quotes.reduce((sum, q) => sum + q.amountPaid, 0);
-    const outstanding = invoiced - paid;
-    
-    const invoicedPercent = total > 0 ? Math.round((invoiced / total) * 100) : 0;
-    const paidPercent = total > 0 ? Math.round((paid / total) * 100) : 0;
-    
-    document.getElementById('invoicedPercent').textContent = `${invoicedPercent}%`;
-    document.getElementById('invoicedBar').style.width = `${invoicedPercent}%`;
-    document.getElementById('invoicedAmount').textContent = `$${invoiced.toFixed(0)} of $${total.toFixed(0)}`;
-    
-    document.getElementById('paidPercent').textContent = `${paidPercent}%`;
-    document.getElementById('paidBar').style.width = `${paidPercent}%`;
-    document.getElementById('paidAmount').textContent = `$${paid.toFixed(0)} of $${total.toFixed(0)}`;
-    
-    document.getElementById('outstandingTotal').textContent = `$${outstanding.toFixed(0)}`;
-}
-
 // Update pagination
 function updatePagination() {
     const total = state.filteredQuotes.length;
@@ -1516,20 +1500,6 @@ function filterByStatus(status) {
     });
     
     filterAndRender();
-}
-
-// Toggle financial panel
-function toggleFinancialPanel() {
-    const content = document.getElementById('financialPanelContent');
-    const icon = document.getElementById('financialPanelIcon');
-    
-    content.classList.toggle('expanded');
-    // Rotate the SVG icon
-    if (content.classList.contains('expanded')) {
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        icon.style.transform = 'rotate(0deg)';
-    }
 }
 
 // Toggle filters
@@ -1606,8 +1576,8 @@ function applyFilters() {
 // Update filter summary panel
 function updateFilterSummary() {
     const hasActiveFilters = state.searchTerm || state.statusFilter !== 'all' || 
-                            state.paymentStatusFilter || state.createdByFilter || 
-                            state.dateRangeFilter || state.amountRangeFilter;
+                            state.invoiceStatusFilter || state.paymentStatusFilter || 
+                            state.createdByFilter || state.dateRangeFilter || state.amountRangeFilter;
     
     const summaryPanel = document.getElementById('filterSummary');
     
@@ -1661,13 +1631,22 @@ function updateActiveFilterTags() {
         }});
     }
     
+    if (state.invoiceStatusFilter) {
+        const invoiceLabels = {
+            not_invoiced: 'Not Invoiced',
+            invoiced: 'Invoiced'
+        };
+        tags.push({ label: `Invoice: ${invoiceLabels[state.invoiceStatusFilter]}`, clear: () => {
+            document.getElementById('invoiceStatusFilter').value = '';
+            state.invoiceStatusFilter = '';
+        }});
+    }
+    
     if (state.paymentStatusFilter) {
         const paymentLabels = {
-            not_invoiced: 'Not Invoiced',
-            partially_invoiced: 'Partial Invoice',
-            invoiced_unpaid: 'Unpaid',
-            partially_paid: 'Partially Paid',
-            fully_paid: 'Fully Paid'
+            unpaid: 'Unpaid',
+            partial: 'Partial',
+            paid: 'Paid'
         };
         tags.push({ label: `Payment: ${paymentLabels[state.paymentStatusFilter]}`, clear: () => {
             document.getElementById('paymentStatusFilter').value = '';
@@ -1695,16 +1674,29 @@ function updateActiveFilterTags() {
     }
     
     if (state.amountRangeFilter) {
-        const amountLabels = {
-            '0-500': '$0 - $500',
-            '500-1000': '$500 - $1,000',
-            '1000-2000': '$1,000 - $2,000',
-            '2000-5000': '$2,000 - $5,000',
-            '5000+': '$5,000+'
-        };
-        tags.push({ label: `Amount: ${amountLabels[state.amountRangeFilter]}`, clear: () => {
+        let amountLabel;
+        if (state.amountRangeFilter === 'custom') {
+            const min = state.customMinAmount ? `$${state.customMinAmount}` : '$0';
+            const max = state.customMaxAmount ? `$${state.customMaxAmount}` : '∞';
+            amountLabel = `${min} - ${max}`;
+        } else {
+            const amountLabels = {
+                '0-500': '$0 - $500',
+                '500-1000': '$500 - $1,000',
+                '1000-2000': '$1,000 - $2,000',
+                '2000-5000': '$2,000 - $5,000',
+                '5000+': '$5,000+'
+            };
+            amountLabel = amountLabels[state.amountRangeFilter];
+        }
+        tags.push({ label: `Amount: ${amountLabel}`, clear: () => {
             document.getElementById('amountRangeFilter').value = '';
+            document.getElementById('customMinAmount').value = '';
+            document.getElementById('customMaxAmount').value = '';
+            document.getElementById('customRangeInputs').classList.add('hidden');
             state.amountRangeFilter = '';
+            state.customMinAmount = '';
+            state.customMaxAmount = '';
         }});
     }
     
@@ -1735,17 +1727,24 @@ function removeFilterTag(button) {
 // Clear filters
 function clearFilters() {
     document.getElementById('searchInput').value = '';
+    document.getElementById('invoiceStatusFilter').value = '';
     document.getElementById('paymentStatusFilter').value = '';
     document.getElementById('createdByInput').value = '';
     document.getElementById('dateRangeFilter').value = '';
     document.getElementById('amountRangeFilter').value = '';
+    document.getElementById('customMinAmount').value = '';
+    document.getElementById('customMaxAmount').value = '';
+    document.getElementById('customRangeInputs').classList.add('hidden');
     document.getElementById('sortBy').value = 'newest';
     
     state.searchTerm = '';
+    state.invoiceStatusFilter = '';
     state.paymentStatusFilter = '';
     state.createdByFilter = [];
     state.dateRangeFilter = '';
     state.amountRangeFilter = '';
+    state.customMinAmount = '';
+    state.customMaxAmount = '';
     state.sortBy = 'newest';
     state.statusFilter = 'all';
     
@@ -2053,6 +2052,7 @@ function addCreatedByFilter(member) {
         renderCreatedByTags();
         document.getElementById('createdByInput').value = '';
         document.getElementById('createdByAutocomplete').classList.add('hidden');
+        filterAndRender();
     }
 }
 
@@ -2060,11 +2060,16 @@ function addCreatedByFilter(member) {
 function removeCreatedByFilter(member) {
     state.createdByFilter = state.createdByFilter.filter(m => m !== member);
     renderCreatedByTags();
+    filterAndRender();
 }
 
 // Render selected team member tags
 function renderCreatedByTags() {
     const container = document.getElementById('createdByTags');
+    if (!container) {
+        console.error('createdByTags container not found');
+        return;
+    }
     
     if (state.createdByFilter.length === 0) {
         container.innerHTML = '';
@@ -2074,7 +2079,7 @@ function renderCreatedByTags() {
     container.innerHTML = state.createdByFilter.map(member => `
         <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
             ${member}
-            <button onclick="removeCreatedByFilter('${member}')" class="hover:text-blue-900">
+            <button onclick='removeCreatedByFilter(${JSON.stringify(member)})' class="hover:text-blue-900" type="button">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -2092,6 +2097,11 @@ function setupEventListeners() {
     document.getElementById('searchInput').addEventListener('input', (e) => {
         state.searchTerm = e.target.value;
         filterAndRender();
+    });
+    
+    // Invoice status filter
+    document.getElementById('invoiceStatusFilter').addEventListener('change', (e) => {
+        state.invoiceStatusFilter = e.target.value;
     });
     
     // Payment status filter
@@ -2122,7 +2132,7 @@ function setupEventListeners() {
         }
         
         createdByAutocomplete.innerHTML = matches.map(member => `
-            <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm" onclick="addCreatedByFilter('${member}')">
+            <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm" onclick='addCreatedByFilter(${JSON.stringify(member)})'>
                 ${member}
             </div>
         `).join('');
@@ -2148,6 +2158,29 @@ function setupEventListeners() {
     // Amount range filter
     document.getElementById('amountRangeFilter').addEventListener('change', (e) => {
         state.amountRangeFilter = e.target.value;
+        const customInputs = document.getElementById('customRangeInputs');
+        
+        if (e.target.value === 'custom') {
+            customInputs.classList.remove('hidden');
+        } else {
+            customInputs.classList.add('hidden');
+            filterAndRender();
+        }
+    });
+    
+    // Custom range inputs
+    document.getElementById('customMinAmount').addEventListener('input', (e) => {
+        state.customMinAmount = e.target.value;
+        if (state.amountRangeFilter === 'custom') {
+            filterAndRender();
+        }
+    });
+    
+    document.getElementById('customMaxAmount').addEventListener('input', (e) => {
+        state.customMaxAmount = e.target.value;
+        if (state.amountRangeFilter === 'custom') {
+            filterAndRender();
+        }
     });
     
     // Sort

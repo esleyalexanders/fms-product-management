@@ -836,11 +836,11 @@
                     <!-- Left Column - Invoice Management -->
                     <div class="lg:col-span-2 space-y-4">
                         
-                        <!-- Create New Invoice Section -->
+                        <!-- Payment Configuration Summary Section -->
                         <div class="bg-white rounded-lg shadow-sm p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-semibold text-gray-900">Create New Invoice</h2>
-                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-medium">From Quote</span>
+                                <h2 class="text-lg font-semibold text-gray-900">Payment Configuration Summary</h2>
+                                <button class="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium hover:bg-purple-200 transition-colors" onclick="switchToTab('paymentConfig')">Edit Settings</button>
                             </div>
                             
                             <!-- Payment Configuration Summary -->
@@ -886,52 +886,6 @@
                             
                         </div>
 
-                        <!-- Invoice List -->
-                        <div class="space-y-3" id="invoiceList">
-                            <!-- Sample Invoice Items (will be populated dynamically) -->
-                            <div class="p-4 border border-gray-200 rounded-lg">
-                                <div class="flex items-center justify-between mb-2">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium text-gray-900">INV-2024-001</div>
-                                            <div class="text-xs text-gray-500">Full Invoice • Created Nov 15, 2024</div>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-semibold text-gray-900">$2,500.00</div>
-                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">Pending</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between text-xs">
-                                    <div class="flex items-center gap-4">
-                                        <span class="text-gray-500">Due: Dec 15, 2024</span>
-                                        <span class="text-gray-500">Net 30 Days</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <button class="text-blue-600 hover:text-blue-700 font-medium">View</button>
-                                        <button class="text-gray-600 hover:text-gray-700 font-medium">Edit</button>
-                                        <button class="text-red-600 hover:text-red-700 font-medium">Delete</button>
-                                        <button 
-                                            onclick="sendBulkInvoices()"
-                                            class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors font-medium"
-                                        >
-                                            Send All
-                                        </button>
-                                        <button 
-                                            onclick="previewInvoices()"
-                                            class="px-3 py-1 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors font-medium"
-                                        >
-                                            Preview
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
 
                         <!-- Invoice Management Section -->
@@ -1030,15 +984,6 @@
                                 <h3 class="text-sm font-medium text-gray-700 mb-2">Quick Actions</h3>
                                 <div class="space-y-2">
                                     <button 
-                                        onclick="createInvoices()"
-                                        class="w-full bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
-                                    >
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                        </svg>
-                                        Create Invoices
-                                    </button>
-                                    <button 
                                         onclick="sendPaymentReminder()"
                                         class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
                                     >
@@ -1064,6 +1009,15 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
                                         Download Invoice Report
+                                    </button>
+                                    <button 
+                                        onclick="createInvoices()"
+                                        class="w-full bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+                                    >
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Create Invoices
                                     </button>
                                 </div>
                             </div>
@@ -2891,7 +2845,7 @@
             const remainingAmount = getRemainingToInvoice();
             
             if (remainingAmount <= 0) {
-                alert('This quote has already been fully invoiced.');
+                alert('This quote has already been fully invoiced. You cannot create additional invoices beyond 100% of the quote amount.');
                 return;
             }
             
@@ -2903,10 +2857,29 @@
         }
 
         function createPartialInvoice() {
+            const remainingAmount = getRemainingToInvoice();
+            
+            if (remainingAmount <= 0) {
+                alert('This quote has already been fully invoiced. You cannot create additional invoices beyond 100% of the quote amount.');
+                return;
+            }
+            
             alert('Partial invoice creation will open an item selection interface.');
             // In real implementation, this would open a modal to select specific items
             const quoteId = document.getElementById('quoteIdBadge').textContent;
             window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=partial`;
+        }
+        
+        function createInvoices() {
+            const remainingAmount = getRemainingToInvoice();
+            
+            if (remainingAmount <= 0) {
+                alert('This quote has already been fully invoiced. You cannot create additional invoices beyond 100% of the quote amount.');
+                return;
+            }
+            
+            // Show invoice preview modal or navigate to invoice creation
+            showInvoicePreview();
         }
 
         function refreshInvoices() {
@@ -2990,7 +2963,7 @@
             const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
             const totalPaid = quoteInvoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
             const totalOutstanding = totalInvoiced - totalPaid;
-            const remainingToInvoice = quoteTotal - totalInvoiced;
+            const remainingToInvoice = Math.max(0, quoteTotal - totalInvoiced); // Cap at 0, can't be negative
             
             // Update summary displays
             document.getElementById('invoiceQuoteTotal').textContent = `$${quoteTotal.toFixed(2)}`;
@@ -2999,10 +2972,17 @@
             document.getElementById('totalOutstanding').textContent = `$${totalOutstanding.toFixed(2)}`;
             document.getElementById('remainingToInvoice').textContent = `$${remainingToInvoice.toFixed(2)}`;
             
-            // Update progress bar
-            const invoiceProgress = (totalInvoiced / quoteTotal) * 100;
+            // Update progress bar - cap at 100%
+            const invoiceProgress = Math.min(100, (totalInvoiced / quoteTotal) * 100);
             document.getElementById('invoiceProgressBar').style.width = `${invoiceProgress}%`;
-            document.getElementById('invoiceProgressText').textContent = `${invoiceProgress.toFixed(0)}% of quote amount invoiced`;
+            
+            // Update progress text - show 100% when fully or over-invoiced
+            const actualProgress = (totalInvoiced / quoteTotal) * 100;
+            if (actualProgress >= 100) {
+                document.getElementById('invoiceProgressText').textContent = '100% of quote amount invoiced';
+            } else {
+                document.getElementById('invoiceProgressText').textContent = `${actualProgress.toFixed(0)}% of quote amount invoiced`;
+            }
             
             // Update status badge
             const statusBadge = document.getElementById('invoiceStatusBadge');
@@ -3021,7 +3001,7 @@
         function getRemainingToInvoice() {
             const quoteTotal = calculateTotal();
             const totalInvoiced = quoteInvoices.reduce((sum, inv) => sum + inv.amount, 0);
-            return quoteTotal - totalInvoiced;
+            return Math.max(0, quoteTotal - totalInvoiced); // Cap at 0, can't invoice more than quote total
         }
 
         function viewInvoice(invoiceId) {
@@ -3103,6 +3083,13 @@
         }
 
         function createDepositInvoice() {
+            const remainingAmount = getRemainingToInvoice();
+            
+            if (remainingAmount <= 0) {
+                alert('This quote has already been fully invoiced. You cannot create additional invoices beyond 100% of the quote amount.');
+                return;
+            }
+            
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value;
             
             if (paymentModel !== 'deposit') {
@@ -3119,10 +3106,21 @@
                 return;
             }
             
-            if (confirm(`Create a deposit invoice for $${depositAmount.toFixed(2)}?`)) {
-                const quoteId = document.getElementById('quoteIdBadge').textContent;
-                window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=deposit&amount=${depositAmount}`;
+            // Ensure deposit amount doesn't exceed remaining amount
+            const actualDepositAmount = Math.min(depositAmount, remainingAmount);
+            
+            if (actualDepositAmount < depositAmount) {
+                if (!confirm(`The configured deposit amount ($${depositAmount.toFixed(2)}) exceeds the remaining invoiceable amount ($${remainingAmount.toFixed(2)}). Create a deposit invoice for $${actualDepositAmount.toFixed(2)} instead?`)) {
+                    return;
+                }
+            } else {
+                if (!confirm(`Create a deposit invoice for $${actualDepositAmount.toFixed(2)}?`)) {
+                    return;
+                }
             }
+            
+            const quoteId = document.getElementById('quoteIdBadge').textContent;
+            window.location.href = `invoice_create_simple.html?quoteId=${quoteId}&type=deposit&amount=${actualDepositAmount}`;
         }
 
         // ============================================================================
@@ -3130,6 +3128,13 @@
         // ============================================================================
 
         function showInvoicePreview() {
+            const remainingAmount = getRemainingToInvoice();
+            
+            if (remainingAmount <= 0) {
+                alert('This quote has already been fully invoiced. You cannot create additional invoices beyond 100% of the quote amount.');
+                return;
+            }
+            
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
             const quoteTotal = calculateTotal();
             const invoicesToCreate = generateInvoicePreview(paymentModel, quoteTotal);
@@ -3162,23 +3167,25 @@
                     });
                 }
             } else if (paymentModel === 'deposit') {
+                const remainingToInvoice = getRemainingToInvoice();
                 const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
-                const remainingAmount = quoteTotal - depositAmount;
+                const actualDepositAmount = Math.min(depositAmount, remainingToInvoice);
+                const remainingAfterDeposit = Math.max(0, remainingToInvoice - actualDepositAmount);
                 
-                if (depositAmount > 0) {
+                if (actualDepositAmount > 0) {
                     // Deposit invoice
                     invoices.push({
                         id: `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
                         type: 'Deposit Invoice',
                         description: 'Down payment invoice',
-                        amount: depositAmount,
+                        amount: actualDepositAmount,
                         dueDate: calculateDueDate(today),
                         items: state.quoteItems.map(item => ({...item, isDeposit: true})),
                         color: 'blue'
                     });
                     
                     // Remaining balance invoice
-                    if (remainingAmount > 0) {
+                    if (remainingAfterDeposit > 0) {
                         const balanceDueDate = new Date(today);
                         balanceDueDate.setDate(balanceDueDate.getDate() + 30); // 30 days after deposit
                         
@@ -3186,7 +3193,7 @@
                             id: `INV-${new Date().getFullYear()}-${String(Date.now() + 1).slice(-3)}`,
                             type: 'Balance Invoice',
                             description: 'Remaining balance after deposit',
-                            amount: remainingAmount,
+                            amount: remainingAfterDeposit,
                             dueDate: calculateDueDate(balanceDueDate),
                             items: state.quoteItems.map(item => ({...item, isBalance: true})),
                             color: 'green'
@@ -3194,6 +3201,12 @@
                     }
                 }
             } else if (paymentModel === 'subscription') {
+                const remainingToInvoice = getRemainingToInvoice();
+                
+                if (remainingToInvoice <= 0) {
+                    return invoices; // No invoices to create if already fully invoiced
+                }
+                
                 const frequency = document.getElementById('billingFrequency')?.value || 'monthly';
                 const startDate = new Date(document.getElementById('subscriptionStartDate')?.value || today);
                 const endType = document.getElementById('subscriptionEnd')?.value || 'ongoing';
@@ -3206,7 +3219,7 @@
                     cycles = calculateCyclesBetweenDates(startDate, endDate, frequency);
                 }
                 
-                const cycleAmount = quoteTotal / cycles;
+                const cycleAmount = remainingToInvoice / cycles;
                 
                 for (let i = 0; i < Math.min(cycles, 6); i++) { // Show max 6 invoices in preview
                     const invoiceDate = new Date(startDate);
