@@ -76,6 +76,36 @@
                 </div>
             </div>
 
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-lg shadow-sm mb-4">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                        <button 
+                            id="quoteDetailsTab"
+                            class="tab-button active py-4 px-1 border-b-2 border-blue-500 font-medium text-sm text-blue-600"
+                            onclick="switchTab('quoteDetails')"
+                        >
+                            Quote Details
+                        </button>
+                        <button 
+                            id="paymentConfigTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            onclick="switchTab('paymentConfig')"
+                        >
+                            Payment Configuration
+                        </button>
+                        <button 
+                            id="invoicesTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                            onclick="switchTab('invoices')"
+                        >
+                            Invoices
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <div id="quoteDetailsContent" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 
                 <!-- Left Column - Customer & Services -->
@@ -182,91 +212,62 @@
                             </div>
                         </div>
 
-                        <!-- New Customer Form -->
-                        <div id="newCustomerForm" class="hidden space-y-3">
-                            <!-- Name Fields -->
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="form-group">
-                                    <label for="newCustomerFirstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                                    <input type="text" id="newCustomerFirstName" placeholder="John" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="newCustomerLastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                                    <input type="text" id="newCustomerLastName" placeholder="Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                                </div>
+                        <!-- Quick Add Customer Form -->
+                        <div id="newCustomerForm" class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-semibold text-gray-900">Quick Add Customer</span>
+                                <span class="text-xs text-gray-500">Only key details required</span>
                             </div>
                             
-                            <!-- Company -->
-                            <div class="form-group">
-                                <label for="newCustomerCompany" class="block text-sm font-medium text-gray-700 mb-1">Company</label>
-                                <input type="text" id="newCustomerCompany" placeholder="ABC Corp" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                            </div>
-                            
-                            <!-- Contact Information -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <h3 class="text-sm font-medium text-gray-700 mb-3">Contact Information</h3>
-                                <div class="form-group">
-                                    <label for="newCustomerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                                    <input type="email" id="newCustomerEmail" placeholder="john@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                    <input type="text" id="quickCustomerFullName" placeholder="John Doe" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                                 </div>
-                                <div class="form-group mt-3">
-                                    <label for="newCustomerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                    <input type="tel" id="newCustomerPhone" placeholder="+1 234 567 8900" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label for="newCustomerWhatsApp" class="block text-sm font-medium text-gray-700 mb-1">
-                                        WhatsApp Number
-                                        <span class="text-xs text-gray-500">(for quote delivery)</span>
-                                    </label>
-                                    <input type="tel" id="newCustomerWhatsApp" placeholder="+61 412 345 678" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label for="newCustomerPreferredContact" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
-                                    <select id="newCustomerPreferredContact" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <option value="email">Email</option>
-                                        <option value="phone">Phone</option>
-                                        <option value="whatsapp">WhatsApp</option>
-                                        <option value="none">None</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <!-- Address -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <h3 class="text-sm font-medium text-gray-700 mb-3">Address</h3>
-                                <div class="form-group">
-                                    <label for="newCustomerStreet" class="block text-sm font-medium text-gray-700 mb-1">Street</label>
-                                    <input type="text" id="newCustomerStreet" placeholder="123 Main St" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-                                <div class="grid grid-cols-2 gap-3 mt-3">
-                                    <div class="form-group">
-                                        <label for="newCustomerCity" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                                        <input type="text" id="newCustomerCity" placeholder="New York" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                                        <input type="text" id="quickCustomerCompany" placeholder="ABC Corp" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                     </div>
-                                    <div class="form-group">
-                                        <label for="newCustomerState" class="block text-sm font-medium text-gray-700 mb-1">State</label>
-                                        <input type="text" id="newCustomerState" placeholder="NY" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                        <input type="text" id="quickCustomerRole" placeholder="Operations Manager" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3 mt-3">
-                                    <div class="form-group">
-                                        <label for="newCustomerPostalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                                        <input type="text" id="newCustomerPostalCode" placeholder="10001" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                                        <input type="email" id="quickCustomerEmail" placeholder="john@example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                                     </div>
-                                    <div class="form-group">
-                                        <label for="newCustomerCountry" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                                        <input type="text" id="newCustomerCountry" placeholder="Australia" value="Australia" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                                        <input type="tel" id="quickCustomerPhone" placeholder="+1 234 567 8900" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                                     </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp (optional)</label>
+                                        <input type="tel" id="quickCustomerWhatsApp" placeholder="+61 412 345 678" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact</label>
+                                        <select id="quickCustomerPreferredContact" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="email">Email</option>
+                                            <option value="phone">Phone</option>
+                                            <option value="whatsapp">WhatsApp</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                    <input type="text" id="quickCustomerAddress" placeholder="123 Main St, Melbourne VIC 3000" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                    <textarea id="quickCustomerNotes" rows="2" placeholder="Additional notes about the customer" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                                 </div>
                             </div>
                             
-                            <!-- Notes -->
-                            <div class="border-t border-gray-200 pt-3">
-                                <h3 class="text-sm font-medium text-gray-700 mb-3">Notes</h3>
-                                <textarea id="newCustomerNotes" placeholder="Additional notes about the customer" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                            </div>
-                            
-                            <!-- Actions -->
                             <div class="flex gap-2 border-t border-gray-200 pt-3">
                                 <button 
                                     id="cancelNewCustomerBtn"
@@ -278,7 +279,7 @@
                                     id="createCustomerBtn"
                                     class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
                                 >
-                                    Create & Select
+                                    Quick Add & Select
                                 </button>
                             </div>
                         </div>
@@ -424,8 +425,265 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            </div>
+
+            <!-- Payment Configuration Tab Content -->
+            <div id="paymentConfigContent" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    
+                    <!-- Left Column - Payment Configuration -->
+                    <div class="lg:col-span-2 space-y-4">
+                        
+                        <!-- Payment Model Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Model</h2>
+                            
+                            <div class="space-y-3">
+                                <label class="flex items-start gap-3 p-3 border-2 border-purple-300 bg-purple-50 rounded-lg cursor-pointer">
+                                    <input type="radio" name="paymentModel" value="full" checked class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Full Payment (Upfront)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Customer pays entire amount upfront before service begins</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                    <input type="radio" name="paymentModel" value="deposit" class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Down Payment (Deposit)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Customer pays deposit now, remaining balance later</div>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-3 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-purple-300 hover:bg-purple-50">
+                                    <input type="radio" name="paymentModel" value="subscription" class="mt-1" onchange="updatePaymentModel()" />
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-gray-900">Subscription (Recurring)</div>
+                                        <div class="text-xs text-gray-600 mt-1">Automatic recurring invoices at regular intervals</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Subscription Settings -->
+                            <div id="subscriptionSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Subscription Settings</h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Billing Frequency</label>
+                                        <select id="billingFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                            <option value="weekly">Weekly</option>
+                                            <option value="biweekly">Bi-weekly (Every 2 weeks)</option>
+                                            <option value="monthly" selected>Monthly</option>
+                                            <option value="quarterly">Quarterly (Every 3 months)</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription Start Date</label>
+                                        <input type="date" id="subscriptionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Subscription End (Optional)</label>
+                                        <select id="subscriptionEnd" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="toggleEndDate()">
+                                            <option value="ongoing">Ongoing (No end date)</option>
+                                            <option value="after_cycles">After specific number of cycles</option>
+                                            <option value="end_date">Specific end date</option>
+                                        </select>
+                                    </div>
+                                    <div id="cyclesInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">Number of Billing Cycles</label>
+                                        <input type="number" id="billingCycles" min="1" placeholder="e.g., 12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div id="endDateInput" class="hidden">
+                                        <label class="block text-xs text-gray-600 mb-1">End Date</label>
+                                        <input type="date" id="subscriptionEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 bg-green-50 rounded">
+                                        <input type="checkbox" id="autoCharge" checked class="rounded text-green-600" />
+                                        <label for="autoCharge" class="text-xs text-green-800">
+                                            <strong>Auto-charge enabled</strong> - Automatically charge customer on billing date
+                                        </label>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Next Invoice:</strong> <span id="nextInvoiceDate">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deposit Amount -->
+                            <div id="paymentDepositSection" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h3 class="text-sm font-medium text-gray-700 mb-3">Deposit Amount</h3>
+                                <div class="space-y-2">
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <input 
+                                                    type="number" 
+                                                    id="depositAmount"
+                                                    placeholder="0.00"
+                                                    min="0"
+                                                    step="0.01"
+                                                    class="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositCalculation()"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="relative">
+                                                <input 
+                                                    type="number" 
+                                                    id="depositPercentage"
+                                                    placeholder="0"
+                                                    min="0"
+                                                    max="100"
+                                                    step="1"
+                                                    class="w-full pr-8 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    oninput="updateDepositFromPercentage()"
+                                                />
+                                                <span class="absolute right-3 top-2.5 text-gray-500">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="setDepositPercentage(25)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">25%</button>
+                                        <button type="button" onclick="setDepositPercentage(50)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">50%</button>
+                                        <button type="button" onclick="setDepositPercentage(75)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover	bg-gray-50">75%</button>
+                                    </div>
+                                    <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
+                                        <strong>Remaining Balance:</strong> <span id="remainingBalance">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Accepted Payment Methods Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Accepted Payment Methods</h2>
+                            
+                            <div id="paymentMethodsContainer" class="space-y-2">
+                                <label class="flex items-center gap-2 p-2 border-2 border-purple-300 bg-purple-50 rounded hover:bg-purple-100 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" id="paymentStripe" value="stripe" checked class="text-purple-600" onchange="updatePaymentMethodsDisplay()" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Stripe</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer">
+                                    <input type="radio" name="paymentMethod" id="paymentCash" value="cash" class="text-purple-600" onchange="updatePaymentMethodsDisplay()" />
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Cash</span>
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2" id="paymentMethodHint">Select one payment method</p>
+                        </div>
+
+                        <!-- Payment Terms Section -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Terms</h2>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Payment Terms</label>
+                                    <select 
+                                        id="defaultPaymentTerms"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    >
+                                        <option value="due_on_receipt">Due on Receipt</option>
+                                        <option value="net_7">Net 7 Days</option>
+                                        <option value="net_15">Net 15 Days</option>
+                                        <option value="net_30" selected>Net 30 Days</option>
+                                        <option value="net_60">Net 60 Days</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Instructions</label>
+                                    <textarea 
+                                        id="paymentInstructions"
+                                        rows="3"
+                                        placeholder="Payment instructions, terms, or special notes..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Summary -->
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Configuration Summary</h2>
+                            
+                            <div class="space-y-3 mb-4">
+                                <div class="p-3 bg-purple-50 rounded-lg">
+                                    <div class="text-xs text-purple-600 mb-1">Payment Model</div>
+                                    <div class="text-lg font-bold text-purple-700" id="paymentModelDisplay">Full Payment</div>
+                                </div>
+
+                                <div class="space-y-2 text-sm">
+                                    <div id="depositInfo" class="hidden">
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-gray-600">Deposit Amount</span>
+                                            <span class="text-gray-900 font-semibold" id="depositAmountDisplay">$0.00</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs">
+                                            <span class="text-gray-600">Remaining Balance</span>
+                                            <span class="text-gray-600" id="remainingBalanceDisplay">$0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Payment Terms</span>
+                                        <span class="text-gray-900 font-medium" id="paymentTermsDisplay">Net 30 Days</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Payment Methods</span>
+                                        <span class="text-gray-900 font-medium" id="paymentMethodsDisplay">Stripe</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                                <p class="text-xs text-blue-800">
+                                    <strong>Payment Configuration</strong><br>
+                                    These preferences will be saved with the quote and used when invoices are created later.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Tab Content -->
+            <div id="invoicesContent" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900">Invoices</h2>
+                            <p class="text-xs text-gray-500">Invoices will be available after this quote is created.</p>
+                        </div>
+                    </div>
+
+                    <div class="border border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 text-center">
+                        <p class="text-sm text-gray-600 mb-2">Once the quote is approved and created, you'll be able to:</p>
+                        <ul class="text-sm text-gray-600 space-y-1 max-w-md mx-auto text-left">
+                            <li>• Generate invoices based on your payment configuration</li>
+                            <li>• Track payments and outstanding balances</li>
+                            <li>• Send invoices and reminders to customers</li>
+                        </ul>
+                    </div>
+
+                    <button class="mt-6 px-4 py-2 bg-gray-200 text-gray-600 rounded-lg cursor-not-allowed text-sm font-medium">
+                        Create Invoices (Available after quote creation)
+                    </button>
+                </div>
+            </div>
 
     <!-- Price Modification Modal -->
     <div id="priceModModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
@@ -709,6 +967,209 @@
             const createBtn = document.getElementById('createQuoteBtn');
             const canCreate = state.quoteItems.length > 0 && state.selectedCustomer !== null;
             createBtn.disabled = !canCreate;
+        }
+
+        // ============================================================================
+        // TAB & PAYMENT CONFIGURATION HELPERS
+        // ============================================================================
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active', 'border-blue-500', 'text-blue-600');
+                button.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            const activeContent = document.getElementById(`${tabName}Content`);
+            if (activeContent) activeContent.classList.remove('hidden');
+
+            const activeButton = document.getElementById(`${tabName}Tab`);
+            if (activeButton) {
+                activeButton.classList.add('active', 'border-blue-500', 'text-blue-600');
+                activeButton.classList.remove('border-transparent', 'text-gray-500');
+            }
+        }
+
+        function updatePaymentModel() {
+            const model = document.querySelector('input[name="paymentModel"]:checked').value;
+            const depositSection = document.getElementById('paymentDepositSection');
+            const subscriptionSection = document.getElementById('subscriptionSection');
+            const depositInfo = document.getElementById('depositInfo');
+            const paymentModelDisplay = document.getElementById('paymentModelDisplay');
+
+            if (depositSection) depositSection.classList.toggle('hidden', model !== 'deposit');
+            if (depositInfo) depositInfo.classList.toggle('hidden', model !== 'deposit');
+            if (subscriptionSection) subscriptionSection.classList.toggle('hidden', model !== 'subscription');
+
+            if (paymentModelDisplay) {
+                paymentModelDisplay.textContent = model === 'deposit' ? 'Down Payment' : model === 'subscription' ? 'Subscription' : 'Full Payment';
+            }
+
+            if (model === 'subscription') {
+                calculateNextInvoiceDate();
+            }
+
+            autoSavePaymentConfiguration();
+        }
+
+        function toggleEndDate() {
+            const endType = document.getElementById('subscriptionEnd').value;
+            const cyclesInput = document.getElementById('cyclesInput');
+            const endDateInput = document.getElementById('endDateInput');
+            
+            if (cyclesInput) cyclesInput.classList.toggle('hidden', endType !== 'after_cycles');
+            if (endDateInput) endDateInput.classList.toggle('hidden', endType !== 'end_date');
+
+            autoSavePaymentConfiguration();
+        }
+
+        function calculateNextInvoiceDate() {
+            const startDateValue = document.getElementById('subscriptionStartDate')?.value;
+            const frequency = document.getElementById('billingFrequency')?.value || 'monthly';
+            const display = document.getElementById('nextInvoiceDate');
+
+            if (!startDateValue || !display) {
+                if (display) display.textContent = '-';
+                return;
+            }
+
+            const nextDate = new Date(startDateValue);
+            switch(frequency) {
+                case 'weekly':
+                    nextDate.setDate(nextDate.getDate() + 7);
+                    break;
+                case 'biweekly':
+                    nextDate.setDate(nextDate.getDate() + 14);
+                    break;
+                case 'monthly':
+                    nextDate.setMonth(nextDate.getMonth() + 1);
+                    break;
+                case 'quarterly':
+                    nextDate.setMonth(nextDate.getMonth() + 3);
+                    break;
+                case 'yearly':
+                    nextDate.setFullYear(nextDate.getFullYear() + 1);
+                    break;
+            }
+
+            display.textContent = nextDate.toLocaleDateString();
+            autoSavePaymentConfiguration();
+        }
+
+        function updateDepositCalculation() {
+            const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+            const total = calculateTotal();
+            const percentage = total > 0 ? (depositAmount / total) * 100 : 0;
+            const remaining = Math.max(0, total - depositAmount);
+
+            const depositPercentageEl = document.getElementById('depositPercentage');
+            if (depositPercentageEl) depositPercentageEl.value = Math.round(percentage);
+            const remainingBalance = document.getElementById('remainingBalance');
+            if (remainingBalance) remainingBalance.textContent = `$${remaining.toFixed(2)}`;
+            const depositAmountDisplay = document.getElementById('depositAmountDisplay');
+            if (depositAmountDisplay) depositAmountDisplay.textContent = `$${depositAmount.toFixed(2)}`;
+            const remainingBalanceDisplay = document.getElementById('remainingBalanceDisplay');
+            if (remainingBalanceDisplay) remainingBalanceDisplay.textContent = `$${remaining.toFixed(2)}`;
+
+            autoSavePaymentConfiguration();
+        }
+
+        function updateDepositFromPercentage() {
+            const percentage = parseFloat(document.getElementById('depositPercentage')?.value) || 0;
+            const total = calculateTotal();
+            const depositAmount = total * (percentage / 100);
+            const depositAmountEl = document.getElementById('depositAmount');
+            if (depositAmountEl) depositAmountEl.value = depositAmount.toFixed(2);
+            updateDepositCalculation();
+        }
+
+        function setDepositPercentage(percent) {
+            const depositPercentageEl = document.getElementById('depositPercentage');
+            if (depositPercentageEl) depositPercentageEl.value = percent;
+            updateDepositFromPercentage();
+        }
+
+        function updatePaymentTermsDisplay() {
+            const termsMap = {
+                'due_on_receipt': 'Due on Receipt',
+                'net_7': 'Net 7 Days',
+                'net_15': 'Net 15 Days',
+                'net_30': 'Net 30 Days',
+                'net_60': 'Net 60 Days'
+            };
+            const terms = document.getElementById('defaultPaymentTerms')?.value || 'net_30';
+            const display = document.getElementById('paymentTermsDisplay');
+            if (display) display.textContent = termsMap[terms] || 'Net 30 Days';
+        }
+
+        function updatePaymentMethodsDisplay() {
+            const selectedRadio = document.querySelector('#paymentMethodsContainer input[type="radio"]:checked');
+            const selectedMethod = selectedRadio ? selectedRadio.value : 'none';
+            const displayText = selectedMethod === 'stripe' ? 'Stripe' : selectedMethod === 'cash' ? 'Cash' : 'Select a method';
+
+            const display = document.getElementById('paymentMethodsDisplay');
+            if (display) display.textContent = displayText;
+            const hint = document.getElementById('paymentMethodHint');
+            if (hint) hint.textContent = selectedMethod ? `Primary method: ${displayText}` : 'Select one payment method';
+
+            autoSavePaymentConfiguration();
+        }
+
+        function autoSavePaymentConfiguration() {
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked');
+            if (!paymentModel) return; // Skip if not selected yet
+            
+            // Get selected payment method (single selection)
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+            
+            const paymentConfig = {
+                paymentModel: paymentModel.value,
+                paymentMethod: paymentMethod,
+                paymentTerms: document.getElementById('defaultPaymentTerms')?.value,
+                paymentInstructions: document.getElementById('paymentInstructions')?.value
+            };
+            
+            // Add subscription data if applicable
+            if (paymentModel.value === 'subscription') {
+                const startDate = document.getElementById('subscriptionStartDate')?.value;
+                
+                paymentConfig.subscription = {
+                    frequency: document.getElementById('billingFrequency')?.value,
+                    startDate: startDate,
+                    endType: document.getElementById('subscriptionEnd')?.value,
+                    autoCharge: document.getElementById('autoCharge')?.checked
+                };
+                
+                const endType = document.getElementById('subscriptionEnd')?.value;
+                if (endType === 'after_cycles') {
+                    const cycles = parseInt(document.getElementById('billingCycles')?.value);
+                    if (cycles && cycles > 0) {
+                        paymentConfig.subscription.billingCycles = cycles;
+                    }
+                } else if (endType === 'end_date') {
+                    const endDate = document.getElementById('subscriptionEndDate')?.value;
+                    if (endDate) {
+                        paymentConfig.subscription.endDate = endDate;
+                    }
+                }
+            }
+            
+            // Add deposit data if applicable
+            if (paymentModel.value === 'deposit') {
+                const depositAmount = parseFloat(document.getElementById('depositAmount')?.value) || 0;
+                if (depositAmount > 0) {
+                    paymentConfig.deposit = {
+                        amount: depositAmount,
+                        percentage: parseFloat(document.getElementById('depositPercentage')?.value) || 0
+                    };
+                }
+            }
+            
+            console.log('Auto-saving payment configuration:', paymentConfig);
+            
+            // In real implementation, save to server silently
+            // await fetch('/api/quotes/payment-config', { method: 'POST', body: JSON.stringify(paymentConfig) });
         }
 
         // Render functions
@@ -1249,6 +1710,27 @@
             const validUntil = new Date();
             validUntil.setDate(validUntil.getDate() + 14);
             document.getElementById('validUntilDate').valueAsDate = validUntil;
+
+            // Initialize tabs and payment configuration displays
+            switchTab('quoteDetails');
+            updatePaymentModel();
+            updatePaymentTermsDisplay();
+            updatePaymentMethodsDisplay();
+            calculateNextInvoiceDate();
+
+            // Payment configuration change listeners (autosave)
+            const paymentConfigInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent select, #paymentConfigContent textarea');
+            paymentConfigInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (input.id === 'defaultPaymentTerms') {
+                        updatePaymentTermsDisplay();
+                    }
+                    if (input.id === 'subscriptionStartDate' || input.id === 'billingFrequency') {
+                        calculateNextInvoiceDate();
+                    }
+                    autoSavePaymentConfiguration();
+                });
+            });
             
             // Catalog search autocomplete
             document.getElementById('catalogSearchInput').addEventListener('input', function(e) {
@@ -1308,48 +1790,34 @@
             
             // Create customer
             document.getElementById('createCustomerBtn').addEventListener('click', function() {
-                const firstName = document.getElementById('newCustomerFirstName').value.trim();
-                const lastName = document.getElementById('newCustomerLastName').value.trim();
-                const company = document.getElementById('newCustomerCompany').value.trim();
-                const email = document.getElementById('newCustomerEmail').value.trim();
-                const phone = document.getElementById('newCustomerPhone').value.trim();
-                const preferredContactMethod = document.getElementById('newCustomerPreferredContact').value;
-                const street = document.getElementById('newCustomerStreet').value.trim();
-                const city = document.getElementById('newCustomerCity').value.trim();
-                const state = document.getElementById('newCustomerState').value.trim();
-                const postalCode = document.getElementById('newCustomerPostalCode').value.trim();
-                const country = document.getElementById('newCustomerCountry').value.trim();
-                const notes = document.getElementById('newCustomerNotes').value.trim();
+                const fullName = document.getElementById('quickCustomerFullName').value.trim();
+                const company = document.getElementById('quickCustomerCompany').value.trim();
+                const role = document.getElementById('quickCustomerRole').value.trim();
+                const email = document.getElementById('quickCustomerEmail').value.trim();
+                const phone = document.getElementById('quickCustomerPhone').value.trim();
+                const whatsapp = document.getElementById('quickCustomerWhatsApp').value.trim();
+                const preferredContactMethod = document.getElementById('quickCustomerPreferredContact').value;
+                const address = document.getElementById('quickCustomerAddress').value.trim();
+                const notes = document.getElementById('quickCustomerNotes').value.trim();
                 
-                // Validation
-                if (!firstName || !lastName || !email) {
-                    alert('Please fill in all required fields (First Name, Last Name, Email)');
+                if (!fullName || !email || !phone) {
+                    alert('Please fill in the required fields: Full Name, Email, and Phone.');
                     return;
                 }
                 
-                // Build address
-                const addressParts = [street, city, state, postalCode, country].filter(p => p);
-                const address = addressParts.join(', ') || '';
-                
                 const newCustomer = {
                     id: customers.length + 1,
-                    name: `${firstName} ${lastName}`,
-                    firstName: firstName,
-                    lastName: lastName,
-                    company: company,
+                    name: fullName,
+                    company,
+                    role,
                     email,
                     phone,
-                    preferredContactMethod: preferredContactMethod,
-                    address: address,
-                    addressDetails: {
-                        street: street,
-                        city: city,
-                        state: state,
-                        postalCode: postalCode,
-                        country: country
-                    },
-                    notes: notes,
-                    previousQuotes: 0
+                    whatsapp,
+                    preferredContactMethod,
+                    address,
+                    notes,
+                    previousQuotes: 0,
+                    secondaryContacts: []
                 };
                 
                 customers.push(newCustomer);
@@ -1358,19 +1826,16 @@
                 state.showNewCustomerForm = false;
                 document.getElementById('newCustomerForm').classList.add('hidden');
                 
-                // Clear form
-                document.getElementById('newCustomerFirstName').value = '';
-                document.getElementById('newCustomerLastName').value = '';
-                document.getElementById('newCustomerCompany').value = '';
-                document.getElementById('newCustomerEmail').value = '';
-                document.getElementById('newCustomerPhone').value = '';
-                document.getElementById('newCustomerPreferredContact').value = 'email';
-                document.getElementById('newCustomerStreet').value = '';
-                document.getElementById('newCustomerCity').value = '';
-                document.getElementById('newCustomerState').value = '';
-                document.getElementById('newCustomerPostalCode').value = '';
-                document.getElementById('newCustomerCountry').value = 'Australia';
-                document.getElementById('newCustomerNotes').value = '';
+                // Clear form inputs
+                document.getElementById('quickCustomerFullName').value = '';
+                document.getElementById('quickCustomerCompany').value = '';
+                document.getElementById('quickCustomerRole').value = '';
+                document.getElementById('quickCustomerEmail').value = '';
+                document.getElementById('quickCustomerPhone').value = '';
+                document.getElementById('quickCustomerWhatsApp').value = '';
+                document.getElementById('quickCustomerPreferredContact').value = 'email';
+                document.getElementById('quickCustomerAddress').value = '';
+                document.getElementById('quickCustomerNotes').value = '';
             });
             
             // Clear customer
