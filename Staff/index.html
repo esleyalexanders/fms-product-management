@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - FMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        /* Status indicators */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .status-dot.online { background-color: #10b981; }
+        .status-dot.busy { background-color: #f59e0b; }
+        .status-dot.offline { background-color: #ef4444; }
+        
+        /* Job cards */
+        .job-card {
+            position: relative;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .job-card.priority-urgent { border-left-color: #ef4444; }
+        .job-card.priority-high { border-left-color: #f59e0b; }
+        .job-card.priority-normal { border-left-color: #3b82f6; }
+        .job-card.priority-low { border-left-color: #10b981; }
+        
+        /* Time display */
+        .time-display {
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Stats cards */
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-icon.green { background: #d1fae5; color: #059669; }
+        .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+        .stat-icon.purple { background: #e9d5ff; color: #9333ea; }
+        .stat-icon.orange { background: #fed7aa; color: #ea580c; }
+        
+        /* Action buttons */
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            border-color: #6366f1;
+            transform: scale(1.02);
+        }
+        
+        .action-button .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .action-button.clock-in .icon-wrapper { background: #d1fae5; color: #059669; }
+        .action-button.check-in .icon-wrapper { background: #dbeafe; color: #2563eb; }
+        .action-button.update .icon-wrapper { background: #e9d5ff; color: #9333ea; }
+        .action-button.break .icon-wrapper { background: #fed7aa; color: #ea580c; }
+        
+        /* Empty state */
+        .empty-state-jobs {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-state-jobs i {
+            font-size: 64px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            /* Hide sidebar on mobile - use hamburger menu instead */
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            
+            /* Add overlay when sidebar is open */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            /* Main content takes full width */
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Add hamburger menu button */
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #f3f4f6;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-right: 12px;
+                color: #374151;
+                font-size: 18px;
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Stats grid - fewer columns on mobile */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px;
+            }
+            
+            .stat-card {
+                padding: 16px;
+            }
+            
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            /* Job cards - better spacing */
+            .job-card {
+                padding: 16px !important;
+            }
+            
+            /* Header adjustments */
+            .top-header {
+                padding: 12px 16px !important;
+            }
+            
+            .page-title {
+                font-size: 20px !important;
+            }
+            
+            /* Hide less important elements */
+            .header-right > div:first-child {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Extra small phones */
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            /* Remove hover effects on touch devices */
+            .job-card:hover,
+            .stat-card:hover {
+                transform: none;
+            }
+            
+            /* Larger touch targets */
+            button,
+            a,
+            .clickable {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Prevent text selection on buttons */
+            button {
+                -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                user-select: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">Welcome to your staff dashboard</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+    
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-user-hard-hat"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="staffName">John Smith</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">STAFF PORTAL</div>
+                <a href="index.html" class="nav-item active" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i><span>My Dashboard</span>
+                </a>
+                <a href="jobs.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-briefcase"></i><span>My Jobs</span>
+                </a>
+                <a href="schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-calendar-alt"></i><span>My Schedule</span>
+                </a>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-clock"></i><span>Timesheet</span>
+                </div>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">RESOURCES</div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-book"></i><span>Handbook</span>
+                </div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-graduation-cap"></i><span>Training</span>
+                </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Good afternoon, <span id="staffNameHeader">John</span></h1>
+                    <p class="page-subtitle" id="currentDate">Tuesday, November 18, 2024</p>
+                </div>
+                <div class="header-right">
+                    <!-- Status Indicator -->
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f9fafb; border-radius: 8px; margin-right: 12px;">
+                        <span class="status-dot online" id="statusDot"></span>
+                        <select id="statusSelect" style="border: none; background: transparent; font-weight: 500; cursor: pointer; outline: none; color: #374151;">
+                            <option value="online">Available</option>
+                            <option value="busy">On Job</option>
+                            <option value="offline">Off Duty</option>
+                        </select>
+                    </div>
+                    
+                    <button class="icon-btn notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="icon-btn help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Smith&background=6366f1&color=fff" alt="Staff Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                
+                <!-- Quick Actions -->
+                <section class="quick-actions-section">
+                    <div class="section-header">
+                        <h3 class="section-title-small">Quick Actions</h3>
+                    </div>
+                    <div class="actions-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+                        <button onclick="toggleClockInOut()" class="action-button clock-in">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: 600; font-size: 14px; color: #111827;" id="clockButtonText">Clock In</div>
+                                <div class="time-display" style="font-size: 12px; color: #6b7280; margin-top: 4px;" id="currentTime">00:00:00</div>
+                            </div>
+                        </button>
+
+                        <button onclick="showCheckInModal()" class="action-button check-in">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-map-marker-check"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: 600; font-size: 14px; color: #111827;">Check In</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">to Job Site</div>
+                            </div>
+                        </button>
+
+                        <button onclick="showUpdateModal()" class="action-button update">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: 600; font-size: 14px; color: #111827;">Update</div>
+                                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Job Status</div>
+                            </div>
+                        </button>
+
+                        <button onclick="startBreak()" class="action-button break">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-coffee"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-weight: 600; font-size: 14px; color: #111827;">Break</div>
+                                <div class="time-display" style="font-size: 12px; color: #6b7280; margin-top: 4px;" id="breakTimer">00:00</div>
+                            </div>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Today's Overview -->
+                <section class="appointments-section">
+                    <div class="section-header">
+                        <h3 class="section-title-small">Today's Overview</h3>
+                    </div>
+                    <div class="setup-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                        <div class="stat-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <div style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Active Time</div>
+                                    <div class="time-display" style="font-size: 28px; font-weight: 700; color: #111827;" id="activeTime">7:23:45</div>
+                                    <div style="color: #10b981; font-size: 12px; margin-top: 4px;">
+                                        <i class="fas fa-arrow-up"></i> Started at 8:00 AM
+                                    </div>
+                                </div>
+                                <div class="stat-icon green">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <div style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Jobs Completed</div>
+                                    <div style="font-size: 28px; font-weight: 700; color: #111827;">
+                                        <span id="completedJobs">3</span> / <span id="totalJobs">5</span>
+                                    </div>
+                                    <div style="color: #2563eb; font-size: 12px; margin-top: 4px;" id="completionRate">
+                                        <i class="fas fa-percentage"></i> 60% completion
+                                    </div>
+                                </div>
+                                <div class="stat-icon blue">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <div style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Today's Earnings</div>
+                                    <div style="font-size: 28px; font-weight: 700; color: #111827;">$<span id="todayEarnings">125</span></div>
+                                    <div style="color: #9333ea; font-size: 12px; margin-top: 4px;">
+                                        <i class="fas fa-calendar-week"></i> Week: $<span id="weekEarnings">625</span>
+                                    </div>
+                                </div>
+                                <div class="stat-icon purple">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Current Job (If Active) -->
+                <section class="appointments-section" id="currentJobSection" style="display: none;">
+                    <div class="section-header">
+                        <h3 class="section-title-small">
+                            <i class="fas fa-briefcase" style="color: #f59e0b;"></i> Current Job
+                        </h3>
+                    </div>
+                    <div class="appointments-card" style="border-left: 4px solid #f59e0b;">
+                        <div style="padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                                <div>
+                                    <h4 style="font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 4px;">Home Cleaning Service</h4>
+                                    <p style="color: #6b7280; font-size: 14px;">Sarah Johnson • JOB-2024-123</p>
+                                </div>
+                                <span style="padding: 4px 12px; background: #fef3c7; color: #92400e; border-radius: 12px; font-size: 12px; font-weight: 600;">Urgent</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                    <i class="fas fa-map-marker-alt" style="color: #f59e0b;"></i>
+                                    <span>123 Main St, Melbourne</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                    <i class="fas fa-clock" style="color: #f59e0b;"></i>
+                                    <span>Started: 1:30 PM</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button onclick="completeJob()" class="btn-primary" style="flex: 1;">
+                                    <i class="fas fa-check"></i> Complete Job
+                                </button>
+                                <button onclick="pauseJob()" class="btn-secondary">
+                                    <i class="fas fa-pause"></i> Pause
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Jobs (Assigned to me) -->
+                <section class="appointments-section">
+                    <div class="appointments-header">
+                        <h3 class="section-title-small">My Assigned Jobs</h3>
+                        <div class="appointment-tabs">
+                            <button class="tab-btn active" onclick="filterJobs('all')">All <span class="tab-count" id="countAll">5</span></button>
+                            <button class="tab-btn" onclick="filterJobs('pending')">Pending <span class="tab-count" id="countPending">2</span></button>
+                            <button class="tab-btn" onclick="filterJobs('scheduled')">Scheduled <span class="tab-count" id="countScheduled">2</span></button>
+                            <button class="tab-btn" onclick="filterJobs('completed')">Completed <span class="tab-count" id="countCompleted">1</span></button>
+                        </div>
+                    </div>
+                    
+                    <div class="appointments-card">
+                        <!-- Jobs List -->
+                        <div id="jobsList" style="display: flex; flex-direction: column; gap: 12px;">
+                            <!-- Job will be dynamically loaded here -->
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="emptyState" class="empty-state-jobs" style="display: none;">
+                            <i class="fas fa-calendar-day"></i>
+                            <p class="empty-message" style="font-size: 16px; margin-bottom: 8px;">No jobs found</p>
+                            <p style="font-size: 14px; color: #9ca3af;">Jobs assigned to you will appear here</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly Progress -->
+                <section class="service-setup-section">
+                    <div class="service-card">
+                        <div class="service-content">
+                            <div class="service-badge">
+                                <span class="progress-indicator">This Week's Progress</span>
+                            </div>
+                            <h3 class="service-title">Week Performance</h3>
+                            
+                            <div class="task-list" style="margin-top: 20px;">
+                                <div class="task-item" style="border: none; padding: 12px 0;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span style="color: #6b7280; font-size: 14px;">Jobs Completed</span>
+                                            <span style="font-weight: 600; color: #111827;">15 / 25</span>
+                                        </div>
+                                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
+                                            <div style="background: #2563eb; height: 100%; width: 60%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item" style="border: none; padding: 12px 0;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-between; margin-bottom: 8px;">
+                                            <span style="color: #6b7280; font-size: 14px;">Hours Worked</span>
+                                            <span style="font-weight: 600; color: #111827;">32.5 / 40 hrs</span>
+                                        </div>
+                                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
+                                            <div style="background: #10b981; height: 100%; width: 81.25%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="task-item" style="border: none; padding: 12px 0;">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-between; margin-bottom: 8px;">
+                                            <span style="color: #6b7280; font-size: 14px;">Customer Rating</span>
+                                            <span style="font-weight: 600; color: #111827;">⭐ 4.8 / 5.0</span>
+                                        </div>
+                                        <div style="background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden;">
+                                            <div style="background: #f59e0b; height: 100%; width: 96%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Caught Up -->
+                <section class="caught-up-section">
+                    <div class="caught-up-card">
+                        <i class="fas fa-check-circle"></i>
+                        <span>You're all caught up!</span>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="staff-home.js"></script>
+</body>
+</html>

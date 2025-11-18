@@ -116,6 +116,101 @@
         .dropdown-container {
             position: relative;
         }
+        
+        /* Enhanced recurring card animations */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .recurring-card-enter {
+            animation: slideInRight 0.4s ease-out;
+        }
+        
+        /* Pulse animation for active recurring status */
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .status-pulse {
+            animation: pulse-status 2s ease-in-out infinite;
+        }
+        
+        /* Modal backdrop blur */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Enhanced button hover effects */
+        .btn-enhanced {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-enhanced:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-enhanced:active {
+            transform: translateY(0);
+        }
+        
+        /* Smooth card transitions */
+        .card-transition {
+            transition: all 0.3s ease;
+        }
+        
+        .card-transition:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Badge animations */
+        @keyframes badgePop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .badge-pop {
+            animation: badgePop 0.3s ease-out;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Smooth status transitions */
+        .status-transition {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -242,7 +337,16 @@
                     
                     <!-- Job Details Card -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Job Details</h2>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Job Details</h2>
+                            <!-- Inherited Badge (Hidden by default) -->
+                            <span id="inheritedBadge" class="hidden px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 border border-blue-200 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Inherited from template
+                            </span>
+                        </div>
                         
                         <div class="space-y-4">
                             <!-- Job Name -->
@@ -286,6 +390,60 @@
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-lg font-semibold text-gray-900">Schedule</h2>
                             <span class="text-sm text-gray-500">Optional - can schedule later</span>
+                        </div>
+                        
+                        <!-- Recurring Job Instance Banner (Hidden by default) -->
+                        <div id="recurringInstanceBanner" class="hidden mb-4">
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="text-sm font-semibold text-blue-900" id="instanceInfo">Instance #1 of recurring series</span>
+                                            <span id="recurringStatusBadgeSmall" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+                                        </div>
+                                        <p class="text-sm text-blue-700" id="recurringScheduleInfo">Every Monday • Next: Nov 25, 2024</p>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <button 
+                                                onclick="viewAllInstances()"
+                                                class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                                            >
+                                                View all instances
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                            </button>
+                                            <span class="text-blue-400">•</span>
+                                            <button 
+                                                onclick="viewTemplateDetails()"
+                                                class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                                            >
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                Template details
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Inherited Information Notice -->
+                            <div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                <div class="flex items-start gap-2">
+                                    <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-medium text-amber-900">Job details inherited from template</p>
+                                        <p class="text-xs text-amber-700 mt-1">Customer, services, team, and pricing are copied from the original job. Only confirm the schedule below.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -459,6 +617,48 @@
                                 <input type="checkbox" id="autoAssignStaff" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 <span>Auto-assign if no selection made (System will choose best match)</span>
                             </label>
+                        </div>
+                    </div>
+
+                    <!-- Cannot Complete Report (shown when awaiting_cancellation) -->
+                    <div id="cannotCompleteReportCard" class="hidden bg-orange-50 border-l-4 border-orange-500 rounded-lg shadow-sm p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h2 class="text-xl font-semibold text-orange-900 flex items-center gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    Staff Cannot Complete Report
+                                </h2>
+                                <p class="text-sm text-orange-700 mt-1">Staff has reported this job cannot be completed. Review details below.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-orange-900 mb-1">Reason</label>
+                                <p id="cannotCompleteReasonDisplay" class="text-sm text-orange-800 bg-white p-3 rounded-lg border border-orange-200"></p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-orange-900 mb-1">Detailed Explanation</label>
+                                <p id="cannotCompleteDetailsDisplay" class="text-sm text-orange-800 bg-white p-3 rounded-lg border border-orange-200 whitespace-pre-wrap"></p>
+                            </div>
+                            
+                            <div id="cannotCompletePhotosDisplay" class="hidden">
+                                <label class="block text-sm font-medium text-orange-900 mb-2">Supporting Photos</label>
+                                <div id="cannotCompletePhotosGrid" class="grid grid-cols-3 gap-3">
+                                    <!-- Photos will be displayed here -->
+                                </div>
+                            </div>
+                            
+                            <div class="pt-3 border-t border-orange-200">
+                                <p class="text-xs text-orange-600">
+                                    <strong>Reported by:</strong> <span id="cannotCompleteReportedBy"></span> 
+                                    <span class="mx-2">•</span>
+                                    <strong>Reported at:</strong> <span id="cannotCompleteReportedAt"></span>
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -764,6 +964,65 @@
                 <div class="lg:col-span-1">
                     <div class="sticky-sidebar space-y-4">
                         
+                        <!-- Recurring Job Info (if applicable) -->
+                        <div id="recurringJobCard" class="hidden bg-gradient-to-br from-white to-blue-50 rounded-lg shadow-md p-4 border-2 border-blue-300 card-transition">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-sm font-semibold text-gray-900">Recurring Job</h3>
+                                <span id="recurringStatusBadge" class="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700 badge-pop">Active</span>
+                            </div>
+                            
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Schedule:</span>
+                                    <span id="recurringSchedule" class="font-medium text-gray-900">Every Monday</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Next Job:</span>
+                                    <span id="nextJobDate" class="font-medium text-blue-600">Nov 25, 2024</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total Generated:</span>
+                                    <span id="generatedJobsCount" class="font-medium text-gray-900">5 jobs</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 pt-3 border-t border-gray-200 space-y-2">
+                                <button 
+                                    onclick="viewAllInstances()"
+                                    class="w-full px-3 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-all font-medium btn-enhanced flex items-center justify-center gap-2"
+                                >
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                    View All Instances
+                                </button>
+                                <button 
+                                    onclick="manageRecurrence()"
+                                    class="w-full px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all font-medium btn-enhanced flex items-center justify-center gap-2"
+                                >
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    Manage Recurrence
+                                </button>
+                                <button 
+                                    onclick="pauseRecurrence()"
+                                    class="w-full px-3 py-1.5 text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg transition-all font-medium btn-enhanced flex items-center justify-center gap-2"
+                                >
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Pause Recurrence
+                                </button>
+                            </div>
+                        </div>
+                        
                         <!-- Related Jobs in Quote -->
                         <div class="bg-white rounded-lg shadow-sm p-4">
                             <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -784,6 +1043,16 @@
                             <h3 class="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h3>
                             
                             <div class="space-y-2">
+                                <button 
+                                    id="convertToRecurringBtn"
+                                    onclick="showRecurringModal()"
+                                    class="w-full px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors flex items-center gap-2 font-medium border border-blue-200"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Convert to Recurring
+                                </button>
                                 <button 
                                     onclick="viewRelatedQuote()"
                                     class="w-full px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors flex items-center gap-2"
@@ -821,11 +1090,14 @@
                             <select id="statusSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="created">📝 Created</option>
                                 <option value="scheduled">📋 Scheduled</option>
-                                <option value="completed">✅ Completed</option>
+                                <option value="in_progress">🔄 In Progress</option>
                                 <option value="on_hold">⏸️ On Hold</option>
+                                <option value="awaiting_cancellation">⏳ Awaiting Cancellation</option>
+                                <option value="completed">✅ Completed</option>
+                                <option value="cancelled">❌ Cancelled</option>
                             </select>
                             
-                            <p class="text-xs text-gray-500 mt-2">Status will be updated when you save changes</p>
+                            <p class="text-xs text-gray-500 mt-2">Manager can change status to any valid state. Changes are logged in activity feed.</p>
                         </div>
                         
                         <!-- Action Buttons -->
@@ -857,6 +1129,325 @@
 
                                     </div>
                                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convert to Recurring Modal -->
+    <div id="recurringModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all" id="recurringModalContent">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                                    <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Convert to Recurring Job</h3>
+                            <p class="text-sm text-gray-600">Create a template that automatically generates future jobs</p>
+                                    </div>
+                                </div>
+                    <button onclick="closeRecurringModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                                    </div>
+                                </div>
+            
+            <div class="p-6">
+                <div class="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                    <h4 class="text-sm font-semibold text-blue-900 mb-2">📌 What happens next:</h4>
+                    <ul class="text-sm text-blue-800 space-y-1">
+                        <li>• This job becomes Instance #1 of the recurring series</li>
+                        <li>• Future jobs will be auto-created based on your schedule</li>
+                        <li>• You can pause, edit, or end the recurrence anytime</li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-5">
+                    <!-- Custom Recurrence Section -->
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <h3 class="text-base font-semibold text-gray-900 mb-4">Custom recurrence</h3>
+                        
+                        <!-- Repeat Every -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Repeat every</label>
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <input 
+                                        type="number" 
+                                        id="modalCustomInterval" 
+                                        min="1" 
+                                        max="99"
+                                        value="1" 
+                                        onchange="updateModalPreview()" 
+                                        class="w-20 px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-medium"
+                                    >
+                                </div>
+                                <select 
+                                    id="modalRecurringFrequency" 
+                                    onchange="updateModalPreview()" 
+                                    class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none cursor-pointer pr-10"
+                                    style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em 1.25em;"
+                                >
+                                    <option value="days">day</option>
+                                    <option value="weeks" selected>week</option>
+                                    <option value="months">month</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Repeat On (for weeks) -->
+                        <div id="modalDayOfWeekContainer">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Repeat on</label>
+                                <div class="flex gap-2">
+                                <button 
+                                    type="button"
+                                    data-day="Sunday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    S
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Monday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-blue-500 bg-blue-500 text-white font-medium text-sm hover:border-blue-600 hover:bg-blue-600 transition-all flex items-center justify-center active"
+                                >
+                                    M
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Tuesday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    T
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Wednesday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    W
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Thursday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    T
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Friday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    F
+                                </button>
+                                <button 
+                                    type="button"
+                                    data-day="Saturday"
+                                    onclick="toggleDaySelection(this)"
+                                    class="day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                >
+                                    S
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ends Section -->
+                                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Ends</label>
+                        <div class="space-y-3">
+                            <!-- Never -->
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input 
+                                    type="radio" 
+                                    name="modalEndCondition" 
+                                    value="never" 
+                                    onchange="toggleModalEndCondition()"
+                                    class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                >
+                                <span class="text-sm text-gray-700 group-hover:text-gray-900">Never</span>
+                            </label>
+                            
+                            <!-- On Date -->
+                            <label class="flex items-start gap-3 cursor-pointer group">
+                                <input 
+                                    type="radio" 
+                                    name="modalEndCondition" 
+                                    value="date" 
+                                    checked
+                                    onchange="toggleModalEndCondition()"
+                                    class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 mt-0.5"
+                                >
+                                <div class="flex-1">
+                                    <span class="text-sm text-gray-700 group-hover:text-gray-900 block mb-2">On</span>
+                                    <input 
+                                        type="date" 
+                                        id="modalRecurringEndDate" 
+                                        onchange="updateModalPreview()" 
+                                        onfocus="document.querySelector('input[name=modalEndCondition][value=date]').checked = true; toggleModalEndCondition();"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    >
+                                    </div>
+                            </label>
+                            
+                            <!-- After Occurrences -->
+                            <label class="flex items-start gap-3 cursor-pointer group">
+                                <input 
+                                    type="radio" 
+                                    name="modalEndCondition" 
+                                    value="occurrences" 
+                                    onchange="toggleModalEndCondition()"
+                                    class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 mt-0.5"
+                                >
+                                <div class="flex-1">
+                                    <span class="text-sm text-gray-700 group-hover:text-gray-900 block mb-2">After</span>
+                                    <div class="flex items-center gap-2">
+                                        <input 
+                                            type="number" 
+                                            id="modalNumberOfOccurrences" 
+                                            min="1" 
+                                            max="999"
+                                            value="13" 
+                                            onchange="updateModalPreview()" 
+                                            onfocus="document.querySelector('input[name=modalEndCondition][value=occurrences]').checked = true; toggleModalEndCondition();"
+                                            class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-sm font-medium"
+                                        >
+                                        <span class="text-sm text-gray-600">occurrences</span>
+                                </div>
+                            </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Auto-create Settings -->
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Auto-create Jobs</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="modalAutoCreateDays" min="1" max="30" value="7" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <span class="text-sm text-gray-600">days before due date</span>
+                </div>
+                        <p class="text-xs text-gray-500 mt-1">System will automatically create job instances</p>
+                    </div>
+                    
+                    <!-- Preview -->
+                    <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
+                        <h3 class="text-sm font-semibold text-emerald-900 mb-2">📅 Schedule Preview</h3>
+                        <p id="modalRecurringPreview" class="text-sm text-emerald-700">Every Monday, starting from selected date</p>
+                        <div id="modalUpcomingOccurrences" class="mt-3 space-y-1">
+                            <!-- Will show next 5 occurrences -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                <button 
+                    onclick="closeRecurringModal()"
+                    class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="createRecurringTemplate()"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Create Recurring Template
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Details Modal -->
+    <div id="templateDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Recurring Template Details</h3>
+                    </div>
+                    <button onclick="closeTemplateDetailsModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <h4 class="text-sm font-semibold text-blue-900 mb-3">📅 Schedule Configuration</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">Pattern:</span>
+                                <span class="font-medium text-blue-900" id="templateSchedulePattern">Every Monday</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">End Condition:</span>
+                                <span class="font-medium text-blue-900" id="templateEndCondition">On May 17, 2026</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-700">Auto-create:</span>
+                                <span class="font-medium text-blue-900" id="templateAutoCreate">7 days before</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <h4 class="text-sm font-semibold text-green-900 mb-3">📊 Status</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-green-700">Template Status:</span>
+                                <span id="templateStatusDisplay" class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700">Active</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-green-700">Total Instances:</span>
+                                <span class="font-medium text-green-900" id="templateInstanceCount">1 job</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                        <h4 class="text-sm font-semibold text-amber-900 mb-2">ℹ️ Inherited Information</h4>
+                        <p class="text-xs text-amber-700">All job details (customer, services, team assignments, pricing) are copied from the original job (Instance #1).</p>
+                        <p class="text-xs text-amber-700 mt-2">Only the <strong>schedule date and time</strong> can be adjusted for each instance.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+                <button 
+                    onclick="manageRecurrence()"
+                    class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+                >
+                    Manage Recurrence
+                </button>
+                <button 
+                    onclick="closeTemplateDetailsModal()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                    Close
+                </button>
             </div>
         </div>
     </div>
@@ -1023,10 +1614,24 @@
                 nextStatus: 'in_progress',
                 requirements: []
             },
+            awaiting_cancellation: {
+                badge: { emoji: '⏳', text: 'Awaiting Cancellation', color: 'orange' },
+                title: 'Staff Reported Cannot Complete - Action Required',
+                message: 'Staff has reported this job cannot be completed. Review details and confirm cancellation.',
+                icon: 'exclamation-triangle',
+                borderColor: 'border-orange-500',
+                actions: [
+                    { id: 'confirm_cancel', label: 'Confirm Cancellation', color: 'red', icon: 'times-circle' },
+                    { id: 'reject_cancel', label: 'Reject & Keep Job', color: 'green', icon: 'check-circle' }
+                ],
+                progress: 40,
+                nextStatus: 'cancelled',
+                requirements: []
+            },
             cancelled: {
                 badge: { emoji: '❌', text: 'Cancelled', color: 'red' },
                 title: 'Job Cancelled',
-                message: 'This job has been cancelled',
+                message: 'This job has been cancelled and cannot be resumed',
                 icon: 'x-circle',
                 borderColor: 'border-red-500',
                 actions: [],
@@ -1043,6 +1648,56 @@
         function renderStatusBasedUI() {
             const config = statusConfig[currentJobStatus];
             if (!config) return;
+            
+            // Show/hide cannot complete report card
+            const cannotCompleteCard = document.getElementById('cannotCompleteReportCard');
+            if (cannotCompleteCard) {
+                if (currentJobStatus === 'awaiting_cancellation' && jobData && jobData.cannotCompleteData) {
+                    cannotCompleteCard.classList.remove('hidden');
+                    // Populate cannot complete data
+                    const reasonLabels = {
+                        'customer_refused': '❌ Customer Refused Service',
+                        'scope_changed': '📋 Scope Changed - Needs New Quote',
+                        'safety_issue': '🚨 Safety/Access Issue',
+                        'equipment_failure': '🔧 Equipment Not Working',
+                        'not_needed': '✓ Service No Longer Needed',
+                        'wrong_service': '⚠️ Wrong Service Scheduled',
+                        'other': '📝 Other'
+                    };
+                    document.getElementById('cannotCompleteReasonDisplay').textContent = 
+                        reasonLabels[jobData.cannotCompleteData.reason] || jobData.cannotCompleteData.reason;
+                    document.getElementById('cannotCompleteDetailsDisplay').textContent = 
+                        jobData.cannotCompleteData.details || 'No details provided';
+                    
+                    // Show photos if available
+                    if (jobData.cannotCompleteData.photos && jobData.cannotCompleteData.photos.length > 0) {
+                        const photosGrid = document.getElementById('cannotCompletePhotosGrid');
+                        const photosDisplay = document.getElementById('cannotCompletePhotosDisplay');
+                        if (photosGrid && photosDisplay) {
+                            photosGrid.innerHTML = jobData.cannotCompleteData.photos.map(photo => 
+                                `<img src="${photo}" alt="Supporting photo" class="w-full h-32 object-cover rounded-lg border border-orange-200 cursor-pointer" onclick="window.open('${photo}', '_blank')">`
+                            ).join('');
+                            photosDisplay.classList.remove('hidden');
+                        }
+                    }
+                    
+                    // Show reported by and date
+                    if (jobData.cannotCompleteData.reportedBy) {
+                        document.getElementById('cannotCompleteReportedBy').textContent = 
+                            jobData.cannotCompleteData.reportedBy || 'Unknown';
+                    }
+                    if (jobData.cannotCompleteData.reportedAt) {
+                        const reportedDate = new Date(jobData.cannotCompleteData.reportedAt);
+                        document.getElementById('cannotCompleteReportedAt').textContent = 
+                            reportedDate.toLocaleString('en-US', { 
+                                month: 'short', day: 'numeric', year: 'numeric', 
+                                hour: 'numeric', minute: '2-digit', hour12: true 
+                            });
+                    }
+                } else {
+                    cannotCompleteCard.classList.add('hidden');
+                }
+            }
             
             // Update status badge
             const statusBadge = document.getElementById('statusBadge');
@@ -1138,11 +1793,45 @@
                 case 'feedback':
                     requestCustomerFeedback();
                     break;
+                case 'confirm_cancel':
+                    if (confirm('Confirm cancellation of this job? This action cannot be undone.')) {
+                        updateJobStatus('cancelled');
+                        addActivityLog('Job cancellation confirmed by manager', 'Manager confirmed staff cannot complete report');
+                        showNotification('Job cancelled successfully', 'success');
+                    }
+                    break;
+                case 'reject_cancel':
+                    if (confirm('Reject cancellation request? Job will be set back to In Progress and staff will be notified.')) {
+                        updateJobStatus('in_progress');
+                        addActivityLog('Cancellation request rejected - job resumed', 'Manager rejected cancellation, job set back to In Progress');
+                        showNotification('Cancellation request rejected. Job set back to In Progress.', 'info');
+                    }
+                    break;
             }
         }
         
-        // Update job status
+        // Update job status with validation
         function updateJobStatus(newStatus) {
+            // Validate status transition (manager has flexibility but warn on unusual transitions)
+            const unusualTransitions = {
+                'completed': ['created', 'scheduled'],
+                'cancelled': ['completed'],
+                'in_progress': ['completed', 'cancelled']
+            };
+            
+            if (unusualTransitions[newStatus] && unusualTransitions[newStatus].includes(currentJobStatus)) {
+                const confirmMessage = `Are you sure you want to change status from "${statusConfig[currentJobStatus].badge.text}" to "${statusConfig[newStatus].badge.text}"? This is an unusual transition.`;
+                if (!confirm(confirmMessage)) {
+                    // Reset dropdown to current status
+                    const statusSelect = document.getElementById('statusSelect');
+                    if (statusSelect) {
+                        statusSelect.value = currentJobStatus;
+                    }
+                    return;
+                }
+            }
+            
+            const oldStatus = currentJobStatus;
             currentJobStatus = newStatus;
             renderStatusBasedUI();
             
@@ -1151,6 +1840,12 @@
             if (statusSelect) {
                 statusSelect.value = newStatus;
             }
+            
+            // Log status change in activity feed
+            addActivityLog(
+                `Status changed from ${statusConfig[oldStatus]?.badge.text || oldStatus} to ${statusConfig[newStatus].badge.text}`,
+                `Manager updated job status`
+            );
             
             // Show success notification
             showNotification(`Job status updated to ${statusConfig[newStatus].badge.text}`, 'success');
@@ -1725,16 +2420,580 @@
             }
         }
         
+        // ============================================================================
+        // RECURRING JOB MANAGEMENT
+        // ============================================================================
+        
+        function initializeRecurringJob() {
+            // Check if current job is a recurring template
+            const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
+            
+            if (jobData.isRecurring && jobData.recurringTemplate) {
+                const card = document.getElementById('recurringJobCard');
+                card.classList.remove('hidden');
+                card.classList.add('recurring-card-enter');
+                
+                // Hide convert button if already recurring
+                const convertBtn = document.getElementById('convertToRecurringBtn');
+                if (convertBtn) {
+                    convertBtn.style.display = 'none';
+                }
+                
+                // Update recurring info
+                const template = jobData.recurringTemplate;
+                let scheduleText = '';
+                const interval = template.interval || 1;
+                
+                if (template.frequency === 'days') {
+                    if (interval == 1) {
+                        scheduleText = 'Every day';
+                    } else {
+                        scheduleText = `Every ${interval} days`;
+                    }
+                } else if (template.frequency === 'weeks') {
+                    if (template.selectedDays && template.selectedDays.length > 0) {
+                        if (interval == 1) {
+                            if (template.selectedDays.length === 1) {
+                                scheduleText = `Every ${template.selectedDays[0]}`;
+                            } else {
+                                scheduleText = `Weekly on ${template.selectedDays.join(', ')}`;
+                            }
+                        } else {
+                            scheduleText = `Every ${interval} weeks on ${template.selectedDays.join(', ')}`;
+                        }
+                    } else {
+                        scheduleText = 'Weekly';
+                    }
+                } else if (template.frequency === 'months') {
+                    if (interval == 1) {
+                        scheduleText = 'Monthly';
+                    } else {
+                        scheduleText = `Every ${interval} months`;
+                    }
+                }
+                
+                document.getElementById('recurringSchedule').textContent = scheduleText;
+                
+                // Update next job date
+                let nextDateText = '';
+                if (template.nextJobDate) {
+                    const nextDate = new Date(template.nextJobDate);
+                    nextDateText = nextDate.toLocaleDateString('en-US', { 
+                        month: 'short', day: 'numeric', year: 'numeric' 
+                    });
+                    document.getElementById('nextJobDate').textContent = nextDateText;
+                }
+                
+                // Update generated jobs count
+                const generatedCount = template.generatedJobs?.length || 0;
+                document.getElementById('generatedJobsCount').textContent = `${generatedCount} jobs`;
+                
+                // Update status badge in sidebar
+                const statusBadge = document.getElementById('recurringStatusBadge');
+                if (template.status === 'active') {
+                    statusBadge.className = 'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700 badge-pop status-pulse';
+                    statusBadge.textContent = 'Active';
+                } else if (template.status === 'paused') {
+                    statusBadge.className = 'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-700 badge-pop';
+                    statusBadge.textContent = 'Paused';
+                } else {
+                    statusBadge.className = 'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 badge-pop';
+                    statusBadge.textContent = 'Completed';
+                }
+                
+                // ============================================================================
+                // UPDATE SCHEDULE SECTION BANNER
+                // ============================================================================
+                
+                // Show the recurring instance banner in Schedule section
+                const banner = document.getElementById('recurringInstanceBanner');
+                if (banner) {
+                    banner.classList.remove('hidden');
+                    
+                    // Update instance number
+                    const instanceNumber = jobData.instanceNumber || 1;
+                    const totalGenerated = template.generatedJobs?.length || 0;
+                    document.getElementById('instanceInfo').textContent = 
+                        `Instance #${instanceNumber} of recurring series (${totalGenerated} total)`;
+                    
+                    // Update schedule info
+                    document.getElementById('recurringScheduleInfo').textContent = 
+                        `${scheduleText}${nextDateText ? ' • Next: ' + nextDateText : ''}`;
+                    
+                    // Update status badge in banner
+                    const statusBadgeSmall = document.getElementById('recurringStatusBadgeSmall');
+                    if (template.status === 'active') {
+                        statusBadgeSmall.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700 badge-pop status-pulse';
+                        statusBadgeSmall.textContent = 'Active';
+                    } else if (template.status === 'paused') {
+                        statusBadgeSmall.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-700 badge-pop';
+                        statusBadgeSmall.textContent = 'Paused';
+                    } else {
+                        statusBadgeSmall.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 badge-pop';
+                        statusBadgeSmall.textContent = 'Completed';
+                    }
+                    
+                    // Pre-fill the schedule date if suggested
+                    if (jobData.suggestedDate) {
+                        const scheduleDateInput = document.getElementById('scheduleDate');
+                        if (scheduleDateInput && !scheduleDateInput.value) {
+                            scheduleDateInput.value = jobData.suggestedDate;
+                        }
+                    }
+                    
+                    // Show inherited badge in Job Details section
+                    const inheritedBadge = document.getElementById('inheritedBadge');
+                    if (inheritedBadge) {
+                        inheritedBadge.classList.remove('hidden');
+                    }
+                    
+                    // Make job details fields read-only/disabled (they're inherited)
+                    makeInheritedFieldsReadOnly();
+                }
+            }
+        }
+        
+        // Make inherited fields read-only
+        function makeInheritedFieldsReadOnly() {
+            const fieldsToDisable = [
+                'jobName',
+                'priority',
+                'jobDescription'
+            ];
+            
+            fieldsToDisable.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.disabled = true;
+                    field.classList.add('bg-gray-50', 'cursor-not-allowed');
+                    field.title = 'This field is inherited from the recurring template';
+                }
+            });
+        }
+        
+        // View template details
+        function viewTemplateDetails() {
+            const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
+            
+            if (!jobData.recurringTemplate) return;
+            
+            const template = jobData.recurringTemplate;
+            let scheduleText = '';
+            const interval = template.interval || 1;
+            
+            if (template.frequency === 'days') {
+                scheduleText = interval == 1 ? 'Every day' : `Every ${interval} days`;
+            } else if (template.frequency === 'weeks') {
+                if (template.selectedDays && template.selectedDays.length > 0) {
+                    scheduleText = interval == 1 
+                        ? `Weekly on ${template.selectedDays.join(', ')}`
+                        : `Every ${interval} weeks on ${template.selectedDays.join(', ')}`;
+                } else {
+                    scheduleText = 'Weekly';
+                }
+            } else if (template.frequency === 'months') {
+                scheduleText = interval == 1 ? 'Monthly' : `Every ${interval} months`;
+            }
+            
+            let endText = '';
+            if (template.endCondition === 'never') {
+                endText = 'Never ends';
+            } else if (template.endCondition === 'date') {
+                const endDate = new Date(template.endDate);
+                endText = `On ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            } else if (template.endCondition === 'occurrences') {
+                endText = `After ${template.numberOfOccurrences} occurrences`;
+            }
+            
+            // Populate modal
+            document.getElementById('templateSchedulePattern').textContent = scheduleText;
+            document.getElementById('templateEndCondition').textContent = endText;
+            document.getElementById('templateAutoCreate').textContent = `${template.autoCreateDays} days before`;
+            
+            const instanceCount = template.generatedJobs?.length || 0;
+            document.getElementById('templateInstanceCount').textContent = `${instanceCount} ${instanceCount === 1 ? 'job' : 'jobs'}`;
+            
+            // Update status badge
+            const statusDisplay = document.getElementById('templateStatusDisplay');
+            if (template.status === 'active') {
+                statusDisplay.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-700';
+                statusDisplay.textContent = 'Active';
+            } else if (template.status === 'paused') {
+                statusDisplay.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-700';
+                statusDisplay.textContent = 'Paused';
+            } else {
+                statusDisplay.className = 'px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-700';
+                statusDisplay.textContent = 'Completed';
+            }
+            
+            // Show modal
+            document.getElementById('templateDetailsModal').classList.remove('hidden');
+        }
+        
+        function closeTemplateDetailsModal() {
+            document.getElementById('templateDetailsModal').classList.add('hidden');
+        }
+        
+        // Convert to Recurring Modal Functions
+        function showRecurringModal() {
+            const modal = document.getElementById('recurringModal');
+            const modalContent = document.getElementById('recurringModalContent');
+            
+            modal.classList.remove('hidden');
+            
+            // Animate modal entrance
+            setTimeout(() => {
+                modalContent.style.opacity = '0';
+                modalContent.style.transform = 'scale(0.95) translateY(20px)';
+                setTimeout(() => {
+                    modalContent.style.transition = 'all 0.3s ease-out';
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'scale(1) translateY(0)';
+                }, 10);
+            }, 10);
+            
+            // Set default dates (removed start date for now)
+            const sixMonthsLater = new Date();
+            sixMonthsLater.setMonth(sixMonthsLater.getMonth() + 6);
+            document.getElementById('modalRecurringEndDate').value = sixMonthsLater.toISOString().split('T')[0];
+            
+            updateModalPreview();
+        }
+        
+        // Check if we should auto-open recurring modal (from create job page)
+        function checkAutoOpenRecurringModal() {
+            const shouldOpen = localStorage.getItem('openRecurringModal');
+            if (shouldOpen === 'true') {
+                // Clear the flag
+                localStorage.removeItem('openRecurringModal');
+                
+                // Wait a moment for page to fully load, then open modal
+                setTimeout(() => {
+                    showRecurringModal();
+                    
+                    // Show a helpful toast
+                    showNotification('💡 Set up recurring schedule for this job', 'info');
+                }, 500);
+            }
+        }
+        
+        function closeRecurringModal() {
+            const modal = document.getElementById('recurringModal');
+            const modalContent = document.getElementById('recurringModalContent');
+            
+            // Animate modal exit
+            modalContent.style.transition = 'all 0.2s ease-in';
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.95) translateY(20px)';
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+        
+        // Toggle day selection buttons
+        function toggleDaySelection(button) {
+            if (button.classList.contains('active')) {
+                // Deactivate
+                button.classList.remove('active', 'bg-blue-500', 'text-white', 'border-blue-500');
+                button.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+            } else {
+                // Activate
+                button.classList.add('active', 'bg-blue-500', 'text-white', 'border-blue-500');
+                button.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+            }
+            updateModalPreview();
+        }
+        
+        // Get selected days
+        function getSelectedDays() {
+            const buttons = document.querySelectorAll('.day-selector.active');
+            return Array.from(buttons).map(btn => btn.getAttribute('data-day'));
+        }
+        
+        function toggleModalEndCondition() {
+            // No container hiding needed anymore - fields are always visible with their radio buttons
+            updateModalPreview();
+        }
+        
+        function updateModalPreview() {
+            const frequency = document.getElementById('modalRecurringFrequency').value;
+            const interval = document.getElementById('modalCustomInterval').value || 1;
+            const selectedDays = getSelectedDays();
+            
+            // Get end condition
+            const endConditionRadio = document.querySelector('input[name="modalEndCondition"]:checked');
+            const endCondition = endConditionRadio ? endConditionRadio.value : 'date';
+            const endDate = document.getElementById('modalRecurringEndDate').value;
+            const occurrences = document.getElementById('modalNumberOfOccurrences').value;
+            
+            // Show/hide day selector based on frequency
+            const dayOfWeekContainer = document.getElementById('modalDayOfWeekContainer');
+            if (frequency === 'weeks') {
+                dayOfWeekContainer.classList.remove('hidden');
+            } else {
+                dayOfWeekContainer.classList.add('hidden');
+            }
+            
+            // Build preview text
+            let previewText = '';
+            
+            if (frequency === 'days') {
+                if (interval == 1) {
+                    previewText = 'Every day';
+                } else {
+                    previewText = `Every ${interval} days`;
+                }
+            } else if (frequency === 'weeks') {
+                if (interval == 1) {
+                    if (selectedDays.length === 0) {
+                        previewText = 'Weekly (select days)';
+                    } else if (selectedDays.length === 7) {
+                        previewText = 'Every day';
+                    } else if (selectedDays.length === 1) {
+                        previewText = `Every ${selectedDays[0]}`;
+                    } else {
+                        previewText = `Weekly on ${selectedDays.join(', ')}`;
+                    }
+                } else {
+                    if (selectedDays.length === 0) {
+                        previewText = `Every ${interval} weeks (select days)`;
+                    } else {
+                        previewText = `Every ${interval} weeks on ${selectedDays.join(', ')}`;
+                    }
+                }
+            } else if (frequency === 'months') {
+                if (interval == 1) {
+                    previewText = 'Monthly on the same day';
+                } else {
+                    previewText = `Every ${interval} months on the same day`;
+                }
+            }
+            
+            // Add end condition
+            if (endCondition === 'date' && endDate) {
+                const end = new Date(endDate);
+                previewText += ` until ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            } else if (endCondition === 'occurrences') {
+                previewText += ` for ${occurrences} occurrences`;
+            } else {
+                previewText += ', indefinitely';
+            }
+            
+            document.getElementById('modalRecurringPreview').textContent = previewText;
+            
+            // Generate upcoming dates preview (simplified for now)
+            const container = document.getElementById('modalUpcomingOccurrences');
+            container.innerHTML = `
+                <p class="text-xs font-medium text-emerald-800 mb-1">Preview:</p>
+                <div class="text-xs text-emerald-700">
+                    ${previewText}
+                </div>
+            `;
+        }
+        
+        function generateModalUpcomingDates(count) {
+            const frequency = document.getElementById('modalRecurringFrequency').value;
+            const startDate = new Date(document.getElementById('modalRecurringStartDate').value);
+            const dates = [];
+            let currentDate = new Date(startDate);
+            
+            for (let i = 0; i < count; i++) {
+                dates.push(new Date(currentDate));
+                
+                if (frequency === 'daily') {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                } else if (frequency === 'weekly') {
+                    currentDate.setDate(currentDate.getDate() + 7);
+                } else if (frequency === 'monthly') {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                } else if (frequency === 'custom') {
+                    const interval = parseInt(document.getElementById('modalCustomInterval').value) || 2;
+                    const unit = document.getElementById('modalCustomIntervalUnit').value;
+                    if (unit === 'days') {
+                        currentDate.setDate(currentDate.getDate() + interval);
+                    } else if (unit === 'weeks') {
+                        currentDate.setDate(currentDate.getDate() + (interval * 7));
+                    } else if (unit === 'months') {
+                        currentDate.setMonth(currentDate.getMonth() + interval);
+                    }
+                }
+            }
+            
+            return dates;
+        }
+        
+        function createRecurringTemplate() {
+            const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
+            
+            // Generate new template ID
+            const timestamp = Date.now();
+            const templateId = 'RJT-2024-' + String(timestamp).slice(-6);
+            
+            const frequency = document.getElementById('modalRecurringFrequency').value;
+            const interval = document.getElementById('modalCustomInterval').value;
+            const selectedDays = getSelectedDays();
+            
+            // Get end condition
+            const endConditionRadio = document.querySelector('input[name="modalEndCondition"]:checked');
+            const endCondition = endConditionRadio ? endConditionRadio.value : 'date';
+            
+            // Calculate next job date (simplified - in real app, use proper date calculation)
+            const nextWeek = new Date();
+            nextWeek.setDate(nextWeek.getDate() + 7);
+            const nextJobDate = nextWeek.toISOString().split('T')[0];
+            
+            // Build recurring template
+            const recurringTemplate = {
+                frequency: frequency,
+                interval: interval,
+                selectedDays: selectedDays,
+                endCondition: endCondition,
+                endDate: document.getElementById('modalRecurringEndDate').value,
+                numberOfOccurrences: document.getElementById('modalNumberOfOccurrences').value,
+                autoCreateDays: document.getElementById('modalAutoCreateDays').value,
+                status: 'active',
+                generatedJobs: [jobData.id], // Current job is first instance
+                nextJobDate: nextJobDate
+            };
+            
+            // Update job to be recurring
+            jobData.isRecurring = true;
+            jobData.recurringTemplate = recurringTemplate;
+            jobData.templateId = templateId;
+            jobData.instanceNumber = 1;
+            
+            // If current job doesn't have a schedule date yet, suggest the first occurrence
+            // Otherwise, it keeps its existing schedule
+            const currentScheduleDate = document.getElementById('scheduleDate').value;
+            if (!currentScheduleDate) {
+                jobData.suggestedDate = nextJobDate;
+            }
+            
+            // Save updated job data
+            localStorage.setItem('currentJob', JSON.stringify(jobData));
+            localStorage.setItem('job_' + jobData.id, JSON.stringify(jobData));
+            
+            // Close modal
+            closeRecurringModal();
+            
+            // Show success notification with animation
+            showNotification('✅ Recurring template created successfully!', 'success');
+            
+            // Animate the recurring card appearance
+            setTimeout(() => {
+                initializeRecurringJob();
+                
+                // Scroll to recurring card
+                const card = document.getElementById('recurringJobCard');
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 500);
+            
+            // Add activity log
+            addActivityLog(
+                'Job converted to recurring template',
+                `Template ID: ${templateId}. Jobs will auto-generate based on schedule.`
+            );
+        }
+        
+        function viewAllInstances() {
+            showNotification('Opening recurring job instances list...', 'info');
+            // In real implementation, navigate to a filtered job list
+            window.location.href = 'job_list.html?recurring=' + (JSON.parse(localStorage.getItem('currentJob') || '{}')).id;
+        }
+        
+        function manageRecurrence() {
+            const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
+            const template = jobData.recurringTemplate;
+            
+            if (!template) return;
+            
+            const action = prompt(
+                'Manage Recurrence:\n\n' +
+                `Current: ${document.getElementById('recurringSchedule').textContent}\n` +
+                `Next Job: ${document.getElementById('nextJobDate').textContent}\n\n` +
+                'Options:\n' +
+                '1. Edit Schedule\n' +
+                '2. End Recurrence\n' +
+                '3. Skip Next Occurrence\n\n' +
+                'Enter option number (1-3):'
+            );
+            
+            if (action === '1') {
+                showNotification('Edit schedule feature coming soon', 'info');
+            } else if (action === '2') {
+                if (confirm('End this recurring job? No more jobs will be generated.')) {
+                    template.status = 'completed';
+                    jobData.recurringTemplate = template;
+                    localStorage.setItem('currentJob', JSON.stringify(jobData));
+                    localStorage.setItem('job_' + jobData.id, JSON.stringify(jobData));
+                    showNotification('Recurrence ended successfully', 'success');
+                    initializeRecurringJob();
+                }
+            } else if (action === '3') {
+                showNotification('Next occurrence will be skipped', 'success');
+            }
+        }
+        
+        function pauseRecurrence() {
+            const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
+            const template = jobData.recurringTemplate;
+            
+            if (!template) return;
+            
+            if (template.status === 'active') {
+                if (confirm('Pause this recurring job? No new jobs will be created until resumed.')) {
+                    template.status = 'paused';
+                    jobData.recurringTemplate = template;
+                    localStorage.setItem('currentJob', JSON.stringify(jobData));
+                    localStorage.setItem('job_' + jobData.id, JSON.stringify(jobData));
+                    showNotification('⏸️ Recurrence paused', 'success');
+                    
+                    // Animate status change
+                    setTimeout(() => {
+                        initializeRecurringJob();
+                    }, 300);
+                }
+            } else if (template.status === 'paused') {
+                if (confirm('Resume this recurring job?')) {
+                    template.status = 'active';
+                    jobData.recurringTemplate = template;
+                    localStorage.setItem('currentJob', JSON.stringify(jobData));
+                    localStorage.setItem('job_' + jobData.id, JSON.stringify(jobData));
+                    showNotification('▶️ Recurrence resumed', 'success');
+                    
+                    // Animate status change
+                    setTimeout(() => {
+                        initializeRecurringJob();
+                    }, 300);
+                }
+            }
+        }
+        
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize job details first
             initializeJobDetails();
+            
+            // Set initial status from job data (if available)
+            // This should come from actual job data in real implementation
+            if (typeof jobData !== 'undefined' && jobData.status) {
+                currentJobStatus = jobData.status;
+            }
             
             // Initialize status-based UI
             renderStatusBasedUI();
             
             // Initialize activity feed
             renderActivityFeed();
+            
+            // Initialize recurring job display
+            initializeRecurringJob();
+            
+            // Check if we should auto-open recurring modal
+            checkAutoOpenRecurringModal();
             
             // Initialize unified assignment system (from external script)
             if (typeof initializeUnifiedAssignment === 'function') {
@@ -1756,7 +3015,18 @@
             const statusSelect = document.getElementById('statusSelect');
             if (statusSelect) {
                 statusSelect.addEventListener('change', function(e) {
-                    updateJobStatus(e.target.value);
+                    const newStatus = e.target.value;
+                    // Prevent changing from final states without confirmation
+                    if (['completed', 'cancelled'].includes(currentJobStatus) && newStatus !== currentJobStatus) {
+                        if (confirm(`This job is ${currentJobStatus}. Are you sure you want to change it to ${newStatus}?`)) {
+                            updateJobStatus(newStatus);
+                        } else {
+                            // Reset to current status
+                            e.target.value = currentJobStatus;
+                        }
+                    } else {
+                        updateJobStatus(newStatus);
+                    }
                 });
             }
             

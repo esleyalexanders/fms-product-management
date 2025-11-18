@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - Staff Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Sticky sidebar */
+        .sticky-sidebar {
+            position: sticky;
+            top: 1rem;
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+        
+        /* Status badge styles */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.scheduled {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-badge.in_progress {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+        
+        .status-badge.on_hold {
+            background: #fecaca;
+            color: #991b1b;
+        }
+        
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-badge.canceled {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        .status-badge.awaitingcancellation {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        /* Priority badge */
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .priority-badge.urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .priority-badge.high {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        .priority-badge.normal {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .priority-badge.low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Action buttons */
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            white-space: nowrap;
+            font-size: 14px;
+            min-width: fit-content;
+        }
+        
+        .action-btn.success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .action-btn.success:hover {
+            background: #059669;
+        }
+        
+        .action-btn.warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .action-btn.warning:hover {
+            background: #d97706;
+        }
+        
+        .action-btn.danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .action-btn.danger:hover {
+            background: #dc2626;
+        }
+        
+        .action-btn.secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        /* Info card */
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        
+        .info-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-item label {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .info-item span {
+            font-size: 14px;
+            color: #111827;
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .info-item a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+        
+        .info-item a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Quick action buttons */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .quick-action-btn {
+            padding: 10px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            color: #374151;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .quick-action-btn:hover {
+            background: #f3f4f6;
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+        
+        .quick-action-btn i {
+            font-size: 18px;
+        }
+        
+        /* Photo gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-item:hover {
+            border-color: #6366f1;
+        }
+        
+        /* Completion data section */
+        .completion-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+        
+        .completion-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        
+        .completion-section p {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        /* Notes display */
+        .notes-display {
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        
+        .notes-display p {
+            margin: 0;
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.6;
+        }
+        
+        /* Modal Styles (from jobs.html) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .completion-step {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .completion-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .completion-step h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .photo-upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .upload-slot {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .upload-slot:hover {
+            border-color: #6366f1;
+            background: #f9fafb;
+        }
+        
+        .upload-slot label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .upload-slot input[type="file"] {
+            display: none;
+        }
+        
+        .upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #6366f1;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .upload-button:hover {
+            background: #4f46e5;
+        }
+        
+        .photo-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-preview-item .remove-photo {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .time-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .time-input-row input {
+            width: 80px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        #signaturePad {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            cursor: crosshair;
+            background: white;
+        }
+        
+        .signature-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .signature-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+        
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        /* Primary Action Banner - Most Prominent */
+        .primary-action-banner {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .primary-action-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .primary-action-banner.in-progress {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+        }
+        
+        .primary-action-banner.completed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        .primary-action-banner.on-hold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+        
+        .primary-action-btn {
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            border: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .primary-action-btn.success {
+            background: white;
+            color: #10b981;
+        }
+        
+        .primary-action-btn.success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            background: #f0fdf4;
+        }
+        
+        .primary-action-btn.secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .primary-action-btn.secondary:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Quick Access Bar */
+        .quick-access-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .quick-access-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: 2px solid transparent;
+        }
+        
+        .quick-access-btn.primary {
+            background: #10b981;
+            color: white;
+        }
+        
+        .quick-access-btn.primary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .quick-access-btn:not(.primary) {
+            background: #f3f4f6;
+            color: #374151;
+            border-color: #e5e7eb;
+        }
+        
+        .quick-access-btn:not(.primary):hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+        
+        /* Copy Button - Inline Small */
+        .copy-btn-inline {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #9ca3af;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            min-height: 24px;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+        
+        .copy-btn-inline:hover {
+            background: #f3f4f6;
+            color: #6366f1;
+        }
+        
+        .copy-btn-inline:active {
+            transform: scale(0.9);
+        }
+        
+        .copy-btn-inline.copied {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        
+        .copy-btn-inline.copied i::before {
+            content: "\f00c"; /* check icon */
+        }
+        
+        /* Secondary Actions - Less Prominent */
+        .secondary-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .secondary-action-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        .secondary-action-btn.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .secondary-action-btn.warning:hover {
+            background: #fde68a;
+        }
+        
+        .secondary-action-btn.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .secondary-action-btn.danger:hover {
+            background: #fecaca;
+        }
+        
+        /* Comment System Styles */
+        .tab-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn:hover {
+            color: #111827;
+            background: #e5e7eb;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: #111827;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .toolbar-btn {
+            padding: 6px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+        
+        .toolbar-btn:hover {
+            background: #e5e7eb;
+            color: #111827;
+        }
+        
+        /* Comment bubble styles */
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .comment-item:hover {
+            background: #f9fafb;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+        }
+        
+        .comment-avatar.staff {
+            background: #6366f1;
+        }
+        
+        .comment-avatar.manager {
+            background: #9333ea;
+        }
+        
+        .comment-avatar.customer {
+            background: #10b981;
+        }
+        
+        .comment-avatar.system {
+            background: #6b7280;
+        }
+        
+        .comment-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            font-size: 14px;
+            color: #111827;
+        }
+        
+        .comment-time {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .comment-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .comment-badge.staff {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .comment-badge.manager {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+        
+        .comment-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        .comment-text p {
+            margin: 4px 0;
+        }
+        
+        .comment-text ul,
+        .comment-text ol {
+            margin: 8px 0 8px 20px;
+        }
+        
+        .comment-text strong {
+            font-weight: 600;
+        }
+        
+        .comment-text em {
+            font-style: italic;
+        }
+        
+        .comment-attachments {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .attachment-item:hover {
+            background: #e5e7eb;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .activity-item:hover {
+            background: #f9fafb;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .activity-icon.status {
+            background: #dbeafe;
+            color: #3b82f6;
+        }
+        
+        .activity-icon.comment {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+        
+        .activity-icon.completed {
+            background: #d1fae5;
+            color: #10b981;
+        }
+        
+        .activity-content {
+            flex: 1;
+            font-size: 13px;
+            color: #374151;
+        }
+        
+        .activity-content strong {
+            color: #111827;
+            font-weight: 600;
+        }
+        
+        .activity-time {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+        
+        /* Placeholder for contenteditable */
+        #commentInput:empty:before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            pointer-events: none;
+        }
+        
+        #commentInput:focus:before {
+            content: '';
+        }
+        
+        /* Emoji picker */
+        .emoji-picker {
+            position: absolute;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 12px;
+            z-index: 1000;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            max-width: 300px;
+        }
+        
+        .emoji-btn {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        
+        .emoji-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        /* Mention dropdown */
+        .mention-dropdown {
+            position: absolute;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            min-width: 250px;
+        }
+        
+        .mention-item {
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .mention-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .mention-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .mention-info {
+            flex: 1;
+        }
+        
+        .mention-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .mention-role {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            /* Hide sidebar on mobile - use hamburger menu instead */
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            
+            /* Add overlay when sidebar is open */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            /* Main content takes full width */
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Add hamburger menu button */
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #f3f4f6;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-right: 12px;
+                color: #374151;
+                font-size: 18px;
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Hide mobile menu button on desktop */
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            @media (max-width: 768px) {
+                .mobile-menu-btn {
+                    display: flex !important;
+                }
+            }
+            
+            /* Main grid becomes single column */
+            .main-content-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Sticky sidebar becomes normal on mobile */
+            .sticky-sidebar {
+                position: relative !important;
+                top: 0 !important;
+                max-height: none !important;
+            }
+            
+            /* Primary action banner - stack on mobile */
+            .primary-action-banner {
+                padding: 20px 16px !important;
+            }
+            
+            .primary-action-banner > div {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            
+            .primary-action-banner > div > div:first-child {
+                margin-bottom: 16px;
+            }
+            
+            .primary-action-btn {
+                width: 100%;
+                padding: 14px 24px !important;
+                font-size: 16px !important;
+                justify-content: center;
+            }
+            
+            .secondary-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .secondary-action-btn {
+                width: 100%;
+                padding: 12px 16px !important;
+                font-size: 14px !important;
+            }
+            
+            /* Quick access bar - stack on mobile */
+            .quick-access-bar > div {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            
+            .copy-btn-inline {
+                min-width: 32px;
+                min-height: 32px;
+                font-size: 14px;
+            }
+            
+            /* Info cards - better spacing */
+            .info-card {
+                padding: 16px !important;
+            }
+            
+            /* Job details grid - stack on mobile */
+            .info-card > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            
+            /* Touch-friendly buttons */
+            .action-btn,
+            .job-action-btn,
+            .quick-action-btn {
+                min-height: 44px;
+                padding: 12px 16px !important;
+                font-size: 14px !important;
+            }
+            
+            /* Modal adjustments */
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                margin: 10px !important;
+                max-height: 95vh !important;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 16px !important;
+            }
+            
+            /* Photo upload grid - single column on mobile */
+            .photo-upload-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Signature pad - smaller on mobile */
+            #signaturePad {
+                height: 150px !important;
+            }
+            
+            /* Communication panel */
+            .tab-btn {
+                padding: 8px 12px !important;
+                font-size: 13px !important;
+            }
+            
+            #activityFeed {
+                max-height: 300px !important;
+            }
+            
+            /* Comment editor */
+            #commentInput {
+                min-height: 80px !important;
+                font-size: 16px !important; /* Prevents zoom on iOS */
+            }
+            
+            /* Toolbar buttons - larger touch targets */
+            .toolbar-btn {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 10px !important;
+            }
+            
+            /* Info items - stack on mobile */
+            .info-item {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 4px !important;
+            }
+            
+            .info-item label {
+                font-size: 12px;
+            }
+            
+            .info-item span {
+                text-align: left !important;
+                max-width: 100% !important;
+            }
+            
+            /* Header adjustments */
+            .top-header {
+                padding: 12px 16px !important;
+            }
+            
+            .page-title {
+                font-size: 20px !important;
+            }
+            
+            .page-subtitle {
+                font-size: 12px !important;
+            }
+            
+            /* Hide less important elements on mobile */
+            .header-right > div:first-child {
+                display: none !important; /* Hide "Available" status */
+            }
+            
+            /* Sidebar navigation - already handled by home-styles.css */
+        }
+        
+        @media (max-width: 480px) {
+            /* Extra small phones */
+            .primary-action-banner {
+                padding: 16px 12px !important;
+            }
+            
+            .primary-action-banner h2 {
+                font-size: 20px !important;
+            }
+            
+            .primary-action-banner p {
+                font-size: 13px !important;
+            }
+            
+            .info-card h3 {
+                font-size: 16px !important;
+            }
+            
+            .quick-access-bar {
+                padding: 16px !important;
+            }
+            
+            /* Smaller text on very small screens */
+            #detailEstimatedPay {
+                font-size: 20px !important;
+            }
+            
+            .status-badge,
+            .priority-badge {
+                font-size: 11px !important;
+                padding: 4px 10px !important;
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            /* Remove hover effects on touch devices */
+            .action-btn:hover,
+            .job-action-btn:hover,
+            .quick-action-btn:hover {
+                transform: none;
+            }
+            
+            /* Larger touch targets */
+            button,
+            a,
+            .clickable {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Prevent text selection on buttons */
+            button,
+            .action-btn {
+                -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                user-select: none;
+            }
+        }
+        
+        /* Landscape mobile */
+        @media (max-width: 896px) and (orientation: landscape) {
+            .primary-action-banner {
+                padding: 16px 20px !important;
+            }
+            
+            #activityFeed {
+                max-height: 200px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+    
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-user-hard-hat"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="staffName">John Smith</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">STAFF PORTAL</div>
+                <a href="index.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i><span>My Dashboard</span>
+                </a>
+                <a href="jobs.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-briefcase"></i><span>My Jobs</span>
+                </a>
+                <a href="job_detail.html" class="nav-item active" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-file-alt"></i><span>Job Details</span>
+                </a>
+                <a href="schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-calendar-alt"></i><span>My Schedule</span>
+                </a>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-clock"></i><span>Timesheet</span>
+                </div>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">RESOURCES</div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-book"></i><span>Handbook</span>
+                </div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-graduation-cap"></i><span>Training</span>
+                </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button onclick="window.location.href='jobs.html'" class="icon-btn" style="margin-right: 12px;">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div>
+                        <h1 class="page-title" id="jobTitle">Job Details</h1>
+                        <p class="page-subtitle" id="jobIdDisplay">JOB-2024-001</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f9fafb; border-radius: 8px; margin-right: 12px;">
+                        <span class="status-dot online" style="width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #10b981;"></span>
+                        <span style="font-weight: 500; color: #374151; font-size: 14px;">Available</span>
+                    </div>
+                    <button class="icon-btn notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Smith&background=6366f1&color=fff" alt="Staff Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Wrapper -->
+            <div class="content-wrapper">
+                
+                <!-- PRIMARY ACTION BANNER - Most Prominent -->
+                <div id="primaryActionBanner" class="primary-action-banner">
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
+                                <div id="statusIcon" style="width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 14px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); flex-shrink: 0;">
+                                    <i class="fas fa-calendar-check" style="font-size: 28px; color: white;"></i>
+                                </div>
+                                <div style="flex: 1; min-width: 0;">
+                                    <h2 id="statusTitle" style="margin: 0; font-size: 24px; font-weight: 700; color: white; word-wrap: break-word;">Job is Scheduled</h2>
+                                    <p id="statusMessage" style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9); font-size: 15px; word-wrap: break-word;">Ready to start when you arrive at location</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="primaryActionContainer" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; width: 100%;">
+                            <!-- Primary action button will be here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QUICK ACCESS BAR - Customer Information (Copyable) -->
+                <div class="quick-access-bar">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <!-- Customer Name -->
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-user" style="color: #6366f1; font-size: 14px;"></i>
+                                Customer Name
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span id="quickCustomerName" style="font-size: 16px; font-weight: 600; color: #111827; word-wrap: break-word; user-select: all; cursor: text;">Michael Chen</span>
+                                <button onclick="copyToClipboard('quickCustomerName')" class="copy-btn-inline" title="Copy name">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-phone" style="color: #6366f1; font-size: 14px;"></i>
+                                Phone
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span id="quickCustomerPhone" style="font-size: 15px; font-weight: 500; color: #374151; word-wrap: break-word; user-select: all; cursor: text;">+61 400 123 456</span>
+                                <button onclick="copyToClipboard('quickCustomerPhone')" class="copy-btn-inline" title="Copy phone">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div>
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-envelope" style="color: #6366f1; font-size: 14px;"></i>
+                                Email
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span id="quickCustomerEmail" style="font-size: 15px; font-weight: 500; color: #374151; word-wrap: break-word; user-select: all; cursor: text;">michael@email.com</span>
+                                <button onclick="copyToClipboard('quickCustomerEmail')" class="copy-btn-inline" title="Copy email">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Address -->
+                        <div style="grid-column: 1 / -1;">
+                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-map-marker-alt" style="color: #6366f1; font-size: 14px;"></i>
+                                Address
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span id="quickAddress" style="font-size: 15px; font-weight: 500; color: #374151; word-wrap: break-word; user-select: all; cursor: text;">456 Oak Ave, Melbourne VIC 3000</span>
+                                <button onclick="copyToClipboard('quickAddress')" class="copy-btn-inline" title="Copy address">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="main-content-grid" style="display: grid; grid-template-columns: 1fr 350px; gap: 20px;">
+                    
+                    <!-- Left Column - Main Content -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <!-- Essential Job Details - Compact & Scannable -->
+                        <div class="info-card">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;" class="job-details-grid">
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Service</div>
+                                    <div id="detailService" style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px;">Garden Maintenance</div>
+                                    <div style="font-size: 13px; color: #374151; line-height: 1.6;" id="detailDescription">Regular garden maintenance including mowing, trimming, and weeding</div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <div>
+                                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Schedule</div>
+                                            <div style="font-size: 15px; font-weight: 600; color: #111827;">
+                                                <i class="fas fa-calendar" style="color: #6366f1; margin-right: 6px;"></i>
+                                                <span id="detailScheduledDate">2024-11-20</span>
+                                            </div>
+                                            <div style="font-size: 14px; color: #374151; margin-top: 2px;">
+                                                <i class="fas fa-clock" style="color: #6366f1; margin-right: 6px;"></i>
+                                                <span id="detailScheduledTime">9:00 AM</span>
+                                                <span style="color: #9ca3af; margin-left: 8px;">•</span>
+                                                <span id="detailDuration" style="margin-left: 8px;">2.5 hrs</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Estimated Pay</div>
+                                            <div id="detailEstimatedPay" style="font-size: 24px; font-weight: 700; color: #10b981;">$75</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Priority & Status Badges -->
+                            <div style="display: flex; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f3f4f6; flex-wrap: wrap;">
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Priority</div>
+                                    <div id="detailPriority"></div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Status</div>
+                                    <div id="detailStatus"></div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Job ID</div>
+                                    <div id="detailJobId" style="font-size: 13px; font-weight: 600; color: #374151;">JOB-2024-001</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Special Notes -->
+                            <div id="specialNotesSection" style="margin-top: 16px; display: none;">
+                                <div class="notes-display">
+                                    <p><i class="fas fa-sticky-note" style="margin-right: 6px;"></i><span id="specialNotes">Customer requests front yard focus</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Details - Compact -->
+                        <div class="info-card" style="display: none;" id="customerDetailsCard">
+                            <h3><i class="fas fa-user"></i> Customer Details</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Full Name</div>
+                                    <div id="detailCustomerName" style="font-size: 15px; font-weight: 600; color: #111827;">Michael Chen</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Phone</div>
+                                    <a id="detailCustomerPhone" href="tel:+61400123456" style="font-size: 15px; font-weight: 500; color: #6366f1; text-decoration: none;">+61 400 123 456</a>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Email</div>
+                                    <a id="detailCustomerEmail" href="mailto:michael@email.com" style="font-size: 15px; font-weight: 500; color: #6366f1; text-decoration: none;">michael@email.com</a>
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <div style="font-size: 12px; color: #6b7280; font-weight: 500; margin-bottom: 4px;">Address</div>
+                                    <div id="detailAddress" style="font-size: 15px; font-weight: 500; color: #374151;">456 Oak Ave, Melbourne VIC 3000</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Completion Data (if job is completed) -->
+                        <div id="completionDataSection" class="info-card" style="display: none;">
+                            <h3><i class="fas fa-check-circle"></i> Completion Details</h3>
+                            
+                            <div class="completion-section">
+                                <h4>Work Summary</h4>
+                                <p id="completionSummary">Work completed successfully. All areas cleaned and maintained.</p>
+                            </div>
+                            
+                            <div class="completion-section">
+                                <h4>Time Spent</h4>
+                                <p id="completionTime">2 hours 30 minutes</p>
+                            </div>
+                            
+                            <div id="completionMaterials" class="completion-section" style="display: none;">
+                                <h4>Materials Used</h4>
+                                <p id="completionMaterialsText">Standard cleaning supplies</p>
+                            </div>
+                            
+                            <div id="completionPhotosSection" style="margin-top: 16px;">
+                                <h4 style="font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px;">Photos</h4>
+                                <div id="completionPhotos" class="photo-gallery">
+                                    <!-- Photos will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div id="completionSignatureSection" style="margin-top: 16px; display: none;">
+                                <h4 style="font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px;">Customer Signature</h4>
+                                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; text-align: center;">
+                                    <img id="completionSignature" src="" alt="Customer Signature" style="max-width: 100%; max-height: 150px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- On Hold Information (if job is on hold) -->
+                        <div id="onHoldDataSection" class="info-card" style="display: none; border-left: 4px solid #f59e0b;">
+                            <h3><i class="fas fa-pause-circle"></i> On Hold Information</h3>
+                            
+                            <div class="info-item">
+                                <label>Reason:</label>
+                                <span id="holdReasonDisplay">Customer Not Available</span>
+                            </div>
+                            
+                            <div class="info-item">
+                                <label>Details:</label>
+                                <span id="holdDetailsDisplay" style="text-align: left; max-width: 60%;">Customer was not home when we arrived. Left a note to reschedule.</span>
+                            </div>
+                            
+                            <div id="holdResumeDate" class="info-item" style="display: none;">
+                                <label>Expected Resume:</label>
+                                <span id="holdResumeDateDisplay">2024-11-21</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity & Comments Panel - Collapsible -->
+                        <div class="info-card">
+                            <!-- Header with Tabs and Collapse -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-comments"></i> Communication
+                                    <span id="activityCount" style="background: #6366f1; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 8px;">0</span>
+                                </h3>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <div style="display: flex; gap: 4px; background: #f3f4f6; padding: 4px; border-radius: 8px;">
+                                        <button 
+                                            id="tabAll"
+                                            onclick="switchActivityTab('all')"
+                                            class="tab-btn active"
+                                        >
+                                            All
+                                        </button>
+                                        <button 
+                                            id="tabComments"
+                                            onclick="switchActivityTab('comments')"
+                                            class="tab-btn"
+                                        >
+                                            Comments
+                                        </button>
+                                        <button 
+                                            id="tabHistory"
+                                            onclick="switchActivityTab('history')"
+                                            class="tab-btn"
+                                        >
+                                            History
+                                        </button>
+                                    </div>
+                                    <button 
+                                        id="toggleCommunication"
+                                        onclick="toggleCommunicationPanel()"
+                                        class="tab-btn"
+                                        style="padding: 6px 10px;"
+                                        title="Collapse/Expand"
+                                    >
+                                        <i class="fas fa-chevron-down" id="communicationToggleIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div id="communicationContent">
+                            
+                            <!-- Activity Feed -->
+                            <div id="activityFeed" class="custom-scrollbar" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; min-height: 100px;">
+                                <div id="activityList" style="display: flex; flex-direction: column; gap: 16px;">
+                                    <!-- Activity items will be populated here -->
+                                </div>
+                                <div id="emptyActivity" class="text-center text-gray-500 text-sm py-8" style="display: none;">
+                                    <i class="fas fa-comment-slash" style="font-size: 32px; margin-bottom: 8px; opacity: 0.5;"></i>
+                                    <p>No activity yet</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Add Comment Form -->
+                            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                                <div style="display: flex; gap: 12px;">
+                                    <div style="flex-shrink: 0;">
+                                        <div style="width: 40px; height: 40px; background: #6366f1; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                            <span style="text-sm font-semibold text-white" id="staffInitials">JS</span>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <!-- Comment Editor -->
+                                        <div id="commentEditorContainer" style="border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; background: white;">
+                                            <!-- Simple Toolbar -->
+                                            <div style="background: #f9fafb; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <button onclick="formatComment('bold')" class="toolbar-btn" title="Bold">
+                                                    <i class="fas fa-bold"></i>
+                                                </button>
+                                                <button onclick="formatComment('italic')" class="toolbar-btn" title="Italic">
+                                                    <i class="fas fa-italic"></i>
+                                                </button>
+                                                <div style="width: 1px; background: #d1d5db; margin: 0 4px;"></div>
+                                                <button onclick="formatComment('ul')" class="toolbar-btn" title="Bullet List">
+                                                    <i class="fas fa-list-ul"></i>
+                                                </button>
+                                                <button onclick="formatComment('ol')" class="toolbar-btn" title="Numbered List">
+                                                    <i class="fas fa-list-ol"></i>
+                                                </button>
+                                                <div style="width: 1px; background: #d1d5db; margin: 0 4px;"></div>
+                                                <button onclick="insertEmoji()" class="toolbar-btn" title="Emoji">
+                                                    <i class="fas fa-smile"></i>
+                                                </button>
+                                                <button onclick="attachFile()" class="toolbar-btn" title="Attach File">
+                                                    <i class="fas fa-paperclip"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- Editor Content Area -->
+                                            <div 
+                                                id="commentInput"
+                                                contenteditable="true"
+                                                style="width: 100%; padding: 12px; min-height: 100px; max-height: 300px; overflow-y: auto; outline: none; font-size: 14px; line-height: 1.6;"
+                                                placeholder="Add a comment... (Type @ to mention manager)"
+                                                data-placeholder="Add a comment... (Type @ to mention manager)"
+                                            ></div>
+                                            
+                                            <!-- File attachments preview -->
+                                            <div id="fileAttachments" style="display: none; padding: 8px 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                                <div id="attachmentsList" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                                            <p style="font-size: 12px; color: #6b7280; margin: 0;">Press Ctrl+Enter to post</p>
+                                            <div style="display: flex; gap: 8px;">
+                                                <button 
+                                                    onclick="cancelComment()"
+                                                    class="btn-secondary"
+                                                    style="padding: 8px 16px; font-size: 13px;"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button 
+                                                    id="addCommentBtn"
+                                                    onclick="addComment()"
+                                                    class="action-btn success"
+                                                    style="padding: 8px 16px; font-size: 13px;"
+                                                >
+                                                    <i class="fas fa-paper-plane"></i> Post Comment
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Right Column - Sidebar -->
+                    <div class="sticky-sidebar">
+                        
+                        <!-- Status Card -->
+                        <div class="info-card">
+                            <h3><i class="fas fa-tasks"></i> Status</h3>
+                            <div style="text-align: center; padding: 20px 0;">
+                                <span id="statusBadge" class="status-badge scheduled">Scheduled</span>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #f3f4f6;">
+                                <div class="info-item">
+                                    <label>Created:</label>
+                                    <span id="createdDate">2024-11-18</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Last Updated:</label>
+                                    <span id="lastUpdated">2024-11-19</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions Card -->
+                        <div class="info-card">
+                            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                            <div id="quickActionsContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                                <!-- Dynamic action buttons -->
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- Complete Job Modal -->
+    <div id="completeJobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Complete Job</h2>
+                <span class="status-badge completed">Completing</span>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Upload Photos -->
+                <div class="completion-step">
+                    <h3>📸 Upload Photos</h3>
+                    <div class="photo-upload-grid">
+                        <div class="upload-slot">
+                            <label>Before Photos</label>
+                            <label for="beforePhotos" class="upload-button">
+                                <i class="fas fa-camera"></i> Choose Photos
+                            </label>
+                            <input type="file" id="beforePhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'before')">
+                            <div id="beforePreview" class="photo-preview-grid"></div>
+                        </div>
+                        <div class="upload-slot">
+                            <label>After Photos</label>
+                            <label for="afterPhotos" class="upload-button">
+                                <i class="fas fa-camera"></i> Choose Photos
+                            </label>
+                            <input type="file" id="afterPhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'after')">
+                            <div id="afterPreview" class="photo-preview-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Time Spent -->
+                <div class="completion-step">
+                    <h3>⏱️ Time Spent *</h3>
+                    <div class="time-input-row">
+                        <input type="number" id="hoursSpent" min="0" max="12" value="0" placeholder="Hours" required> hrs
+                        <input type="number" id="minutesSpent" min="0" max="59" value="0" placeholder="Minutes" required> mins
+                    </div>
+                    <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">* Required: Please enter the time spent on this job</p>
+                </div>
+                
+                <!-- Step 3: Work Summary -->
+                <div class="completion-step">
+                    <h3>📝 Work Summary (Optional)</h3>
+                    <textarea 
+                        id="workSummary"
+                        placeholder="What work was completed? Any issues found or recommendations?"
+                        rows="4"
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                    ></textarea>
+                </div>
+                
+                <!-- Step 4: Materials Used -->
+                <div class="completion-step">
+                    <h3>🔧 Materials Used (Optional)</h3>
+                    <textarea 
+                        id="materialsUsed"
+                        placeholder="List any materials or parts used..."
+                        rows="2"
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCompleteJobModal()">Cancel</button>
+                <button class="btn-success" onclick="submitJobCompletion()">
+                    <i class="fas fa-check-circle"></i> Submit & Complete Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- On Hold Modal -->
+    <div id="onHoldModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Put Job On Hold</h2>
+                <span class="status-badge on_hold">On Hold</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Reason for Hold *</label>
+                    <select id="holdReason" required>
+                        <option value="">Select reason...</option>
+                        <option value="customer_unavailable">🏠 Customer Not Available</option>
+                        <option value="weather">🌧️ Weather Conditions</option>
+                        <option value="missing_parts">🔧 Missing Parts/Equipment</option>
+                        <option value="awaiting_approval">📞 Awaiting Customer Approval</option>
+                        <option value="safety_concern">🚨 Safety Concern</option>
+                        <option value="access_issue">🔒 Access Issue</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Details *</label>
+                    <textarea 
+                        id="holdNotes" 
+                        placeholder="Explain the situation..."
+                        rows="3"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Expected Resume Date (Optional)</label>
+                    <input type="date" id="resumeDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeOnHoldModal()">Cancel</button>
+                <button class="btn-warning" onclick="submitOnHold()">
+                    <i class="fas fa-pause-circle"></i> Put On Hold
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Job Modal -->
+    <div id="rejectJobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reject Job</h2>
+                <span class="status-badge" style="background: #fee2e2; color: #991b1b;">Rejecting</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    ⚠️ This will notify the manager. The job will be reassigned or cancelled. Please provide a reason.
+                </div>
+                
+                <div class="form-group">
+                    <label>Reason for Rejection *</label>
+                    <select id="rejectJobReason" required>
+                        <option value="">Select reason...</option>
+                        <option value="not_available">📅 Not Available</option>
+                        <option value="outside_skills">🔧 Outside My Skills</option>
+                        <option value="too_far">📍 Too Far / Location Issue</option>
+                        <option value="schedule_conflict">⏰ Schedule Conflict</option>
+                        <option value="equipment_needed">🛠️ Don't Have Required Equipment</option>
+                        <option value="personal_reason">👤 Personal Reason</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Details *</label>
+                    <textarea 
+                        id="rejectJobDetails" 
+                        placeholder="Explain why you cannot accept this job..."
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeRejectJobModal()">Cancel</button>
+                <button class="btn-danger" onclick="submitRejectJob()">
+                    <i class="fas fa-times"></i> Reject Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cannot Complete Modal -->
+    <div id="cannotCompleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cannot Complete Job</h2>
+                <span class="status-badge" style="background: #fee2e2; color: #991b1b;">Cannot Complete</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    ⚠️ This will notify the manager. The job will be set to "Awaiting Cancellation" status. Only the manager can confirm and cancel the job.
+                </div>
+                
+                <div class="form-group">
+                    <label>Reason *</label>
+                    <select id="cannotCompleteReason" required>
+                        <option value="">Select reason...</option>
+                        <option value="customer_refused">❌ Customer Refused Service</option>
+                        <option value="scope_changed">📋 Scope Changed - Needs New Quote</option>
+                        <option value="safety_issue">🚨 Safety/Access Issue</option>
+                        <option value="equipment_failure">🔧 Equipment Not Working</option>
+                        <option value="not_needed">✓ Service No Longer Needed</option>
+                        <option value="wrong_service">⚠️ Wrong Service Scheduled</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Detailed Explanation *</label>
+                    <textarea 
+                        id="cannotCompleteDetails" 
+                        placeholder="Provide full details so manager can follow up..."
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Supporting Photos (Optional)</label>
+                    <input type="file" id="cannotCompletePhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'cannot_complete')">
+                    <div id="cannotCompletePreview" class="photo-preview-grid" style="margin-top: 12px;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCannotCompleteModal()">Cancel</button>
+                <button class="btn-danger" onclick="submitCannotComplete()">
+                    <i class="fas fa-exclamation-triangle"></i> Submit to Manager
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="job_detail.js"></script>
+</body>
+</html>
+

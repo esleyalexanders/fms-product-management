@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs - Staff Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        /* Job card styles */
+        .job-card {
+            position: relative;
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.2s ease;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .job-card.priority-urgent { 
+            border-left: 4px solid #ef4444;
+            background: linear-gradient(to right, #fef2f2 0%, white 5%);
+        }
+        .job-card.priority-high { 
+            border-left: 4px solid #f59e0b;
+            background: linear-gradient(to right, #fffbeb 0%, white 5%);
+        }
+        .job-card.priority-normal { 
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(to right, #eff6ff 0%, white 5%);
+        }
+        .job-card.priority-low { 
+            border-left: 4px solid #10b981;
+            background: linear-gradient(to right, #f0fdf4 0%, white 5%);
+        }
+        
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge.scheduled {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-badge.in_progress {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+        
+        .status-badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-badge.on_hold {
+            background: #fecaca;
+            color: #991b1b;
+        }
+        
+        /* Priority badges */
+        .priority-badge {
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .priority-badge.urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .priority-badge.high {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        .priority-badge.normal {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .priority-badge.low {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Search and filter section */
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+        
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 10px 12px 10px 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .search-input-wrapper i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        /* Filter buttons */
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6b7280;
+        }
+        
+        .filter-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+        
+        .filter-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: #d1d5db;
+            margin-bottom: 16px;
+        }
+        
+        /* Action buttons in job card */
+        .job-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .job-action-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .job-action-btn span {
+            display: inline-block;
+        }
+        
+        .job-action-btn.primary {
+            background: #6366f1;
+            color: white;
+        }
+        
+        .job-action-btn.primary:hover {
+            background: #4f46e5;
+        }
+        
+        .job-action-btn.secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        .job-action-btn.secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .job-action-btn.success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .job-action-btn.success:hover {
+            background: #059669;
+        }
+        
+        /* Stats summary */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .stat-box .number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        
+        .stat-box .label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-box.blue .number { color: #2563eb; }
+        .stat-box.green .number { color: #10b981; }
+        .stat-box.orange .number { color: #f59e0b; }
+        .stat-box.purple .number { color: #9333ea; }
+        
+        /* View toggle */
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 8px;
+        }
+        
+        .view-toggle button {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .view-toggle button.active {
+            background: white;
+            color: #111827;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        /* Grid view styles */
+        #jobsList.grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+            padding: 16px;
+        }
+        
+        #jobsList.list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .job-card-grid {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            padding: 0;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .job-card-grid:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+            border-color: #6366f1;
+        }
+        
+        .job-card-grid .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #f3f4f6;
+            position: relative;
+        }
+        
+        .job-card-grid .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .job-card-grid .card-footer {
+            padding: 16px 20px;
+            background: #f9fafb;
+            border-top: 1px solid #f3f4f6;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .job-card-grid .priority-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+        
+        .job-card-grid .priority-indicator.urgent {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+        
+        .job-card-grid .priority-indicator.high {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+        
+        .job-card-grid .priority-indicator.normal {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+        }
+        
+        .job-card-grid .priority-indicator.low {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+        
+        .job-card-grid .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            padding: 8px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        
+        .job-card-grid .info-row i {
+            width: 16px;
+            flex-shrink: 0;
+        }
+        
+        .job-card-grid .pay-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #065f46;
+            margin-top: auto;
+        }
+        
+        .job-card-grid .notes-box {
+            padding: 12px;
+            background: #fffbeb;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #92400e;
+            line-height: 1.5;
+        }
+        
+        /* Responsive grid */
+        @media (max-width: 768px) {
+            /* Hide sidebar on mobile - use hamburger menu instead */
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            
+            /* Add overlay when sidebar is open */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            /* Main content takes full width */
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Add hamburger menu button */
+            .mobile-menu-btn {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #f3f4f6;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-right: 12px;
+                color: #374151;
+                font-size: 18px;
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Hide mobile menu button on desktop */
+            .mobile-menu-btn {
+                display: none;
+            }
+            
+            @media (max-width: 768px) {
+                .mobile-menu-btn {
+                    display: flex !important;
+                }
+            }
+            
+            #jobsList.grid-view {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Stats row - fewer columns on mobile */
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .stat-box {
+                padding: 12px;
+            }
+            
+            .stat-box .number {
+                font-size: 20px;
+            }
+            
+            .stat-box .label {
+                font-size: 11px;
+            }
+            
+            /* Filter buttons - wrap better */
+            .filter-group {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .filter-btn {
+                padding: 8px 12px !important;
+                font-size: 13px !important;
+                min-height: 40px;
+            }
+            
+            /* Search and filters section */
+            .search-filters {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            /* Job cards - better spacing */
+            .job-card {
+                padding: 16px;
+            }
+            
+            .job-card-grid {
+                padding: 16px;
+            }
+            
+            /* Job actions - stack on mobile */
+            .job-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .job-action-btn {
+                width: 100%;
+                padding: 12px 16px !important;
+                font-size: 14px !important;
+                min-height: 44px;
+            }
+            
+            /* Job header - stack on mobile */
+            .job-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .job-title-section {
+                width: 100%;
+            }
+            
+            /* Modal adjustments */
+            .modal-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                margin: 10px !important;
+                max-height: 95vh !important;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 16px !important;
+            }
+            
+            /* Photo upload grid - single column on mobile */
+            .photo-upload-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Signature pad - smaller on mobile */
+            #signaturePad {
+                height: 150px !important;
+            }
+            
+            /* View toggle - larger on mobile */
+            .view-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .view-toggle button {
+                flex: 1;
+                padding: 10px;
+                min-height: 44px;
+            }
+            
+            /* Header adjustments */
+            .top-header {
+                padding: 12px 16px !important;
+            }
+            
+            .page-title {
+                font-size: 20px !important;
+            }
+            
+            /* Hide less important elements */
+            .header-right > div:first-child {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Extra small phones */
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-card h3 {
+                font-size: 16px !important;
+            }
+            
+            .job-card-grid h3 {
+                font-size: 16px !important;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .filter-btn {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1200px) {
+            #jobsList.grid-view {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            /* Remove hover effects on touch devices */
+            .job-card:hover,
+            .job-card-grid:hover {
+                transform: none;
+            }
+            
+            /* Larger touch targets */
+            button,
+            a,
+            .clickable {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* Prevent text selection on buttons */
+            button,
+            .job-action-btn {
+                -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                user-select: none;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-large .modal-content {
+            max-width: 800px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .completion-step {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .completion-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .completion-step h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .photo-upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .upload-slot {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .upload-slot:hover {
+            border-color: #6366f1;
+            background: #f9fafb;
+        }
+        
+        .upload-slot label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .upload-slot input[type="file"] {
+            display: none;
+        }
+        
+        .upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #6366f1;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .upload-button:hover {
+            background: #4f46e5;
+        }
+        
+        .photo-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-preview-item .remove-photo {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .time-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .time-input-row input {
+            width: 80px;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        #signaturePad {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            cursor: crosshair;
+            background: white;
+        }
+        
+        .signature-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .signature-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+        
+        .alert-warning {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+        }
+        
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        
+        .detail-section {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+        
+        .detail-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .info-item label {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .info-item span,
+        .info-item strong {
+            font-size: 14px;
+            color: #111827;
+        }
+        
+        .info-item a {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .info-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .notes-display {
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .equipment-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .equipment-list li {
+            padding: 12px 16px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        .equipment-list li:before {
+            content: '🔧';
+            margin-right: 8px;
+        }
+        
+        .job-quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .quick-action-link {
+            flex: 1;
+            padding: 8px 12px;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .quick-action-link:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- System Update Banner -->
+    <div class="limited-offer-banner">
+        <div class="banner-content">
+            <i class="fas fa-info-circle"></i>
+            <span class="banner-text">You have 3 jobs scheduled for today</span>
+        </div>
+        <button class="banner-close-btn"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Main Container -->
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-user-hard-hat"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="staffName">John Smith</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">STAFF PORTAL</div>
+                <a href="index.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-home"></i><span>My Dashboard</span>
+                </a>
+                <a href="jobs.html" class="nav-item active" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-briefcase"></i><span>My Jobs</span>
+                </a>
+                <a href="schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-calendar-alt"></i><span>My Schedule</span>
+                </a>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-clock"></i><span>Timesheet</span>
+                </div>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">RESOURCES</div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-book"></i><span>Handbook</span>
+                </div>
+                <div class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-graduation-cap"></i><span>Training</span>
+                </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">My Jobs</h1>
+                    <p class="page-subtitle">Jobs assigned to you</p>
+                </div>
+                <div class="header-right">
+                    <!-- Status Indicator -->
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f9fafb; border-radius: 8px; margin-right: 12px;">
+                        <span class="status-dot online" id="statusDot" style="width: 10px; height: 10px; border-radius: 50%; display: inline-block; background: #10b981;"></span>
+                        <span style="font-weight: 500; color: #374151; font-size: 14px;">Available</span>
+                    </div>
+                    
+                    <button class="icon-btn notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="icon-btn help-btn">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Smith&background=6366f1&color=fff" alt="Staff Avatar">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Wrapper -->
+            <div class="content-wrapper">
+                
+                <!-- Stats Summary -->
+                <div class="stats-row">
+                    <div class="stat-box blue">
+                        <div class="number" id="statTotal">12</div>
+                        <div class="label">Total Jobs</div>
+                    </div>
+                    <div class="stat-box purple">
+                        <div class="number" id="statScheduled">5</div>
+                        <div class="label">Scheduled</div>
+                    </div>
+                    <div class="stat-box orange">
+                        <div class="number" id="statInProgress">2</div>
+                        <div class="label">In Progress</div>
+                    </div>
+                    <div class="stat-box" style="background: white; padding: 16px; border-radius: 10px; border: 1px solid #e5e7eb; text-align: center;">
+                        <div class="number" id="statOnHold" style="font-size: 24px; font-weight: 700; color: #f59e0b; margin-bottom: 4px;">1</div>
+                        <div class="label" style="font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px;">On Hold</div>
+                    </div>
+                    <div class="stat-box green">
+                        <div class="number" id="statCompleted">4</div>
+                        <div class="label">Completed</div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="filter-section">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+                        <div class="search-input-wrapper" style="min-width: 280px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search jobs by customer, ID, or location...">
+                        </div>
+                        
+                        <select id="sortSelect" style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; color: #374151; cursor: pointer;">
+                            <option value="date_asc">Due Date (Soonest)</option>
+                            <option value="date_desc" selected>Due Date (Latest)</option>
+                            <option value="priority">Priority (High to Low)</option>
+                            <option value="customer">Customer (A-Z)</option>
+                        </select>
+                        
+                        <div class="view-toggle" style="margin-left: auto;">
+                            <button class="active" onclick="setView('list')">
+                                <i class="fas fa-list"></i> List
+                            </button>
+                            <button onclick="setView('grid')">
+                                <i class="fas fa-th"></i> Grid
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Buttons -->
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="filter-group">
+                            <button class="filter-btn active" onclick="filterByStatus('all')">
+                                All Jobs
+                            </button>
+                            <button class="filter-btn" onclick="filterByStatus('scheduled')">
+                                <i class="fas fa-calendar-check"></i> Scheduled
+                            </button>
+                            <button class="filter-btn" onclick="filterByStatus('in_progress')">
+                                <i class="fas fa-spinner"></i> In Progress
+                            </button>
+                            <button class="filter-btn" onclick="filterByStatus('on_hold')">
+                                <i class="fas fa-pause-circle"></i> On Hold
+                            </button>
+                            <button class="filter-btn" onclick="filterByStatus('completed')">
+                                <i class="fas fa-check-circle"></i> Completed
+                            </button>
+                        </div>
+                        
+                        <button class="filter-btn" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Jobs List -->
+                <section class="appointments-section">
+                    <div class="appointments-header">
+                        <h3 class="section-title-small">
+                            <span id="resultsCount">Showing 12 jobs</span>
+                        </h3>
+                    </div>
+                    
+                    <div class="appointments-card" style="padding: 0;">
+                        <!-- Jobs will be dynamically loaded here -->
+                        <div id="jobsList">
+                            <!-- Dynamic content -->
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="emptyState" class="empty-state" style="display: none;">
+                            <i class="fas fa-briefcase"></i>
+                            <p style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 8px;">No jobs found</p>
+                            <p style="font-size: 14px; color: #9ca3af;">Try adjusting your filters or search terms</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Caught Up -->
+                <section class="caught-up-section">
+                    <div class="caught-up-card">
+                        <i class="fas fa-check-circle"></i>
+                        <span>You're all caught up!</span>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Complete Job Modal -->
+    <div id="completeJobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Complete Job</h2>
+                <span class="status-badge completed">Completing</span>
+            </div>
+            <div class="modal-body">
+                <!-- Step 1: Upload Photos -->
+                <div class="completion-step">
+                    <h3>📸 Upload Photos</h3>
+                    <div class="photo-upload-grid">
+                        <div class="upload-slot">
+                            <label>Before Photos</label>
+                            <label for="beforePhotos" class="upload-button">
+                                <i class="fas fa-camera"></i> Choose Photos
+                            </label>
+                            <input type="file" id="beforePhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'before')">
+                            <div id="beforePreview" class="photo-preview-grid"></div>
+                        </div>
+                        <div class="upload-slot">
+                            <label>After Photos</label>
+                            <label for="afterPhotos" class="upload-button">
+                                <i class="fas fa-camera"></i> Choose Photos
+                            </label>
+                            <input type="file" id="afterPhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'after')">
+                            <div id="afterPreview" class="photo-preview-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Time Spent -->
+                <div class="completion-step">
+                    <h3>⏱️ Time Spent *</h3>
+                    <div class="time-input-row">
+                        <input type="number" id="hoursSpent" min="0" max="12" value="0" placeholder="Hours" required> hrs
+                        <input type="number" id="minutesSpent" min="0" max="59" value="0" placeholder="Minutes" required> mins
+                    </div>
+                    <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">* Required: Please enter the time spent on this job</p>
+                </div>
+                
+                <!-- Step 3: Work Summary -->
+                <div class="completion-step">
+                    <h3>📝 Work Summary (Optional)</h3>
+                    <textarea 
+                        id="workSummary"
+                        placeholder="What work was completed? Any issues found or recommendations?"
+                        rows="4"
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                    ></textarea>
+                </div>
+                
+                <!-- Step 4: Materials Used -->
+                <div class="completion-step">
+                    <h3>🔧 Materials Used (Optional)</h3>
+                    <textarea 
+                        id="materialsUsed"
+                        placeholder="List any materials or parts used..."
+                        rows="2"
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCompleteJobModal()">Cancel</button>
+                <button class="btn-success" onclick="submitJobCompletion()">
+                    <i class="fas fa-check-circle"></i> Submit & Complete Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- On Hold Modal -->
+    <div id="onHoldModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Put Job On Hold</h2>
+                <span class="status-badge on_hold">On Hold</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Reason for Hold *</label>
+                    <select id="holdReason" required>
+                        <option value="">Select reason...</option>
+                        <option value="customer_unavailable">🏠 Customer Not Available</option>
+                        <option value="weather">🌧️ Weather Conditions</option>
+                        <option value="missing_parts">🔧 Missing Parts/Equipment</option>
+                        <option value="awaiting_approval">📞 Awaiting Customer Approval</option>
+                        <option value="safety_concern">🚨 Safety Concern</option>
+                        <option value="access_issue">🔒 Access Issue</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Details *</label>
+                    <textarea 
+                        id="holdNotes" 
+                        placeholder="Explain the situation..."
+                        rows="3"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Expected Resume Date (Optional)</label>
+                    <input type="date" id="resumeDate">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeOnHoldModal()">Cancel</button>
+                <button class="btn-warning" onclick="submitOnHold()">
+                    <i class="fas fa-pause-circle"></i> Put On Hold
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cannot Complete Modal -->
+    <div id="cannotCompleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cannot Complete Job</h2>
+                <span class="status-badge" style="background: #fee2e2; color: #991b1b;">Cannot Complete</span>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    ⚠️ This will notify the manager and customer. Please provide full details.
+                </div>
+                
+                <div class="form-group">
+                    <label>Reason *</label>
+                    <select id="cannotCompleteReason" required>
+                        <option value="">Select reason...</option>
+                        <option value="customer_refused">❌ Customer Refused Service</option>
+                        <option value="scope_changed">📋 Scope Changed - Needs New Quote</option>
+                        <option value="safety_issue">🚨 Safety/Access Issue</option>
+                        <option value="equipment_failure">🔧 Equipment Not Working</option>
+                        <option value="not_needed">✓ Service No Longer Needed</option>
+                        <option value="wrong_service">⚠️ Wrong Service Scheduled</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Detailed Explanation *</label>
+                    <textarea 
+                        id="cannotCompleteDetails" 
+                        placeholder="Provide full details so manager can follow up..."
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Supporting Photos (Optional)</label>
+                    <input type="file" id="cannotCompletePhotos" accept="image/*" multiple onchange="handlePhotoUpload(this, 'cannot_complete')">
+                    <div id="cannotCompletePreview" class="photo-preview-grid" style="margin-top: 12px;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCannotCompleteModal()">Cancel</button>
+                <button class="btn-danger" onclick="submitCannotComplete()">
+                    <i class="fas fa-exclamation-triangle"></i> Submit to Manager
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div id="jobDetailsModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Job Details</h2>
+                <span id="detailStatusBadge" class="status-badge"></span>
+            </div>
+            <div class="modal-body">
+                <!-- Customer Info -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-user"></i> Customer Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Name:</label>
+                            <span id="detailCustomerName"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone:</label>
+                            <a id="detailCustomerPhone" href="#"></a>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Email:</label>
+                            <a id="detailCustomerEmail" href="#"></a>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Address:</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span id="detailAddress"></span>
+                                <a id="detailMapLink" href="#" target="_blank" class="upload-button" style="margin-top: 8px; padding: 6px 12px; font-size: 12px;">
+                                    <i class="fas fa-map"></i> Open in Maps
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="job-quick-actions">
+                        <a id="quickCallLink" href="#" class="quick-action-link">
+                            <i class="fas fa-phone"></i> Call
+                        </a>
+                        <a id="quickSmsLink" href="#" class="quick-action-link">
+                            <i class="fas fa-comment"></i> SMS
+                        </a>
+                        <a id="quickDirectionsLink" href="#" target="_blank" class="quick-action-link">
+                            <i class="fas fa-directions"></i> Directions
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Job Info -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-briefcase"></i> Job Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Job ID:</label>
+                            <span id="detailJobId"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Scheduled:</label>
+                            <span id="detailScheduled"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Duration:</label>
+                            <span id="detailDuration"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Priority:</label>
+                            <span id="detailPriority"></span>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Service:</label>
+                            <strong id="detailTitle"></strong>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Description:</label>
+                            <p id="detailDescription" style="margin: 0;"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Special Notes -->
+                <div class="detail-section">
+                    <h3><i class="fas fa-sticky-note"></i> Important Notes</h3>
+                    <div class="notes-display" id="detailNotes"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeJobDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="jobs.js"></script>
+</body>
+</html>
+
