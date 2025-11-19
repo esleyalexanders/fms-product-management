@@ -53,7 +53,7 @@
                             </div>
                             <div>
                                 <div class="text-xs text-gray-500">Amount Due</div>
-                                <div class="text-sm font-bold text-purple-600" id="amountDue">$${invoiceData.total.toFixed(2)}</div>
+                                <div class="text-sm font-bold text-purple-600" id="amountDue">$0.00</div>
                             </div>
                         </div>
                         
@@ -62,7 +62,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-xs text-blue-600 font-medium">Related Quote</div>
-                                    <div class="text-sm font-semibold text-blue-800" id="relatedQuote">${invoiceData.quoteId}</div>
+                                    <div class="text-sm font-semibold text-blue-800" id="relatedQuote">Q-2024-001</div>
                                 </div>
                                 <button 
                                     onclick="viewQuote()"
@@ -128,22 +128,22 @@
                         <h2 class="text-lg font-semibold mb-4">Line Items</h2>
                         <div id="lineItemsContainer" class="space-y-3"></div>
                         <div class="border-t mt-4 pt-4 space-y-2">
-                            <div class="flex justify-between text-sm"><span>Subtotal (before discounts)</span><span id="subtotalBeforeDiscount">$${invoiceData.subtotal.toFixed(2)}</span></div>
-                            <div class="flex justify-between text-sm text-green-600" id="lineItemDiscountsRow" style="${invoiceData.lineItemDiscounts > 0 ? '' : 'display: none;'}">
+                            <div class="flex justify-between text-sm"><span>Subtotal (before discounts)</span><span id="subtotalBeforeDiscount">$0.00</span></div>
+                            <div class="flex justify-between text-sm text-green-600" id="lineItemDiscountsRow" style="display: none;">
                                 <span>Line Item Discounts</span>
-                                <span id="lineItemDiscounts">-$${invoiceData.lineItemDiscounts.toFixed(2)}</span>
+                                <span id="lineItemDiscounts">-$0.00</span>
                             </div>
                             <div class="flex justify-between text-sm font-medium border-t pt-2">
                                 <span>Subtotal</span>
-                                <span id="subtotal">$${invoiceData.subtotalAfterDiscount.toFixed(2)}</span>
+                                <span id="subtotal">$0.00</span>
                             </div>
                             <div class="flex justify-between text-sm">
                                 <span>Tax (GST 10%)</span>
-                                <span id="tax">$${invoiceData.tax.toFixed(2)}</span>
+                                <span id="tax">$0.00</span>
                             </div>
                             <div class="flex justify-between text-lg font-bold border-t-2 pt-2">
                                 <span>Total Amount</span>
-                                <span class="text-purple-600" id="total">$${invoiceData.total.toFixed(2)}</span>
+                                <span class="text-purple-600" id="total">$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -163,13 +163,32 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                 </svg>
-                                Send Payment Link
+                                Send Payment reminder
                             </button>
+                            
+                            <!-- Stripe Payment Status Check (shown only for Stripe invoices) -->
+                            <div id="stripePaymentSection" class="hidden space-y-2">
+                                <button id="checkStripePaymentBtn" class="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Check Stripe Payment Status
+                                </button>
+                                <div id="stripePaymentStatus" class="hidden p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs text-blue-700">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                        <span>Checking payment status with Stripe...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <button id="markAsPaidBtn" class="w-full bg-green-600 text-white py-2.5 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Mark as Paid
+                                Mark as Paid (Manual)
                             </button>
                         </div>
                         
@@ -180,48 +199,6 @@
                             <div class="text-sm font-semibold text-green-700">Fully Paid</div>
                         </div>
                         
-                        <!-- Job Creation Section (shown when paid) -->
-                        <div id="jobCreationSection" class="hidden mt-4">
-                            <div class="border-t border-gray-200 pt-4">
-                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Job Management</h3>
-                                
-                                <!-- Show when paid but no job created -->
-                                <div id="createJobSection" class="p-3 bg-green-50 rounded-lg border border-green-200">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-sm font-medium text-green-800">✅ Ready to Create Job</p>
-                                            <p class="text-xs text-green-600">Payment received - convert to job to schedule work</p>
-                                        </div>
-                                        <button 
-                                            id="createJobBtn"
-                                            onclick="createJobFromInvoice()"
-                                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm font-medium"
-                                        >
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                            </svg>
-                                            Create Job
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Show when job already created -->
-                                <div id="existingJobSection" class="hidden p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-sm font-medium text-blue-800">🔧 Job Created</p>
-                                            <p class="text-xs text-blue-600" id="jobStatusText">Status: Scheduled</p>
-                                        </div>
-                                        <button 
-                                            onclick="viewJob()"
-                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-                                        >
-                                            View Job
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -243,12 +220,8 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method <span class="text-red-500">*</span></label>
                     <select id="paymentMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                         <option value="">Select payment method...</option>
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="credit_card">Credit/Debit Card</option>
-                        <option value="paypal">PayPal</option>
+                        <option value="stripe">Stripe</option>
                         <option value="cash">Cash</option>
-                        <option value="check">Check</option>
-                        <option value="other">Other</option>
                     </select>
                 </div>
                 
@@ -279,8 +252,10 @@
             id: 'INV-2024-001',
             quoteId: 'Q-2024-001',
             status: 'unpaid',
+            invoiceDate: '2024-11-10',
+            dueDate: '2024-12-10',
             paymentModel: 'deposit', // 'full', 'deposit', or 'subscription'
-            paymentMethods: ['stripe', 'cash'], // Updated to match quote_edit_simple.html
+            paymentMethod: 'stripe', // Single payment method selected (matches quote_edit_simple.html)
             paymentTerms: 'net_30',
             items: [
                 { 
@@ -395,22 +370,25 @@
                 `;
             }).join('');
             
-            // Display payment methods
+            // Display single selected payment method (read-only, matches payment configuration)
             const paymentMethodsContainer = document.getElementById('paymentMethodsDisplay');
-            if (invoiceData.paymentMethods && invoiceData.paymentMethods.length > 0) {
-                paymentMethodsContainer.innerHTML = invoiceData.paymentMethods.map(method => {
-                    const config = paymentMethodConfig[method];
-                    if (!config) return '';
-                    
-                    return `
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-50 text-${config.color}-700 rounded-lg text-xs font-medium">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${config.icon}"></path>
-                            </svg>
-                            ${config.name}
-                        </span>
-                    `;
-                }).join('');
+            if (invoiceData.paymentMethod && paymentMethodConfig[invoiceData.paymentMethod]) {
+                const config = paymentMethodConfig[invoiceData.paymentMethod];
+                paymentMethodsContainer.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-${config.color}-50 text-${config.color}-700 rounded-lg text-xs font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${config.icon}"></path>
+                        </svg>
+                        ${config.name}
+                    </span>
+                `;
+                
+                // Show Stripe payment status check button if payment method is Stripe
+                if (invoiceData.paymentMethod === 'stripe') {
+                    document.getElementById('stripePaymentSection').classList.remove('hidden');
+                }
+            } else {
+                paymentMethodsContainer.innerHTML = '<span class="text-xs text-gray-500">No payment method selected</span>';
             }
             
             // Display payment terms
@@ -473,6 +451,58 @@
             
             // Set today's date as default payment date
             document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+            
+            // Update all invoice summary values from invoiceData
+            document.getElementById('amountDue').textContent = `$${invoiceData.total.toFixed(2)}`;
+            document.getElementById('relatedQuote').textContent = invoiceData.quoteId || 'N/A';
+            document.getElementById('subtotalBeforeDiscount').textContent = `$${invoiceData.subtotal.toFixed(2)}`;
+            document.getElementById('lineItemDiscounts').textContent = `-$${invoiceData.lineItemDiscounts.toFixed(2)}`;
+            document.getElementById('subtotal').textContent = `$${invoiceData.subtotalAfterDiscount.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${invoiceData.tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${invoiceData.total.toFixed(2)}`;
+            
+            // Show/hide discount row based on actual discount amount
+            const discountRow = document.getElementById('lineItemDiscountsRow');
+            if (invoiceData.lineItemDiscounts > 0) {
+                discountRow.style.display = 'flex';
+            } else {
+                discountRow.style.display = 'none';
+            }
+            
+            // Update invoice date and due date if available
+            if (invoiceData.invoiceDate) {
+                document.getElementById('invoiceDate').textContent = new Date(invoiceData.invoiceDate).toLocaleDateString();
+            }
+            if (invoiceData.dueDate) {
+                document.getElementById('dueDate').textContent = new Date(invoiceData.dueDate).toLocaleDateString();
+            }
+            
+            // Update invoice number and status badge
+            if (invoiceData.id) {
+                document.getElementById('invoiceNumber').textContent = invoiceData.id;
+            }
+            if (invoiceData.status) {
+                const statusBadge = document.getElementById('statusBadge');
+                const statusColors = {
+                    'paid': 'bg-green-100 text-green-700',
+                    'unpaid': 'bg-yellow-100 text-yellow-700',
+                    'cancelled': 'bg-gray-100 text-gray-700'
+                };
+                const statusText = invoiceData.status.charAt(0).toUpperCase() + invoiceData.status.slice(1);
+                statusBadge.textContent = statusText;
+                statusBadge.className = `px-3 py-1.5 text-sm font-medium rounded-full ${statusColors[invoiceData.status] || 'bg-gray-100 text-gray-700'}`;
+                
+                // Update current status display
+                const currentStatus = document.getElementById('currentStatus');
+                currentStatus.textContent = statusText;
+                if (invoiceData.status === 'paid') {
+                    currentStatus.className = 'text-xl font-bold text-green-700';
+                    document.getElementById('unpaidActions').classList.add('hidden');
+                    document.getElementById('paidState').classList.remove('hidden');
+                } else {
+                    currentStatus.className = 'text-xl font-bold text-yellow-700';
+                }
+            }
         }
 
         document.getElementById('sendPaymentLinkBtn').addEventListener('click', () => {
@@ -481,6 +511,11 @@
 
         document.getElementById('markAsPaidBtn').addEventListener('click', () => {
             document.getElementById('markPaidModal').classList.remove('hidden');
+        });
+
+        // Stripe payment status check
+        document.getElementById('checkStripePaymentBtn').addEventListener('click', () => {
+            checkStripePaymentStatus();
         });
 
         function closeMarkPaidModal() {
@@ -517,10 +552,123 @@
             document.getElementById('currentStatus').textContent = 'Paid';
             document.getElementById('unpaidActions').classList.add('hidden');
             document.getElementById('paidState').classList.remove('hidden');
-            document.getElementById('jobCreationSection').classList.remove('hidden');
             
             closeMarkPaidModal();
             alert('Invoice marked as paid successfully!');
+        }
+
+        // Check Stripe payment status (simulates webhook or API call)
+        function checkStripePaymentStatus() {
+            const statusDiv = document.getElementById('stripePaymentStatus');
+            const checkBtn = document.getElementById('checkStripePaymentBtn');
+            
+            // Show loading state
+            statusDiv.classList.remove('hidden');
+            checkBtn.disabled = true;
+            checkBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Simulate API call to Stripe to check payment status
+            // In real implementation, this would call your backend API which queries Stripe
+            setTimeout(() => {
+                // Simulate checking payment status with Stripe
+                // In production, this would be: fetch('/api/check-stripe-payment', { invoiceId: invoiceData.id })
+                const mockStripeResponse = {
+                    paid: Math.random() > 0.7, // 30% chance of being paid (for demo)
+                    paymentIntentId: 'pi_' + Math.random().toString(36).substr(2, 9),
+                    amount: invoiceData.total,
+                    currency: 'usd',
+                    status: 'succeeded' // or 'pending', 'failed', 'canceled'
+                };
+                
+                if (mockStripeResponse.paid && mockStripeResponse.status === 'succeeded') {
+                    // Payment confirmed by Stripe - automatically mark as paid
+                    markInvoiceAsPaidFromStripe(mockStripeResponse);
+                } else {
+                    // Payment not found or not completed
+                    statusDiv.innerHTML = `
+                        <div class="flex items-center gap-2 text-yellow-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <span>No successful payment found. Payment may still be pending or not completed.</span>
+                        </div>
+                    `;
+                    checkBtn.disabled = false;
+                    checkBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }, 1500); // Simulate 1.5 second API call
+        }
+        
+        // Automatically mark invoice as paid when Stripe confirms payment
+        function markInvoiceAsPaidFromStripe(stripeResponse) {
+            const paymentDate = new Date().toISOString().split('T')[0];
+            
+            // Create payment record from Stripe response
+            const paymentRecord = {
+                invoiceId: invoiceData.id,
+                paymentDate: paymentDate,
+                paymentMethod: 'stripe',
+                transactionRef: stripeResponse.paymentIntentId,
+                amount: stripeResponse.amount,
+                notes: `Automatically confirmed via Stripe payment intent ${stripeResponse.paymentIntentId}`,
+                recordedAt: new Date().toISOString(),
+                source: 'stripe_automatic' // Mark as automatically confirmed
+            };
+            
+            console.log('Payment confirmed by Stripe:', paymentRecord);
+            
+            // Update invoice data
+            invoiceData.status = 'paid';
+            invoiceData.paidAmount = invoiceData.total;
+            invoiceData.paymentDate = paymentDate;
+            invoiceData.stripePaymentIntentId = stripeResponse.paymentIntentId;
+            
+            // Update UI
+            document.getElementById('statusBadge').className = 'px-3 py-1.5 text-sm font-medium rounded-full bg-green-100 text-green-700';
+            document.getElementById('statusBadge').textContent = 'Paid';
+            document.getElementById('currentStatus').textContent = 'Paid';
+            document.getElementById('currentStatus').className = 'text-xl font-bold text-green-700';
+            document.getElementById('unpaidActions').classList.add('hidden');
+            document.getElementById('paidState').classList.remove('hidden');
+            document.getElementById('stripePaymentSection').classList.add('hidden');
+            
+            // Show success message
+            const statusDiv = document.getElementById('stripePaymentStatus');
+            statusDiv.innerHTML = `
+                <div class="flex items-center gap-2 text-green-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>Payment confirmed! Invoice automatically marked as paid.</span>
+                </div>
+            `;
+            
+            // In production, this would also:
+            // 1. Send receipt email to customer
+            // 2. Update database
+            // 3. Trigger any post-payment workflows
+            // 4. Log the payment event
+            
+            alert(`✅ Payment confirmed by Stripe!\n\nPayment Intent: ${stripeResponse.paymentIntentId}\nAmount: $${stripeResponse.amount.toFixed(2)}\n\nInvoice has been automatically marked as paid.`);
+        }
+        
+        // Simulate Stripe webhook handler (for automatic payment confirmation)
+        // In production, this would be called by your backend when Stripe sends a webhook
+        function handleStripeWebhook(webhookData) {
+            // This function would be called by your backend when Stripe sends a payment.succeeded webhook
+            if (webhookData.type === 'payment_intent.succeeded' && 
+                webhookData.data.object.metadata.invoiceId === invoiceData.id) {
+                
+                const stripeResponse = {
+                    paid: true,
+                    paymentIntentId: webhookData.data.object.id,
+                    amount: webhookData.data.object.amount / 100, // Convert from cents
+                    currency: webhookData.data.object.currency,
+                    status: 'succeeded'
+                };
+                
+                markInvoiceAsPaidFromStripe(stripeResponse);
+            }
         }
 
         // Navigation functions
@@ -529,22 +677,6 @@
             window.location.href = `quote_edit_simple.html?id=${quoteId}`;
         }
         
-        // Job creation functions
-        function createJobFromInvoice() {
-            const invoiceId = getInvoiceId();
-            const quoteId = getQuoteId();
-            
-            if (confirm('Create job from this paid invoice?\n\nThis will create a single job with all quote items and allow you to assign staff and schedule work.')) {
-                // Navigate to job creation system
-                window.location.href = `../../../[v2] Jobs/job_create_simple.html?quoteId=${quoteId}&invoiceId=${invoiceId}`;
-            }
-        }
-
-        function viewJob() {
-            const jobId = getJobId();
-            window.location.href = `../../../[v2] Jobs/job_detail.html?id=${jobId}`;
-        }
-
         function getInvoiceId() {
             // Get from URL or page data
             const urlParams = new URLSearchParams(window.location.search);
@@ -554,24 +686,6 @@
         function getQuoteId() {
             // Get from invoice data or URL
             return invoiceData?.quoteId || 'Q-2024-001'; // Mock for now
-        }
-
-        function getJobId() {
-            // Check if job exists for this invoice
-            return 'JOB-2024-001'; // Mock for now
-        }
-
-        // Check if job already exists for this invoice
-        function checkJobStatus() {
-            const invoiceId = getInvoiceId();
-            // Mock check - replace with real data
-            const existingJob = false; // mockJobs.find(job => job.invoiceId === invoiceId);
-            
-            if (existingJob) {
-                document.getElementById('createJobSection').classList.add('hidden');
-                document.getElementById('existingJobSection').classList.remove('hidden');
-                document.getElementById('jobStatusText').textContent = `Status: ${existingJob.status}`;
-            }
         }
 
         document.addEventListener('DOMContentLoaded', initializePage);
