@@ -151,3 +151,4 @@ Each status has distinct visual styling:
 - **Completed**: Green theme
 - **Canceled**: Red theme
 
+

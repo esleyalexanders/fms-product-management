@@ -94,6 +94,47 @@ const defaultJobData = {
             color: 'purple'
         }
     ],
+    classMode: {
+        enabled: true,
+        name: 'Tuesday Yoga + Guitar Combo',
+        capacity: 10,
+        waitlistEnabled: true,
+        pricebookItems: [
+            { id: 'PB-YOGA-CLASS', name: 'Yoga Class - Group (per seat)' },
+            { id: 'PB-GUITAR-SESSION', name: 'Guitar Workshop - Group (per seat)' }
+        ],
+        serviceMix: ['Yoga', 'Guitar']
+    },
+    participants: [
+        {
+            id: 'participant-1',
+            name: 'Customer A',
+            quoteId: 'Q-2024-010',
+            services: ['Yoga'],
+            status: 'confirmed'
+        },
+        {
+            id: 'participant-2',
+            name: 'Customer B',
+            quoteId: 'Q-2024-011',
+            services: ['Yoga'],
+            status: 'pending_payment'
+        },
+        {
+            id: 'participant-3',
+            name: 'Customer C',
+            quoteId: 'Q-2024-012',
+            services: ['Yoga', 'Guitar'],
+            status: 'confirmed'
+        },
+        {
+            id: 'participant-4',
+            name: 'Customer D',
+            quoteId: 'Q-2024-013',
+            services: ['Guitar'],
+            status: 'waitlisted'
+        }
+    ],
     comments: [
         {
             id: 'comment-1',
@@ -116,6 +157,12 @@ const defaultJobData = {
 
 // Initialize job data
 let jobData = loadJobData() || defaultJobData;
+if (!jobData.classMode) {
+    jobData.classMode = { enabled: false, pricebookItems: [], capacity: null, waitlistEnabled: false };
+}
+if (!Array.isArray(jobData.participants)) {
+    jobData.participants = [];
+}
 
 // Related jobs from the same quote
 const relatedJobs = [
@@ -304,6 +351,8 @@ function loadJobDetails() {
         selectedStaff = [...jobData.assignedStaff];
         renderSelectedStaff();
     }
+
+    initializeClassJobSection();
 }
 
 function updatePriorityBorders() {
@@ -391,6 +440,129 @@ function renderJobItems() {
     
     // Update financial summary
     updateFinancialSummary();
+}
+
+function initializeClassJobSection() {
+    const card = document.getElementById('classSummaryCard');
+    if (!card) return;
+
+    if (!jobData.classMode || !jobData.classMode.enabled) {
+        card.classList.add('hidden');
+        return;
+    }
+
+    card.classList.remove('hidden');
+
+    const classTitleEl = document.getElementById('classSummaryTitle');
+    if (classTitleEl) {
+        classTitleEl.textContent = jobData.classMode.name || 'Group Session';
+    }
+
+    const waitlistBadge = document.getElementById('classWaitlistBadge');
+    if (waitlistBadge) {
+        const waitlistEnabled = Boolean(jobData.classMode.waitlistEnabled);
+        waitlistBadge.textContent = waitlistEnabled ? 'Waitlist Enabled' : 'Waitlist Disabled';
+        waitlistBadge.className = `px-3 py-1 text-xs font-semibold rounded-full border ${
+            waitlistEnabled
+                ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                : 'bg-gray-100 text-gray-700 border-gray-200'
+        }`;
+    }
+
+    updateClassOccupancy();
+    renderClassPricebookBadges();
+    renderClassParticipantRows();
+}
+
+function updateClassOccupancy() {
+    const capacityLabel = document.getElementById('classCapacityLabel');
+    const percentLabel = document.getElementById('classOccupancyPercent');
+    const bar = document.getElementById('classOccupancyBar');
+
+    if (!capacityLabel || !percentLabel || !bar) return;
+
+    const capacity = jobData.classMode?.capacity || 0;
+    const attendees = jobData.participants ? jobData.participants.length : 0;
+    capacityLabel.textContent = capacity ? `${attendees} / ${capacity} seats` : `${attendees} seats`;
+
+    const percent = capacity ? Math.min(100, Math.round((attendees / capacity) * 100)) : 100;
+    percentLabel.textContent = `${percent}% full`;
+    bar.style.width = `${percent}%`;
+    bar.classList.toggle('bg-red-500', capacity && attendees > capacity);
+}
+
+function renderClassPricebookBadges() {
+    const container = document.getElementById('classPricebookBadges');
+    if (!container) return;
+
+    const items = jobData.classMode?.pricebookItems || [];
+    if (items.length === 0) {
+        container.innerHTML = '<span class="text-xs text-gray-500">No pricebook items linked</span>';
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-white border border-gray-200 text-gray-700">
+            ${item.name || item.id}
+        </span>
+    `).join('');
+}
+
+function renderClassParticipantRows() {
+    const container = document.getElementById('classParticipantRows');
+    const counter = document.getElementById('classParticipantCounter');
+    if (!container) return;
+
+    const participants = jobData.participants || [];
+    if (counter) {
+        counter.textContent = `${participants.length} ${participants.length === 1 ? 'person' : 'people'}`;
+    }
+
+    if (participants.length === 0) {
+        container.innerHTML = `
+            <div class="border border-dashed border-gray-300 rounded-lg p-4 text-sm text-gray-500 text-center">
+                No participants added yet.
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = participants.map(participant => {
+        const statusMeta = getParticipantStatusMeta(participant.status);
+        const services = participant.services && participant.services.length
+            ? participant.services.join(', ')
+            : 'General';
+        const quoteInfo = participant.quoteId ? `Quote ${participant.quoteId}` : 'No quote linked';
+
+        return `
+            <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">${participant.name}</p>
+                    <p class="text-xs text-gray-600">${quoteInfo} • ${services}</p>
+                </div>
+                <span class="${statusMeta.className}">${statusMeta.label}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function getParticipantStatusMeta(status) {
+    const map = {
+        confirmed: {
+            label: 'Confirmed',
+            className: 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200'
+        },
+        pending_payment: {
+            label: 'Pending Payment',
+            className: 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200'
+        },
+        waitlisted: {
+            label: 'Waitlisted',
+            className: 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200'
+        }
+    };
+
+    return map[status] || map.pending_payment;
 }
 
 function updateFinancialSummary() {

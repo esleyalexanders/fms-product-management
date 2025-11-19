@@ -460,3 +460,4 @@ Both sides see:
 
 This document clarifies how statuses depend on each other and what actions are available on both the manager and staff sides of the job detail pages.
 
+
