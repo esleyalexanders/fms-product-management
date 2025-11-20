@@ -2467,13 +2467,26 @@
             // Check if current job is a recurring template
             const jobData = JSON.parse(localStorage.getItem('currentJob') || '{}');
             
+            // Ensure recurring card is hidden by default
+            const card = document.getElementById('recurringJobCard');
+            if (card) {
+                card.classList.add('hidden');
+            }
+            
+            // Ensure convert button is visible by default (unless job is already recurring)
+            const convertBtn = document.getElementById('convertToRecurringBtn');
+            if (convertBtn) {
+                convertBtn.style.display = '';
+            }
+            
+            // Only show recurring UI if job is explicitly set as recurring
             if (jobData.isRecurring && jobData.recurringTemplate) {
-                const card = document.getElementById('recurringJobCard');
-                card.classList.remove('hidden');
-                card.classList.add('recurring-card-enter');
+                if (card) {
+                    card.classList.remove('hidden');
+                    card.classList.add('recurring-card-enter');
+                }
                 
                 // Hide convert button if already recurring
-                const convertBtn = document.getElementById('convertToRecurringBtn');
                 if (convertBtn) {
                     convertBtn.style.display = 'none';
                 }
@@ -2544,7 +2557,7 @@
                 // UPDATE SCHEDULE SECTION BANNER
                 // ============================================================================
                 
-                // Show the recurring instance banner in Schedule section
+                // Show the recurring instance banner in Schedule section (only if recurring)
                 const banner = document.getElementById('recurringInstanceBanner');
                 if (banner) {
                     banner.classList.remove('hidden');
@@ -2588,6 +2601,33 @@
                     
                     // Make job details fields read-only/disabled (they're inherited)
                     makeInheritedFieldsReadOnly();
+                }
+            } else {
+                // Job is NOT recurring - ensure all recurring UI is hidden
+                const banner = document.getElementById('recurringInstanceBanner');
+                if (banner) {
+                    banner.classList.add('hidden');
+                }
+                
+                const inheritedBadge = document.getElementById('inheritedBadge');
+                if (inheritedBadge) {
+                    inheritedBadge.classList.add('hidden');
+                }
+                
+                // Ensure fields are editable (not inherited)
+                const fieldsToEnable = ['jobName', 'priority', 'jobDescription'];
+                fieldsToEnable.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.disabled = false;
+                        field.classList.remove('bg-gray-50', 'cursor-not-allowed');
+                        field.title = '';
+                    }
+                });
+                
+                // Ensure convert button is visible
+                if (convertBtn) {
+                    convertBtn.style.display = '';
                 }
             }
         }
@@ -2699,11 +2739,12 @@
             updateModalPreview();
         }
         
-        // Check if we should auto-open recurring modal (from create job page)
+        // Check if we should auto-open recurring modal (OPTIONAL - only if explicitly requested)
+        // This is only triggered when user explicitly chooses "Create Recurring" from job creation
         function checkAutoOpenRecurringModal() {
             const shouldOpen = localStorage.getItem('openRecurringModal');
             if (shouldOpen === 'true') {
-                // Clear the flag
+                // Clear the flag immediately to prevent accidental re-opening
                 localStorage.removeItem('openRecurringModal');
                 
                 // Wait a moment for page to fully load, then open modal
@@ -3028,10 +3069,11 @@
             // Initialize activity feed
             renderActivityFeed();
             
-            // Initialize recurring job display
+            // Initialize recurring job display (OPTIONAL - only shows if job is explicitly set as recurring)
+            // By default, jobs are one-time only. Recurring is an opt-in feature.
             initializeRecurringJob();
             
-            // Check if we should auto-open recurring modal
+            // Check if we should auto-open recurring modal (OPTIONAL - only if user explicitly requested it)
             checkAutoOpenRecurringModal();
             
             // Initialize unified assignment system (from external script)

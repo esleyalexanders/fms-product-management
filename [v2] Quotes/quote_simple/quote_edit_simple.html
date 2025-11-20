@@ -3275,6 +3275,9 @@
                 });
             }
 
+            // Initialize payment model constraints on page load
+            updatePaymentModel();
+            
             // Payment configuration event listeners with autosave
             const defaultPaymentTerms = document.getElementById('defaultPaymentTerms');
             const subscriptionStartDate = document.getElementById('subscriptionStartDate');
@@ -3460,10 +3463,29 @@
             if (subscriptionSection) subscriptionSection.classList.add('hidden');
             if (depositInfo) depositInfo.classList.add('hidden');
             
+            // Get payment method elements
+            const stripeRadio = document.getElementById('paymentStripe');
+            const cashRadio = document.getElementById('paymentCash');
+            const cashLabel = cashRadio ? cashRadio.closest('label') : null;
+            const paymentMethodHint = document.getElementById('paymentMethodHint');
+            
             if (model === 'deposit') {
                 if (depositSection) depositSection.classList.remove('hidden');
                 if (depositInfo) depositInfo.classList.remove('hidden');
                 if (paymentModelDisplay) paymentModelDisplay.textContent = 'Down Payment';
+                
+                // Enable both payment methods for deposit
+                if (cashRadio) {
+                    cashRadio.disabled = false;
+                    if (cashLabel) {
+                        cashLabel.classList.remove('opacity-50', 'cursor-not-allowed');
+                        cashLabel.classList.add('cursor-pointer');
+                    }
+                }
+                if (paymentMethodHint) {
+                    paymentMethodHint.textContent = 'Select one payment method';
+                    paymentMethodHint.classList.remove('text-orange-600');
+                }
             } else if (model === 'subscription') {
                 if (subscriptionSection) subscriptionSection.classList.remove('hidden');
                 if (paymentModelDisplay) paymentModelDisplay.textContent = 'Subscription';
@@ -3471,8 +3493,46 @@
                 const startDateInput = document.getElementById('subscriptionStartDate');
                 if (startDateInput) startDateInput.value = new Date().toISOString().split('T')[0];
                 calculateNextInvoiceDate();
+                
+                // Disable Cash for subscription - only Stripe is supported
+                if (cashRadio) {
+                    cashRadio.disabled = true;
+                    if (cashRadio.checked) {
+                        // If Cash was selected, switch to Stripe
+                        if (stripeRadio) {
+                            stripeRadio.checked = true;
+                            updatePaymentMethodsDisplay();
+                        }
+                    }
+                    if (cashLabel) {
+                        cashLabel.classList.add('opacity-50', 'cursor-not-allowed');
+                        cashLabel.classList.remove('cursor-pointer', 'hover:bg-gray-50');
+                    }
+                }
+                // Ensure Stripe is selected
+                if (stripeRadio && !stripeRadio.checked) {
+                    stripeRadio.checked = true;
+                    updatePaymentMethodsDisplay();
+                }
+                if (paymentMethodHint) {
+                    paymentMethodHint.textContent = 'Subscription requires Stripe for automatic recurring charges. Cash is not supported.';
+                    paymentMethodHint.classList.add('text-orange-600');
+                }
             } else {
                 if (paymentModelDisplay) paymentModelDisplay.textContent = 'Full Payment';
+                
+                // Enable both payment methods for full payment
+                if (cashRadio) {
+                    cashRadio.disabled = false;
+                    if (cashLabel) {
+                        cashLabel.classList.remove('opacity-50', 'cursor-not-allowed');
+                        cashLabel.classList.add('cursor-pointer');
+                    }
+                }
+                if (paymentMethodHint) {
+                    paymentMethodHint.textContent = 'Select one payment method';
+                    paymentMethodHint.classList.remove('text-orange-600');
+                }
             }
             
             // Update payment methods display
@@ -3639,6 +3699,12 @@
             const displayText = selectedMethod === 'stripe' ? 'Stripe' : selectedMethod === 'cash' ? 'Cash' : 'None selected';
             
             document.getElementById('paymentMethodsDisplay').textContent = displayText;
+            
+            // Don't override hint text if subscription is selected (it has its own message)
+            const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value;
+            if (paymentModel === 'subscription') {
+                return; // Keep the subscription-specific hint message
+            }
             
             // Update invoice tab summary
             const invoiceMethodsDisplay = document.getElementById('invoiceTabPaymentMethods');

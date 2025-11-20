@@ -48,30 +48,32 @@
             font-size: 0.75rem;
             font-weight: 500;
             color: #6b7280;
-            height: 60px;
+            height: 80px;
             padding: 8px;
         }
         .time-slot {
             border-right: 1px solid #e5e7eb;
             border-bottom: 1px solid #f3f4f6;
             position: relative;
-            height: 60px;
+            height: 80px;
             background: white;
         }
         .job-block {
             position: absolute;
             left: 4px;
             right: 4px;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             z-index: 10;
             cursor: pointer;
             transition: all 0.2s;
-            height: 16px;
+            min-height: 36px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
             overflow: hidden;
+            line-height: 1.2;
         }
         .job-block:hover {
             transform: translateY(-1px);
@@ -90,32 +92,77 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .tooltip {
-            position: absolute;
-            z-index: 1000;
-            background: #1f2937;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            max-width: 250px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        /* Job Popup (replaces tooltip) */
+        .job-popup {
+            position: fixed;
+            z-index: 2000;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 380px;
+            min-width: 320px;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.2s;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e5e7eb;
         }
-        .tooltip.show {
+        .job-popup.show {
             opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
-        .tooltip::after {
-            content: '';
+        .job-popup.show * {
+            pointer-events: auto;
+        }
+        .job-popup-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px 12px 0 0;
+            color: white;
+        }
+        .job-popup-header.class-job {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .job-popup-header.recurring-job {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+        .job-popup-body {
+            padding: 16px;
+            background: white;
+        }
+        .job-popup-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            gap: 8px;
+        }
+        .popup-arrow {
             position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1f2937 transparent transparent transparent;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            transform: rotate(45deg);
+        }
+        .popup-arrow.top {
+            top: -6px;
+            border-right: none;
+            border-bottom: none;
+        }
+        .popup-arrow.bottom {
+            bottom: -6px;
+            border-left: none;
+            border-top: none;
+        }
+        .popup-arrow.left {
+            left: 20px;
+        }
+        .popup-arrow.right {
+            right: 20px;
         }
         .job-modal {
             backdrop-filter: blur(4px);
@@ -176,6 +223,28 @@
         .animate-slide-in {
             animation: slideIn 0.3s ease-out;
             transition: all 0.3s ease-out;
+        }
+        
+        /* Class job styling */
+        .class-job-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+        
+        .class-job-block {
+            border-left: 3px solid #10b981 !important;
+        }
+        .recurring-job-block {
+            border-left: 3px solid #6366f1 !important;
+        }
+        .recurring-job-card {
+            border-left: 4px solid #6366f1 !important;
         }
     </style>
 </head>
@@ -736,7 +805,28 @@
     </div>
 
     <!-- Tooltip -->
-    <div id="jobTooltip" class="tooltip"></div>
+    <!-- Job Popup (replaces tooltip) -->
+    <div id="jobPopup" class="job-popup" onmouseenter="keepPopupOpen()" onmouseleave="hideJobTooltip()">
+        <div class="popup-arrow top left"></div>
+        <div id="jobPopupHeader" class="job-popup-header">
+            <div class="flex items-center justify-between mb-2">
+                <h3 id="jobPopupTitle" class="text-lg font-bold"></h3>
+                <span id="jobPopupBadge" class="px-2 py-1 text-xs font-semibold rounded-full bg-white bg-opacity-20"></span>
+            </div>
+            <p id="jobPopupId" class="text-sm text-white text-opacity-90"></p>
+        </div>
+        <div id="jobPopupBody" class="job-popup-body">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+        <div id="jobPopupFooter" class="job-popup-footer">
+            <button onclick="closeJobPopup()" class="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Close
+            </button>
+            <button id="jobPopupViewBtn" onclick="viewJobFromPopup()" class="flex-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                View Details
+            </button>
+        </div>
+    </div>
 
     <script src="job_schedule_script.js"></script>
 </body>

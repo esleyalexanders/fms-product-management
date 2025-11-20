@@ -764,6 +764,16 @@
             <!-- Action Buttons -->
             <div class="flex gap-3 justify-end mt-6">
                 <button 
+                    id="splitItemsBtn"
+                    onclick="navigateToSplitItems()"
+                    class="px-6 py-3 border border-blue-300 text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 font-medium flex items-center gap-2 transition-colors"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                    Split Items
+                </button>
+                <button 
                     id="scheduleNowBtn"
                     onclick="window.location.href='job_schedule_assign.html'"
                     class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium flex items-center gap-2 transition-colors"
@@ -806,6 +816,21 @@
                 // Default fallback to invoice list
                 window.location.href = '../[v2] Quotes/quote_simple/invoice_list_simple.html';
             }
+        }
+        
+        // Navigate to split items page
+        function navigateToSplitItems() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const quoteId = urlParams.get('quoteId') || 'Q-2024-001'; // Default fallback
+            const invoiceId = urlParams.get('invoiceId');
+            
+            // Build URL with quote ID
+            let splitUrl = 'job_split_items.html?quoteId=' + encodeURIComponent(quoteId);
+            if (invoiceId) {
+                splitUrl += '&invoiceId=' + encodeURIComponent(invoiceId);
+            }
+            
+            window.location.href = splitUrl;
         }
         
         // =====================================================================

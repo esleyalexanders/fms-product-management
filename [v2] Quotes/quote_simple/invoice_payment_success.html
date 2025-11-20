@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Paid Confirmation - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="flex items-center justify-center min-h-screen px-4 py-8">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-8">
+            <div class="flex flex-col items-center text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm uppercase tracking-wide text-green-600 font-semibold">Payment successful</p>
+                    <h1 class="text-3xl font-semibold text-gray-900 mt-1">Thanks for your payment!</h1>
+                    <p class="text-gray-500 mt-2">Your card has been charged and a receipt has been sent to your email.</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl border border-gray-100 p-6 grid sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-gray-500">Invoice</p>
+                    <p id="invoiceNumber" class="text-gray-900 font-semibold mt-0.5">INV-2024-001</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Amount paid</p>
+                    <p id="amountPaid" class="text-gray-900 font-semibold mt-0.5">$0.00</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Customer</p>
+                    <p id="customerName" class="text-gray-900 font-semibold mt-0.5">Sarah Johnson</p>
+                    <p id="customerEmail" class="text-xs text-gray-500">sarah@example.com</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Paid on</p>
+                    <p id="paidTimestamp" class="text-gray-900 font-semibold mt-0.5">Nov 18, 2024 • 10:24 AM</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span>Payment method</span>
+                    <span id="paymentMethodChip" class="text-gray-900 font-medium">Stripe • Visa ••••4242</span>
+                </div>
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span>Stripe reference</span>
+                    <button onclick="copyStripeRef()" class="text-sm text-blue-600 font-medium hover:underline flex items-center gap-1">
+                        <span id="stripeReference">pi_3O0j2r96...</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button id="downloadReceiptBtn" class="px-5 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800">Download receipt</button>
+                <button id="emailReceiptBtn" class="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50">Email again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const paymentSuccessData = {
+            invoiceId: 'INV-2024-001',
+            customer: {
+                name: 'Sarah Johnson',
+                email: 'sarah.johnson@email.com'
+            },
+            paidAt: '2024-11-18T10:24:13-08:00',
+            amountPaid: 313.50,
+            subtotal: 315.00,
+            discount: 30.00,
+            tax: 28.50,
+            paymentMethod: {
+                processor: 'Stripe',
+                brand: 'Visa',
+                last4: '4242'
+            },
+            stripeReference: 'pi_3O0j2r96PrLl2lN01kVe2vJ',
+            transactionId: 'ch_3O0j2r96PrLl2lN01gsgE4m',
+            processorFee: 9.39,
+            netAmount: 304.11,
+            depositAccount: 'Operating ••••2211'
+        };
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        function initializeSuccessScreen() {
+            const paidAt = new Date(paymentSuccessData.paidAt);
+
+            document.getElementById('receiptNumber').textContent = paymentSuccessData.receiptId;
+            document.getElementById('invoiceNumber').textContent = paymentSuccessData.invoiceId;
+            document.getElementById('paidTimestamp').textContent = paidAt.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+
+            document.getElementById('amountPaid').textContent = formatCurrency(paymentSuccessData.amountPaid);
+            document.getElementById('totalPaidDisplay').textContent = formatCurrency(paymentSuccessData.amountPaid);
+            document.getElementById('subtotalDisplay').textContent = formatCurrency(paymentSuccessData.subtotal);
+            document.getElementById('discountDisplay').textContent = '-' + formatCurrency(paymentSuccessData.discount);
+            document.getElementById('taxDisplay').textContent = formatCurrency(paymentSuccessData.tax);
+
+            document.getElementById('customerName').textContent = paymentSuccessData.customer.name;
+            document.getElementById('customerEmail').textContent = paymentSuccessData.customer.email;
+            document.getElementById('paymentDate').textContent = paidAt.toLocaleDateString();
+            document.getElementById('paymentTime').textContent = paidAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+
+            document.getElementById('stripeReference').textContent = paymentSuccessData.stripeReference;
+            document.getElementById('transactionId').textContent = paymentSuccessData.transactionId;
+            document.getElementById('processorFee').textContent = formatCurrency(paymentSuccessData.processorFee);
+            document.getElementById('netAmount').textContent = formatCurrency(paymentSuccessData.netAmount);
+            document.getElementById('depositAccount').textContent = paymentSuccessData.depositAccount;
+
+            const methodChip = document.getElementById('paymentMethodChip');
+            methodChip.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                ${paymentSuccessData.paymentMethod.processor} • ${paymentSuccessData.paymentMethod.brand} •••• ${paymentSuccessData.paymentMethod.last4}
+            `;
+        }
+
+        function copyStripeRef() {
+            navigator.clipboard.writeText(paymentSuccessData.stripeReference);
+            alert('Stripe reference copied to clipboard');
+        }
+
+        document.getElementById('downloadReceiptBtn').addEventListener('click', () => {
+            alert('Receipt download coming soon.');
+        });
+
+        document.getElementById('emailReceiptBtn').addEventListener('click', () => {
+            alert('Receipt re-sent to customer.');
+        });
+
+        document.addEventListener('DOMContentLoaded', initializeSuccessScreen);
+    </script>
+</body>
+</html>
+

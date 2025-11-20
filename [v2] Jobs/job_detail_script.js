@@ -298,30 +298,47 @@ function calculateLineTotal(item) {
 
 document.addEventListener('DOMContentLoaded', function() {
     loadJobDetails();
-    renderJobItems();
-    renderComments();
-    renderRelatedJobs();
+    
+    // Only render if the corresponding elements exist
+    if (document.getElementById('jobItemsContainer')) {
+        renderJobItems();
+    }
+    if (document.getElementById('commentsContainer')) {
+        renderComments();
+    }
+    if (document.getElementById('relatedJobsContainer')) {
+        renderRelatedJobs();
+    }
+    
     attachEventListeners();
 });
 
 function loadJobDetails() {
     // Update header
-    document.getElementById('jobIdDisplay').textContent = jobData.id;
-    document.getElementById('quoteIdDisplay').textContent = jobData.quoteId;
-    document.getElementById('customerDisplay').textContent = jobData.customer.name;
+    const jobIdDisplay = document.getElementById('jobIdDisplay');
+    const quoteIdDisplay = document.getElementById('quoteIdDisplay');
+    const customerDisplay = document.getElementById('customerDisplay');
+    const jobTotalDisplay = document.getElementById('jobTotalDisplay');
+    
+    if (jobIdDisplay) jobIdDisplay.textContent = jobData.id;
+    if (quoteIdDisplay) quoteIdDisplay.textContent = jobData.quoteId;
+    if (customerDisplay) customerDisplay.textContent = jobData.customer?.name || 'Unknown Customer';
     
     // Calculate totals
     const subtotal = jobData.items.reduce((sum, item) => sum + calculateLineTotal(item), 0);
     const tax = jobData.items.reduce((sum, item) => sum + calculateLineItemTax(item), 0);
     const total = subtotal + tax;
     
-    document.getElementById('jobTotalDisplay').textContent = `$${total.toFixed(2)}`;
+    if (jobTotalDisplay) jobTotalDisplay.textContent = `$${total.toFixed(2)}`;
     
     // Update status badge
     updateStatusBadge(jobData.status);
     
     // Load job details into form fields
-    document.getElementById('jobName').value = jobData.name || '';
+    const jobNameInput = document.getElementById('jobName');
+    if (jobNameInput) {
+        jobNameInput.value = jobData.name || '';
+    }
     
     // Set priority radio button
     const priorityRadio = document.querySelector(`input[name="priority"][value="${jobData.priority}"]`);
@@ -332,24 +349,63 @@ function loadJobDetails() {
     
     // Set schedule date
     if (jobData.scheduledDate) {
-        document.getElementById('scheduleDate').value = jobData.scheduledDate;
+        const scheduleDateInput = document.getElementById('scheduleDate');
+        if (scheduleDateInput) {
+            scheduleDateInput.value = jobData.scheduledDate;
+        }
     }
     
     // Set schedule time - using custom time
     if (jobData.scheduledTime) {
-        document.getElementById('scheduleTimeSelect').value = 'custom';
-        document.getElementById('customTimeContainer').classList.remove('hidden');
-        document.getElementById('scheduleTime').value = jobData.scheduledTime;
+        const scheduleTimeSelect = document.getElementById('scheduleTimeSelect');
+        const customTimeContainer = document.getElementById('customTimeContainer');
+        const scheduleTime = document.getElementById('scheduleTime');
+        
+        if (scheduleTimeSelect) {
+            scheduleTimeSelect.value = 'custom';
+        }
+        if (customTimeContainer) {
+            customTimeContainer.classList.remove('hidden');
+        }
+        if (scheduleTime) {
+            scheduleTime.value = jobData.scheduledTime;
+        }
     }
     
-    // Set duration (calculate from items or use default)
-    document.getElementById('durationHours').value = 6;
-    document.getElementById('durationMinutes').value = 0;
+    // Set start and end times if available in job data
+    if (jobData.startTime) {
+        const startTimeInput = document.getElementById('startTime');
+        if (startTimeInput) {
+            startTimeInput.value = jobData.startTime;
+        }
+    }
+    
+    if (jobData.endTime) {
+        const endTimeInput = document.getElementById('endTime');
+        if (endTimeInput) {
+            endTimeInput.value = jobData.endTime;
+        }
+    }
+    
+    // Calculate duration if both times are set
+    if (jobData.startTime && jobData.endTime) {
+        calculateDuration();
+    }
     
     // Load assigned staff into selected staff
     if (jobData.assignedStaff && jobData.assignedStaff.length > 0) {
         selectedStaff = [...jobData.assignedStaff];
+        
+        // Also sync to unified assignment system
+        selectedAssignments = jobData.assignedStaff.map(staff => ({
+            ...staff,
+            type: 'individual',
+            displayName: `${staff.name} (User)`
+        }));
+        
+        // Render both (renderSelectedStaff will handle missing elements gracefully)
         renderSelectedStaff();
+        renderSelectedAssignments();
     }
 
     initializeClassJobSection();
@@ -396,6 +452,11 @@ function updateStatusBadge(status) {
 
 function renderJobItems() {
     const container = document.getElementById('jobItemsContainer');
+    
+    // Check if container exists (may not be present in all page layouts)
+    if (!container) {
+        return; // Element not present in this page layout - silently skip
+    }
     
     container.innerHTML = jobData.items.map(item => {
         const lineTotal = calculateLineTotal(item);
@@ -570,38 +631,51 @@ function updateFinancialSummary() {
     const tax = jobData.items.reduce((sum, item) => sum + calculateLineItemTax(item), 0);
     const total = subtotal + tax;
     
-    document.getElementById('subtotalAmount').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('taxAmount').textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+    // Update financial summary elements if they exist
+    const subtotalAmount = document.getElementById('subtotalAmount');
+    const taxAmount = document.getElementById('taxAmount');
+    const totalAmount = document.getElementById('totalAmount');
+    const taxBreakdown = document.getElementById('taxBreakdown');
+    
+    if (subtotalAmount) subtotalAmount.textContent = `$${subtotal.toFixed(2)}`;
+    if (taxAmount) taxAmount.textContent = `$${tax.toFixed(2)}`;
+    if (totalAmount) totalAmount.textContent = `$${total.toFixed(2)}`;
     
     // Tax breakdown
-    const taxBreakdown = { taxable_gst: 0, gst_free: 0, input_taxed: 0 };
+    const taxBreakdownData = { taxable_gst: 0, gst_free: 0, input_taxed: 0 };
     jobData.items.forEach(item => {
-        const taxAmount = calculateLineItemTax(item);
-        if (item.taxCategory && taxBreakdown.hasOwnProperty(item.taxCategory)) {
-            taxBreakdown[item.taxCategory] += taxAmount;
+        const itemTaxAmount = calculateLineItemTax(item);
+        if (item.taxCategory && taxBreakdownData.hasOwnProperty(item.taxCategory)) {
+            taxBreakdownData[item.taxCategory] += itemTaxAmount;
         } else {
-            taxBreakdown.taxable_gst += taxAmount;
+            taxBreakdownData.taxable_gst += itemTaxAmount;
         }
     });
     
-    let taxBreakdownHTML = '';
-    if (taxBreakdown.taxable_gst > 0) {
-        taxBreakdownHTML += `<div class="flex justify-between"><span>GST (10%):</span><span>$${taxBreakdown.taxable_gst.toFixed(2)}</span></div>`;
+    if (taxBreakdown) {
+        let taxBreakdownHTML = '';
+        if (taxBreakdownData.taxable_gst > 0) {
+            taxBreakdownHTML += `<div class="flex justify-between"><span>GST (10%):</span><span>$${taxBreakdownData.taxable_gst.toFixed(2)}</span></div>`;
+        }
+        if (taxBreakdownData.gst_free > 0) {
+            taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>GST-Free:</span><span>$0.00</span></div>`;
+        }
+        if (taxBreakdownData.input_taxed > 0) {
+            taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>Input-Taxed:</span><span>$0.00</span></div>`;
+        }
+        
+        taxBreakdown.innerHTML = taxBreakdownHTML || '<div class="text-gray-400">No taxable items</div>';
     }
-    if (taxBreakdown.gst_free > 0) {
-        taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>GST-Free:</span><span>$0.00</span></div>`;
-    }
-    if (taxBreakdown.input_taxed > 0) {
-        taxBreakdownHTML += `<div class="flex justify-between text-gray-500"><span>Input-Taxed:</span><span>$0.00</span></div>`;
-    }
-    
-    document.getElementById('taxBreakdown').innerHTML = taxBreakdownHTML || '<div class="text-gray-400">No taxable items</div>';
 }
 
 
 function renderComments() {
     const container = document.getElementById('commentsContainer');
+    
+    // Check if container exists (may not be present in all page layouts)
+    if (!container) {
+        return; // Element not present in this page layout - silently skip
+    }
     
     if (jobData.comments.length === 0) {
         container.innerHTML = `
@@ -650,6 +724,11 @@ function renderComments() {
 
 function renderRelatedJobs() {
     const container = document.getElementById('relatedJobsContainer');
+    
+    // Check if container exists (may not be present in all page layouts)
+    if (!container) {
+        return; // Element not present in this page layout - silently skip
+    }
     
     container.innerHTML = relatedJobs.map(job => {
         if (job.isCurrent) {
@@ -717,7 +796,13 @@ function attachEventListeners() {
     }
     
     if (refreshRecommendationsBtn) {
-        refreshRecommendationsBtn.addEventListener('click', () => loadRecommendedStaff(true));
+        refreshRecommendationsBtn.addEventListener('click', () => {
+            if (typeof loadRecommendedAssignments === 'function') {
+                loadRecommendedAssignments();
+            } else {
+                loadRecommendedStaff(true);
+            }
+        });
     }
     
     // Schedule change detection - refresh recommendations when date/time changes
@@ -738,11 +823,17 @@ function attachEventListeners() {
     }
     
     // Action buttons
-    document.getElementById('saveJobBtn').addEventListener('click', saveJobChanges);
-    document.getElementById('cancelJobBtn').addEventListener('click', cancelJob);
+    const saveJobBtn = document.getElementById('saveJobBtn');
+    const cancelJobBtn = document.getElementById('cancelJobBtn');
+    if (saveJobBtn) saveJobBtn.addEventListener('click', saveJobChanges);
+    if (cancelJobBtn) cancelJobBtn.addEventListener('click', cancelJob);
     
-    // Load recommended staff
-    loadRecommendedStaff();
+    // Load recommended staff/assignments (prefer unified assignment system)
+    if (typeof loadRecommendedAssignments === 'function') {
+        loadRecommendedAssignments();
+    } else {
+        loadRecommendedStaff();
+    }
 }
 
 // Staff search and assignment functions
@@ -807,9 +898,11 @@ function selectStaff(staffId) {
     selectedStaff.push(staff);
     renderSelectedStaff();
     
-    // Clear search
-    document.getElementById('staffSearchInput').value = '';
-    document.getElementById('staffAutocomplete').classList.add('hidden');
+    // Clear search (if elements exist)
+    const staffSearchInput = document.getElementById('staffSearchInput');
+    const staffAutocomplete = document.getElementById('staffAutocomplete');
+    if (staffSearchInput) staffSearchInput.value = '';
+    if (staffAutocomplete) staffAutocomplete.classList.add('hidden');
     
     showToast(`${staff.name} added`, 'success');
 }
@@ -823,6 +916,26 @@ function removeSelectedStaff(staffId) {
 function renderSelectedStaff() {
     const container = document.getElementById('selectedStaffList');
     const countEl = document.getElementById('selectedStaffCount');
+    
+    // Check if elements exist (they may not if using unified assignment system)
+    if (!container || !countEl) {
+        // If using unified assignment, update that instead
+        if (selectedStaff.length > 0) {
+            // Sync selectedStaff to selectedAssignments if needed
+            selectedAssignments = selectedAssignments.filter(a => a.type !== 'individual');
+            selectedStaff.forEach(staff => {
+                if (!selectedAssignments.find(a => a.id === staff.id)) {
+                    selectedAssignments.push({
+                        ...staff,
+                        type: 'individual',
+                        displayName: `${staff.name} (User)`
+                    });
+                }
+            });
+            renderSelectedAssignments();
+        }
+        return;
+    }
     
     countEl.textContent = selectedStaff.length;
     
@@ -867,21 +980,29 @@ let originalSchedule = {
 };
 
 function handleScheduleChange() {
-    const currentDate = document.getElementById('scheduleDate').value;
-    const currentTimeSelect = document.getElementById('scheduleTimeSelect').value;
-    const currentTime = currentTimeSelect === 'custom' ? document.getElementById('scheduleTime').value : currentTimeSelect;
+    const scheduleDateInput = document.getElementById('scheduleDate');
+    const scheduleTimeSelectInput = document.getElementById('scheduleTimeSelect');
+    const scheduleTimeInput = document.getElementById('scheduleTime');
+    
+    const currentDate = scheduleDateInput ? scheduleDateInput.value : '';
+    const currentTimeSelect = scheduleTimeSelectInput ? scheduleTimeSelectInput.value : 'flexible';
+    const currentTime = currentTimeSelect === 'custom' && scheduleTimeInput ? scheduleTimeInput.value : currentTimeSelect;
     
     // Check if schedule has changed from original
     if (currentDate !== originalSchedule.date || currentTime !== originalSchedule.time) {
         scheduleChanged = true;
         
-        // Show warning if staff are already selected
-        if (selectedStaff.length > 0) {
+        // Show warning if staff or assignments are already selected
+        if (selectedStaff.length > 0 || (selectedAssignments && selectedAssignments.length > 0)) {
             showScheduleChangeWarning();
         }
         
-        // Refresh recommended staff based on new schedule
-        loadRecommendedStaff(true);
+        // Refresh recommended staff/assignments based on new schedule
+        if (typeof loadRecommendedAssignments === 'function') {
+            loadRecommendedAssignments();
+        } else {
+            loadRecommendedStaff(true);
+        }
     } else {
         scheduleChanged = false;
         hideScheduleChangeWarning();
@@ -914,9 +1035,18 @@ function showScheduleChangeWarning() {
             </div>
         `;
         
-        // Insert before selected staff container
-        const selectedContainer = document.getElementById('selectedStaffContainer');
-        selectedContainer.parentNode.insertBefore(warningDiv, selectedContainer);
+        // Insert before selected staff container (or assignment container if using unified system)
+        const selectedContainer = document.getElementById('selectedStaffContainer') || 
+                                  document.getElementById('selectedAssignmentsContainer');
+        if (selectedContainer && selectedContainer.parentNode) {
+            selectedContainer.parentNode.insertBefore(warningDiv, selectedContainer);
+        } else {
+            // Fallback: insert at the beginning of the assignment section
+            const assignmentSection = document.getElementById('unifiedAssignmentMode');
+            if (assignmentSection) {
+                assignmentSection.insertBefore(warningDiv, assignmentSection.firstChild);
+            }
+        }
     }
 }
 
@@ -930,9 +1060,20 @@ function hideScheduleChangeWarning() {
 function loadRecommendedStaff(manualRefresh = false) {
     const container = document.getElementById('recommendedStaffList');
     
+    // Check if container exists (may be using unified assignment system)
+    if (!container) {
+        // If using unified assignment system, use that instead
+        if (typeof loadRecommendedAssignments === 'function') {
+            loadRecommendedAssignments();
+        }
+        return;
+    }
+    
     // Get current schedule info
-    const scheduleDate = document.getElementById('scheduleDate').value;
-    const scheduleTime = document.getElementById('scheduleTimeSelect').value;
+    const scheduleDateInput = document.getElementById('scheduleDate');
+    const scheduleTimeSelectInput = document.getElementById('scheduleTimeSelect');
+    const scheduleDate = scheduleDateInput ? scheduleDateInput.value : '';
+    const scheduleTime = scheduleTimeSelectInput ? scheduleTimeSelectInput.value : '';
     
     // Simulate filtering based on schedule (distance + availability)
     // In a real app, this would call an API with date/time to get available staff
@@ -1028,14 +1169,27 @@ function navigateToJob(jobId) {
 
 function saveJobChanges() {
     // Gather form data
-    const jobName = document.getElementById('jobName').value;
+    const jobNameInput = document.getElementById('jobName');
+    const jobName = jobNameInput ? jobNameInput.value : '';
+    
     const priority = document.querySelector('input[name="priority"]:checked')?.value;
-    const scheduleDate = document.getElementById('scheduleDate').value;
-    const scheduleTimeSelect = document.getElementById('scheduleTimeSelect').value;
-    const scheduleTime = scheduleTimeSelect === 'custom' ? document.getElementById('scheduleTime').value : scheduleTimeSelect;
-    const durationHours = document.getElementById('durationHours').value;
-    const durationMinutes = document.getElementById('durationMinutes').value;
-    let status = document.getElementById('statusSelect').value;
+    
+    const scheduleDateInput = document.getElementById('scheduleDate');
+    const scheduleDate = scheduleDateInput ? scheduleDateInput.value : '';
+    
+    const scheduleTimeSelectInput = document.getElementById('scheduleTimeSelect');
+    const scheduleTimeSelect = scheduleTimeSelectInput ? scheduleTimeSelectInput.value : 'flexible';
+    const scheduleTimeInput = document.getElementById('scheduleTime');
+    const scheduleTime = scheduleTimeSelect === 'custom' && scheduleTimeInput ? scheduleTimeInput.value : scheduleTimeSelect;
+    
+    // Get start and end times (if available)
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    const startTime = startTimeInput ? startTimeInput.value : null;
+    const endTime = endTimeInput ? endTimeInput.value : null;
+    
+    const statusSelect = document.getElementById('statusSelect');
+    let status = statusSelect ? statusSelect.value : jobData.status || 'created';
     
     // Auto-update status to "scheduled" if user selects it and has schedule/assignment info
     if (status === 'scheduled') {
@@ -1045,8 +1199,10 @@ function saveJobChanges() {
             return;
         }
         
-        if (selectedStaff.length === 0) {
-            showToast('Please assign at least one staff member to mark as Scheduled', 'error');
+        // Check both assignment systems
+        const hasAssignments = (selectedAssignments && selectedAssignments.length > 0) || selectedStaff.length > 0;
+        if (!hasAssignments) {
+            showToast('Please assign at least one staff member or team to mark as Scheduled', 'error');
             return;
         }
     }
@@ -1076,14 +1232,35 @@ function saveJobChanges() {
     jobData.priority = priority;
     jobData.scheduledDate = scheduleDate;
     jobData.scheduledTime = scheduleTime;
-    jobData.assignedStaff = [...selectedStaff];
+    if (startTime) jobData.startTime = startTime;
+    if (endTime) jobData.endTime = endTime;
+    
+    // Sync assignments - prefer unified assignment system if it has data, otherwise use selectedStaff
+    if (selectedAssignments && selectedAssignments.length > 0) {
+        // Extract individual staff from unified assignments
+        const individualAssignments = selectedAssignments.filter(a => a.type === 'individual');
+        jobData.assignedStaff = individualAssignments.map(a => ({
+            id: a.id,
+            name: a.name,
+            role: a.role,
+            avatar: a.avatar,
+            color: a.color
+        }));
+        // Also keep selectedStaff in sync
+        selectedStaff = [...jobData.assignedStaff];
+    } else {
+        jobData.assignedStaff = [...selectedStaff];
+    }
+    
     jobData.status = status;
     
     // Update status badge
     updateStatusBadge(status);
     
     // Update the status select dropdown to reflect saved status
-    document.getElementById('statusSelect').value = status;
+    if (statusSelect) {
+        statusSelect.value = status;
+    }
     
     // In a real app, this would send data to the server
     console.log('Saving job changes:', jobData);

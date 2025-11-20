@@ -5,8 +5,14 @@
 // DATA & STATE
 // ============================================================================
 
+// Get quote ID from URL parameters
+function getQuoteIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('quoteId') || 'Q-2024-001'; // Default fallback
+}
+
 const quoteData = {
-    id: 'Q-2024-001',
+    id: getQuoteIdFromUrl(),
     customer: 'Sarah Johnson',
     items: [
         {
@@ -110,6 +116,18 @@ function calculateLineTotal(item) {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Update quote ID display if needed
+    const quoteIdFromUrl = getQuoteIdFromUrl();
+    if (quoteIdFromUrl !== quoteData.id) {
+        quoteData.id = quoteIdFromUrl;
+    }
+    
+    // Update quote ID in the header if element exists
+    const quoteIdElement = document.querySelector('[data-quote-id]');
+    if (quoteIdElement) {
+        quoteIdElement.textContent = quoteData.id;
+    }
+    
     initializeJobs();
     renderAvailableItems();
     renderJobCards();

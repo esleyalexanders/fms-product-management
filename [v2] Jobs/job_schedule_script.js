@@ -27,9 +27,251 @@ const jobs = [
     { id: 'JOB-2024-024', customerName: 'Ethan White', scheduleDate: '2024-11-27', scheduleTime: '10:30', status: 'scheduled', assignedStaff: ['Emily Evans'], total: 640.00, description: 'Literature analysis' },
     { id: 'JOB-2024-025', customerName: 'Mia Garcia', scheduleDate: '2024-11-28', scheduleTime: '15:00', status: 'scheduled', assignedStaff: ['Daniel Davis'], total: 770.00, description: 'Physics mechanics' },
     
+    // Recurring Job Instances
+    { 
+        id: 'JOB-2024-030', 
+        customerName: 'Sarah Johnson', 
+        scheduleDate: '2024-11-11', 
+        scheduleTime: '10:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Alice Anderson'], 
+        total: 825.00, 
+        description: 'Weekly Math Tutoring',
+        isRecurring: true,
+        templateId: 'RJT-2024-001',
+        instanceNumber: 1,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday'],
+            schedule: 'Every Monday',
+            status: 'active',
+            nextJobDate: '2024-11-18'
+        }
+    },
+    { 
+        id: 'JOB-2024-031', 
+        customerName: 'Sarah Johnson', 
+        scheduleDate: '2024-11-18', 
+        scheduleTime: '10:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Alice Anderson'], 
+        total: 825.00, 
+        description: 'Weekly Math Tutoring',
+        isRecurring: true,
+        templateId: 'RJT-2024-001',
+        instanceNumber: 2,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday'],
+            schedule: 'Every Monday',
+            status: 'active',
+            nextJobDate: '2024-11-25'
+        }
+    },
+    { 
+        id: 'JOB-2024-032', 
+        customerName: 'Sarah Johnson', 
+        scheduleDate: '2024-11-25', 
+        scheduleTime: '10:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Alice Anderson'], 
+        total: 825.00, 
+        description: 'Weekly Math Tutoring',
+        isRecurring: true,
+        templateId: 'RJT-2024-001',
+        instanceNumber: 3,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday'],
+            schedule: 'Every Monday',
+            status: 'active',
+            nextJobDate: '2024-12-02'
+        }
+    },
+    
+    // Recurring Job - Mon, Wed, Fri Weekly
+    { 
+        id: 'JOB-2024-033', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-11', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 1,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-13'
+        }
+    },
+    { 
+        id: 'JOB-2024-034', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-13', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 2,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-15'
+        }
+    },
+    { 
+        id: 'JOB-2024-035', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-15', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 3,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-18'
+        }
+    },
+    { 
+        id: 'JOB-2024-036', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-18', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 4,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-20'
+        }
+    },
+    { 
+        id: 'JOB-2024-037', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-20', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 5,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-22'
+        }
+    },
+    { 
+        id: 'JOB-2024-038', 
+        customerName: 'Michael Chen', 
+        scheduleDate: '2024-11-22', 
+        scheduleTime: '14:00', 
+        status: 'scheduled', 
+        assignedStaff: ['Benjamin Brooks'], 
+        total: 450.00, 
+        description: 'English Literature - Mon/Wed/Fri',
+        isRecurring: true,
+        templateId: 'RJT-2024-002',
+        instanceNumber: 6,
+        recurringTemplate: {
+            frequency: 'weeks',
+            customInterval: 1,
+            selectedDays: ['Monday', 'Wednesday', 'Friday'],
+            schedule: 'Every Monday, Wednesday, Friday',
+            status: 'active',
+            nextJobDate: '2024-11-25'
+        }
+    },
+    
     // Jobs with conflicts (same staff at same time) - for demonstration
     { id: 'JOB-2024-026', customerName: 'Alex Thompson', scheduleDate: '2024-11-13', scheduleTime: '15:00', status: 'scheduled', assignedStaff: ['Catherine Chen'], total: 400.00, description: 'Math review' }, // Conflicts with Emma Davis at 3:00 PM
     { id: 'JOB-2024-027', customerName: 'Maya Patel', scheduleDate: '2024-11-15', scheduleTime: '10:30', status: 'scheduled', assignedStaff: ['Alice Anderson'], total: 350.00, description: 'Algebra help' }, // Conflicts with Sarah Johnson at 10:00 AM
+    
+    // Class & Group Enrollment Jobs
+    { 
+        id: 'JOB-2024-028', 
+        customerName: 'Math Tutoring Class', 
+        scheduleDate: '2024-11-13', 
+        scheduleTime: '09:00', 
+        endTime: '17:00',
+        status: 'scheduled', 
+        assignedStaff: ['Alice Anderson'], 
+        total: 2400.00, 
+        description: 'Advanced Math Tutoring - All grade levels',
+        classMode: {
+            enabled: true,
+            name: 'Advanced Math Tutoring - All grade levels',
+            capacity: 20,
+            waitlistEnabled: true,
+            participants: [
+                { name: 'Student 1', quoteId: 'Q-2024-015', services: ['Math'], status: 'confirmed' },
+                { name: 'Student 2', quoteId: 'Q-2024-016', services: ['Math'], status: 'confirmed' },
+                { name: 'Student 3', quoteId: 'Q-2024-017', services: ['Math'], status: 'confirmed' }
+            ],
+            skillLevel: 'All grade levels'
+        }
+    },
+    { 
+        id: 'JOB-2024-029', 
+        customerName: 'Yoga Class Session', 
+        scheduleDate: '2024-11-14', 
+        scheduleTime: '18:00', 
+        endTime: '19:00',
+        status: 'scheduled', 
+        assignedStaff: ['Emily Evans'], 
+        total: 1500.00, 
+        description: 'Tuesday Evening Yoga (15 seats)',
+        classMode: {
+            enabled: true,
+            name: 'Tuesday Evening Yoga',
+            capacity: 15,
+            waitlistEnabled: false,
+            participants: [
+                { name: 'Sarah Johnson', quoteId: 'Q-2024-010', services: ['Yoga'], status: 'confirmed' },
+                { name: 'John Smith', quoteId: 'Q-2024-011', services: ['Yoga'], status: 'confirmed' },
+                { name: 'Mike Wilson', quoteId: 'Q-2024-012', services: ['Yoga'], status: 'confirmed' },
+                { name: 'Emma Davis', quoteId: 'Q-2024-013', services: ['Yoga'], status: 'confirmed' }
+            ],
+            skillLevel: 'All levels'
+        }
+    },
     
     // Unscheduled jobs
     { id: 'JOB-2024-003', customerName: 'Emma Wilson', scheduleDate: null, scheduleTime: null, status: 'created', assignedStaff: [], total: 1200.00, description: 'Advanced Math program' },
@@ -89,7 +331,7 @@ function renderWeekView() {
     const timeHeaderCell = document.createElement('div');
     timeHeaderCell.className = 'p-3 bg-gray-100 border-r border-gray-200';
     timeHeaderCell.style.width = '80px';
-    timeHeaderCell.style.height = '60px';
+    timeHeaderCell.style.height = '80px';
     timeHeaderCell.style.display = 'flex';
     timeHeaderCell.style.alignItems = 'center';
     timeHeaderCell.style.justifyContent = 'center';
@@ -107,7 +349,7 @@ function renderWeekView() {
         
         const dayHeader = document.createElement('div');
         dayHeader.className = `p-3 text-center text-sm border-r border-gray-200 ${isToday ? 'bg-blue-50 border-l-2 border-r-2 border-blue-500' : ''}`;
-        dayHeader.style.height = '60px';
+        dayHeader.style.height = '80px';
         dayHeader.style.display = 'flex';
         dayHeader.style.flexDirection = 'column';
         dayHeader.style.justifyContent = 'center';
@@ -223,6 +465,10 @@ function renderTimeGrid(startOfWeek) {
                 if (job.scheduleDate !== dateStr) return false;
                 
                 const jobHour = parseInt(job.scheduleTime.split(':')[0]);
+                
+                // Show job in the hour slot where it starts
+                // For class jobs with endTime, we still only show them in their starting hour
+                // The time range (e.g., 9:00-17:00) is displayed in the job block itself
                 const inTimeSlot = jobHour >= hourStart && jobHour < hourEnd;
                 
                 return inTimeSlot && shouldShowJob(job);
@@ -255,9 +501,20 @@ function createJobBlock(job, index = 0, hasConflict = false) {
     const jobBlock = document.createElement('div');
     let jobColorClass = getJobColor(job.status);
     
+    // Check if this is a class/group enrollment job
+    const isClassJob = job.classMode && job.classMode.enabled;
+    // Check if this is a recurring job instance
+    const isRecurringJob = job.isRecurring && job.recurringTemplate;
+    
     // Add conflict styling if there's a staff conflict
     if (hasConflict) {
         jobColorClass = 'bg-red-100 text-red-800 border border-red-300';
+    } else if (isClassJob) {
+        // Special styling for class jobs - emerald/green theme
+        jobColorClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+    } else if (isRecurringJob) {
+        // Special styling for recurring jobs - blue/indigo theme
+        jobColorClass = 'bg-indigo-100 text-indigo-800 border border-indigo-300';
     }
     
     jobBlock.className = `job-block ${jobColorClass}`;
@@ -266,48 +523,85 @@ function createJobBlock(job, index = 0, hasConflict = false) {
         showJobModal(job);
     };
     
-    // Add tooltip functionality
-    jobBlock.addEventListener('mouseenter', (e) => showJobTooltip(e, job));
-    jobBlock.addEventListener('mouseleave', hideJobTooltip);
-    jobBlock.addEventListener('mousemove', (e) => updateTooltipPosition(e));
+    // Add popup functionality
+    jobBlock.addEventListener('mouseenter', (e) => {
+        // Small delay before showing popup to avoid flickering
+        popupTimeout = setTimeout(() => {
+            showJobTooltip(e, job);
+        }, 300);
+    });
+    jobBlock.addEventListener('mouseleave', () => {
+        if (popupTimeout) {
+            clearTimeout(popupTimeout);
+            popupTimeout = null;
+        }
+        hideJobTooltip();
+    });
+    jobBlock.addEventListener('mousemove', (e) => {
+        if (popupTimeout) {
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                showJobTooltip(e, job);
+            }, 100);
+        } else {
+            updatePopupPosition(e);
+        }
+    });
     
     // Position multiple jobs in the same slot
-    const topOffset = index * 20;
+    // Simplified height for name and time only
+    const baseHeight = 36;
+    const topOffset = index * 40;
     jobBlock.style.top = `${4 + topOffset}px`;
-    jobBlock.style.height = '16px';
+    jobBlock.style.height = `${baseHeight}px`;
+    jobBlock.style.minHeight = `${baseHeight}px`;
     
     // Add conflict indicator
     if (hasConflict) {
         jobBlock.style.borderLeft = '3px solid #dc2626';
         jobBlock.style.boxShadow = '0 0 0 1px #fecaca';
+    } else if (isClassJob) {
+        // Add class indicator border
+        jobBlock.style.borderLeft = '3px solid #10b981';
+    } else if (isRecurringJob) {
+        // Add recurring indicator border
+        jobBlock.style.borderLeft = '3px solid #6366f1';
     }
     
-    // Get staff avatars
-    const staffAvatars = job.assignedStaff.map(staffName => {
-        const staff = availableStaff.find(s => s.name === staffName);
-        if (staff) {
-            const colorMap = {
-                'blue': 'bg-blue-500',
-                'green': 'bg-green-500',
-                'purple': 'bg-purple-500',
-                'red': 'bg-red-500',
-                'pink': 'bg-pink-500'
-            };
-            return `<span class="inline-flex items-center justify-center w-3 h-3 ${colorMap[staff.color]} text-white rounded-full text-xs font-bold mr-1" style="font-size: 8px;">${staff.avatar}</span>`;
-        }
-        return '';
-    }).join('');
+    // Build display content - Only job name and time
+    let displayContent = '';
+    let jobName = '';
+    let displayTime = job.scheduleTime || 'TBD';
     
-    jobBlock.innerHTML = `
-        <div class="flex items-center justify-between">
-            <div class="flex items-center min-w-0 flex-1">
-                <span class="text-xs font-medium truncate mr-1">${getDisplayName(job)}</span>
-                <div class="flex items-center">${staffAvatars}</div>
-                ${hasConflict ? '<span class="text-red-600 ml-1">⚠️</span>' : ''}
+    if (isClassJob) {
+        const classInfo = job.classMode;
+        jobName = classInfo.name || job.customerName;
+        displayTime = job.endTime ? `${job.scheduleTime} - ${job.endTime}` : job.scheduleTime;
+    } else if (isRecurringJob) {
+        const template = job.recurringTemplate;
+        const instanceInfo = job.instanceNumber ? ` #${job.instanceNumber}` : '';
+        jobName = `${job.customerName}${instanceInfo}`;
+    } else {
+        jobName = getDisplayName(job);
+    }
+    
+    // Conflict indicator
+    const conflictIndicator = hasConflict ? '<span class="text-red-600 ml-1 text-xs">⚠️</span>' : '';
+    
+    // Simple two-line layout: name on top, time on bottom
+    displayContent = `
+        <div class="flex flex-col gap-0.5">
+            <div class="flex items-center min-w-0">
+                <span class="text-xs font-bold truncate">${jobName}</span>
+                ${conflictIndicator}
             </div>
-            <span class="text-xs font-semibold ml-1">$${job.total.toFixed(0)}</span>
+            <div class="text-[10px] font-medium opacity-90">
+                ${displayTime}
+            </div>
         </div>
     `;
+    
+    jobBlock.innerHTML = displayContent;
     
     return jobBlock;
 }
@@ -509,24 +803,62 @@ function renderDaySchedule() {
 
 function createDayJobCard(job) {
     const jobCard = document.createElement('div');
-    jobCard.className = `day-job-card ${getJobColor(job.status)}`;
+    const isClassJob = job.classMode && job.classMode.enabled;
+    const isRecurringJob = job.isRecurring && job.recurringTemplate;
+    
+    // Use emerald color for class jobs, indigo for recurring jobs
+    let baseColorClass = getJobColor(job.status);
+    let borderColor = 'currentColor';
+    let padding = '8px 12px';
+    
+    if (isClassJob) {
+        baseColorClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300';
+        borderColor = '#10b981';
+        padding = '12px';
+    } else if (isRecurringJob) {
+        baseColorClass = 'bg-indigo-100 text-indigo-800 border border-indigo-300';
+        borderColor = '#6366f1';
+        padding = '10px 12px';
+    }
+    
+    jobCard.className = `day-job-card ${baseColorClass}`;
     jobCard.style.cssText = `
         margin-bottom: 8px;
-        padding: 8px 12px;
+        padding: ${padding};
         border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s;
-        border-left: 4px solid currentColor;
+        border-left: 4px solid ${borderColor};
     `;
     jobCard.onclick = (e) => {
         e.stopPropagation();
         showJobModal(job);
     };
     
-    // Add tooltip functionality
-    jobCard.addEventListener('mouseenter', (e) => showJobTooltip(e, job));
-    jobCard.addEventListener('mouseleave', hideJobTooltip);
-    jobCard.addEventListener('mousemove', (e) => updateTooltipPosition(e));
+    // Add popup functionality
+    jobCard.addEventListener('mouseenter', (e) => {
+        // Small delay before showing popup to avoid flickering
+        popupTimeout = setTimeout(() => {
+            showJobTooltip(e, job);
+        }, 300);
+    });
+    jobCard.addEventListener('mouseleave', () => {
+        if (popupTimeout) {
+            clearTimeout(popupTimeout);
+            popupTimeout = null;
+        }
+        hideJobTooltip();
+    });
+    jobCard.addEventListener('mousemove', (e) => {
+        if (popupTimeout) {
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                showJobTooltip(e, job);
+            }, 100);
+        } else {
+            updatePopupPosition(e);
+        }
+    });
     
     // Get staff avatars
     const staffAvatars = job.assignedStaff.map(staffName => {
@@ -544,23 +876,89 @@ function createDayJobCard(job) {
         return '';
     }).join('');
     
-    jobCard.innerHTML = `
-        <div class="flex items-center justify-between mb-2">
-            <div class="font-semibold text-sm">${job.scheduleTime}</div>
-            <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
-        </div>
-        <div class="font-medium text-sm mb-1">${getDisplayName(job)}</div>
-        <div class="text-xs text-gray-600 mb-2">${job.description}</div>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                ${staffAvatars}
-                <span class="text-xs text-gray-600">for ${job.customerName}</span>
+    let cardContent = '';
+    
+    if (isRecurringJob) {
+        const template = job.recurringTemplate;
+        const instanceInfo = job.instanceNumber ? `Instance #${job.instanceNumber}` : 'Recurring';
+        
+        cardContent = `
+            <div class="flex items-center justify-between mb-2">
+                <div class="font-semibold text-sm">${job.scheduleTime}</div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2 py-0.5 bg-indigo-200 text-indigo-800 rounded-full font-medium">🔄 ${instanceInfo}</span>
+                    <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
+                </div>
             </div>
-            <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)}">
+            <div class="font-medium text-sm mb-1">${job.customerName}</div>
+            <div class="text-xs text-indigo-700 mb-2 font-medium">${template.schedule || 'Recurring schedule'}</div>
+            <div class="flex items-center gap-2 mb-2">
+                ${staffAvatars}
+                <span class="text-xs text-gray-600">${job.description}</span>
+            </div>
+            <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)} inline-block">
                 ${job.status.replace('_', ' ').toUpperCase()}
             </div>
-        </div>
-    `;
+        `;
+    } else if (isClassJob) {
+        const classInfo = job.classMode;
+        const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+        const capacity = classInfo.capacity || 0;
+        const timeRange = job.endTime ? `${job.scheduleTime} - ${job.endTime}` : job.scheduleTime;
+        
+        // Show first 3 participants
+        const participantsToShow = classInfo.participants ? classInfo.participants.slice(0, 3) : [];
+        const remainingCount = participantCount > 3 ? participantCount - 3 : 0;
+        
+        const participantList = participantsToShow.map((p, idx) => {
+            const statusColor = p.status === 'confirmed' ? 'text-emerald-700' : 
+                               p.status === 'pending_payment' ? 'text-amber-700' : 
+                               'text-gray-700';
+            return `<span class="text-xs ${statusColor}">${p.name}</span>`;
+        }).join(', ');
+        
+        cardContent = `
+            <div class="flex items-center justify-between mb-2">
+                <div class="font-semibold text-sm">${timeRange}</div>
+                <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
+            </div>
+            <div class="font-medium text-sm mb-1">${classInfo.name || job.customerName}</div>
+            <div class="text-xs text-emerald-700 mb-2 font-medium">Skill: ${classInfo.skillLevel || 'All levels'}</div>
+            <div class="flex items-center gap-2 mb-2">
+                ${staffAvatars}
+                <span class="text-xs text-gray-600">${participantCount}/${capacity} seats</span>
+            </div>
+            ${participantCount > 0 ? `
+                <div class="text-xs text-gray-700 mb-2">
+                    <span class="font-semibold">Participants:</span> ${participantList}${remainingCount > 0 ? ` +${remainingCount} more` : ''}
+                </div>
+            ` : ''}
+            <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)} inline-block">
+                ${job.status.replace('_', ' ').toUpperCase()}
+            </div>
+        `;
+    } else {
+        // Regular job display
+        cardContent = `
+            <div class="flex items-center justify-between mb-2">
+                <div class="font-semibold text-sm">${job.scheduleTime}</div>
+                <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
+            </div>
+            <div class="font-medium text-sm mb-1">${getDisplayName(job)}</div>
+            <div class="text-xs text-gray-600 mb-2">${job.description}</div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    ${staffAvatars}
+                    <span class="text-xs text-gray-600">for ${job.customerName}</span>
+                </div>
+                <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)}">
+                    ${job.status.replace('_', ' ').toUpperCase()}
+                </div>
+            </div>
+        `;
+    }
+    
+    jobCard.innerHTML = cardContent;
     
     // Add hover effect
     jobCard.addEventListener('mouseenter', () => {
@@ -725,8 +1123,23 @@ function createDayCell(day, isOtherMonth, date) {
     const dayJobs = jobs.filter(j => j.scheduleDate === dateStr);
     dayJobs.forEach(job => {
         const jobPill = document.createElement('div');
-        jobPill.className = `job-pill ${getJobColor(job.status)} truncate`;
-        jobPill.textContent = `${job.scheduleTime} ${job.customerName}`;
+        const isClassJob = job.classMode && job.classMode.enabled;
+        const colorClass = isClassJob ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : getJobColor(job.status);
+        jobPill.className = `job-pill ${colorClass} truncate`;
+        
+        if (isClassJob) {
+            const classInfo = job.classMode;
+            const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+            const capacity = classInfo.capacity || 0;
+            jobPill.innerHTML = `
+                <div class="text-xs font-semibold">${job.scheduleTime}${job.endTime ? ` - ${job.endTime}` : ''}</div>
+                <div class="text-xs font-medium">${classInfo.name || job.customerName}</div>
+                <div class="text-xs">${participantCount}/${capacity} seats</div>
+            `;
+        } else {
+            jobPill.textContent = `${job.scheduleTime} ${job.customerName}`;
+        }
+        
         jobPill.onclick = () => viewJobDetails(job);
         cell.appendChild(jobPill);
     });
@@ -756,28 +1169,66 @@ function renderUnscheduledJobs() {
         return;
     }
     
-    container.innerHTML = unscheduled.map(job => `
-        <div 
-            draggable="true" 
-            data-job-id="${job.id}"
-            class="p-2 bg-gray-50 border border-gray-200 rounded-lg hover:border-indigo-300 cursor-move transition-colors" 
-            onclick="openScheduleModal('${job.id}')"
-            ondragstart="handleDragStart(event)"
-            ondragend="handleDragEnd(event)"
-        >
-            <div class="flex items-start gap-2">
-                <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                </svg>
-                <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold text-gray-900">${job.id}</p>
-                    <p class="text-xs text-gray-600 truncate">${getDisplayName(job)}</p>
-                    <p class="text-xs text-gray-500 truncate">${job.description}</p>
-                    <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
+    container.innerHTML = unscheduled.map(job => {
+        const isClassJob = job.classMode && job.classMode.enabled;
+        const borderColor = isClassJob ? 'border-emerald-300 hover:border-emerald-400' : 'border-gray-200 hover:border-indigo-300';
+        const bgColor = isClassJob ? 'bg-emerald-50' : 'bg-gray-50';
+        
+        let jobContent = '';
+        if (isClassJob) {
+            const classInfo = job.classMode;
+            const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+            const capacity = classInfo.capacity || 0;
+            jobContent = `
+                <div class="flex items-start gap-2">
+                    <svg class="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <p class="text-xs font-semibold text-emerald-900">${job.id}</p>
+                            <span class="text-[10px] px-1.5 py-0.5 bg-emerald-200 text-emerald-800 rounded-full font-medium">Class</span>
+                        </div>
+                        <p class="text-xs font-medium text-gray-900 truncate">${classInfo.name || job.customerName}</p>
+                        <p class="text-xs text-gray-600 truncate">${job.description}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs text-emerald-700">👥 ${participantCount}/${capacity} seats</span>
+                            <span class="text-xs text-gray-500">•</span>
+                            <span class="text-xs text-gray-600">Skill: ${classInfo.skillLevel || 'All levels'}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
+                    </div>
                 </div>
+            `;
+        } else {
+            jobContent = `
+                <div class="flex items-start gap-2">
+                    <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                    </svg>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold text-gray-900">${job.id}</p>
+                        <p class="text-xs text-gray-600 truncate">${getDisplayName(job)}</p>
+                        <p class="text-xs text-gray-500 truncate">${job.description}</p>
+                        <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div 
+                draggable="true" 
+                data-job-id="${job.id}"
+                class="p-2 ${bgColor} border ${borderColor} rounded-lg cursor-move transition-colors relative" 
+                onclick="openScheduleModal('${job.id}')"
+                ondragstart="handleDragStart(event)"
+                ondragend="handleDragEnd(event)"
+            >
+                ${jobContent}
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Quick Schedule Modal (for drag & drop)
@@ -789,20 +1240,51 @@ function openQuickScheduleModal(job, date) {
     
     const modal = document.getElementById('quickScheduleModal');
     const details = document.getElementById('quickScheduleDetails');
+    const isClassJob = job.classMode && job.classMode.enabled;
     
-    details.innerHTML = `
-        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-            <p class="text-sm font-semibold text-gray-900 mb-1">${job.id}</p>
-            <p class="text-sm text-gray-700">${job.customerName}</p>
-            <p class="text-sm text-gray-600">${job.description}</p>
-            <div class="flex items-center gap-2 mt-2">
-                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-                <span class="text-sm font-medium text-indigo-600">${formatDate(date)}</span>
+    let detailsContent = '';
+    if (isClassJob) {
+        const classInfo = job.classMode;
+        const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+        const capacity = classInfo.capacity || 0;
+        detailsContent = `
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <p class="text-sm font-semibold text-emerald-900">${job.id}</p>
+                    <span class="text-[10px] px-2 py-0.5 bg-emerald-200 text-emerald-800 rounded-full font-medium">Class</span>
+                </div>
+                <p class="text-sm font-medium text-gray-900 mb-1">${classInfo.name || job.customerName}</p>
+                <p class="text-sm text-gray-600 mb-2">${job.description}</p>
+                <div class="flex items-center gap-3 text-xs text-emerald-700 mb-2">
+                    <span>👥 ${participantCount}/${capacity} seats</span>
+                    <span>•</span>
+                    <span>Skill: ${classInfo.skillLevel || 'All levels'}</span>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-emerald-600">${formatDate(date)}</span>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        detailsContent = `
+            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <p class="text-sm font-semibold text-gray-900 mb-1">${job.id}</p>
+                <p class="text-sm text-gray-700">${job.customerName}</p>
+                <p class="text-sm text-gray-600">${job.description}</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-indigo-600">${formatDate(date)}</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    details.innerHTML = detailsContent;
     
     modal.classList.remove('hidden');
 }
@@ -847,11 +1329,42 @@ function openScheduleModal(jobId) {
     if (!selectedJob) return;
     
     const modal = document.getElementById('scheduleModal');
+    const isClassJob = selectedJob.classMode && selectedJob.classMode.enabled;
+    const isRecurringJob = selectedJob.isRecurring && selectedJob.recurringTemplate;
     
     // Populate modal content using the unified structure
-    document.getElementById('scheduleModalJobTitle').textContent = getDisplayName(selectedJob);
+    let jobTitle = getDisplayName(selectedJob);
+    if (isClassJob) {
+        jobTitle = selectedJob.classMode.name || selectedJob.customerName;
+    } else if (isRecurringJob) {
+        const instanceInfo = selectedJob.instanceNumber ? ` (Instance #${selectedJob.instanceNumber})` : '';
+        jobTitle = `${selectedJob.customerName}${instanceInfo}`;
+    }
+    
+    document.getElementById('scheduleModalJobTitle').textContent = jobTitle;
     document.getElementById('scheduleModalJobId').textContent = selectedJob.id;
-    document.getElementById('scheduleModalCustomerName').textContent = selectedJob.customerName;
+    
+    // Show class info, recurring info, or customer name
+    if (isRecurringJob) {
+        const template = selectedJob.recurringTemplate;
+        const instanceInfo = selectedJob.instanceNumber ? `Instance #${selectedJob.instanceNumber}` : 'Recurring';
+        document.getElementById('scheduleModalCustomerName').innerHTML = `
+            <div class="font-semibold">${selectedJob.customerName}</div>
+            <div class="text-xs text-gray-600 mt-1">🔄 ${instanceInfo} • ${template.schedule || 'Recurring schedule'}</div>
+            ${template.nextJobDate ? `<div class="text-xs text-indigo-600 mt-1">⏭️ Next: ${new Date(template.nextJobDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>` : ''}
+        `;
+    } else if (isClassJob) {
+        const classInfo = selectedJob.classMode;
+        const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+        const capacity = classInfo.capacity || 0;
+        document.getElementById('scheduleModalCustomerName').innerHTML = `
+            <div class="font-semibold">${classInfo.name || selectedJob.customerName}</div>
+            <div class="text-xs text-gray-600 mt-1">👥 ${participantCount}/${capacity} seats • Skill: ${classInfo.skillLevel || 'All levels'}</div>
+        `;
+    } else {
+        document.getElementById('scheduleModalCustomerName').textContent = selectedJob.customerName;
+    }
+    
     document.getElementById('scheduleModalJobValue').textContent = `$${selectedJob.total.toFixed(2)}`;
     
     // Set default date to today
@@ -870,8 +1383,35 @@ function openScheduleModal(jobId) {
     updateScheduleModalStaffDisplay();
     initializeScheduleModalStaffSearch();
     
-    // Description
-    document.getElementById('scheduleModalDescription').textContent = selectedJob.description;
+    // Description - show class participants if class job, or recurring info if recurring job
+    let descriptionContent = selectedJob.description;
+    if (isRecurringJob) {
+        const template = selectedJob.recurringTemplate;
+        descriptionContent = `
+            ${selectedJob.description}
+            <div class="mt-2 pt-2 border-t border-gray-200">
+                <div class="text-xs font-semibold mb-1">🔄 Recurring Schedule: ${template.schedule || 'Custom schedule'}</div>
+                <div class="text-xs text-gray-700 mb-1">Template ID: ${selectedJob.templateId || 'N/A'}</div>
+                ${template.nextJobDate ? `<div class="text-xs text-indigo-600">⏭️ Next occurrence: ${new Date(template.nextJobDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>` : ''}
+            </div>
+        `;
+    } else if (isClassJob && selectedJob.classMode.participants && selectedJob.classMode.participants.length > 0) {
+        const participantsList = selectedJob.classMode.participants.map(p => {
+            const statusBadge = p.status === 'confirmed' ? '✅' : 
+                               p.status === 'pending_payment' ? '⏳' : 
+                               '📋';
+            return `${statusBadge} ${p.name}`;
+        }).join(', ');
+        
+        descriptionContent = `
+            ${selectedJob.description}
+            <div class="mt-2 pt-2 border-t border-gray-200">
+                <div class="text-xs font-semibold mb-1">Participants (${selectedJob.classMode.participants.length}):</div>
+                <div class="text-xs text-gray-700">${participantsList}</div>
+            </div>
+        `;
+    }
+    document.getElementById('scheduleModalDescription').innerHTML = descriptionContent;
     
     modal.classList.remove('hidden');
 }
@@ -1734,65 +2274,377 @@ function shouldShowJob(job) {
 // TOOLTIP AND MODAL FUNCTIONALITY
 // ============================================================================
 
+let currentPopupJob = null;
+let popupTimeout = null;
+let popupKeepOpen = false;
+
+function keepPopupOpen() {
+    popupKeepOpen = true;
+    if (popupTimeout) {
+        clearTimeout(popupTimeout);
+        popupTimeout = null;
+    }
+}
+
 function showJobTooltip(event, job) {
-    const tooltip = document.getElementById('jobTooltip');
+    // Clear any existing timeout
+    if (popupTimeout) {
+        clearTimeout(popupTimeout);
+    }
+    
+    // Store current job for popup actions
+    currentPopupJob = job;
+    
+    const popup = document.getElementById('jobPopup');
+    const isClassJob = job.classMode && job.classMode.enabled;
+    const isRecurringJob = job.isRecurring && job.recurringTemplate;
     
     // Format schedule date
     const scheduleDate = job.scheduleDate ? 
         new Date(job.scheduleDate).toLocaleDateString('en-US', { 
             weekday: 'short', 
             month: 'short', 
-            day: 'numeric' 
+            day: 'numeric',
+            year: 'numeric'
         }) : 'Not scheduled';
     
-    // Create tooltip content
-    const tooltipContent = `
-        <div class="font-semibold mb-1">${job.customerName}</div>
-        <div class="text-xs mb-1">${job.description}</div>
-        <div class="text-xs mb-1">📅 ${scheduleDate} at ${job.scheduleTime || 'TBD'}</div>
-        <div class="text-xs mb-1">👥 ${job.assignedStaff.join(', ') || 'No staff assigned'}</div>
-        <div class="text-xs font-semibold">💰 $${job.total.toFixed(2)}</div>
-        <div class="text-xs mt-1 opacity-75">Click for details</div>
-    `;
+    // Set header class based on job type
+    const header = document.getElementById('jobPopupHeader');
+    header.className = 'job-popup-header';
+    if (isClassJob) {
+        header.classList.add('class-job');
+    } else if (isRecurringJob) {
+        header.classList.add('recurring-job');
+    }
     
-    tooltip.innerHTML = tooltipContent;
-    tooltip.classList.add('show');
+    // Set title and badge
+    let title = job.customerName;
+    let badge = job.status.replace('_', ' ').toUpperCase();
     
-    updateTooltipPosition(event);
+    if (isClassJob) {
+        title = job.classMode.name || job.customerName;
+        badge = 'CLASS';
+    } else if (isRecurringJob) {
+        const instanceInfo = job.instanceNumber ? `Instance #${job.instanceNumber}` : 'Recurring';
+        title = `${job.customerName} - ${instanceInfo}`;
+        badge = 'RECURRING';
+    }
+    
+    document.getElementById('jobPopupTitle').textContent = title;
+    document.getElementById('jobPopupId').textContent = job.id;
+    document.getElementById('jobPopupBadge').textContent = badge;
+    
+    // Build body content
+    let bodyContent = '';
+    
+    if (isRecurringJob) {
+        const template = job.recurringTemplate;
+        const staffAvatars = job.assignedStaff.map(staffName => {
+            const staff = availableStaff.find(s => s.name === staffName);
+            if (staff) {
+                const colorMap = {
+                    'blue': 'bg-blue-500',
+                    'green': 'bg-green-500',
+                    'purple': 'bg-purple-500',
+                    'red': 'bg-red-500',
+                    'pink': 'bg-pink-500'
+                };
+                return `<span class="inline-flex items-center justify-center w-8 h-8 ${colorMap[staff.color]} text-white rounded-full text-xs font-bold">${staff.avatar}</span>`;
+            }
+            return '';
+        }).join('');
+        
+        bodyContent = `
+            <div class="space-y-3">
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">${job.description}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Date</div>
+                        <div class="text-sm font-semibold text-gray-900">${scheduleDate}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Time</div>
+                        <div class="text-sm font-semibold text-gray-900">${job.scheduleTime || 'TBD'}</div>
+                    </div>
+                </div>
+                <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-200">
+                    <div class="text-xs text-indigo-600 mb-1 font-medium">🔄 Recurring Schedule</div>
+                    <div class="text-sm font-semibold text-indigo-900">${template.schedule || 'Custom schedule'}</div>
+                    ${template.nextJobDate ? `<div class="text-xs text-indigo-600 mt-1">⏭️ Next: ${new Date(template.nextJobDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>` : ''}
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <div class="text-xs text-gray-500 mb-2">Assigned Staff</div>
+                    <div class="flex items-center gap-2">
+                        ${staffAvatars || '<span class="text-sm text-gray-500">No staff assigned</span>'}
+                    </div>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span class="text-sm text-gray-600">Total Value</span>
+                    <span class="text-lg font-bold text-gray-900">$${job.total.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    } else if (isClassJob) {
+        const classInfo = job.classMode;
+        const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+        const capacity = classInfo.capacity || 0;
+        const timeRange = job.endTime ? `${job.scheduleTime} - ${job.endTime}` : job.scheduleTime;
+        const occupancyPercent = capacity > 0 ? Math.round((participantCount / capacity) * 100) : 0;
+        
+        const staffAvatars = job.assignedStaff.map(staffName => {
+            const staff = availableStaff.find(s => s.name === staffName);
+            if (staff) {
+                const colorMap = {
+                    'blue': 'bg-blue-500',
+                    'green': 'bg-green-500',
+                    'purple': 'bg-purple-500',
+                    'red': 'bg-red-500',
+                    'pink': 'bg-pink-500'
+                };
+                return `<span class="inline-flex items-center justify-center w-8 h-8 ${colorMap[staff.color]} text-white rounded-full text-xs font-bold">${staff.avatar}</span>`;
+            }
+            return '';
+        }).join('');
+        
+        // Participants list
+        const participantsList = classInfo.participants && classInfo.participants.length > 0
+            ? classInfo.participants.slice(0, 5).map(p => {
+                const statusIcon = p.status === 'confirmed' ? '✅' : 
+                                 p.status === 'pending_payment' ? '⏳' : 
+                                 '📋';
+                return `<div class="flex items-center gap-2 text-sm py-1">
+                    <span>${statusIcon}</span>
+                    <span class="text-gray-700">${p.name}</span>
+                </div>`;
+            }).join('')
+            : '<div class="text-sm text-gray-500 py-2">No participants yet</div>';
+        
+        const moreParticipants = participantCount > 5 ? `<div class="text-xs text-gray-500 mt-2">+${participantCount - 5} more participants</div>` : '';
+        
+        bodyContent = `
+            <div class="space-y-3">
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">${job.description}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Date</div>
+                        <div class="text-sm font-semibold text-gray-900">${scheduleDate}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Time</div>
+                        <div class="text-sm font-semibold text-gray-900">${timeRange}</div>
+                    </div>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs text-emerald-600 font-medium">📚 Skill Level</div>
+                        <div class="text-sm font-semibold text-emerald-900">${classInfo.skillLevel || 'All levels'}</div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex items-center justify-between text-xs text-emerald-700 mb-1">
+                            <span>Enrollment</span>
+                            <span class="font-semibold">${participantCount}/${capacity} seats</span>
+                        </div>
+                        <div class="w-full bg-emerald-200 rounded-full h-2">
+                            <div class="bg-emerald-600 h-2 rounded-full transition-all" style="width: ${occupancyPercent}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <div class="text-xs text-gray-500 mb-2">Instructor</div>
+                    <div class="flex items-center gap-2">
+                        ${staffAvatars || '<span class="text-sm text-gray-500">No instructor assigned</span>'}
+                    </div>
+                </div>
+                ${participantCount > 0 ? `
+                <div class="bg-gray-50 p-3 rounded-lg max-h-40 overflow-y-auto">
+                    <div class="text-xs text-gray-500 mb-2 font-medium">Participants</div>
+                    ${participantsList}
+                    ${moreParticipants}
+                </div>
+                ` : ''}
+                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span class="text-sm text-gray-600">Total Value</span>
+                    <span class="text-lg font-bold text-gray-900">$${job.total.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    } else {
+        // Regular job popup
+        const staffAvatars = job.assignedStaff.map(staffName => {
+            const staff = availableStaff.find(s => s.name === staffName);
+            if (staff) {
+                const colorMap = {
+                    'blue': 'bg-blue-500',
+                    'green': 'bg-green-500',
+                    'purple': 'bg-purple-500',
+                    'red': 'bg-red-500',
+                    'pink': 'bg-pink-500'
+                };
+                return `<span class="inline-flex items-center justify-center w-8 h-8 ${colorMap[staff.color]} text-white rounded-full text-xs font-bold">${staff.avatar}</span>`;
+            }
+            return '';
+        }).join('');
+        
+        bodyContent = `
+            <div class="space-y-3">
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">${job.description}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Date</div>
+                        <div class="text-sm font-semibold text-gray-900">${scheduleDate}</div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <div class="text-xs text-gray-500 mb-1">Time</div>
+                        <div class="text-sm font-semibold text-gray-900">${job.scheduleTime || 'TBD'}</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <div class="text-xs text-gray-500 mb-2">Assigned Staff</div>
+                    <div class="flex items-center gap-2">
+                        ${staffAvatars || '<span class="text-sm text-gray-500">No staff assigned</span>'}
+                    </div>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span class="text-sm text-gray-600">Total Value</span>
+                    <span class="text-lg font-bold text-gray-900">$${job.total.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    document.getElementById('jobPopupBody').innerHTML = bodyContent;
+    
+    // Position popup
+    updatePopupPosition(event, popup);
+    
+    // Show popup with animation
+    popup.classList.add('show');
 }
 
 function hideJobTooltip() {
-    const tooltip = document.getElementById('jobTooltip');
-    tooltip.classList.remove('show');
+    if (popupKeepOpen) {
+        popupKeepOpen = false;
+        return;
+    }
+    
+    const popup = document.getElementById('jobPopup');
+    popup.classList.remove('show');
+    currentPopupJob = null;
+    
+    // Clear timeout if exists
+    if (popupTimeout) {
+        clearTimeout(popupTimeout);
+        popupTimeout = null;
+    }
 }
 
-function updateTooltipPosition(event) {
-    const tooltip = document.getElementById('jobTooltip');
-    const rect = tooltip.getBoundingClientRect();
+function updatePopupPosition(event, popup) {
+    if (!popup) popup = document.getElementById('jobPopup');
+    const rect = popup.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     
-    let x = event.pageX + 10;
-    let y = event.pageY - rect.height - 10;
+    // Default position: below and to the right of cursor
+    let x = event.pageX + 15;
+    let y = event.pageY + 15;
     
-    // Keep tooltip within viewport
-    if (x + rect.width > window.innerWidth) {
-        x = event.pageX - rect.width - 10;
+    // Adjust if popup would go off right edge
+    if (x + rect.width > viewportWidth) {
+        x = event.pageX - rect.width - 15;
+        // Update arrow position
+        const arrow = popup.querySelector('.popup-arrow');
+        if (arrow) {
+            arrow.classList.remove('left');
+            arrow.classList.add('right');
+        }
+    } else {
+        const arrow = popup.querySelector('.popup-arrow');
+        if (arrow) {
+            arrow.classList.remove('right');
+            arrow.classList.add('left');
+        }
     }
     
-    if (y < 0) {
-        y = event.pageY + 10;
+    // Adjust if popup would go off bottom edge
+    if (y + rect.height > viewportHeight) {
+        y = event.pageY - rect.height - 15;
+        // Update arrow position
+        const arrow = popup.querySelector('.popup-arrow');
+        if (arrow) {
+            arrow.classList.remove('top');
+            arrow.classList.add('bottom');
+        }
+    } else {
+        const arrow = popup.querySelector('.popup-arrow');
+        if (arrow) {
+            arrow.classList.remove('bottom');
+            arrow.classList.add('top');
+        }
     }
     
-    tooltip.style.left = x + 'px';
-    tooltip.style.top = y + 'px';
+    // Keep within viewport bounds
+    x = Math.max(10, Math.min(x, viewportWidth - rect.width - 10));
+    y = Math.max(10, Math.min(y, viewportHeight - rect.height - 10));
+    
+    popup.style.left = x + 'px';
+    popup.style.top = y + 'px';
+}
+
+function closeJobPopup() {
+    hideJobTooltip();
+}
+
+function viewJobFromPopup() {
+    if (currentPopupJob) {
+        showJobModal(currentPopupJob);
+        hideJobTooltip();
+    }
 }
 
 function showJobModal(job) {
     const modal = document.getElementById('jobDetailsModal');
+    const isClassJob = job.classMode && job.classMode.enabled;
+    const isRecurringJob = job.isRecurring && job.recurringTemplate;
     
     // Populate modal content
-    document.getElementById('modalJobTitle').textContent = getDisplayName(job);
+    let jobTitle = getDisplayName(job);
+    if (isClassJob) {
+        jobTitle = job.classMode.name || job.customerName;
+    } else if (isRecurringJob) {
+        const instanceInfo = job.instanceNumber ? ` (Instance #${job.instanceNumber})` : '';
+        jobTitle = `${job.customerName}${instanceInfo}`;
+    }
+    
+    document.getElementById('modalJobTitle').textContent = jobTitle;
     document.getElementById('modalJobId').textContent = job.id;
-    document.getElementById('modalCustomerName').textContent = `Customer: ${job.customerName}`;
+    
+    // Show class info, recurring info, or customer name
+    if (isRecurringJob) {
+        const template = job.recurringTemplate;
+        const instanceInfo = job.instanceNumber ? `Instance #${job.instanceNumber}` : 'Recurring';
+        document.getElementById('modalCustomerName').innerHTML = `
+            <div class="font-semibold">${job.customerName}</div>
+            <div class="text-xs text-gray-600 mt-1">🔄 ${instanceInfo} • ${template.schedule || 'Recurring schedule'}</div>
+            ${template.nextJobDate ? `<div class="text-xs text-indigo-600 mt-1">⏭️ Next: ${new Date(template.nextJobDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>` : ''}
+        `;
+    } else if (isClassJob) {
+        const classInfo = job.classMode;
+        const participantCount = classInfo.participants ? classInfo.participants.length : 0;
+        const capacity = classInfo.capacity || 0;
+        document.getElementById('modalCustomerName').innerHTML = `
+            <div class="font-semibold">${classInfo.name || job.customerName}</div>
+            <div class="text-xs text-gray-600 mt-1">👥 ${participantCount}/${capacity} seats • Skill: ${classInfo.skillLevel || 'All levels'}</div>
+        `;
+    } else {
+        document.getElementById('modalCustomerName').textContent = `Customer: ${job.customerName}`;
+    }
+    
     document.getElementById('modalJobValue').textContent = `$${job.total.toFixed(2)}`;
     
     // Populate editable date and time fields
@@ -1814,8 +2666,37 @@ function showJobModal(job) {
     updateModalStaffDisplay();
     initializeModalStaffSearch();
     
-    // Description
-    document.getElementById('modalDescription').textContent = job.description;
+    // Description - show class participants if class job, or recurring info if recurring job
+    let descriptionContent = job.description;
+    if (isRecurringJob) {
+        const template = job.recurringTemplate;
+        descriptionContent = `
+            ${job.description}
+            <div class="mt-2 pt-2 border-t border-gray-200">
+                <div class="text-xs font-semibold mb-1">🔄 Recurring Schedule: ${template.schedule || 'Custom schedule'}</div>
+                <div class="text-xs text-gray-700 mb-1">Template ID: ${job.templateId || 'N/A'}</div>
+                ${template.nextJobDate ? `<div class="text-xs text-indigo-600">⏭️ Next occurrence: ${new Date(template.nextJobDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>` : ''}
+            </div>
+        `;
+    } else if (isClassJob && job.classMode.participants && job.classMode.participants.length > 0) {
+        const timeRange = job.endTime ? `${job.scheduleTime} - ${job.endTime}` : job.scheduleTime;
+        const participantsList = job.classMode.participants.map(p => {
+            const statusBadge = p.status === 'confirmed' ? '✅' : 
+                               p.status === 'pending_payment' ? '⏳' : 
+                               '📋';
+            return `${statusBadge} ${p.name}`;
+        }).join(', ');
+        
+        descriptionContent = `
+            ${job.description}
+            <div class="mt-2 pt-2 border-t border-gray-200">
+                <div class="text-xs font-semibold mb-1">Time: ${timeRange}</div>
+                <div class="text-xs font-semibold mb-1">Participants (${job.classMode.participants.length}):</div>
+                <div class="text-xs text-gray-700">${participantsList}</div>
+            </div>
+        `;
+    }
+    document.getElementById('modalDescription').innerHTML = descriptionContent;
     
     // Store current job for editing
     window.currentModalJob = job;

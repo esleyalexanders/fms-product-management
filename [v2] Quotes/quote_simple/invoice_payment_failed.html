@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Payment Failed - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="flex items-center justify-center min-h-screen px-4 py-8">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-red-100 p-8 space-y-8">
+            <div class="flex flex-col items-center text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm uppercase tracking-wide text-red-600 font-semibold">Payment failed</p>
+                    <h1 class="text-3xl font-semibold text-gray-900 mt-1">We couldn't process your payment</h1>
+                    <p class="text-gray-500 mt-2">This charge didn't go through. Please review the details below and try again.</p>
+                </div>
+            </div>
+
+            <div class="bg-rose-50 rounded-xl border border-rose-200 p-4 text-sm text-rose-800 flex items-start gap-3">
+                <svg class="w-5 h-5 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <div>
+                    <p class="font-semibold" id="errorTitle">We couldn't complete the payment</p>
+                    <p id="errorMessage">Something went wrong while processing this charge. This may be due to a card issue, insufficient funds, or a temporary network problem. Please try again or contact your bank.</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl border border-gray-100 p-6 grid sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-gray-500">Invoice</p>
+                    <p id="invoiceNumber" class="text-gray-900 font-semibold mt-0.5">INV-2024-001</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Amount due</p>
+                    <p id="amountDue" class="text-gray-900 font-semibold mt-0.5">$0.00</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Customer</p>
+                    <p id="customerName" class="text-gray-900 font-semibold mt-0.5">Sarah Johnson</p>
+                    <p id="customerEmail" class="text-xs text-gray-500">sarah@example.com</p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Attempted on</p>
+                    <p id="attemptedAt" class="text-gray-900 font-semibold mt-0.5">Nov 18, 2024 • 10:24 AM</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-sm text-gray-500">
+                <div class="flex justify-between">
+                    <span>Payment method</span>
+                    <span id="paymentMethodChip" class="text-gray-900 font-medium">Stripe • Visa ••••4242</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Stripe reference</span>
+                    <span id="stripeReference" class="text-gray-900 font-medium">pi_3O0j2r96...</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Decline code</span>
+                    <span id="declineCode" class="text-gray-900 font-medium">card_declined</span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button id="retryPaymentBtn" class="px-5 py-2.5 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Retry payment
+                </button>
+                <button id="resendEmailBtn" class="px-5 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50">
+                    Send payment email again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const paymentFailureData = {
+            invoiceId: 'INV-2024-001',
+            customer: {
+                name: 'Sarah Johnson',
+                email: 'sarah.johnson@email.com'
+            },
+            attemptedAt: '2024-11-18T10:24:13-08:00',
+            amountDue: 313.50,
+            paymentMethod: {
+                processor: 'Stripe',
+                brand: 'Visa',
+                last4: '4242'
+            },
+            stripeReference: 'pi_3O0j2r96PrLl2lN01kVe2vJ',
+            declineCode: 'card_declined',
+            errorTitle: 'Card declined',
+            errorMessage: 'The card issuer rejected this payment. Use a different card or contact the bank for more details.'
+        };
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        function initializeFailureScreen() {
+            const attempted = new Date(paymentFailureData.attemptedAt);
+
+            document.getElementById('invoiceNumber').textContent = paymentFailureData.invoiceId;
+            document.getElementById('amountDue').textContent = formatCurrency(paymentFailureData.amountDue);
+            document.getElementById('customerName').textContent = paymentFailureData.customer.name;
+            document.getElementById('customerEmail').textContent = paymentFailureData.customer.email;
+            document.getElementById('attemptedAt').textContent = attempted.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+
+            document.getElementById('paymentMethodChip').textContent =
+                `${paymentFailureData.paymentMethod.processor} • ${paymentFailureData.paymentMethod.brand} •••• ${paymentFailureData.paymentMethod.last4}`;
+            document.getElementById('stripeReference').textContent = paymentFailureData.stripeReference;
+            document.getElementById('declineCode').textContent = paymentFailureData.declineCode;
+            document.getElementById('errorTitle').textContent = paymentFailureData.errorTitle;
+            document.getElementById('errorMessage').textContent = paymentFailureData.errorMessage;
+        }
+
+        document.getElementById('retryPaymentBtn').addEventListener('click', () => {
+            alert('Redirecting to payment retry flow...');
+        });
+
+        document.getElementById('resendEmailBtn').addEventListener('click', () => {
+            alert('Payment email resent to customer.');
+        });
+
+        document.addEventListener('DOMContentLoaded', initializeFailureScreen);
+    </script>
+</body>
+</html>
+

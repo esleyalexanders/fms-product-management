@@ -672,6 +672,10 @@
                         💰 Converted
                         <span class="tab-badge" id="countConverted">0</span>
                     </button>
+                    <button class="tab-button" data-status="archived" onclick="filterByStatus('archived')">
+                        📦 Archived
+                        <span class="tab-badge" id="countArchived">0</span>
+                    </button>
                 </div>
             </div>
 
@@ -1016,7 +1020,10 @@ const quotes = [
     // Valid (converted quotes)
     {id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2025-10-10', validUntil: '2025-12-10', status: 'converted', total: 2800.00, paymentStatus: 'paid', amountInvoiced: 2800.00, amountPaid: 2800.00},
     {id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2025-10-08', validUntil: '2025-12-08', status: 'converted', total: 1950.00, paymentStatus: 'paid', amountInvoiced: 1950.00, amountPaid: 1950.00},
-    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2025-10-05', validUntil: '2025-12-05', status: 'converted', total: 3100.00, paymentStatus: 'paid', amountInvoiced: 3100.00, amountPaid: 3100.00}
+    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2025-10-05', validUntil: '2025-12-05', status: 'converted', total: 3100.00, paymentStatus: 'paid', amountInvoiced: 3100.00, amountPaid: 3100.00},
+    // Archived quotes
+    {id: 'Q-2024-011', customerId: 10, customerName: 'Robert Lee', customerEmail: 'robert.l@email.com', customerPhone: '0411 222 333', createdBy: 'John Smith', dateCreated: '2025-09-15', validUntil: '2025-10-15', status: 'archived', total: 650.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
+    {id: 'Q-2024-012', customerId: 11, customerName: 'Jennifer White', customerEmail: 'jennifer.w@email.com', customerPhone: '0422 333 444', createdBy: 'Sarah Williams', dateCreated: '2025-09-10', validUntil: '2025-10-10', status: 'archived', total: 980.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0}
 ];
 
 // Initialize
@@ -1034,7 +1041,8 @@ function getStatusBadge(status) {
         sent: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Sent</span>',
         accepted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Accepted</span>',
         declined: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Declined</span>',
-        converted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Converted</span>'
+        converted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Converted</span>',
+        archived: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Archived</span>'
     };
     return badges[status] || badges.draft;
 }
@@ -1125,6 +1133,13 @@ function getContextualActions(quote) {
             </svg>
             View Job
         </button>`;
+    } else if (quote.status === 'archived') {
+        actions = `<button class="action-btn action-btn-secondary" onclick="unarchiveQuote('${quote.id}')">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Unarchive
+        </button>`;
     }
     
     // Add dropdown menu with contextual options
@@ -1189,6 +1204,20 @@ function getContextualActions(quote) {
             </button>`;
     } else if (quote.status === 'converted') {
         menuOptions = commonOptions + `
+            <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Clone
+            </button>`;
+    } else if (quote.status === 'archived') {
+        menuOptions = commonOptions + `
+            <button class="dropdown-item" onclick="unarchiveQuote('${quote.id}')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Unarchive
+            </button>
             <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -1444,7 +1473,8 @@ function updateCounts() {
         sent: state.quotes.filter(q => q.status === 'sent').length,
         accepted: state.quotes.filter(q => q.status === 'accepted').length,
         declined: state.quotes.filter(q => q.status === 'declined').length,
-        converted: state.quotes.filter(q => q.status === 'converted').length
+        converted: state.quotes.filter(q => q.status === 'converted').length,
+        archived: state.quotes.filter(q => q.status === 'archived').length
     };
     
     document.getElementById('countAll').textContent = counts.all;
@@ -1453,6 +1483,7 @@ function updateCounts() {
     document.getElementById('countAccepted').textContent = counts.accepted;
     document.getElementById('countDeclined').textContent = counts.declined;
     document.getElementById('countConverted').textContent = counts.converted;
+    document.getElementById('countArchived').textContent = counts.archived;
     
     // Update KPI cards
     const totalValue = state.quotes.reduce((sum, q) => sum + q.total, 0);
@@ -1624,7 +1655,8 @@ function updateActiveFilterTags() {
             sent: 'Sent',
             accepted: 'Accepted',
             declined: 'Declined',
-            converted: 'Converted'
+            converted: 'Converted',
+            archived: 'Archived'
         };
         tags.push({ label: `Status: ${statusLabels[state.statusFilter]}`, clear: () => {
             filterByStatus('all');
@@ -1919,15 +1951,21 @@ function bulkArchive() {
         return;
     }
     
-    const archivableQuotes = selectedQuotes.filter(q => q.status === 'declined');
+    // Allow archiving declined quotes or any quotes that are not already archived
+    const archivableQuotes = selectedQuotes.filter(q => q.status === 'declined' || (q.status !== 'archived' && q.status !== 'converted'));
     
     if (archivableQuotes.length === 0) {
-        alert('No archivable quotes selected. Only Declined quotes can be archived.');
+        alert('No archivable quotes selected. Only Declined quotes (or non-converted quotes) can be archived.');
         return;
     }
     
-    if (confirm(`Archive ${archivableQuotes.length} quote(s)? They will be removed from the active list.`)) {
-        state.quotes = state.quotes.filter(q => !archivableQuotes.find(aq => aq.id === q.id));
+    if (confirm(`Archive ${archivableQuotes.length} quote(s)? They will be moved to the archived list.`)) {
+        archivableQuotes.forEach(q => {
+            const quote = state.quotes.find(sq => sq.id === q.id);
+            if (quote) {
+                quote.status = 'archived';
+            }
+        });
         clearSelection();
         filterAndRender();
         updateCounts();
@@ -2015,6 +2053,22 @@ function viewJob(quoteId) {
     alert(`View job for quote ${quoteId}\n\n(Job detail page coming soon)`);
     // TODO: Navigate to job detail page
     // window.location.href = `../[v2] Jobs/job_detail.html?quoteId=${quoteId}`;
+}
+
+function unarchiveQuote(quoteId) {
+    const quote = state.quotes.find(q => q.id === quoteId);
+    if (!quote) return;
+    
+    // Determine what status to restore to based on original status
+    // For simplicity, we'll restore to 'declined' if it was declined, otherwise 'sent'
+    const restoreStatus = quote.paymentStatus === 'not_invoiced' ? 'declined' : 'sent';
+    
+    if (confirm(`Unarchive quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will restore the quote to active status.`)) {
+        quote.status = restoreStatus;
+        filterAndRender();
+        updateCounts();
+        alert(`Quote ${quoteId} unarchived successfully!`);
+    }
 }
 
 function viewQuote(quoteId) {
