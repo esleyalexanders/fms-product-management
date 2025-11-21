@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Job Details - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        /* Fix scrolling issues */
+        body {
+            overflow: hidden;
+        }
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* Enrollment progress bar */
+        .enrollment-progress {
+            transition: width 0.5s ease;
+        }
+        
+        /* Sticky sidebar */
+        .sticky-sidebar {
+            position: sticky;
+            top: 1rem;
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+        
+        /* Smooth transitions for recurring section */
+        #recurringConfigSection {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0;
+        }
+        
+        #recurringConfigSection.show {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 1.25rem;
+        }
+        
+        .recurring-day-selector {
+            transition: all 0.2s ease;
+        }
+        
+        .recurring-day-selector:hover {
+            transform: scale(1.1);
+        }
+        
+        .recurring-day-selector.active {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS & SCHEDULE</div>
+                <a href="job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+                <a href="job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="class_group_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Classes & Groups</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+
+            <div class="sidebar-footer">
+                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content" style="overflow-y: auto; height: 100vh;">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
+                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-bold text-white" id="classJobTitle">Class Job Details</h1>
+                                <p class="text-emerald-100 text-sm mt-0.5" id="classJobId">JOB-2024-001</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button 
+                                onclick="window.location.href='class_group_list.html'"
+                                class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Back to Classes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Class Info Bar -->
+                <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+                    <div class="flex items-center gap-6 text-sm flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Class Type</p>
+                                <p class="font-semibold text-gray-900" id="classTypeDisplay">Group Enrollment</p>
+                            </div>
+                        </div>
+                        
+                        <div class="w-px h-10 bg-gray-300"></div>
+                        
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Enrollment</p>
+                                <p class="font-semibold text-gray-900" id="enrollmentDisplay">0 / 0</p>
+                            </div>
+                        </div>
+                        
+                        <div class="w-px h-10 bg-gray-300"></div>
+                        
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Pricebook Item</p>
+                                <p class="font-semibold text-gray-900" id="pricebookDisplay">Not selected</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ml-auto flex items-center gap-2">
+                            <span class="px-3 py-1.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700 border border-yellow-200" id="statusBadge">
+                                📝 Created
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                
+                <!-- Left Column - Main Content (3 columns) -->
+                <div class="lg:col-span-3 space-y-4">
+                    
+                    <!-- Class Information Card -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Class Information</h2>
+                        
+                        <div class="space-y-4">
+                            <!-- Class Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Class / Session Name</label>
+                                <input 
+                                    type="text" 
+                                    id="className"
+                                    placeholder="e.g., Tuesday Evening Yoga"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            
+                            <!-- Skill Level -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Skill Level</label>
+                                <input 
+                                    type="text" 
+                                    id="skillLevel"
+                                    placeholder="e.g., All levels, Beginner, Advanced"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            
+                            <!-- Linked Pricebook Item (Single Selection) -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Linked Pricebook Item
+                                    <span class="text-gray-400 font-normal">(Required - Select one service)</span>
+                                </label>
+                                <div id="pricebookItemContainer" class="space-y-2">
+                                    <!-- Pricebook item will be rendered here -->
+                                </div>
+                                <button 
+                                    type="button"
+                                    onclick="showPricebookSelector()"
+                                    id="selectPricebookBtn"
+                                    class="mt-2 px-4 py-2 text-sm bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors font-medium"
+                                >
+                                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Select Pricebook Item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enrollment Settings Card -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Enrollment Settings</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Max Capacity -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Capacity</label>
+                                <input 
+                                    type="number" 
+                                    id="maxCapacity"
+                                    min="1"
+                                    max="100"
+                                    value="10"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    onchange="updateEnrollmentStats()"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">Maximum number of participants</p>
+                            </div>
+                            
+                            <!-- Waitlist -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Waitlist</label>
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        id="waitlistEnabled"
+                                        class="h-4 w-4 text-emerald-600 border-gray-300 rounded"
+                                    />
+                                    <span class="text-sm text-gray-700">Allow waitlisted attendees</span>
+                                </label>
+                                <p class="text-xs text-gray-500 mt-1">Enable to accept participants beyond capacity</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Enrollment Summary -->
+                        <div class="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-emerald-900">Current Enrollment</span>
+                                <span class="text-lg font-bold text-emerald-900" id="enrollmentCount">0 / 0</span>
+                            </div>
+                            <div class="w-full h-3 bg-white rounded-full overflow-hidden border border-emerald-200">
+                                <div 
+                                    id="enrollmentProgressBar"
+                                    class="h-full enrollment-progress bg-emerald-500" 
+                                    style="width: 0%"
+                                ></div>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-xs text-emerald-700" id="enrollmentPercent">0% full</span>
+                                <span class="text-xs text-amber-600 font-medium" id="waitlistCount"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule Card -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Schedule</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <!-- Date -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <input 
+                                    type="date" 
+                                    id="scheduleDate"
+                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            
+                            <!-- Time Range -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time Range</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input 
+                                        type="time" 
+                                        id="startTime"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        onchange="calculateDuration()"
+                                    />
+                                    <input 
+                                        type="time" 
+                                        id="endTime"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        onchange="calculateDuration()"
+                                    />
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="durationDisplay">Duration: --</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Recurring Job Configuration -->
+                        <div class="bg-white rounded-lg border-2 border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center transition-all duration-300" id="recurringIcon">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Recurring Class</h3>
+                                        <p class="text-sm text-gray-600" id="recurringDescription">Set up automatic recurring schedule</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        id="enableRecurring"
+                                        onchange="toggleRecurringSection()"
+                                        class="sr-only peer"
+                                    >
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" id="recurringToggle"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Recurring Configuration (Hidden by default) -->
+                            <div id="recurringConfigSection" class="space-y-5">
+                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                                    <div class="flex items-start gap-3">
+                                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-semibold text-blue-900 mb-2">📌 What happens:</h4>
+                                            <ul class="text-sm text-blue-800 space-y-1.5">
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-blue-600 mt-0.5">✓</span>
+                                                    <span>This class will be created as <strong>Instance #1</strong> of a recurring series</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-blue-600 mt-0.5">✓</span>
+                                                    <span>Future class sessions will be <strong>auto-created</strong> based on your schedule</span>
+                                                </li>
+                                                <li class="flex items-start gap-2">
+                                                    <span class="text-blue-600 mt-0.5">✓</span>
+                                                    <span>You can <strong>pause, edit, or end</strong> the recurrence anytime</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Custom Recurrence Section -->
+                                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                    <h3 class="text-base font-semibold text-gray-900 mb-4">Recurrence Pattern</h3>
+                                    
+                                    <!-- Repeat Every -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Repeat every</label>
+                                        <div class="flex items-center gap-3">
+                                            <input 
+                                                type="number" 
+                                                id="recurringInterval" 
+                                                min="1" 
+                                                max="99"
+                                                value="1" 
+                                                onchange="updateRecurringPreview()" 
+                                                oninput="updateRecurringPreview()"
+                                                class="w-20 px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center font-medium"
+                                            >
+                                            <select 
+                                                id="recurringFrequency" 
+                                                onchange="updateRecurringPreview(); toggleDayOfWeekContainer()" 
+                                                class="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                                            >
+                                                <option value="days">day(s)</option>
+                                                <option value="weeks" selected>week(s)</option>
+                                                <option value="months">month(s)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Repeat On (for weeks) -->
+                                    <div id="dayOfWeekContainer">
+                                        <label class="block text-sm font-medium text-gray-700 mb-3">Repeat on</label>
+                                        <div class="flex gap-2 flex-wrap">
+                                            <button 
+                                                type="button"
+                                                data-day="Sunday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                S
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Monday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-blue-500 bg-blue-500 text-white font-medium text-sm hover:border-blue-600 hover:bg-blue-600 transition-all flex items-center justify-center active"
+                                            >
+                                                M
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Tuesday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                T
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Wednesday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                W
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Thursday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                T
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Friday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                F
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                data-day="Saturday"
+                                                onclick="toggleRecurringDaySelection(this)"
+                                                class="recurring-day-selector w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center"
+                                            >
+                                                S
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ends Section -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Ends</label>
+                                    <div class="space-y-3">
+                                        <!-- Never -->
+                                        <label class="flex items-center gap-3 cursor-pointer group">
+                                            <input 
+                                                type="radio" 
+                                                name="recurringEndCondition" 
+                                                value="never" 
+                                                onchange="toggleRecurringEndCondition()"
+                                                class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                            >
+                                            <span class="text-sm text-gray-700 group-hover:text-gray-900">Never</span>
+                                        </label>
+                                        
+                                        <!-- On Date -->
+                                        <label class="flex items-start gap-3 cursor-pointer group">
+                                            <input 
+                                                type="radio" 
+                                                name="recurringEndCondition" 
+                                                value="date" 
+                                                checked
+                                                onchange="toggleRecurringEndCondition()"
+                                                class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 mt-0.5"
+                                            >
+                                            <div class="flex-1">
+                                                <span class="text-sm text-gray-700 group-hover:text-gray-900 block mb-2">On</span>
+                                                <input 
+                                                    type="date" 
+                                                    id="recurringEndDate" 
+                                                    onchange="updateRecurringPreview()" 
+                                                    onfocus="document.querySelector('input[name=recurringEndCondition][value=date]').checked = true; toggleRecurringEndCondition();"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                                                >
+                                            </div>
+                                        </label>
+                                        
+                                        <!-- After Occurrences -->
+                                        <label class="flex items-start gap-3 cursor-pointer group">
+                                            <input 
+                                                type="radio" 
+                                                name="recurringEndCondition" 
+                                                value="occurrences" 
+                                                onchange="toggleRecurringEndCondition()"
+                                                class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 mt-0.5"
+                                            >
+                                            <div class="flex-1">
+                                                <span class="text-sm text-gray-700 group-hover:text-gray-900 block mb-2">After</span>
+                                                <div class="flex items-center gap-2">
+                                                    <input 
+                                                        type="number" 
+                                                        id="recurringNumberOfOccurrences" 
+                                                        min="1" 
+                                                        max="999"
+                                                        value="12" 
+                                                        onchange="updateRecurringPreview()" 
+                                                        onfocus="document.querySelector('input[name=recurringEndCondition][value=occurrences]').checked = true; toggleRecurringEndCondition();"
+                                                        class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-center text-sm font-medium"
+                                                    >
+                                                    <span class="text-sm text-gray-600">occurrences</span>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Auto-create Settings -->
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Auto-create Classes</label>
+                                    <div class="flex items-center gap-2">
+                                        <input 
+                                            type="number" 
+                                            id="recurringAutoCreateDays" 
+                                            min="1" 
+                                            max="30" 
+                                            value="7" 
+                                            class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        >
+                                        <span class="text-sm text-gray-600">days before due date</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">System will automatically create class instances</p>
+                                </div>
+                                
+                                <!-- Preview -->
+                                <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-4 rounded-lg border-2 border-emerald-200">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-sm font-semibold text-emerald-900">📅 Schedule Preview</h3>
+                                    </div>
+                                    <p id="recurringPreview" class="text-sm font-medium text-emerald-800 mb-3 bg-white px-3 py-2 rounded-lg border border-emerald-200">Every Monday, starting from selected date</p>
+                                    <div id="recurringUpcomingOccurrences" class="mt-3 space-y-1.5 text-xs text-emerald-700">
+                                        <!-- Will show next 5 occurrences -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slot Bookings Management Card -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">Slot Bookings</h2>
+                            <p class="text-sm text-gray-500 mt-1">Search for customers and book slots from their quotes</p>
+                        </div>
+                        
+                        <!-- Customer Search Panel -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Book Slots for Customers <span class="text-red-500">*</span></h2>
+                            
+                            <!-- Add Customer Search -->
+                            <div class="mb-4">
+                                <div class="relative">
+                                    <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <input 
+                                        type="text" 
+                                        id="customerSearchInput"
+                                        placeholder="Type to search customers with quotes for the selected pricebook item..."
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                                        autocomplete="off"
+                                        oninput="searchCustomers(this.value)"
+                                        disabled
+                                    />
+                                    <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                        <!-- Customer search results will appear here -->
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
+                                    <span class="text-amber-600">⚠️</span> Please select a pricebook item above to search for customers
+                                </p>
+                            </div>
+                            
+                            <!-- Empty State -->
+                            <div id="emptyCustomerState" class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                                <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 mb-1">No customers added yet</p>
+                                <p class="text-xs text-gray-500">Search and select customers above to book slots</p>
+                            </div>
+                            
+                            <!-- Selected Customers Container (like quote items) -->
+                            <div id="selectedCustomersContainer" class="hidden space-y-3">
+                                <!-- Selected customer cards will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <div id="bookingsList" class="space-y-3">
+                            <!-- Bookings will be rendered here -->
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Right Column - Sidebar (1 column) -->
+                <div class="lg:col-span-1">
+                    <div class="sticky-sidebar space-y-4">
+                    
+                    <!-- Enrollment Summary Card -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Enrollment Summary</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Capacity Info -->
+                            <div class="p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-emerald-900">Capacity</span>
+                                    <span class="text-lg font-bold text-emerald-900" id="capacityDisplay">0 / 0</span>
+                                </div>
+                                <div class="w-full h-2 bg-white rounded-full overflow-hidden">
+                                    <div 
+                                        id="capacityProgressBar"
+                                        class="h-full enrollment-progress bg-emerald-500" 
+                                        style="width: 0%"
+                                    ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Breakdown -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Confirmed</span>
+                                    <span class="font-semibold text-gray-900" id="confirmedCount">0</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Pending Payment</span>
+                                    <span class="font-semibold text-gray-900" id="pendingCount">0</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-600">Waitlisted</span>
+                                    <span class="font-semibold text-amber-600" id="waitlistedCount">0</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Assigned Staff -->
+                            <div class="pt-4 border-t border-gray-200">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Assigned Staff</label>
+                                <div class="relative">
+                                    <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <input 
+                                        type="text" 
+                                        id="instructor"
+                                        placeholder="Search and assign staff member..."
+                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        autocomplete="off"
+                                        oninput="searchStaff(this.value)"
+                                    />
+                                    <div id="staffAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                        <!-- Staff search results will appear here -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Job Status -->
+                            <div class="pt-4 border-t border-gray-200">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                <select 
+                                    id="jobStatus"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="created">📝 Created</option>
+                                    <option value="scheduled">📋 Scheduled</option>
+                                    <option value="in_progress">🔄 In Progress</option>
+                                    <option value="completed">✅ Completed</option>
+                                    <option value="cancelled">❌ Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h3>
+                        
+                        <div class="space-y-2">
+                            <button 
+                                onclick="viewOnSchedule()"
+                                class="w-full px-3 py-2 text-sm bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors flex items-center gap-2 font-medium"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                View on Schedule
+                            </button>
+                            <button 
+                                onclick="exportRoster()"
+                                class="w-full px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors flex items-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Export Roster
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="space-y-2">
+                            <button 
+                                id="saveClassBtn"
+                                onclick="saveClassJob()"
+                                class="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                    
+                    </div>
+                </div>
+                
+            </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Pricebook Selector Modal -->
+    <div id="pricebookModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Select Pricebook Item</h3>
+                    <button onclick="closePricebookModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="mt-4">
+                    <div class="relative">
+                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input 
+                            type="text" 
+                            id="pricebookSearch"
+                            placeholder="Search pricebook items..."
+                            class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-96">
+                <div id="pricebookItemsList" class="space-y-2">
+                    <!-- Pricebook items will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="class_job_detail_script.js"></script>
+</body>
+</html>
+

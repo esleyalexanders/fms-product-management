@@ -1278,6 +1278,23 @@
             localStorage.setItem('currentJob', JSON.stringify(jobData));
             localStorage.setItem('job_' + jobData.id, JSON.stringify(jobData));
             
+            // If this is a class/group enrollment job, save it to the class list
+            if (jobData.classMode && jobData.classMode.enabled) {
+                try {
+                    const existingClasses = JSON.parse(localStorage.getItem('classGroupJobs') || '[]');
+                    // Check if class already exists (update) or add new
+                    const existingIndex = existingClasses.findIndex(c => c.id === jobData.id);
+                    if (existingIndex >= 0) {
+                        existingClasses[existingIndex] = jobData;
+                    } else {
+                        existingClasses.push(jobData);
+                    }
+                    localStorage.setItem('classGroupJobs', JSON.stringify(existingClasses));
+                } catch (e) {
+                    console.error('Error saving class to class list:', e);
+                }
+            }
+            
                 // Show success message with better UX
                 const message = jobData.isRecurring 
                     ? `✅ Recurring job created successfully!\n\nJob ID: ${jobData.id}\nTemplate ID: ${jobData.templateId}\n\nFuture jobs will be auto-created based on your schedule.\n\nRedirecting to job details...`

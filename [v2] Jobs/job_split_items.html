@@ -105,7 +105,7 @@
                             </div>
                         </div>
                         <button 
-                            onclick="goBackToSimpleCreate()"
+                            onclick="window.location.href='job_create_simple.html'"
                             class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500">Quote ID</p>
-                                <p class="font-semibold text-gray-900" data-quote-id>Q-2024-001</p>
+                                <p class="font-semibold text-gray-900">Q-2024-001</p>
                             </div>
                         </div>
                         
@@ -282,7 +282,7 @@
                             </div>
                             <div class="flex gap-3">
                                 <button 
-                                    onclick="goBackToSimpleCreate()"
+                                    onclick="window.location.href='job_create_simple.html'"
                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                                 >
                                     Cancel
@@ -308,25 +308,5 @@
     </div>
 
     <script src="job_split_items_script.js"></script>
-    <script>
-        // Navigation function to go back to simple create page
-        function goBackToSimpleCreate() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const quoteId = urlParams.get('quoteId');
-            const invoiceId = urlParams.get('invoiceId');
-            
-            // Build URL with parameters
-            let backUrl = 'job_create_simple.html';
-            const params = [];
-            if (quoteId) params.push('quoteId=' + encodeURIComponent(quoteId));
-            if (invoiceId) params.push('invoiceId=' + encodeURIComponent(invoiceId));
-            
-            if (params.length > 0) {
-                backUrl += '?' + params.join('&');
-            }
-            
-            window.location.href = backUrl;
-        }
-    </script>
 </body>
 </html>

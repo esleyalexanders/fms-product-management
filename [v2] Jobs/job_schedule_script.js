@@ -940,22 +940,22 @@ function createDayJobCard(job) {
     } else {
         // Regular job display
         cardContent = `
-            <div class="flex items-center justify-between mb-2">
-                <div class="font-semibold text-sm">${job.scheduleTime}</div>
-                <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
+        <div class="flex items-center justify-between mb-2">
+            <div class="font-semibold text-sm">${job.scheduleTime}</div>
+            <div class="text-sm font-semibold">$${job.total.toFixed(0)}</div>
+        </div>
+        <div class="font-medium text-sm mb-1">${getDisplayName(job)}</div>
+        <div class="text-xs text-gray-600 mb-2">${job.description}</div>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                ${staffAvatars}
+                <span class="text-xs text-gray-600">for ${job.customerName}</span>
             </div>
-            <div class="font-medium text-sm mb-1">${getDisplayName(job)}</div>
-            <div class="text-xs text-gray-600 mb-2">${job.description}</div>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    ${staffAvatars}
-                    <span class="text-xs text-gray-600">for ${job.customerName}</span>
-                </div>
-                <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)}">
-                    ${job.status.replace('_', ' ').toUpperCase()}
-                </div>
+            <div class="text-xs px-2 py-1 rounded-full ${getStatusBadgeColor(job.status)}">
+                ${job.status.replace('_', ' ').toUpperCase()}
             </div>
-        `;
+        </div>
+    `;
     }
     
     jobCard.innerHTML = cardContent;
@@ -1137,7 +1137,7 @@ function createDayCell(day, isOtherMonth, date) {
                 <div class="text-xs">${participantCount}/${capacity} seats</div>
             `;
         } else {
-            jobPill.textContent = `${job.scheduleTime} ${job.customerName}`;
+        jobPill.textContent = `${job.scheduleTime} ${job.customerName}`;
         }
         
         jobPill.onclick = () => viewJobDetails(job);
@@ -1202,17 +1202,17 @@ function renderUnscheduledJobs() {
             `;
         } else {
             jobContent = `
-                <div class="flex items-start gap-2">
-                    <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
-                    </svg>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-semibold text-gray-900">${job.id}</p>
-                        <p class="text-xs text-gray-600 truncate">${getDisplayName(job)}</p>
-                        <p class="text-xs text-gray-500 truncate">${job.description}</p>
-                        <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
-                    </div>
+            <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path>
+                </svg>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-gray-900">${job.id}</p>
+                    <p class="text-xs text-gray-600 truncate">${getDisplayName(job)}</p>
+                    <p class="text-xs text-gray-500 truncate">${job.description}</p>
+                    <p class="text-xs font-semibold text-gray-900 mt-1">$${job.total.toFixed(2)}</p>
                 </div>
+            </div>
             `;
         }
         
@@ -1226,7 +1226,7 @@ function renderUnscheduledJobs() {
                 ondragend="handleDragEnd(event)"
             >
                 ${jobContent}
-            </div>
+        </div>
         `;
     }).join('');
 }
@@ -1270,18 +1270,18 @@ function openQuickScheduleModal(job, date) {
         `;
     } else {
         detailsContent = `
-            <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-                <p class="text-sm font-semibold text-gray-900 mb-1">${job.id}</p>
-                <p class="text-sm text-gray-700">${job.customerName}</p>
-                <p class="text-sm text-gray-600">${job.description}</p>
-                <div class="flex items-center gap-2 mt-2">
-                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <span class="text-sm font-medium text-indigo-600">${formatDate(date)}</span>
-                </div>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+            <p class="text-sm font-semibold text-gray-900 mb-1">${job.id}</p>
+            <p class="text-sm text-gray-700">${job.customerName}</p>
+            <p class="text-sm text-gray-600">${job.description}</p>
+            <div class="flex items-center gap-2 mt-2">
+                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span class="text-sm font-medium text-indigo-600">${formatDate(date)}</span>
             </div>
-        `;
+        </div>
+    `;
     }
     
     details.innerHTML = detailsContent;
@@ -1362,7 +1362,7 @@ function openScheduleModal(jobId) {
             <div class="text-xs text-gray-600 mt-1">👥 ${participantCount}/${capacity} seats • Skill: ${classInfo.skillLevel || 'All levels'}</div>
         `;
     } else {
-        document.getElementById('scheduleModalCustomerName').textContent = selectedJob.customerName;
+    document.getElementById('scheduleModalCustomerName').textContent = selectedJob.customerName;
     }
     
     document.getElementById('scheduleModalJobValue').textContent = `$${selectedJob.total.toFixed(2)}`;
@@ -2642,7 +2642,7 @@ function showJobModal(job) {
             <div class="text-xs text-gray-600 mt-1">👥 ${participantCount}/${capacity} seats • Skill: ${classInfo.skillLevel || 'All levels'}</div>
         `;
     } else {
-        document.getElementById('modalCustomerName').textContent = `Customer: ${job.customerName}`;
+    document.getElementById('modalCustomerName').textContent = `Customer: ${job.customerName}`;
     }
     
     document.getElementById('modalJobValue').textContent = `$${job.total.toFixed(2)}`;
