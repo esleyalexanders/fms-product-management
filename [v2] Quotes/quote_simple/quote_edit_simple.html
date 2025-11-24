@@ -2274,10 +2274,12 @@
         }
 
         function updateSummary() {
-            document.getElementById('subtotalAmount').textContent = `$${calculateSubtotal().toFixed(2)}`;
+            const netSubtotal = calculateSubtotal();
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const grossSubtotal = netSubtotal + lineItemDiscounts;
+            document.getElementById('subtotalAmount').textContent = `$${grossSubtotal.toFixed(2)}`;
             
             // Update line item discounts display
-            const lineItemDiscounts = calculateLineItemDiscounts();
             const lineItemDiscountSection = document.getElementById('lineItemDiscountSection');
             if (lineItemDiscounts > 0) {
                 lineItemDiscountSection.classList.remove('hidden');
@@ -2845,6 +2847,11 @@
                 ${taxBreakdown.input_taxed > 0 ? `<div class="flex justify-between text-xs text-gray-500 py-1"><span>Input-Taxed Items:</span><span>$${state.quoteItems.filter(i => i.taxCategory === 'input_taxed').reduce((sum, i) => sum + i.customPrice * i.quantity, 0).toFixed(2)}</span></div>` : ''}
             `;
 
+            const netSubtotal = calculateSubtotal();
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const grossSubtotal = netSubtotal + lineItemDiscounts;
+            const totalTax = calculateTax();
+
             // Build preview HTML
             const previewHTML = `
                 <!-- Company Header -->
@@ -2906,25 +2913,29 @@
                         <div class="border-t border-gray-300 pt-3">
                             <div class="flex justify-between text-sm py-1">
                                 <span class="text-gray-700">Subtotal:</span>
-                                <span class="font-medium">$${calculateSubtotal().toFixed(2)}</span>
+                                <span class="font-medium">$${grossSubtotal.toFixed(2)}</span>
                             </div>
-                            ${calculateLineItemDiscounts() > 0 ? `
+                            ${lineItemDiscounts > 0 ? `
                                 <div class="flex justify-between text-sm py-1">
                                     <span class="text-gray-700">Line Item Discounts:</span>
-                                    <span class="text-red-600">-$${calculateLineItemDiscounts().toFixed(2)}</span>
+                                    <span class="text-red-600">-$${lineItemDiscounts.toFixed(2)}</span>
                                 </div>
                             ` : ''}
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-700">Net Subtotal:</span>
+                                <span class="font-medium">$${netSubtotal.toFixed(2)}</span>
+                            </div>
                             <div class="border-t border-gray-300 mt-2 pt-2">
                                 ${taxBreakdownHTML}
                                 <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-800">
                                     <span class="text-sm font-semibold">Total Tax:</span>
-                                    <span class="text-sm font-semibold">$${calculateTax().toFixed(2)}</span>
+                                    <span class="text-sm font-semibold">$${totalTax.toFixed(2)}</span>
                                 </div>
                             </div>
                             <div class="border-t-2 border-gray-800 mt-2 pt-2">
                                 <div class="flex justify-between">
                                     <span class="text-lg font-bold text-gray-900">TOTAL:</span>
-                                    <span class="text-lg font-bold text-gray-900">$${calculateTotal().toFixed(2)}</span>
+                                    <span class="text-lg font-bold text-gray-900">$${(netSubtotal + totalTax).toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
@@ -4714,11 +4725,12 @@
         }
 
         function getQuoteSummaryDetails() {
-            const subtotal = calculateSubtotal();
+            const netSubtotal = calculateSubtotal();
             const discounts = calculateLineItemDiscounts();
+            const grossSubtotal = netSubtotal + discounts;
             const taxBreakdown = getTaxBreakdown();
             const totalTax = calculateTax();
-            const total = subtotal + totalTax;
+            const total = netSubtotal + totalTax;
             const items = state.quoteItems.map(item => {
                 const lineTotal = item.customPrice * item.quantity;
                 const discountAmount = item.discountType === 'percentage'
@@ -4733,7 +4745,8 @@
                 };
             });
             return {
-                subtotal,
+                grossSubtotal,
+                netSubtotal,
                 discounts,
                 taxBreakdown,
                 totalTax,
@@ -4817,11 +4830,15 @@
                 <div class="space-y-2 text-sm text-gray-700">
                     <div class="flex justify-between">
                         <span>Subtotal</span>
-                        <span>${formatCurrency(quoteSummary.subtotal)}</span>
+                        <span>${formatCurrency(quoteSummary.grossSubtotal)}</span>
                     </div>
                     <div class="flex justify-between text-red-600">
                         <span>Line Item Discounts</span>
                         <span>- ${formatCurrency(quoteSummary.discounts)}</span>
+                    </div>
+                    <div class="flex justify-between font-medium">
+                        <span>Net Subtotal</span>
+                        <span>${formatCurrency(quoteSummary.netSubtotal)}</span>
                     </div>
                     <div class="pt-2 border-t border-gray-200 space-y-1">
                         <div class="text-xs text-gray-500 uppercase tracking-wide">Tax Breakdown:</div>

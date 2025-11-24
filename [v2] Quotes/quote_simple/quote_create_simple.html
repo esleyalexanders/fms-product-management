@@ -925,10 +925,12 @@
         }
 
         function updateSummary() {
-            document.getElementById('subtotalAmount').textContent = `$${calculateSubtotal().toFixed(2)}`;
+            const netSubtotal = calculateSubtotal();
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const grossSubtotal = netSubtotal + lineItemDiscounts;
+            document.getElementById('subtotalAmount').textContent = `$${grossSubtotal.toFixed(2)}`;
             
             // Update line item discounts display
-            const lineItemDiscounts = calculateLineItemDiscounts();
             const lineItemDiscountSection = document.getElementById('lineItemDiscountSection');
             if (lineItemDiscounts > 0) {
                 lineItemDiscountSection.classList.remove('hidden');
