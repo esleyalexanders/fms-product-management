@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Received - Sunshine Tutoring</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    
+    <!-- Email Wrapper -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f3f4f6; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                
+                <!-- Email Container -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 30px 40px; text-align: center;">
+                            <div style="width: 64px; height: 64px; background-color: #ffffff; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 32px;">✓</span>
+                            </div>
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold; letter-spacing: 1px;">SUNSHINE TUTORING</h1>
+                            <p style="margin: 8px 0 0 0; color: #d1fae5; font-size: 14px;">Melbourne East</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px 0; color: #111827; font-size: 16px; line-height: 1.6;">
+                                Dear {{customer_name}},
+                            </p>
+                            
+                            <!-- Success Message -->
+                            <div style="background-color: #d1fae5; border-left: 4px solid #059669; border-radius: 4px; padding: 20px; margin: 0 0 30px 0;">
+                                <p style="margin: 0; color: #065f46; font-size: 18px; font-weight: 600; line-height: 1.6;">
+                                    ✓ Payment Received Successfully
+                                </p>
+                                <p style="margin: 8px 0 0 0; color: #047857; font-size: 14px; line-height: 1.6;">
+                                    Thank you for your payment! We have received and processed your transaction.
+                                </p>
+                            </div>
+                            
+                            <!-- Payment Details Box -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f0fdf4; border-left: 4px solid #059669; border-radius: 4px; margin: 30px 0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <p style="margin: 0; color: #065f46; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Invoice Number</p>
+                                                    <p style="margin: 4px 0 0 0; color: #111827; font-size: 20px; font-weight: bold;">{{invoice_id}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 12px; border-top: 1px solid #86efac;">
+                                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                        <tr>
+                                                            <td style="padding: 8px 0;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Payment Date:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #111827; font-size: 14px; font-weight: 600;">{{payment_date}}</p>
+                                                            </td>
+                                                            <td style="padding: 8px 0; text-align: right;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Payment Method:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #111827; font-size: 14px; font-weight: 600;">{{payment_method}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Amount Paid:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #059669; font-size: 24px; font-weight: bold;">{{amount_paid}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        {{#if transaction_reference}}
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0; border-top: 1px solid #86efac; padding-top: 12px;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Transaction Reference:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #111827; font-size: 14px; font-weight: 600; font-family: monospace;">{{transaction_reference}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        {{/if}}
+                                                        {{#if remaining_balance}}
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0; border-top: 1px solid #86efac; padding-top: 12px;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Remaining Balance:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #dc2626; font-size: 18px; font-weight: bold;">{{remaining_balance}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        {{/if}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            {{#if is_full_payment}}
+                            <!-- Full Payment Confirmation -->
+                            <div style="background-color: #d1fae5; border-radius: 6px; padding: 16px; margin: 30px 0; text-align: center;">
+                                <p style="margin: 0; color: #065f46; font-size: 16px; font-weight: 600;">
+                                    🎉 Invoice Fully Paid
+                                </p>
+                                <p style="margin: 8px 0 0 0; color: #047857; font-size: 14px;">
+                                    Your invoice has been paid in full. Thank you!
+                                </p>
+                            </div>
+                            {{/if}}
+                            
+                            {{#if is_partial_payment}}
+                            <!-- Partial Payment Notice -->
+                            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 4px; padding: 16px; margin: 30px 0;">
+                                <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.6;">
+                                    <strong>ℹ️ Partial Payment:</strong><br>
+                                    This payment covers part of your invoice. The remaining balance of {{remaining_balance}} is due by {{due_date}}.
+                                </p>
+                            </div>
+                            {{/if}}
+                            
+                            <!-- Receipt Notice -->
+                            <div style="background-color: #f9fafb; border-radius: 6px; padding: 20px; margin: 30px 0;">
+                                <h3 style="margin: 0 0 12px 0; color: #111827; font-size: 16px; font-weight: 600;">Receipt</h3>
+                                <p style="margin: 0; color: #4b5563; font-size: 14px; line-height: 1.6;">
+                                    A detailed receipt has been attached to this email. Please keep this for your records.
+                                </p>
+                            </div>
+                            
+                            <!-- Attachment Notice -->
+                            <p style="margin: 20px 0 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+                                📎 Your payment receipt (PDF) is attached to this email.
+                            </p>
+                            
+                            <!-- Closing -->
+                            <p style="margin: 30px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                                We appreciate your business! If you have any questions about this payment, please don't hesitate to contact us.
+                            </p>
+                            
+                            <p style="margin: 20px 0 0 0; color: #111827; font-size: 16px; line-height: 1.6;">
+                                Best regards,<br>
+                                <strong>The Sunshine Tutoring Team</strong>
+                            </p>
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f9fafb; padding: 30px 40px; border-top: 1px solid #e5e7eb;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.6; text-align: center;">
+                                            This email was sent to {{customer_email}}<br>
+                                            © {{current_year}} Sunshine Tutoring. All rights reserved.<br>
+                                            ABN: 12 345 678 901
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html>
+
+

@@ -307,10 +307,6 @@
                             Unpaid
                             <span class="tab-badge" id="unpaidTabCount">0</span>
                         </button>
-                        <button class="tab-button" data-status="partially_paid" onclick="filterByStatus('partially_paid')">
-                            Partially Paid
-                            <span class="tab-badge" id="partiallyPaidCount">0</span>
-                        </button>
                         <button class="tab-button" data-status="paid" onclick="filterByStatus('paid')">
                             Paid
                             <span class="tab-badge" id="paidTabCount">0</span>
@@ -461,7 +457,7 @@
                 dueDate: '2024-11-16',
                 amount: 500.00,
                 paidAmount: 250.00,
-                status: 'partially_paid',
+                status: 'unpaid',
                 paymentModel: 'deposit',
                 paymentMethods: ['stripe', 'cash'],
                 items: 3,
@@ -506,7 +502,7 @@
                 dueDate: '2024-12-08',
                 amount: 1200.00,
                 paidAmount: 600.00,
-                status: 'partially_paid',
+                status: 'unpaid',
                 paymentModel: 'deposit',
                 paymentMethods: ['stripe', 'paypal'],
                 items: 5,
@@ -612,7 +608,7 @@
         function updateKPIs() {
             const totalRevenue = invoices.reduce((sum, inv) => sum + inv.paidAmount, 0);
             const outstanding = invoices
-                .filter(inv => inv.status === 'unpaid' || inv.status === 'partially_paid')
+                .filter(inv => inv.status === 'unpaid')
                 .reduce((sum, inv) => sum + (inv.amount - inv.paidAmount), 0);
             const overdue = invoices
                 .filter(inv => inv.status === 'overdue')
@@ -637,7 +633,6 @@
         function updateTabCounts() {
             document.getElementById('allCount').textContent = invoices.length;
             document.getElementById('unpaidTabCount').textContent = invoices.filter(inv => inv.status === 'unpaid').length;
-            document.getElementById('partiallyPaidCount').textContent = invoices.filter(inv => inv.status === 'partially_paid').length;
             document.getElementById('paidTabCount').textContent = invoices.filter(inv => inv.status === 'paid').length;
             document.getElementById('overdueTabCount').textContent = invoices.filter(inv => inv.status === 'overdue').length;
             document.getElementById('cancelledCount').textContent = invoices.filter(inv => inv.status === 'cancelled').length;
@@ -647,7 +642,6 @@
         function getStatusBadge(status) {
             const badges = {
                 unpaid: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Unpaid</span>',
-                partially_paid: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Partially Paid</span>',
                 paid: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Paid</span>',
                 overdue: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Overdue</span>',
                 cancelled: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Cancelled</span>'
@@ -726,8 +720,8 @@
                         <!-- Right: Amount & Dates -->
                         <div class="text-right">
                             <div class="text-2xl font-bold text-purple-600 mb-1">$${invoice.amount.toFixed(2)}</div>
-                            ${invoice.paidAmount > 0 && invoice.status !== 'paid' ? 
-                                `<div class="text-sm text-gray-600 mb-2">Paid: $${invoice.paidAmount.toFixed(2)}</div>` : ''}
+                            ${invoice.paidAmount > 0 && invoice.status === 'unpaid' && invoice.paymentModel === 'deposit' ? 
+                                `<div class="text-sm text-gray-600 mb-2">Deposit: $${invoice.paidAmount.toFixed(2)}</div>` : ''}
                             <div class="text-xs text-gray-500">
                                 <div>Due: ${new Date(invoice.dueDate).toLocaleDateString()}</div>
                                 ${invoice.status === 'overdue' ? 

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overdue Invoice - Sunshine Tutoring</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    
+    <!-- Email Wrapper -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f3f4f6; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                
+                <!-- Email Container -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); padding: 30px 40px; text-align: center;">
+                            <div style="width: 64px; height: 64px; background-color: #ffffff; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 32px; color: #dc2626;">⚠️</span>
+                            </div>
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold; letter-spacing: 1px;">SUNSHINE TUTORING</h1>
+                            <p style="margin: 8px 0 0 0; color: #fecaca; font-size: 14px;">Melbourne East</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px 0; color: #111827; font-size: 16px; line-height: 1.6;">
+                                Dear {{customer_name}},
+                            </p>
+                            
+                            <!-- Urgent Notice -->
+                            <div style="background-color: #fee2e2; border-left: 4px solid #dc2626; border-radius: 4px; padding: 20px; margin: 0 0 30px 0;">
+                                <p style="margin: 0; color: #991b1b; font-size: 18px; font-weight: 600; line-height: 1.6;">
+                                    ⚠️ Payment Overdue - Action Required
+                                </p>
+                                <p style="margin: 8px 0 0 0; color: #7f1d1d; font-size: 14px; line-height: 1.6;">
+                                    Your invoice payment is now overdue. Please arrange payment as soon as possible to avoid any late fees or service interruptions.
+                                </p>
+                            </div>
+                            
+                            <!-- Invoice Details Box -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #fef2f2; border-left: 4px solid #dc2626; border-radius: 4px; margin: 30px 0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                            <tr>
+                                                <td style="padding-bottom: 12px;">
+                                                    <p style="margin: 0; color: #991b1b; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Invoice Number</p>
+                                                    <p style="margin: 4px 0 0 0; color: #111827; font-size: 20px; font-weight: bold;">{{invoice_id}}</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 12px; border-top: 1px solid #fecaca;">
+                                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                        <tr>
+                                                            <td style="padding: 8px 0;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Invoice Date:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #111827; font-size: 14px; font-weight: 600;">{{invoice_date}}</p>
+                                                            </td>
+                                                            <td style="padding: 8px 0; text-align: right;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Due Date:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #dc2626; font-size: 14px; font-weight: 600;">{{due_date}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0;">
+                                                                <p style="margin: 0; color: #4b5563; font-size: 14px;">Overdue Amount:</p>
+                                                                <p style="margin: 4px 0 0 0; color: #dc2626; font-size: 24px; font-weight: bold;">{{amount_due}}</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0; border-top: 1px solid #fecaca; padding-top: 12px;">
+                                                                <p style="margin: 0; color: #991b1b; font-size: 13px; font-weight: 600;">
+                                                    {{days_overdue}} day(s) overdue
+                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        {{#if late_fee}}
+                                                        <tr>
+                                                            <td colspan="2" style="padding: 8px 0; border-top: 1px solid #fecaca; padding-top: 12px;">
+                                                                <p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">
+                                                                    Late Fee Applied: {{late_fee}}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                        {{/if}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Payment Methods -->
+                            <div style="background-color: #f9fafb; border-radius: 6px; padding: 20px; margin: 30px 0;">
+                                <h3 style="margin: 0 0 12px 0; color: #111827; font-size: 16px; font-weight: 600;">Accepted Payment Methods</h3>
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    {{#each payment_methods}}
+                                    <tr>
+                                        <td style="padding: 6px 0;">
+                                            <span style="color: #4b5563; font-size: 14px;">{{this}}</span>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </table>
+                            </div>
+                            
+                            <!-- Call to Action -->
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 30px 0;">
+                                <tr>
+                                    <td align="center" style="padding: 0;">
+                                        <a href="{{payment_link}}" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px; box-shadow: 0 2px 4px rgba(220, 38, 38, 0.3);">
+                                            Pay Invoice Now
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Urgent Notice -->
+                            <div style="background-color: #fee2e2; border-left: 4px solid #dc2626; border-radius: 4px; padding: 16px; margin: 30px 0;">
+                                <p style="margin: 0; color: #991b1b; font-size: 14px; line-height: 1.6;">
+                                    <strong>⚠️ Important:</strong><br>
+                                    Please arrange payment immediately to avoid any late fees or service interruptions. If you're experiencing financial difficulties, please contact us to discuss payment arrangements.
+                                </p>
+                            </div>
+                            
+                            <!-- Help Section -->
+                            <div style="background-color: #eff6ff; border-left: 4px solid #2563eb; border-radius: 4px; padding: 16px; margin: 30px 0;">
+                                <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
+                                    <strong>💡 Need Assistance?</strong><br>
+                                    If you have any questions about this invoice or need to discuss payment options, please contact us immediately. We're here to help find a solution.
+                                </p>
+                            </div>
+                            
+                            <!-- Closing -->
+                            <p style="margin: 30px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                                We look forward to resolving this matter promptly. Thank you for your immediate attention.
+                            </p>
+                            
+                            <p style="margin: 20px 0 0 0; color: #111827; font-size: 16px; line-height: 1.6;">
+                                Best regards,<br>
+                                <strong>The Sunshine Tutoring Team</strong>
+                            </p>
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f9fafb; padding: 30px 40px; border-top: 1px solid #e5e7eb;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.6; text-align: center;">
+                                            This email was sent to {{customer_email}}<br>
+                                            © {{current_year}} Sunshine Tutoring. All rights reserved.<br>
+                                            ABN: 12 345 678 901
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html>
+
+
