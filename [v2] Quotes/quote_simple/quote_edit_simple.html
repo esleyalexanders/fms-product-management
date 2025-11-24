@@ -865,12 +865,39 @@
                         <!-- Invoice Summary -->
                         <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
                             <h2 class="text-lg font-semibold text-gray-900 mb-4">Invoice Summary</h2>
-                            
-                            <!-- Quote Total -->
-                            <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-                                    <div class="text-xs text-gray-600 mb-1">Quote Total</div>
-                                    <div class="text-2xl font-bold text-gray-900" id="invoiceQuoteTotal">$0.00</div>
+
+                            <!-- Quote-style Financial Breakdown -->
+                            <div class="space-y-3 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Subtotal</span>
+                                    <span class="font-medium" id="invoiceSubtotalAmount">$0.00</span>
                                 </div>
+
+                                <div id="invoiceLineItemDiscountSection" class="hidden">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-sm text-gray-600">Line Item Discounts</span>
+                                        <span class="text-sm font-medium text-red-600" id="invoiceLineItemDiscountAmount">-$0.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-gray-200 pt-3">
+                                    <div class="text-xs text-gray-600 mb-2">Tax Breakdown:</div>
+                                    <div id="invoiceTaxBreakdown" class="space-y-1 text-xs">
+                                        <div class="text-gray-400">No taxable items</div>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                                        <span class="text-sm text-gray-600">Total Tax</span>
+                                        <span class="text-sm font-medium" id="invoiceTaxAmount">$0.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="border-t-2 border-gray-300 pt-3">
+                                    <div class="flex justify-between">
+                                        <span class="font-bold text-gray-900 text-lg">Quote Total</span>
+                                        <span class="font-bold text-gray-900 text-lg" id="invoiceQuoteTotal">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Financial Breakdown -->
                             <div class="space-y-2 text-sm mb-4">
@@ -2449,9 +2476,12 @@
                             ` : ''}
                         </div>
                         <div class="flex items-center gap-2">
-                            <div class="text-right">
+                            <div class="text-right space-y-0.5">
+                                ${item.discount > 0 ? `
+                                    <div class="text-xs text-gray-500">Original: $${lineTotal.toFixed(2)}</div>
+                                    <div class="text-xs text-green-600">Discount: -$${discountAmount.toFixed(2)}</div>
+                                ` : ''}
                                 <div class="text-2xl font-bold text-gray-900">$${lineTotalAfterDiscount.toFixed(2)}</div>
-                                ${item.discount > 0 ? `<div class="text-xs text-green-600">-$${discountAmount.toFixed(2)} discount</div>` : ''}
                             </div>
                             <button 
                                 onclick="removeQuoteItem(${index})"
@@ -4013,6 +4043,52 @@
 
         function updateInvoiceSummary() {
             const quoteTotal = calculateTotal();
+            const subtotal = calculateSubtotal();
+            const lineItemDiscounts = calculateLineItemDiscounts();
+            const taxBreakdown = getTaxBreakdown();
+            const totalTax = calculateTax();
+
+            // Update quote-style financial breakdown
+            const invoiceSubtotalEl = document.getElementById('invoiceSubtotalAmount');
+            if (invoiceSubtotalEl) {
+                invoiceSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            }
+
+            const invoiceDiscountSection = document.getElementById('invoiceLineItemDiscountSection');
+            const invoiceDiscountAmount = document.getElementById('invoiceLineItemDiscountAmount');
+            if (invoiceDiscountSection && invoiceDiscountAmount) {
+                if (lineItemDiscounts > 0) {
+                    invoiceDiscountSection.classList.remove('hidden');
+                    invoiceDiscountAmount.textContent = `-$${lineItemDiscounts.toFixed(2)}`;
+                } else {
+                    invoiceDiscountSection.classList.add('hidden');
+                }
+            }
+
+            const taxBreakdownContainer = document.getElementById('invoiceTaxBreakdown');
+            if (taxBreakdownContainer) {
+                let breakdownHTML = '';
+                if (taxBreakdown.taxable_gst > 0) {
+                    breakdownHTML += `<div class="flex justify-between"><span>GST (10%):</span><span>$${taxBreakdown.taxable_gst.toFixed(2)}</span></div>`;
+                }
+                if (taxBreakdown.gst_free > 0) {
+                    breakdownHTML += `<div class="flex justify-between text-gray-500"><span>GST-Free:</span><span>$0.00</span></div>`;
+                }
+                if (taxBreakdown.input_taxed > 0) {
+                    breakdownHTML += `<div class="flex justify-between text-gray-500"><span>Input-Taxed:</span><span>$0.00</span></div>`;
+                }
+                taxBreakdownContainer.innerHTML = breakdownHTML || '<div class="text-gray-400">No taxable items</div>';
+            }
+
+            const invoiceTaxAmount = document.getElementById('invoiceTaxAmount');
+            if (invoiceTaxAmount) {
+                invoiceTaxAmount.textContent = `$${totalTax.toFixed(2)}`;
+            }
+            const invoiceQuoteTotalEl = document.getElementById('invoiceQuoteTotal');
+            if (invoiceQuoteTotalEl) {
+                invoiceQuoteTotalEl.textContent = `$${quoteTotal.toFixed(2)}`;
+            }
+
             // Exclude cancelled invoices from calculations
             const activeInvoices = quoteInvoices.filter(inv => inv.status !== 'cancelled');
             const totalInvoiced = activeInvoices.reduce((sum, inv) => sum + inv.amount, 0);
@@ -4591,6 +4667,117 @@
             return modelMap[modelValue] || modelValue.charAt(0).toUpperCase() + modelValue.slice(1);
         }
 
+        function formatCurrency(amount) {
+            const value = Number(amount) || 0;
+            return `$${value.toFixed(2)}`;
+        }
+
+        function getQuoteFinancialTotals() {
+            const discounts = calculateLineItemDiscounts();
+            const netSubtotal = calculateSubtotal();
+            const grossSubtotal = netSubtotal + discounts;
+            const tax = calculateTax();
+            const total = netSubtotal + tax;
+            return {
+                grossSubtotal,
+                discounts,
+                netSubtotal,
+                tax,
+                total
+            };
+        }
+
+        function getInvoiceBreakdown(invoiceAmount, quoteTotals) {
+            const totals = quoteTotals || getQuoteFinancialTotals();
+            if (!totals || totals.total === 0) {
+                return {
+                    grossSubtotal: 0,
+                    discounts: 0,
+                    netSubtotal: 0,
+                    tax: 0,
+                    total: invoiceAmount || 0
+                };
+            }
+            const proportion = invoiceAmount ? (invoiceAmount / totals.total) : 0;
+            const grossSubtotal = totals.grossSubtotal * proportion;
+            const discounts = totals.discounts * proportion;
+            const netSubtotal = totals.netSubtotal * proportion;
+            const tax = totals.tax * proportion;
+            const total = netSubtotal + tax;
+            return {
+                grossSubtotal,
+                discounts,
+                netSubtotal,
+                tax,
+                total
+            };
+        }
+
+        function getPaymentTermsLabelForPreview() {
+            const termsMap = {
+                'due_on_receipt': 'Due on Receipt',
+                'net_7': 'Net 7 Days',
+                'net_15': 'Net 15 Days',
+                'net_30': 'Net 30 Days',
+                'net_60': 'Net 60 Days'
+            };
+            const terms = document.getElementById('defaultPaymentTerms')?.value || 'net_30';
+            return termsMap[terms] || 'Net 30 Days';
+        }
+
+        function getInvoiceCoverageText(invoice) {
+            if (invoice.payer?.percentage) {
+                return `${invoice.payer.percentage}% share billed to ${invoice.payer.name}`;
+            }
+            if (invoice.items && invoice.items.length) {
+                const firstItem = invoice.items[0];
+                if (firstItem.isDeposit) {
+                    return 'Deposit portion across all quote items';
+                }
+                if (firstItem.isBalance) {
+                    return 'Remaining balance across all quote items';
+                }
+                if (firstItem.isSubscription) {
+                    const cycle = firstItem.cycle || 1;
+                    return `Subscription cycle #${cycle} covering scheduled services`;
+                }
+            }
+            if (invoice.type?.toLowerCase().includes('full')) {
+                return 'Full quote items';
+            }
+            return 'Quote items as listed in the overview';
+        }
+
+        function getCoverageStatusMessage(totalPreviewed, quoteTotal) {
+            if (!quoteTotal || quoteTotal <= 0) {
+                return '';
+            }
+            const diff = quoteTotal - totalPreviewed;
+            const coveragePercent = Math.min(Math.max((totalPreviewed / quoteTotal) * 100, 0), 999);
+            if (Math.abs(diff) < 0.01) {
+                return `<span class="text-green-700 font-medium">Preview covers 100% of the quote total.</span>`;
+            }
+            if (diff > 0) {
+                return `<span class="text-yellow-700 font-medium">Preview covers ${coveragePercent.toFixed(0)}% of the quote total. Remaining ${formatCurrency(diff)} still needs invoices.</span>`;
+            }
+            return `<span class="text-red-700 font-medium">Preview exceeds the quote total by ${formatCurrency(Math.abs(diff))}. Adjust invoice amounts before generating.</span>`;
+        }
+
+        function getSelectionCoverageText(selectedTotal, quoteTotal) {
+            if (!quoteTotal || quoteTotal <= 0) {
+                return '';
+            }
+            const diff = quoteTotal - selectedTotal;
+            const coveragePercent = Math.min(Math.max((selectedTotal / quoteTotal) * 100, 0), 999);
+            if (Math.abs(diff) < 0.01) {
+                return 'Selected invoices cover 100% of the quote.';
+            }
+            if (diff > 0) {
+                return `Selected invoices cover ${coveragePercent.toFixed(0)}% of the quote. ${formatCurrency(diff)} remaining.`;
+            }
+            return `Selection exceeds the quote total by ${formatCurrency(Math.abs(diff))}.`;
+        }
+
         function renderInvoicePreview(invoices) {
             const content = document.getElementById('invoicePreviewContent');
             const totalAmount = invoices.reduce((sum, inv) => sum + (inv.isPlaceholder ? 0 : inv.amount), 0);
@@ -4599,6 +4786,43 @@
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
             const paymentModelDisplay = getPaymentModelDisplayName(paymentModel);
             const hasMultiplePayers = distributionPayers && distributionPayers.length > 1;
+            const quoteTotals = getQuoteFinancialTotals();
+            window.previewQuoteTotal = quoteTotals.total;
+            const quoteItems = state.quoteItems || [];
+            const quoteItemsSummary = quoteItems.length
+                ? quoteItems.map(item => {
+                    const quantity = item.quantity ? `<span class="text-[10px] text-gray-500 ml-1">x${item.quantity}</span>` : '';
+                    return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white text-gray-700 text-xs border border-gray-200 shadow-sm">${item.name || 'Item'}${quantity}</span>`;
+                }).join('')
+                : '<span class="text-xs text-gray-500">No items selected</span>';
+            const quoteTotalsGrid = `
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs text-gray-600">
+                    <div>
+                        <p class="font-semibold text-gray-700">Original</p>
+                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.grossSubtotal)}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Discount</p>
+                        <p class="text-green-600 text-sm">- ${formatCurrency(quoteTotals.discounts)}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Net</p>
+                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.netSubtotal)}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Tax</p>
+                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.tax)}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Grand Total</p>
+                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.total)}</p>
+                    </div>
+                </div>
+            `;
+            const coverageMessage = getCoverageStatusMessage(totalAmount, quoteTotals.total);
+            const customerNotes = document.getElementById('customerNotes')?.value?.trim();
+            const paymentInstructions = document.getElementById('paymentInstructions')?.value?.trim();
+            const showNotesSection = customerNotes || paymentInstructions;
             
             // Add selection state to each invoice
             invoices.forEach((inv, index) => {
@@ -4607,7 +4831,7 @@
                     inv.index = index;
                 }
             });
-            
+
             content.innerHTML = `
                 <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 border-2 border-blue-300 rounded-xl p-6 mb-6 shadow-md">
                     <div class="flex items-start justify-between mb-4">
@@ -4633,6 +4857,7 @@
                             <div class="text-sm text-gray-600 font-medium">
                                 <span id="selectedInvoicesCount" class="text-blue-700 font-semibold">${validInvoices.length}</span> of <span class="text-gray-700">${validInvoices.length}</span> invoice(s) selected
                             </div>
+                            <div class="text-xs text-gray-500 mt-1" id="selectedInvoicesCoverageText"></div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 pt-4 mt-4 border-t border-blue-200">
@@ -4652,6 +4877,21 @@
                                 <span class="text-sm text-gray-900 font-semibold">${distributionPayers.length} configured</span>
                             </div>
                         ` : ''}
+                    </div>
+                    ${coverageMessage ? `
+                        <div class="mt-4 py-3 px-4 rounded-lg bg-white/80 border border-blue-200 text-sm" id="invoiceCoverageStatus">
+                            ${coverageMessage}
+                        </div>
+                    ` : ''}
+                    <div class="mt-4 pt-4 border-t border-blue-200">
+                        <h5 class="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Quote Totals & Items</h5>
+                        ${quoteTotalsGrid}
+                        <div class="mt-3">
+                            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-2">Items</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${quoteItemsSummary}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -4693,6 +4933,17 @@
                 
                             <p class="text-sm text-gray-700 mb-4 leading-relaxed">${invoice.description}</p>
                             
+                                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4 text-xs text-gray-600">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                <span class="font-semibold text-gray-700">Invoice Context</span>
+                                            </div>
+                                            <p class="text-gray-700"><span class="font-semibold">Covers:</span> ${getInvoiceCoverageText(invoice)}</p>
+                                            <p class="text-gray-700"><span class="font-semibold">Payment Terms:</span> ${getPaymentTermsLabelForPreview()}</p>
+                                        </div>
+                                        
                                         ${invoice.payerName ? `
                                             <div class="bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-300 rounded-lg p-4 mb-4 shadow-sm">
                                                 <div class="flex items-center gap-2 mb-2">
@@ -4710,28 +4961,6 @@
                                                 </div>` : ''}
                                             </div>
                                         ` : ''}
-                                        
-                                        ${invoice.items.length > 0 ? `
-                                <div class="border-t border-gray-200 pt-4 mt-4">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h6 class="text-xs font-semibold text-gray-700 uppercase tracking-wide">Items</h6>
-                                        <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">${invoice.items.length} item${invoice.items.length !== 1 ? 's' : ''}</span>
-                                    </div>
-                                    <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                                        ${invoice.items.slice(0, 3).map(item => `
-                                            <div class="flex justify-between items-center p-2 bg-gray-50 rounded-lg border border-gray-200">
-                                                <span class="text-sm text-gray-700 font-medium">${item.name}</span>
-                                                <span class="text-sm font-semibold text-gray-900">$${(item.customPrice || item.price).toFixed(2)}</span>
-                                            </div>
-                                        `).join('')}
-                                        ${invoice.items.length > 3 ? `
-                                            <div class="text-center py-2">
-                                                <span class="text-xs text-gray-500 font-medium bg-gray-100 px-3 py-1 rounded-full">+ ${invoice.items.length - 3} more item${invoice.items.length - 3 !== 1 ? 's' : ''}</span>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                            ` : ''}
                                     </div>
                                 </div>
                             ` : `
@@ -4816,6 +5045,10 @@
             }
             if (selectedCountEl) {
                 selectedCountEl.textContent = selectedCount;
+            }
+            const coverageEl = document.getElementById('selectedInvoicesCoverageText');
+            if (coverageEl) {
+                coverageEl.textContent = getSelectionCoverageText(selectedTotal, window.previewQuoteTotal);
             }
             
             // Update button text
