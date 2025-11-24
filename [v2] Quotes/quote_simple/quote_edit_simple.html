@@ -4713,6 +4713,35 @@
             };
         }
 
+        function getQuoteSummaryDetails() {
+            const subtotal = calculateSubtotal();
+            const discounts = calculateLineItemDiscounts();
+            const taxBreakdown = getTaxBreakdown();
+            const totalTax = calculateTax();
+            const total = subtotal + totalTax;
+            const items = state.quoteItems.map(item => {
+                const lineTotal = item.customPrice * item.quantity;
+                const discountAmount = item.discountType === 'percentage'
+                    ? lineTotal * (item.discount / 100)
+                    : item.discount;
+                const finalAmount = lineTotal - discountAmount;
+                return {
+                    name: item.name,
+                    quantity: item.quantity,
+                    unit: item.unit || item.pricingType || '',
+                    amount: finalAmount
+                };
+            });
+            return {
+                subtotal,
+                discounts,
+                taxBreakdown,
+                totalTax,
+                total,
+                items
+            };
+        }
+
         function getPaymentTermsLabelForPreview() {
             const termsMap = {
                 'due_on_receipt': 'Due on Receipt',
@@ -4763,21 +4792,6 @@
             return `<span class="text-red-700 font-medium">Preview exceeds the quote total by ${formatCurrency(Math.abs(diff))}. Adjust invoice amounts before generating.</span>`;
         }
 
-        function getSelectionCoverageText(selectedTotal, quoteTotal) {
-            if (!quoteTotal || quoteTotal <= 0) {
-                return '';
-            }
-            const diff = quoteTotal - selectedTotal;
-            const coveragePercent = Math.min(Math.max((selectedTotal / quoteTotal) * 100, 0), 999);
-            if (Math.abs(diff) < 0.01) {
-                return 'Selected invoices cover 100% of the quote.';
-            }
-            if (diff > 0) {
-                return `Selected invoices cover ${coveragePercent.toFixed(0)}% of the quote. ${formatCurrency(diff)} remaining.`;
-            }
-            return `Selection exceeds the quote total by ${formatCurrency(Math.abs(diff))}.`;
-        }
-
         function renderInvoicePreview(invoices) {
             const content = document.getElementById('invoicePreviewContent');
             const totalAmount = invoices.reduce((sum, inv) => sum + (inv.isPlaceholder ? 0 : inv.amount), 0);
@@ -4788,41 +4802,57 @@
             const hasMultiplePayers = distributionPayers && distributionPayers.length > 1;
             const quoteTotals = getQuoteFinancialTotals();
             window.previewQuoteTotal = quoteTotals.total;
-            const quoteItems = state.quoteItems || [];
-            const quoteItemsSummary = quoteItems.length
-                ? quoteItems.map(item => {
-                    const quantity = item.quantity ? `<span class="text-[10px] text-gray-500 ml-1">x${item.quantity}</span>` : '';
-                    return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-white text-gray-700 text-xs border border-gray-200 shadow-sm">${item.name || 'Item'}${quantity}</span>`;
-                }).join('')
-                : '<span class="text-xs text-gray-500">No items selected</span>';
-            const quoteTotalsGrid = `
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs text-gray-600">
-                    <div>
-                        <p class="font-semibold text-gray-700">Original</p>
-                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.grossSubtotal)}</p>
+            const quoteSummary = getQuoteSummaryDetails();
+            const taxBreakdownLines = [];
+            if (quoteSummary.taxBreakdown.taxable_gst > 0) {
+                taxBreakdownLines.push(`<div class="flex justify-between"><span>GST (10%):</span><span>${formatCurrency(quoteSummary.taxBreakdown.taxable_gst)}</span></div>`);
+            }
+            if (quoteSummary.taxBreakdown.gst_free > 0) {
+                taxBreakdownLines.push(`<div class="flex justify-between text-gray-500"><span>GST-Free:</span><span>${formatCurrency(0)}</span></div>`);
+            }
+            if (quoteSummary.taxBreakdown.input_taxed > 0) {
+                taxBreakdownLines.push(`<div class="flex justify-between text-gray-500"><span>Input-Taxed:</span><span>${formatCurrency(0)}</span></div>`);
+            }
+            const quoteSummaryMetrics = `
+                <div class="space-y-2 text-sm text-gray-700">
+                    <div class="flex justify-between">
+                        <span>Subtotal</span>
+                        <span>${formatCurrency(quoteSummary.subtotal)}</span>
                     </div>
-                    <div>
-                        <p class="font-semibold text-gray-700">Discount</p>
-                        <p class="text-green-600 text-sm">- ${formatCurrency(quoteTotals.discounts)}</p>
+                    <div class="flex justify-between text-red-600">
+                        <span>Line Item Discounts</span>
+                        <span>- ${formatCurrency(quoteSummary.discounts)}</span>
                     </div>
-                    <div>
-                        <p class="font-semibold text-gray-700">Net</p>
-                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.netSubtotal)}</p>
+                    <div class="pt-2 border-t border-gray-200 space-y-1">
+                        <div class="text-xs text-gray-500 uppercase tracking-wide">Tax Breakdown:</div>
+                        ${taxBreakdownLines.length ? taxBreakdownLines.join('') : `<div class="text-xs text-gray-400">No taxable items</div>`}
+                        <div class="flex justify-between font-medium mt-1">
+                            <span>Total Tax</span>
+                            <span>${formatCurrency(quoteSummary.totalTax)}</span>
+                        </div>
                     </div>
-                    <div>
-                        <p class="font-semibold text-gray-700">Tax</p>
-                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.tax)}</p>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-700">Grand Total</p>
-                        <p class="text-gray-900 text-sm">${formatCurrency(quoteTotals.total)}</p>
+                    <div class="flex justify-between items-center border-t-2 border-gray-300 pt-3">
+                        <span class="font-bold text-gray-900 text-base">Total</span>
+                        <span class="font-bold text-gray-900 text-base">${formatCurrency(quoteSummary.total)}</span>
                     </div>
                 </div>
             `;
+            const quoteItemsList = quoteSummary.items.length
+                ? `
+                    <div class="space-y-2">
+                        ${quoteSummary.items.map(item => `
+                            <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-200 text-sm">
+                                <div>
+                                    <p class="font-medium text-gray-900">${item.name}</p>
+                                    <p class="text-xs text-gray-500">${item.quantity} ${item.unit || ''}</p>
+                                </div>
+                                <div class="font-semibold text-gray-900">${formatCurrency(item.amount)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `
+                : '<p class="text-sm text-gray-500">No line items added yet.</p>';
             const coverageMessage = getCoverageStatusMessage(totalAmount, quoteTotals.total);
-            const customerNotes = document.getElementById('customerNotes')?.value?.trim();
-            const paymentInstructions = document.getElementById('paymentInstructions')?.value?.trim();
-            const showNotesSection = customerNotes || paymentInstructions;
             
             // Add selection state to each invoice
             invoices.forEach((inv, index) => {
@@ -4844,20 +4874,13 @@
                                 </div>
                                 <div class="flex-1">
                                     <h4 class="text-xl font-bold text-gray-900 mb-1">Invoice Summary</h4>
-                                    <p class="text-sm text-gray-600">Select which invoices to create. Unselected invoices can be created later.</p>
+                                    <p class="text-sm text-gray-600">Review the invoices that will be created from this quote.</p>
                                 </div>
-                                <label class="flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors">
-                                    <input type="checkbox" id="selectAllInvoicesPreview" checked class="rounded border-blue-300 text-blue-600 focus:ring-blue-500" onchange="toggleSelectAllInvoices()" />
-                                    <span class="text-sm font-medium text-blue-700">Select All</span>
-                                </label>
                             </div>
                         </div>
                         <div class="text-right ml-6 pl-6 border-l-2 border-blue-200">
-                            <div class="text-4xl font-bold text-blue-900 mb-1" id="selectedInvoicesTotal">$${totalAmount.toFixed(2)}</div>
-                            <div class="text-sm text-gray-600 font-medium">
-                                <span id="selectedInvoicesCount" class="text-blue-700 font-semibold">${validInvoices.length}</span> of <span class="text-gray-700">${validInvoices.length}</span> invoice(s) selected
-                            </div>
-                            <div class="text-xs text-gray-500 mt-1" id="selectedInvoicesCoverageText"></div>
+                            <div class="text-4xl font-bold text-blue-900 mb-1">$${totalAmount.toFixed(2)}</div>
+                            <div class="text-sm text-gray-600 font-medium">Total amount across preview invoices</div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4 pt-4 mt-4 border-t border-blue-200">
@@ -4885,28 +4908,21 @@
                     ` : ''}
                     <div class="mt-4 pt-4 border-t border-blue-200">
                         <h5 class="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Quote Totals & Items</h5>
-                        ${quoteTotalsGrid}
+                        <div class="bg-white/80 rounded-lg border border-blue-100 p-4 mb-4">
+                            ${quoteSummaryMetrics}
+                        </div>
                         <div class="mt-3">
-                            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-2">Items</p>
-                            <div class="flex flex-wrap gap-2">
-                                ${quoteItemsSummary}
-                            </div>
+                            <p class="text-[10px] uppercase tracking-wide text-gray-500 font-semibold mb-2">Line Items</p>
+                            ${quoteItemsList}
                         </div>
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     ${invoices.map((invoice, index) => `
-                        <div class="bg-white border-2 border-${invoice.color}-200 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200 ${invoice.isPlaceholder ? 'opacity-60' : ''} ${invoice.selected ? 'ring-2 ring-blue-400 ring-offset-2' : 'hover:border-${invoice.color}-300'}">
+                        <div class="bg-white border-2 border-${invoice.color}-200 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200 ${invoice.isPlaceholder ? 'opacity-60' : ''}">
                             ${!invoice.isPlaceholder ? `
                                 <div class="flex items-start gap-3 mb-4">
-                                    <input 
-                                        type="checkbox" 
-                                        class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500 invoice-checkbox" 
-                                        data-invoice-index="${index}"
-                                        ${invoice.selected ? 'checked' : ''}
-                                        onchange="toggleInvoiceSelection(${index})"
-                                    />
                                     <div class="flex-1">
                             <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
                                 <div class="flex items-center gap-3">
@@ -4987,105 +5003,10 @@
                 </div>
             `;
             
-            // Store invoices in previewInvoices for selection tracking
+            // Store invoices in previewInvoices for generation
             previewInvoices = invoices.filter(inv => !inv.isPlaceholder);
-            
-            // Update summary after rendering
-            setTimeout(() => {
-                updateSelectedInvoicesSummary();
-            }, 100);
         }
         
-        // Toggle individual invoice selection (make globally accessible)
-        window.toggleInvoiceSelection = function(index) {
-            const checkbox = document.querySelector(`input[data-invoice-index="${index}"].invoice-checkbox`);
-            if (!checkbox) return;
-            
-            // Find the invoice in previewInvoices array
-            const invoice = previewInvoices.find(inv => inv.index === index);
-            if (invoice) {
-                invoice.selected = checkbox.checked;
-                updateSelectedInvoicesSummary();
-            }
-        };
-        
-        // Toggle select all invoices (make globally accessible)
-        window.toggleSelectAllInvoices = function() {
-            const selectAllCheckbox = document.getElementById('selectAllInvoicesPreview');
-            if (!selectAllCheckbox) return;
-            
-            const isChecked = selectAllCheckbox.checked;
-            const checkboxes = document.querySelectorAll('.invoice-checkbox');
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
-                const index = parseInt(checkbox.getAttribute('data-invoice-index'));
-                const invoice = previewInvoices.find(inv => inv.index === index);
-                if (invoice) {
-                    invoice.selected = isChecked;
-                }
-            });
-            
-            updateSelectedInvoicesSummary();
-        };
-        
-        // Update selected invoices summary
-        function updateSelectedInvoicesSummary() {
-            const selectedInvoices = previewInvoices.filter(inv => inv.selected);
-            const selectedTotal = selectedInvoices.reduce((sum, inv) => sum + inv.amount, 0);
-            const totalCount = previewInvoices.length;
-            const selectedCount = selectedInvoices.length;
-            
-            // Update summary display
-            const selectedTotalEl = document.getElementById('selectedInvoicesTotal');
-            const selectedCountEl = document.getElementById('selectedInvoicesCount');
-            
-            if (selectedTotalEl) {
-                selectedTotalEl.textContent = `$${selectedTotal.toFixed(2)}`;
-            }
-            if (selectedCountEl) {
-                selectedCountEl.textContent = selectedCount;
-            }
-            const coverageEl = document.getElementById('selectedInvoicesCoverageText');
-            if (coverageEl) {
-                coverageEl.textContent = getSelectionCoverageText(selectedTotal, window.previewQuoteTotal);
-            }
-            
-            // Update button text
-            const createBtn = document.getElementById('createAllInvoicesBtn');
-            if (createBtn) {
-                if (selectedCount === 0) {
-                    createBtn.disabled = true;
-                    createBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    createBtn.textContent = 'Select Invoices to Create';
-                } else if (selectedCount === totalCount) {
-                    createBtn.disabled = false;
-                    createBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    createBtn.innerHTML = `
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Confirm & Generate
-                    `;
-                } else {
-                    createBtn.disabled = false;
-                    createBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    createBtn.innerHTML = `
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Confirm & Create Selected (${selectedCount})
-                    `;
-                }
-            }
-            
-            // Update select all checkbox state
-            const selectAllCheckbox = document.getElementById('selectAllInvoicesPreview');
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = selectedCount === totalCount;
-                selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < totalCount;
-            }
-        }
 
         function calculateDueDate(fromDate) {
             const terms = document.getElementById('defaultPaymentTerms')?.value || 'net_30';
@@ -5161,34 +5082,25 @@
         }
 
         function createAllInvoicesFromPreview() {
-            // Get only selected invoices
-            const selectedInvoices = previewInvoices.filter(inv => inv.selected);
-            
-            if (selectedInvoices.length === 0) {
-                alert('Please select at least one invoice to create.');
+            if (!previewInvoices || previewInvoices.length === 0) {
+                alert('There are no invoices to create. Generate a preview first.');
                 return;
             }
             
-            // Build confirmation message with selected invoice details
-            const totalAmount = selectedInvoices.reduce((sum, inv) => sum + inv.amount, 0);
-            const invoiceCount = selectedInvoices.length;
+            const totalAmount = previewInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            const invoiceCount = previewInvoices.length;
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
             
-            let confirmationMessage = `You are about to create ${invoiceCount} selected invoice(s) totaling $${totalAmount.toFixed(2)}.\n\n`;
+            let confirmationMessage = `You are about to create ${invoiceCount} invoice(s) totaling $${totalAmount.toFixed(2)}.\n\n`;
             confirmationMessage += `Payment Model: ${paymentModel.charAt(0).toUpperCase() + paymentModel.slice(1)}\n\n`;
             confirmationMessage += `Selected Invoice Details:\n`;
             
-            selectedInvoices.forEach((inv, index) => {
+            previewInvoices.forEach((inv, index) => {
                 const payerInfo = inv.payerName ? ` (${inv.payerName})` : '';
                 confirmationMessage += `${index + 1}. ${inv.type}${payerInfo}: $${inv.amount.toFixed(2)}\n`;
             });
             
-            if (selectedInvoices.length < previewInvoices.length) {
-                const unselectedCount = previewInvoices.length - selectedInvoices.length;
-                confirmationMessage += `\n⚠️ Note: ${unselectedCount} invoice(s) were not selected and will not be created. You can create them later by clicking "Generate Invoices" again.`;
-            }
-            
-            confirmationMessage += `\n\nDo you want to proceed with creating the selected invoices?`;
+            confirmationMessage += `\n\nDo you want to proceed with creating these invoices?`;
             
             if (!confirm(confirmationMessage)) {
                 return;
@@ -5210,7 +5122,7 @@
             invoiceCounter = maxInvoiceNumber + 1;
             
             // Create only selected invoices from preview with diverse statuses for testing
-            const newInvoices = selectedInvoices.map((previewInv, index) => {
+            const newInvoices = previewInvoices.map((previewInv, index) => {
                 const invoiceId = `${invoiceIdPrefix}${String(invoiceCounter++).padStart(3, '0')}`;
                 
                 // Parse dueDate - handle both Date objects and date strings
@@ -5312,28 +5224,15 @@
             // Add new invoices to quoteInvoices array
             quoteInvoices.push(...newInvoices);
             
-            // Remove created invoices from preview (keep unselected ones for next time)
-            previewInvoices = previewInvoices.filter(inv => !inv.selected);
+            // Clear preview invoices
+            previewInvoices = [];
             
             // Show success message
-            let successMessage = `✅ Successfully created ${newInvoices.length} invoice(s)!\n\nTotal Amount: $${totalAmount.toFixed(2)}\n\n`;
-            if (previewInvoices.length > 0) {
-                successMessage += `Note: ${previewInvoices.length} invoice(s) were not selected and can be created later by clicking "Generate Invoices" again.`;
-            } else {
-                successMessage += `You can now view and manage these invoices in the Invoices tab.`;
-            }
+            let successMessage = `✅ Successfully created ${newInvoices.length} invoice(s)!\n\nTotal Amount: $${totalAmount.toFixed(2)}\n\nYou can now view and manage these invoices in the Invoices tab.`;
             alert(successMessage);
             
-            // If all invoices were created, close the modal. Otherwise, keep it open with updated selection.
-            if (previewInvoices.length === 0) {
-                hideInvoicePreview();
-            } else {
-                // Re-render preview with remaining invoices (all selected by default)
-                const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
-                const quoteTotal = calculateTotal();
-                const remainingInvoices = generateInvoicePreview(paymentModel, quoteTotal);
-                renderInvoicePreview(remainingInvoices);
-            }
+            // Close modal after creation
+            hideInvoicePreview();
             
             // Switch to Invoices tab to show the newly created invoices
             switchTab('invoices');
