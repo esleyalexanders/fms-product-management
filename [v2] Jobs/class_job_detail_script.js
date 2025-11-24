@@ -23,6 +23,8 @@ const sampleCustomers = [
         previousQuotes: 3,
         quotes: [
             { id: 'Q-2024-020', pricebookItemId: 'PB-YOGA-CLASS', total: 100.00, status: 'approved', slots: 2 },
+            { id: 'Q-2024-121', pricebookItemId: 'PB-YOGA-CLASS', total: 150.00, status: 'approved', slots: 3 },
+            { id: 'Q-2024-125', pricebookItemId: 'PB-WELLNESS-PASS', total: 70.00, status: 'approved', slots: 2 },
             { id: 'Q-2024-025', pricebookItemId: 'PB-MATH-TUTORING', total: 240.00, status: 'approved', slots: 2 },
             { id: 'Q-2024-030', pricebookItemId: 'PB-ALGEBRA-II', total: 180.00, status: 'approved', slots: 1 }
         ]
@@ -394,6 +396,44 @@ const availablePricebookItems = [
         price: 150.00
     }
 ];
+
+function assignQuotePaymentStatuses() {
+    sampleCustomers.forEach(customer => {
+        (customer.quotes || []).forEach(quote => {
+            const numericId = parseInt(quote.id?.replace(/\D/g, ''), 10) || 0;
+            const mod = numericId % 3;
+            let status = 'unpaid';
+            if (mod === 0) status = 'paid';
+            else if (mod === 1) status = 'partial';
+            quote.paymentStatus = status;
+            if (status === 'paid') {
+                quote.amountPaid = quote.total;
+            } else if (status === 'partial') {
+                quote.amountPaid = Number((quote.total * 0.5).toFixed(2));
+            } else {
+                quote.amountPaid = 0;
+            }
+        });
+    });
+}
+
+assignQuotePaymentStatuses();
+
+function formatCurrencyDisplay(value) {
+    const num = Number(value) || 0;
+    return `$${num.toFixed(2)}`;
+}
+
+function getPaymentStatusInfo(status) {
+    switch (status) {
+        case 'paid':
+            return { label: 'Paid', color: 'emerald', icon: '✅' };
+        case 'partial':
+            return { label: 'Partially Paid', color: 'amber', icon: '🌓' };
+        default:
+            return { label: 'Unpaid', color: 'rose', icon: '⚠️' };
+    }
+}
 
 // Current class job data
 let classJobData = {
@@ -837,59 +877,59 @@ function searchCustomers(query) {
     // Trim the query
     query = query.trim();
     
-    // Get list of already booked customer names
-    const bookedCustomerNames = classJobData.bookings.map(b => b.customerName);
-    const selectedCustomerIds = selectedCustomersForBooking.map(c => c.id);
+    // Get list of already booked quote IDs
+    const bookedQuoteIds = classJobData.bookings.map(b => b.quoteId).filter(Boolean);
+    // Get map of customer ID to their selected quote IDs (for customers already in selectedCustomersForBooking)
+    const selectedQuoteIdsByCustomer = selectedCustomersForBooking.reduce((map, c) => {
+        if (c.selectedQuoteId) {
+            if (!map.has(c.id)) map.set(c.id, []);
+            map.get(c.id).push(c.selectedQuoteId);
+        }
+        return map;
+    }, new Map());
     
     // Filter customers who:
     // 1. Match the search query (name or email)
     // 2. Have at least one approved quote with the selected pricebook item
-    // 3. Are NOT already in the bookings list
-    // 4. Are NOT already selected (pending)
-    const filtered = sampleCustomers.filter(customer => {
+    // 3. Show ALL quotes for the customer, but filter out:
+    //    - Quotes that are already booked
+    //    - Quotes that are already selected for that customer in selectedCustomersForBooking
+    const matchingEntries = sampleCustomers.reduce((entries, customer) => {
         const queryLower = query.toLowerCase().trim();
         const matchesSearch = customer.name.toLowerCase().includes(queryLower) || 
                              customer.email.toLowerCase().includes(queryLower);
         
-        if (!matchesSearch) return false;
-        
-        // Check if already booked
-        if (bookedCustomerNames.includes(customer.name)) return false;
-        
-        // Check if already selected
-        if (selectedCustomerIds.includes(customer.id)) return false;
+        if (!matchesSearch) return entries;
         
         // Check if customer has quotes matching the selected pricebook item
         // Make sure customer has quotes array
-        if (!customer.quotes || !Array.isArray(customer.quotes)) return false;
+        if (!customer.quotes || !Array.isArray(customer.quotes)) return entries;
         
-        const hasMatchingQuote = customer.quotes.some(quote => 
-            quote.pricebookItemId === selectedPricebookItem.id && 
+        // Get quotes that match the pricebook item and are approved
+        const matchingQuotes = customer.quotes.filter(quote => 
+            quote.pricebookItemId === selectedPricebookItem.id &&
             quote.status === 'approved'
         );
         
-        return hasMatchingQuote;
-    });
-    
-    if (filtered.length === 0) {
-        // Debug: Check if any customers match the search query at all
-        const allMatchingSearch = sampleCustomers.filter(c => 
-            c.name.toLowerCase().includes(query.toLowerCase().trim()) || 
-            c.email.toLowerCase().includes(query.toLowerCase().trim())
-        );
-        
-        // Debug: Check if any customers have matching quotes
-        const withMatchingQuotes = sampleCustomers.filter(c => {
-            if (!c.quotes || !Array.isArray(c.quotes)) return false;
-            return c.quotes.some(q => q.pricebookItemId === selectedPricebookItem.id && q.status === 'approved');
+        // Filter out quotes that are already booked or already selected for this customer
+        matchingQuotes.forEach(quote => {
+            // Skip if quote is already booked
+            if (bookedQuoteIds.includes(quote.id)) return;
+            
+            // Skip if quote is already selected for this customer
+            const customerSelectedQuotes = selectedQuoteIdsByCustomer.get(customer.id) || [];
+            if (customerSelectedQuotes.includes(quote.id)) return;
+            
+            entries.push({ customer, quote });
         });
         
-        let debugMessage = `No customers found with quotes for "${selectedPricebookItem.name}"`;
-        if (bookedCustomerNames.length > 0) {
-            debugMessage += ` (excluding ${bookedCustomerNames.length} already booked customer${bookedCustomerNames.length > 1 ? 's' : ''})`;
-        }
-        if (selectedCustomerIds.length > 0) {
-            debugMessage += ` (excluding ${selectedCustomerIds.length} already selected customer${selectedCustomerIds.length > 1 ? 's' : ''})`;
+        return entries;
+    }, []);
+    
+    if (matchingEntries.length === 0) {
+        let debugMessage = `No available quotes found for "${selectedPricebookItem.name}"`;
+        if (bookedQuoteIds.length > 0) {
+            debugMessage += ` (${bookedQuoteIds.length} quote${bookedQuoteIds.length > 1 ? 's' : ''} already booked)`;
         }
         
         resultsContainer.innerHTML = `
@@ -900,35 +940,43 @@ function searchCustomers(query) {
         resultsContainer.classList.remove('hidden');
         return;
     }
-    
-    resultsContainer.innerHTML = filtered.map(customer => {
-        // Count matching quotes for this customer
-        const matchingQuotes = customer.quotes.filter(quote => 
-            quote.pricebookItemId === selectedPricebookItem.id && 
-            quote.status === 'approved'
-        );
-        const totalSlots = matchingQuotes.reduce((sum, q) => sum + q.slots, 0);
-        
-        return `
-            <div 
-                onclick="selectCustomer('${customer.id}')"
-                class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-            >
-                <div class="flex items-center justify-between">
-                    <div class="flex-1">
-                        <p class="font-medium text-gray-900 text-sm">${customer.name}</p>
-                        <p class="text-xs text-gray-600 mt-0.5">${customer.email}</p>
-                        <p class="text-xs text-emerald-600 mt-0.5">
-                            ${matchingQuotes.length} quote${matchingQuotes.length > 1 ? 's' : ''} • ${totalSlots} slot${totalSlots > 1 ? 's' : ''} available
-                        </p>
-                    </div>
-                    ${customer.previousQuotes > 0 ? `
-                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">${customer.previousQuotes} quotes</span>
-                    ` : ''}
+
+    const groupedByCustomer = matchingEntries.reduce((map, entry) => {
+        if (!map.has(entry.customer.id)) {
+            map.set(entry.customer.id, { customer: entry.customer, quotes: [] });
+        }
+        map.get(entry.customer.id).quotes.push(entry.quote);
+        return map;
+    }, new Map());
+
+    resultsContainer.innerHTML = Array.from(groupedByCustomer.values()).map(group => `
+        <div class="p-3 border-b border-gray-200 last:border-b-0 bg-blue-50 rounded-lg mb-2">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <p class="font-semibold text-gray-900 text-sm">${group.customer.name}</p>
+                    <p class="text-xs text-gray-600 mt-0.5">${group.customer.email}</p>
                 </div>
+                <span class="text-xs text-gray-500">${group.quotes.length} quote${group.quotes.length > 1 ? 's' : ''}</span>
             </div>
-        `;
-    }).join('');
+            <div class="space-y-1">
+                ${group.quotes.map(quote => `
+                    <button 
+                        type="button"
+                        onclick="selectCustomer('${group.customer.id}', '${quote.id}')"
+                        class="w-full text-left px-3 py-2 border border-blue-200 rounded-lg bg-white hover:bg-blue-100 transition-colors flex items-center justify-between text-xs text-gray-700"
+                    >
+                        <div>
+                            <p class="font-medium text-gray-900">${quote.id}</p>
+                            <p class="text-[11px] text-gray-500">Quote Total: ${formatCurrencyDisplay(quote.total)}</p>
+                        </div>
+                        <div class="text-right text-[11px] text-gray-600">
+                            <p>${quote.slots} slot${quote.slots > 1 ? 's' : ''} available</p>
+                        </div>
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
     
     resultsContainer.classList.remove('hidden');
 }
@@ -1003,12 +1051,16 @@ function selectStaff(staffId) {
 }
 
 // Select customer - adds to selected customers list (like adding quote items)
-function selectCustomer(customerId) {
+function selectCustomer(customerId, initialQuoteId = null) {
     const customer = sampleCustomers.find(c => c.id === customerId);
-    if (!customer) return;
+    if (!customer || !initialQuoteId) return;
     
-    // Check if already selected
-    if (selectedCustomersForBooking.find(c => c.id === customer.id)) {
+    // Check if this specific quote is already selected or booked
+    const bookedQuoteIds = classJobData.bookings.map(b => b.quoteId).filter(Boolean);
+    const selectedQuoteIds = selectedCustomersForBooking.map(c => c.selectedQuoteId).filter(Boolean);
+    
+    if (bookedQuoteIds.includes(initialQuoteId) || selectedQuoteIds.includes(initialQuoteId)) {
+        showNotification('This quote is already selected or booked', 'warning');
         return;
     }
     
@@ -1018,12 +1070,25 @@ function selectCustomer(customerId) {
         quote.pricebookItemId === selectedPricebookItem.id && 
         quote.status === 'approved'
     );
+    const selectedQuote = matchingQuotes.find(q => q.id === initialQuoteId);
     
-    // Add customer to selected list with their matching quotes
+    if (!selectedQuote) {
+        showNotification('Quote not found', 'error');
+        return;
+    }
+    
+    const paymentStatus = selectedQuote?.paymentStatus || 'unpaid';
+    const amountPaid = selectedQuote?.amountPaid || 0;
+    
+    // Add customer to selected list with this specific quote
+    // Allow multiple entries for the same customer with different quotes
     selectedCustomersForBooking.push({
         ...customer,
         matchingQuotes: matchingQuotes,
-        selectedQuoteId: null,
+        selectedQuoteId: initialQuoteId,
+        paymentStatus,
+        amountPaid,
+        quoteTotal: selectedQuote?.total || 0,
         slots: 1,
         status: 'confirmed'
     });
@@ -1058,78 +1123,97 @@ function renderSelectedCustomers() {
     
     container.innerHTML = selectedCustomersForBooking.map((customer, index) => {
         const matchingQuotes = customer.matchingQuotes || [];
+        const selectedQuote = matchingQuotes.find(q => q.id === customer.selectedQuoteId);
         
         return `
-            <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <!-- Header Row -->
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <h3 class="font-semibold text-gray-900">${customer.name}</h3>
+            <div class="relative bg-white border border-emerald-200 rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden">
+                <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-400"></div>
+                <div class="p-5 space-y-4">
+                    <!-- Header Row -->
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-[11px] uppercase tracking-[0.3em] text-emerald-500 font-semibold mb-1">Selected Customer</p>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h3 class="text-xl font-semibold text-gray-900">${customer.name}</h3>
+                                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    ${matchingQuotes.length} quote${matchingQuotes.length !== 1 ? 's' : ''} available
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">${customer.email}</p>
                         </div>
-                        <p class="text-sm text-gray-600">${customer.email}</p>
-                        ${matchingQuotes.length > 0 ? `
-                            <p class="text-xs text-emerald-600 mt-1">
-                                ${matchingQuotes.length} quote${matchingQuotes.length > 1 ? 's' : ''} available
-                            </p>
-                        ` : ''}
-                    </div>
-                    <button 
-                        onclick="removeSelectedCustomer('${customer.id}')"
-                        class="ml-2 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Remove customer"
-                    >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
-                </div>
-                
-                <!-- Booking Details Grid -->
-                <div class="grid grid-cols-12 gap-3 mb-3 pb-3 border-b border-gray-200">
-                    <div class="col-span-4">
-                        <label class="text-xs text-gray-500 block mb-1">Quote ID <span class="text-red-500">*</span></label>
-                        <select 
-                            onchange="updateSelectedCustomerQuote(${index}, this.value)"
-                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm"
+                        <button 
+                            onclick="removeSelectedCustomer('${customer.id}')"
+                            class="text-gray-400 hover:text-red-500 transition-colors"
+                            title="Remove customer"
                         >
-                            <option value="">Select a quote...</option>
-                            ${matchingQuotes.map(quote => `
-                                <option value="${quote.id}" ${customer.selectedQuoteId === quote.id ? 'selected' : ''}>
-                                    ${quote.id} (${quote.slots} slot${quote.slots > 1 ? 's' : ''} available)
-                                </option>
-                            `).join('')}
-                        </select>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="col-span-3">
-                        <label class="text-xs text-gray-500 block mb-1">Number of Slots <span class="text-red-500">*</span></label>
-                        <input 
-                            type="number"
-                            value="${customer.slots}"
-                            onchange="updateSelectedCustomerSlots(${index}, this.value)"
-                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm text-center"
-                            min="1"
-                            max="20"
-                        />
+                    
+                    <!-- Booking Details Grid -->
+                    <div class="grid gap-4 md:grid-cols-3">
+                        <div>
+                            <label class="text-xs text-gray-500 block mb-1">Quote</label>
+                            ${customer.selectedQuoteId ? `
+                                <div class="p-4 border border-emerald-200 rounded-xl bg-gradient-to-br from-emerald-50 to-white">
+                                    <div class="flex items-center justify-between text-sm font-semibold text-emerald-900">
+                                        <span>${customer.selectedQuoteId}</span>
+                                        <span>${formatCurrencyDisplay(selectedQuote?.total || 0)}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-xs text-emerald-700 mt-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>${selectedQuote?.slots || 0} slot${(selectedQuote?.slots || 0) === 1 ? '' : 's'} available</span>
+                                    </div>
+                                </div>
+                            ` : `
+                                <div class="p-4 border border-amber-200 rounded-xl bg-amber-50 text-xs text-amber-700">
+                                    No matching quote found for this pricebook item.
+                                </div>
+                            `}
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 block mb-1">Number of Slots <span class="text-red-500">*</span></label>
+                            <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                                <input 
+                                    type="number"
+                                    value="${customer.slots}"
+                                    onchange="updateSelectedCustomerSlots(${index}, this.value)"
+                                    class="w-full px-3 py-2 text-center text-lg font-semibold text-gray-900 focus:outline-none"
+                                    min="1"
+                                    max="20"
+                                />
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1 text-center">Adjust seats to allocate</p>
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-500 block mb-1">Payment Status</label>
+                            ${(() => {
+                                const info = getPaymentStatusInfo(customer.paymentStatus);
+                                return `
+                                    <div class="p-4 border border-${info.color}-200 rounded-xl bg-${info.color}-50">
+                                        <div class="flex items-center gap-2 text-sm font-semibold text-${info.color}-800">
+                                            <span>${info.icon}</span>
+                                            <span>${info.label}</span>
+                                        </div>
+                                        <p class="text-xs text-gray-600 mt-1">Paid ${formatCurrencyDisplay(customer.amountPaid)} of ${formatCurrencyDisplay(customer.quoteTotal)}</p>
+                                    </div>
+                                `;
+                            })()}
+                        </div>
                     </div>
-                    <div class="col-span-3">
-                        <label class="text-xs text-gray-500 block mb-1">Status</label>
-                        <select 
-                            onchange="updateSelectedCustomerStatus(${index}, this.value)"
-                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm"
-                        >
-                            <option value="confirmed" ${customer.status === 'confirmed' ? 'selected' : ''}>✅ Confirmed</option>
-                            <option value="pending_payment" ${customer.status === 'pending_payment' ? 'selected' : ''}>⏳ Pending Payment</option>
-                            <option value="waitlisted" ${customer.status === 'waitlisted' ? 'selected' : ''}>📋 Waitlisted</option>
-                        </select>
-                    </div>
-                    <div class="col-span-2 flex items-end">
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                        <p class="text-xs text-gray-500 text-center sm:text-left">Booking auto-checks capacity before confirming seats.</p>
                         <button 
                             onclick="bookSelectedCustomer(${index})"
-                            class="w-full px-3 py-1.5 rounded text-sm transition-colors font-medium ${!customer.selectedQuoteId ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700'}"
+                            class="w-full sm:w-auto px-5 py-2 rounded-xl text-sm font-semibold transition-all ${!customer.selectedQuoteId ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-emerald-600 text-white hover:-translate-y-0.5 hover:shadow-lg'}"
                             ${!customer.selectedQuoteId ? 'disabled' : ''}
                         >
-                            Book
+                            Book Slots
                         </button>
                     </div>
                 </div>
@@ -1176,14 +1260,6 @@ function updateSelectedCustomerSlots(index, value) {
     }
 }
 
-// Update selected customer status
-function updateSelectedCustomerStatus(index, status) {
-    if (selectedCustomersForBooking[index]) {
-        selectedCustomersForBooking[index].status = status;
-        renderSelectedCustomers();
-    }
-}
-
 // Book selected customer
 function bookSelectedCustomer(index) {
     // Validate index
@@ -1207,7 +1283,7 @@ function bookSelectedCustomer(index) {
     }
     
     const slots = customer.slots || 1;
-    const status = customer.status || 'confirmed';
+    const status = 'confirmed';
     
     // Check if quote already booked
     const existingBooking = classJobData.bookings.find(b => b.quoteId === customer.selectedQuoteId);
@@ -1244,7 +1320,8 @@ function bookSelectedCustomer(index) {
         quoteId: customer.selectedQuoteId,
         slots: slots,
         customerName: customer.name,
-        status: finalStatus
+        status: finalStatus,
+        paymentStatus: customer.paymentStatus || 'unpaid'
     };
     
     classJobData.bookings.push(booking);

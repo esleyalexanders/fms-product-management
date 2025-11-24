@@ -593,7 +593,6 @@
                             <p class="text-2xl font-bold text-gray-900" id="activeQuotes">13</p>
                         </div>
                     </div>
-                    <p class="text-xs text-green-600 font-medium" id="activeQuotesTrend">↑ 3 from last</p>
                 </div>
 
                 <!-- Total Value -->
@@ -609,7 +608,6 @@
                             <p class="text-2xl font-bold text-gray-900" id="totalValue">$21.6K</p>
                         </div>
                     </div>
-                    <p class="text-xs text-green-600 font-medium" id="totalValueTrend">↑ 15% vs last</p>
                 </div>
 
                 <!-- Outstanding -->
@@ -625,7 +623,6 @@
                             <p class="text-2xl font-bold text-gray-900" id="outstandingAmount">$5.5K</p>
                         </div>
                     </div>
-                    <p class="text-xs text-red-600 font-medium" id="unpaidCount">3 unpaid</p>
                 </div>
 
                 <!-- This Month -->
@@ -641,7 +638,6 @@
                             <p class="text-2xl font-bold text-gray-900" id="monthlyValue">$0.0K</p>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-600 font-medium" id="monthlyQuotes">+0 quotes</p>
                 </div>
             </div>
 
@@ -1465,6 +1461,11 @@ function filterAndRender() {
     renderQuotes();
 }
 
+function formatCurrency(value) {
+    if (!Number.isFinite(value)) return '$0.00';
+    return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 // Update counts
 function updateCounts() {
     const counts = {
@@ -1485,23 +1486,28 @@ function updateCounts() {
     document.getElementById('countConverted').textContent = counts.converted;
     document.getElementById('countArchived').textContent = counts.archived;
     
-    // Update KPI cards
-    const totalValue = state.quotes.reduce((sum, q) => sum + q.total, 0);
-    const outstanding = state.quotes.reduce((sum, q) => sum + (q.amountInvoiced - q.amountPaid), 0);
-    const unpaidCount = state.quotes.filter(q => q.paymentStatus === 'invoiced_unpaid' || q.paymentStatus === 'partially_paid').length;
+    // Update KPI cards with current-month data only
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthlyQuotes = state.quotes.filter(q => {
+        const created = new Date(q.dateCreated);
+        return !isNaN(created) && created >= startOfMonth && created <= now;
+    });
     
-    document.getElementById('activeQuotes').textContent = counts.all;
-    document.getElementById('totalValue').textContent = `$${(totalValue / 1000).toFixed(1)}K`;
-    document.getElementById('outstandingAmount').textContent = `$${(outstanding / 1000).toFixed(1)}K`;
-    document.getElementById('unpaidCount').textContent = `${unpaidCount} unpaid`;
+    const monthlyTotalValue = monthlyQuotes.reduce((sum, q) => sum + q.total, 0);
+    const monthlyOutstanding = monthlyQuotes.reduce((sum, q) => {
+        const invoiced = q.amountInvoiced || 0;
+        const paid = q.amountPaid || 0;
+        return sum + Math.max(invoiced - paid, 0);
+    }, 0);
+    const monthlyUnpaidInvoices = monthlyQuotes.filter(q => (q.amountInvoiced || 0) > (q.amountPaid || 0)).length;
+    const monthlyPaidValue = monthlyQuotes.reduce((sum, q) => sum + (q.amountPaid || 0), 0);
+    const monthlyPaidInvoices = monthlyQuotes.filter(q => (q.amountPaid || 0) > 0).length;
     
-    // This month (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const monthlyQuotes = state.quotes.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
-    const monthlyValue = monthlyQuotes.reduce((sum, q) => sum + q.total, 0);
-    document.getElementById('monthlyValue').textContent = `$${(monthlyValue / 1000).toFixed(1)}K`;
-    document.getElementById('monthlyQuotes').textContent = `+${monthlyQuotes.length} quotes`;
+    document.getElementById('activeQuotes').textContent = monthlyQuotes.length;
+    document.getElementById('totalValue').textContent = formatCurrency(monthlyTotalValue);
+    document.getElementById('outstandingAmount').textContent = formatCurrency(monthlyOutstanding);
+    document.getElementById('monthlyValue').textContent = formatCurrency(monthlyPaidValue);
 }
 
 // Update pagination
