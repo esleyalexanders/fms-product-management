@@ -582,6 +582,16 @@ section {
     color: var(--warning-color);
 }
 
+.action-icon.team {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.action-icon.customer {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
 .action-content {
     flex: 1;
 }
@@ -707,7 +717,7 @@ section {
    ======================================== */
 .setup-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.25rem;
 }
 
