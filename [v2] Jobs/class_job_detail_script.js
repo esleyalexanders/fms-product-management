@@ -435,6 +435,35 @@ function getPaymentStatusInfo(status) {
     }
 }
 
+// Tab switching function
+function switchTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('[id^="tab-content-"]').forEach(content => {
+        content.classList.add('hidden');
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('[id^="tab-"]').forEach(button => {
+        button.classList.remove('active', 'border-emerald-600', 'text-emerald-600');
+        button.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab content
+    const selectedContent = document.getElementById(`tab-content-${tabName}`);
+    if (selectedContent) {
+        selectedContent.classList.remove('hidden');
+        selectedContent.classList.add('active');
+    }
+    
+    // Add active class to selected tab button
+    const selectedButton = document.getElementById(`tab-${tabName}`);
+    if (selectedButton) {
+        selectedButton.classList.add('active', 'border-emerald-600', 'text-emerald-600');
+        selectedButton.classList.remove('border-transparent', 'text-gray-500');
+    }
+}
+
 // Current class job data
 let classJobData = {
     id: null,
@@ -816,34 +845,94 @@ function renderBookings() {
         };
         const status = statusConfig[booking.status] || statusConfig.pending_payment;
         
+        const paymentInfo = getPaymentStatusInfo(booking.paymentStatus || 'unpaid');
+        const amountPaid = booking.amountPaid || 0;
+        const quoteTotal = booking.quoteTotal || 0;
+        
+        // Format booking date
+        let bookingDate = '';
+        if (booking.bookedAt) {
+            const date = new Date(booking.bookedAt);
+            bookingDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        
+        // Get quote details if available
+        const customer = sampleCustomers.find(c => c.name === booking.customerName);
+        const quote = customer?.quotes?.find(q => q.id === booking.quoteId);
+        
         return `
-            <div class="p-4 border border-gray-200 rounded-lg hover:border-emerald-300 transition-colors">
-                <div class="flex items-start justify-between">
+            <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all">
+                <div class="p-4">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-3">
                     <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1 flex-wrap">
-                            <h4 class="font-semibold text-gray-900">${booking.customerName || 'Unknown Customer'}</h4>
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <h3 class="text-lg font-semibold text-gray-900">${booking.customerName || 'Unknown Customer'}</h3>
                             <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-${status.color}-100 text-${status.color}-700">
                                 ${status.icon} ${status.text}
                             </span>
-                            <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                                <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
                                 ${booking.slots} ${booking.slots === 1 ? 'slot' : 'slots'}
                             </span>
                         </div>
-                        ${booking.quoteId ? `
-                            <p class="text-sm text-gray-600">Quote: ${booking.quoteId}</p>
-                        ` : `
-                            <p class="text-sm text-gray-500 italic">Manual booking (no quote)</p>
-                        `}
+                            ${booking.customerEmail ? `
+                                <p class="text-sm text-gray-500">${booking.customerEmail}</p>
+                            ` : ''}
+                            ${booking.note ? `
+                                <p class="mt-2 text-sm text-gray-700 whitespace-pre-wrap">${booking.note}</p>
+                            ` : ''}
                     </div>
                     <button 
                         onclick="removeBooking(${index})"
-                        class="ml-4 text-red-500 hover:text-red-700"
+                            class="ml-3 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-colors flex items-center gap-1.5"
                         title="Remove booking"
                     >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
+                            Remove
                     </button>
+                    </div>
+                    
+                    <!-- Key Info Row -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-gray-100">
+                        <!-- Quote -->
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">Quote</p>
+                            <p class="text-sm font-semibold text-gray-900">${booking.quoteId || 'N/A'}</p>
+                            ${quoteTotal > 0 ? `
+                                <p class="text-xs text-gray-600">${formatCurrencyDisplay(quoteTotal)}</p>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Payment Status -->
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">Payment</p>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-sm">${paymentInfo.icon}</span>
+                                <p class="text-sm font-semibold text-${paymentInfo.color}-700">${paymentInfo.label}</p>
+                            </div>
+                            ${quoteTotal > 0 ? `
+                                <p class="text-xs text-gray-600">${formatCurrencyDisplay(amountPaid)} / ${formatCurrencyDisplay(quoteTotal)}</p>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- Outstanding (if any) -->
+                        ${quoteTotal > 0 && amountPaid < quoteTotal ? `
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Outstanding</p>
+                                <p class="text-sm font-semibold text-amber-600">${formatCurrencyDisplay(quoteTotal - amountPaid)}</p>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Booking Date -->
+                        ${bookingDate ? `
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Booked</p>
+                                <p class="text-sm text-gray-700">${bookingDate}</p>
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
@@ -907,7 +996,7 @@ function searchCustomers(query) {
         
         // Get quotes that match the pricebook item and are approved
         const matchingQuotes = customer.quotes.filter(quote => 
-            quote.pricebookItemId === selectedPricebookItem.id &&
+            quote.pricebookItemId === selectedPricebookItem.id && 
             quote.status === 'approved'
         );
         
@@ -940,7 +1029,7 @@ function searchCustomers(query) {
         resultsContainer.classList.remove('hidden');
         return;
     }
-
+    
     const groupedByCustomer = matchingEntries.reduce((map, entry) => {
         if (!map.has(entry.customer.id)) {
             map.set(entry.customer.id, { customer: entry.customer, quotes: [] });
@@ -968,10 +1057,10 @@ function searchCustomers(query) {
                         <div>
                             <p class="font-medium text-gray-900">${quote.id}</p>
                             <p class="text-[11px] text-gray-500">Quote Total: ${formatCurrencyDisplay(quote.total)}</p>
-                        </div>
+                    </div>
                         <div class="text-right text-[11px] text-gray-600">
                             <p>${quote.slots} slot${quote.slots > 1 ? 's' : ''} available</p>
-                        </div>
+                </div>
                     </button>
                 `).join('')}
             </div>
@@ -1050,17 +1139,19 @@ function selectStaff(staffId) {
     classJobData.assignedStaff = [staff.name];
 }
 
-// Select customer - adds to selected customers list (like adding quote items)
+// Store current quick book customer
+let currentQuickBookCustomer = null;
+
+// Select customer - shows quick book form
 function selectCustomer(customerId, initialQuoteId = null) {
     const customer = sampleCustomers.find(c => c.id === customerId);
     if (!customer || !initialQuoteId) return;
     
-    // Check if this specific quote is already selected or booked
+    // Check if this specific quote is already booked
     const bookedQuoteIds = classJobData.bookings.map(b => b.quoteId).filter(Boolean);
-    const selectedQuoteIds = selectedCustomersForBooking.map(c => c.selectedQuoteId).filter(Boolean);
     
-    if (bookedQuoteIds.includes(initialQuoteId) || selectedQuoteIds.includes(initialQuoteId)) {
-        showNotification('This quote is already selected or booked', 'warning');
+    if (bookedQuoteIds.includes(initialQuoteId)) {
+        showNotification('This quote is already booked', 'warning');
         return;
     }
     
@@ -1080,25 +1171,132 @@ function selectCustomer(customerId, initialQuoteId = null) {
     const paymentStatus = selectedQuote?.paymentStatus || 'unpaid';
     const amountPaid = selectedQuote?.amountPaid || 0;
     
-    // Add customer to selected list with this specific quote
-    // Allow multiple entries for the same customer with different quotes
-    selectedCustomersForBooking.push({
+    // Store current quick book customer
+    currentQuickBookCustomer = {
         ...customer,
         matchingQuotes: matchingQuotes,
         selectedQuoteId: initialQuoteId,
         paymentStatus,
         amountPaid,
         quoteTotal: selectedQuote?.total || 0,
-        slots: 1,
-        status: 'confirmed'
-    });
+        slots: 1
+    };
     
     // Hide autocomplete and clear search
     document.getElementById('customerAutocomplete').classList.add('hidden');
     document.getElementById('customerSearchInput').value = '';
     
-    // Render selected customers
-    renderSelectedCustomers();
+    // Show quick book form
+    showQuickBookForm();
+}
+
+// Show quick book form
+function showQuickBookForm() {
+    if (!currentQuickBookCustomer) return;
+    
+    const form = document.getElementById('quickBookForm');
+    const customerName = document.getElementById('quickBookCustomerName');
+    const customerEmail = document.getElementById('quickBookCustomerEmail');
+    const quoteDisplay = document.getElementById('quickBookQuoteDisplay');
+    const slotsInput = document.getElementById('quickBookSlots');
+    const paymentStatusDisplay = document.getElementById('quickBookPaymentStatus');
+    
+    // Set customer info
+    customerName.textContent = currentQuickBookCustomer.name;
+    customerEmail.textContent = currentQuickBookCustomer.email;
+    
+    // Set quote info
+    const selectedQuote = currentQuickBookCustomer.matchingQuotes.find(q => q.id === currentQuickBookCustomer.selectedQuoteId);
+    quoteDisplay.innerHTML = `
+        <div class="flex items-center justify-between text-sm font-semibold text-emerald-900">
+            <span>${currentQuickBookCustomer.selectedQuoteId}</span>
+            <span>${formatCurrencyDisplay(currentQuickBookCustomer.quoteTotal)}</span>
+        </div>
+        ${selectedQuote ? `
+            <div class="flex items-center gap-2 text-xs text-emerald-700 mt-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>${selectedQuote.slots} slot${selectedQuote.slots === 1 ? '' : 's'} available</span>
+            </div>
+        ` : ''}
+    `;
+    
+    // Set slots (max available from quote)
+    const maxSlots = selectedQuote?.slots || 1;
+    slotsInput.max = maxSlots;
+    slotsInput.value = Math.min(currentQuickBookCustomer.slots || 1, maxSlots);
+    
+    // Set payment status
+    const paymentInfo = getPaymentStatusInfo(currentQuickBookCustomer.paymentStatus);
+    paymentStatusDisplay.innerHTML = `
+        <div class="flex items-center gap-2 text-sm font-semibold text-${paymentInfo.color}-800">
+            <span>${paymentInfo.icon}</span>
+            <span>${paymentInfo.label}</span>
+        </div>
+        <p class="text-xs text-gray-600 mt-1">Paid ${formatCurrencyDisplay(currentQuickBookCustomer.amountPaid)} of ${formatCurrencyDisplay(currentQuickBookCustomer.quoteTotal)}</p>
+    `;
+    
+    // Show form
+    form.classList.remove('hidden');
+}
+
+// Clear quick book form
+function clearQuickBook() {
+    currentQuickBookCustomer = null;
+    document.getElementById('quickBookForm').classList.add('hidden');
+    document.getElementById('customerSearchInput').value = '';
+    const slotsInput = document.getElementById('quickBookSlots');
+    if (slotsInput) {
+        slotsInput.value = 1;
+    }
+    const notesInput = document.getElementById('quickBookNotes');
+    if (notesInput) {
+        notesInput.value = '';
+    }
+}
+
+// Update quick book slots
+function updateQuickBookSlots(value) {
+    if (!currentQuickBookCustomer) return;
+    
+    const slots = parseInt(value) || 1;
+    const selectedQuote = currentQuickBookCustomer.matchingQuotes.find(q => q.id === currentQuickBookCustomer.selectedQuoteId);
+    
+    // Validate against quote's available slots
+    if (selectedQuote && slots > selectedQuote.slots) {
+        showNotification(`Maximum ${selectedQuote.slots} slots available from this quote`, 'warning');
+        document.getElementById('quickBookSlots').value = selectedQuote.slots;
+        currentQuickBookCustomer.slots = selectedQuote.slots;
+    } else {
+        currentQuickBookCustomer.slots = slots;
+    }
+}
+
+// Book quick customer
+function bookQuickCustomer() {
+    if (!currentQuickBookCustomer) return;
+    
+    const slotsInput = document.getElementById('quickBookSlots');
+    const slots = parseInt(slotsInput.value) || 1;
+    const notesInput = document.getElementById('quickBookNotes');
+    const bookingNote = notesInput ? notesInput.value.trim() : '';
+    
+    // Update current customer slots and note
+    currentQuickBookCustomer.slots = slots;
+    currentQuickBookCustomer.bookingNote = bookingNote;
+    
+    // Create a temporary customer object for booking
+    const tempCustomer = {
+        ...currentQuickBookCustomer,
+        slots: slots,
+        bookingNote
+    };
+    
+    // Use the existing booking logic
+    const index = 0; // Dummy index for the booking function
+    selectedCustomersForBooking = [tempCustomer];
+    bookSelectedCustomer(0);
 }
 
 // Remove selected customer (before booking)
@@ -1129,7 +1327,7 @@ function renderSelectedCustomers() {
             <div class="relative bg-white border border-emerald-200 rounded-2xl shadow-sm hover:shadow-lg transition-all overflow-hidden">
                 <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-400"></div>
                 <div class="p-5 space-y-4">
-                    <!-- Header Row -->
+                <!-- Header Row -->
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <p class="text-[11px] uppercase tracking-[0.3em] text-emerald-500 font-semibold mb-1">Selected Customer</p>
@@ -1138,21 +1336,21 @@ function renderSelectedCustomers() {
                                 <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     ${matchingQuotes.length} quote${matchingQuotes.length !== 1 ? 's' : ''} available
                                 </span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">${customer.email}</p>
                         </div>
-                        <button 
-                            onclick="removeSelectedCustomer('${customer.id}')"
-                            class="text-gray-400 hover:text-red-500 transition-colors"
-                            title="Remove customer"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+                            <p class="text-sm text-gray-500 mt-1">${customer.email}</p>
                     </div>
-                    
-                    <!-- Booking Details Grid -->
+                    <button 
+                        onclick="removeSelectedCustomer('${customer.id}')"
+                            class="text-gray-400 hover:text-red-500 transition-colors"
+                        title="Remove customer"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Booking Details Grid -->
                     <div class="grid gap-4 md:grid-cols-3">
                         <div>
                             <label class="text-xs text-gray-500 block mb-1">Quote</label>
@@ -1161,7 +1359,7 @@ function renderSelectedCustomers() {
                                     <div class="flex items-center justify-between text-sm font-semibold text-emerald-900">
                                         <span>${customer.selectedQuoteId}</span>
                                         <span>${formatCurrencyDisplay(selectedQuote?.total || 0)}</span>
-                                    </div>
+                    </div>
                                     <div class="flex items-center gap-2 text-xs text-emerald-700 mt-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -1176,19 +1374,19 @@ function renderSelectedCustomers() {
                             `}
                         </div>
                         <div>
-                            <label class="text-xs text-gray-500 block mb-1">Number of Slots <span class="text-red-500">*</span></label>
+                        <label class="text-xs text-gray-500 block mb-1">Number of Slots <span class="text-red-500">*</span></label>
                             <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden">
-                                <input 
-                                    type="number"
-                                    value="${customer.slots}"
-                                    onchange="updateSelectedCustomerSlots(${index}, this.value)"
+                        <input 
+                            type="number"
+                            value="${customer.slots}"
+                            onchange="updateSelectedCustomerSlots(${index}, this.value)"
                                     class="w-full px-3 py-2 text-center text-lg font-semibold text-gray-900 focus:outline-none"
-                                    min="1"
-                                    max="20"
-                                />
-                            </div>
+                            min="1"
+                            max="20"
+                        />
+                    </div>
                             <p class="text-[11px] text-gray-400 mt-1 text-center">Adjust seats to allocate</p>
-                        </div>
+                    </div>
                         <div>
                             <label class="text-xs text-gray-500 block mb-1">Payment Status</label>
                             ${(() => {
@@ -1315,13 +1513,21 @@ function bookSelectedCustomer(index) {
         finalStatus = 'waitlisted';
     }
     
+    // Get quote details for additional info
+    const quote = customer.matchingQuotes?.find(q => q.id === customer.selectedQuoteId);
+    
     const booking = {
         id: 'booking-' + Date.now(),
         quoteId: customer.selectedQuoteId,
         slots: slots,
         customerName: customer.name,
+        customerEmail: customer.email,
         status: finalStatus,
-        paymentStatus: customer.paymentStatus || 'unpaid'
+        paymentStatus: customer.paymentStatus || 'unpaid',
+        amountPaid: customer.amountPaid || 0,
+        quoteTotal: quote?.total || customer.quoteTotal || 0,
+        bookedAt: new Date().toISOString(),
+        note: customer.bookingNote || ''
     };
     
     classJobData.bookings.push(booking);
@@ -1330,7 +1536,13 @@ function bookSelectedCustomer(index) {
     
     // Remove from selected customers
     selectedCustomersForBooking.splice(index, 1);
+    
+    // Clear quick book form if it was used
+    if (currentQuickBookCustomer && currentQuickBookCustomer.selectedQuoteId === customer.selectedQuoteId) {
+        clearQuickBook();
+    } else {
     renderSelectedCustomers();
+    }
     
     showNotification(`Booked ${slots} slot(s) from ${customer.selectedQuoteId}`, 'success');
 }
@@ -1980,5 +2192,468 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         updateRecurringPreview();
     }
+    
+    // Render linked jobs
+    renderLinkedJobs();
+    
+    // Close staff autocomplete when clicking outside
+    document.addEventListener('click', function(e) {
+        const autocomplete = document.getElementById('newJobStaffAutocomplete');
+        const searchInput = document.getElementById('newJobStaffSearch');
+        
+        if (autocomplete && !autocomplete.contains(e.target) && e.target !== searchInput && !searchInput.contains(e.target)) {
+            autocomplete.classList.add('hidden');
+        }
+    });
 });
+
+// Sample linked jobs data (in real app, fetch from API)
+let linkedJobs = [
+    {
+        id: 'JOB-2024-001',
+        date: '2025-11-25',
+        startTime: '10:00',
+        endTime: '11:00',
+        status: 'scheduled',
+        bookings: 4,
+        capacity: 10
+    },
+    {
+        id: 'JOB-2024-002',
+        date: '2025-12-02',
+        startTime: '10:00',
+        endTime: '11:00',
+        status: 'scheduled',
+        bookings: 2,
+        capacity: 10
+    }
+];
+
+// Render linked jobs
+function renderLinkedJobs() {
+    const container = document.getElementById('linkedJobsList');
+    if (!container) return;
+    
+    if (linkedJobs.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                <p class="text-gray-500">No jobs created yet</p>
+                <p class="text-sm text-gray-400 mt-1">Create jobs from this class template</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = linkedJobs.map(job => {
+        const statusConfig = {
+            scheduled: { icon: '📋', text: 'Scheduled', color: 'green' },
+            in_progress: { icon: '🔄', text: 'In Progress', color: 'blue' },
+            completed: { icon: '✅', text: 'Completed', color: 'emerald' },
+            cancelled: { icon: '❌', text: 'Cancelled', color: 'red' }
+        };
+        const status = statusConfig[job.status] || statusConfig.scheduled;
+        
+        const date = job.date ? new Date(job.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Not set';
+        const time = job.startTime && job.endTime 
+            ? `${formatTimeForJob(job.startTime)} - ${formatTimeForJob(job.endTime)}`
+            : 'Not set';
+        
+        return `
+            <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all">
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <h3 class="text-lg font-semibold text-gray-900">${job.id}</h3>
+                                <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-${status.color}-100 text-${status.color}-700">
+                                    ${status.icon} ${status.text}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600">${date} • ${time}</p>
+                            <p class="text-sm text-gray-500 mt-1">${job.bookings} / ${job.capacity} slots booked</p>
+                        </div>
+                        <button 
+                            onclick="window.location.href='class_job.html?id=${job.id}&classId=' + (classJobData.id || 'CLASS-2024-001')"
+                            class="ml-3 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors"
+                        >
+                            View Job
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Format time for job display
+function formatTimeForJob(timeString) {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+}
+
+// Create new job - opens modal
+function createNewJob() {
+    // Populate class info in modal
+    const className = document.getElementById('className')?.value || classJobData.name || 'Class';
+    const pricebookItem = classJobData.pricebookItem?.name || 'Not selected';
+    const maxCapacity = classJobData.maxCapacity || 10;
+    
+    document.getElementById('newJobClassName').textContent = className;
+    document.getElementById('newJobPricebookItem').textContent = pricebookItem;
+    document.getElementById('newJobMaxCapacity').textContent = maxCapacity;
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newJobDate').value = today;
+    
+    // Set default end date for recurring (6 months from now)
+    const defaultEnd = new Date();
+    defaultEnd.setMonth(defaultEnd.getMonth() + 6);
+    document.getElementById('newJobRecurringEndDate').value = defaultEnd.toISOString().split('T')[0];
+    
+    // Initialize day container visibility
+    toggleNewJobDayOfWeekContainer();
+    
+    // Initialize selected staff list
+    renderNewJobSelectedStaff();
+    
+    // Show modal
+    document.getElementById('createJobModal').classList.remove('hidden');
+}
+
+// Close create job modal
+function closeCreateJobModal() {
+    document.getElementById('createJobModal').classList.add('hidden');
+    // Reset form
+    document.getElementById('newJobEnableRecurring').checked = false;
+    toggleNewJobRecurringSection();
+    // Reset selected staff
+    newJobSelectedStaff = [];
+    renderNewJobSelectedStaff();
+    // Clear search
+    document.getElementById('newJobStaffSearch').value = '';
+    document.getElementById('newJobStaffAutocomplete').classList.add('hidden');
+}
+
+// Toggle recurring section for new job
+function toggleNewJobRecurringSection() {
+    const checkbox = document.getElementById('newJobEnableRecurring');
+    const section = document.getElementById('newJobRecurringConfigSection');
+    
+    if (checkbox.checked) {
+        section.classList.remove('hidden');
+    } else {
+        section.classList.add('hidden');
+    }
+}
+
+// Toggle custom time for new job
+function toggleNewJobCustomTime() {
+    const select = document.getElementById('newJobPreferredTime');
+    const container = document.getElementById('newJobCustomTimeContainer');
+    
+    if (select.value === 'custom') {
+        container.classList.remove('hidden');
+    } else {
+        container.classList.add('hidden');
+        // Auto-fill time range based on preferred time
+        const preferredTime = select.value;
+        const startTimeInput = document.getElementById('newJobStartTime');
+        const endTimeInput = document.getElementById('newJobEndTime');
+        
+        if (preferredTime === 'morning') {
+            startTimeInput.value = '09:00';
+            endTimeInput.value = '12:00';
+        } else if (preferredTime === 'afternoon') {
+            startTimeInput.value = '12:00';
+            endTimeInput.value = '17:00';
+        } else if (preferredTime === 'evening') {
+            startTimeInput.value = '17:00';
+            endTimeInput.value = '21:00';
+        }
+        
+        calculateNewJobDuration();
+    }
+}
+
+// Clear custom time for new job
+function clearNewJobCustomTime() {
+    document.getElementById('newJobCustomTime').value = '';
+    document.getElementById('newJobPreferredTime').value = 'flexible';
+    document.getElementById('newJobCustomTimeContainer').classList.add('hidden');
+}
+
+// Calculate duration for new job
+function calculateNewJobDuration() {
+    const startTime = document.getElementById('newJobStartTime').value;
+    const endTime = document.getElementById('newJobEndTime').value;
+    const durationEl = document.getElementById('newJobCalculatedDuration');
+    
+    if (startTime && endTime) {
+        const start = new Date(`2000-01-01T${startTime}`);
+        const end = new Date(`2000-01-01T${endTime}`);
+        const diffMs = end - start;
+        const diffHrs = Math.floor(diffMs / 3600000);
+        const diffMins = Math.round((diffMs % 3600000) / 60000);
+        
+        if (diffMs > 0) {
+            durationEl.textContent = `${diffHrs}h ${diffMins}m`;
+        } else {
+            durationEl.textContent = 'Invalid time range';
+        }
+    } else {
+        durationEl.textContent = '--';
+    }
+}
+
+// Staff search for new job
+let newJobSelectedStaff = [];
+
+function searchNewJobStaff(query) {
+    const resultsContainer = document.getElementById('newJobStaffAutocomplete');
+    
+    if (!query || query.trim().length < 2) {
+        resultsContainer.classList.add('hidden');
+        return;
+    }
+    
+    const queryLower = query.toLowerCase().trim();
+    const filtered = sampleStaff.filter(staff => 
+        staff.name.toLowerCase().includes(queryLower) || 
+        staff.email.toLowerCase().includes(queryLower) ||
+        staff.role.toLowerCase().includes(queryLower) ||
+        staff.department.toLowerCase().includes(queryLower)
+    );
+    
+    if (filtered.length === 0) {
+        resultsContainer.innerHTML = `
+            <div class="p-3 text-sm text-gray-500">
+                No staff members found
+            </div>
+        `;
+        resultsContainer.classList.remove('hidden');
+        return;
+    }
+    
+    resultsContainer.innerHTML = filtered.map(staff => {
+        const isSelected = newJobSelectedStaff.some(s => s.id === staff.id);
+        return `
+            <div 
+                onclick="${isSelected ? '' : `selectNewJobStaff('${staff.id}')`}"
+                class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 ${isSelected ? 'opacity-50 bg-gray-50' : ''}"
+            >
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="font-medium text-gray-900 text-sm">${staff.name} ${isSelected ? '(Selected)' : ''}</p>
+                        <p class="text-xs text-gray-600 mt-0.5">${staff.email}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">${staff.role}</span>
+                            <span class="text-xs text-gray-500">${staff.department}</span>
+                        </div>
+                    </div>
+                    ${isSelected ? `
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    ` : `
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    `}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    resultsContainer.classList.remove('hidden');
+}
+
+// Select staff for new job
+function selectNewJobStaff(staffId) {
+    const staff = sampleStaff.find(s => s.id === staffId);
+    if (!staff) return;
+    
+    // Check if already selected
+    if (newJobSelectedStaff.some(s => s.id === staffId)) {
+        return;
+    }
+    
+    newJobSelectedStaff.push(staff);
+    renderNewJobSelectedStaff();
+    
+    // Clear search and hide autocomplete
+    document.getElementById('newJobStaffSearch').value = '';
+    document.getElementById('newJobStaffAutocomplete').classList.add('hidden');
+}
+
+// Remove staff from new job
+function removeNewJobStaff(staffId) {
+    newJobSelectedStaff = newJobSelectedStaff.filter(s => s.id !== staffId);
+    renderNewJobSelectedStaff();
+}
+
+// Render selected staff for new job
+function renderNewJobSelectedStaff() {
+    const container = document.getElementById('newJobSelectedAssignmentsList');
+    const countEl = document.getElementById('newJobSelectedAssignmentsCount');
+    
+    if (newJobSelectedStaff.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">No staff assigned yet</p>';
+        countEl.textContent = '0';
+        return;
+    }
+    
+    countEl.textContent = newJobSelectedStaff.length;
+    container.innerHTML = newJobSelectedStaff.map(staff => `
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-semibold text-blue-600">${staff.name.substring(0, 2).toUpperCase()}</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">${staff.name}</p>
+                    <p class="text-xs text-gray-600">${staff.role} • ${staff.department}</p>
+                </div>
+            </div>
+            <button 
+                onclick="removeNewJobStaff('${staff.id}')"
+                class="text-red-500 hover:text-red-700 transition-colors"
+                title="Remove"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    `).join('');
+}
+
+// Toggle day of week container for new job
+function toggleNewJobDayOfWeekContainer() {
+    const frequency = document.getElementById('newJobRecurringFrequency').value;
+    const container = document.getElementById('newJobDayOfWeekContainer');
+    
+    if (frequency === 'weeks') {
+        container.classList.remove('hidden');
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+// Toggle day selection for new job
+function toggleNewJobDaySelection(button) {
+    button.classList.toggle('active');
+    button.classList.toggle('border-blue-500');
+    button.classList.toggle('bg-blue-500');
+    button.classList.toggle('text-white');
+    button.classList.toggle('border-gray-300');
+    button.classList.toggle('bg-white');
+    button.classList.toggle('text-gray-700');
+}
+
+// Submit new job
+function submitNewJob() {
+    const date = document.getElementById('newJobDate').value;
+    const startTime = document.getElementById('newJobStartTime').value;
+    const endTime = document.getElementById('newJobEndTime').value;
+    const priority = document.getElementById('newJobPriority').value;
+    const notes = document.getElementById('newJobNotes').value;
+    const isRecurring = document.getElementById('newJobEnableRecurring').checked;
+    const assignedStaff = newJobSelectedStaff.map(s => s.name);
+    
+    // Validation
+    if (!date || !startTime || !endTime) {
+        showNotification('Please fill in date and time fields', 'error');
+        return;
+    }
+    
+    // Generate job ID
+    const timestamp = Date.now();
+    const newJobId = 'JOB-2024-' + String(timestamp).slice(-6);
+    
+    // Create job data
+    const jobData = {
+        id: newJobId,
+        classId: classJobData.id || 'CLASS-2024-001',
+        className: classJobData.name || document.getElementById('className')?.value || 'Class',
+        date: date,
+        startTime: startTime,
+        endTime: endTime,
+        status: 'scheduled',
+        priority: priority,
+        assignedStaff: assignedStaff.length > 0 ? assignedStaff : (document.getElementById('newJobAutoAssign').checked ? ['Auto-assign'] : []),
+        notes: notes,
+        bookings: [],
+        maxCapacity: classJobData.maxCapacity || 10,
+        pricebookItem: classJobData.pricebookItem,
+        createdAt: new Date().toISOString()
+    };
+    
+    // Add recurring template if enabled
+    if (isRecurring) {
+        const interval = parseInt(document.getElementById('newJobRecurringInterval').value) || 1;
+        const frequency = document.getElementById('newJobRecurringFrequency').value;
+        const endCondition = document.querySelector('input[name="newJobRecurringEndCondition"]:checked').value;
+        
+        const selectedDays = [];
+        if (frequency === 'weeks') {
+            document.querySelectorAll('#newJobDayOfWeekContainer button.active').forEach(btn => {
+                selectedDays.push(btn.dataset.day);
+            });
+        }
+        
+        let endDate = null;
+        let numberOfOccurrences = null;
+        if (endCondition === 'date') {
+            endDate = document.getElementById('newJobRecurringEndDate').value;
+        } else if (endCondition === 'occurrences') {
+            numberOfOccurrences = parseInt(document.getElementById('newJobRecurringOccurrences').value) || 12;
+        }
+        
+        jobData.isRecurring = true;
+        jobData.templateId = 'RJT-2024-' + String(Date.now()).slice(-6);
+        jobData.instanceNumber = 1;
+        jobData.recurringTemplate = {
+            frequency: frequency,
+            customInterval: interval,
+            selectedDays: selectedDays.length > 0 ? selectedDays : null,
+            startDate: date,
+            endCondition: endCondition,
+            endDate: endDate,
+            numberOfOccurrences: numberOfOccurrences,
+            status: 'active'
+        };
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('job_' + newJobId, JSON.stringify(jobData));
+    
+    // Add to linked jobs
+    linkedJobs.push({
+        id: newJobId,
+        date: date,
+        startTime: startTime,
+        endTime: endTime,
+        status: 'scheduled',
+        bookings: 0,
+        capacity: jobData.maxCapacity
+    });
+    
+    // Update UI
+    renderLinkedJobs();
+    closeCreateJobModal();
+    showNotification(`Job ${newJobId} created successfully`, 'success');
+    
+    // Navigate to the new job
+    setTimeout(() => {
+        window.location.href = `class_job.html?id=${newJobId}&classId=${jobData.classId}`;
+    }, 1000);
+}
 

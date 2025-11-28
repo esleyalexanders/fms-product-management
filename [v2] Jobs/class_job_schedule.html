@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Job Schedule - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../home-styles.css">
+    <style>
+        body {
+            overflow: hidden;
+        }
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+        .time-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            border: 1px solid #e5e7eb;
+            background: white;
+        }
+        .time-label {
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #f3f4f6;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            height: 60px;
+            padding: 4px;
+        }
+        .time-slot {
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #f3f4f6;
+            position: relative;
+            height: 60px;
+            background: white;
+        }
+        .session-block {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            line-height: 1.2;
+            border-left: 3px solid #10b981;
+        }
+        .session-block:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS & SCHEDULE</div>
+                <a href="job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+                <a href="job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="class_group_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Classes & Groups</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
+
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h1 class="text-2xl font-bold text-white" id="classScheduleTitle">Class Schedule</h1>
+                                        <p class="text-emerald-100 text-sm mt-0.5" id="classScheduleSubtitle">View sessions for this class</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button id="backToClassBtn" class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                        </svg>
+                                        <span>Back to Class</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex gap-2">
+                                <button id="weekViewBtn" class="px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium text-sm">Week</button>
+                                <button id="dayViewBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">Day</button>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <button id="prevBtn" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <h2 id="currentRangeLabel" class="text-lg font-semibold text-gray-900 min-w-48 text-center"></h2>
+                                <button id="nextBtn" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button id="todayBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">Today</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                        <div class="lg:col-span-3">
+                            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                                <div id="calendarHeader" class="grid grid-cols-7 bg-gray-50 border-b border-gray-200"></div>
+                                <div id="calendarGrid" class="relative"></div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-1 space-y-4">
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Selected Session</h3>
+                                <div id="selectedSessionDetails" class="text-sm text-gray-700">
+                                    <p class="text-gray-400">Select a session on the calendar to see details.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Enrollment</h3>
+                                <div id="sessionEnrollmentSummary" class="space-y-2 text-sm text-gray-700">
+                                    <p class="text-gray-400">No session selected.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="class_job_schedule_script.js"></script>
+</body>
+</html>

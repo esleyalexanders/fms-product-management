@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Job Details - FMS</title>
+    <title>Class Details - FMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
@@ -111,6 +111,36 @@
         .recurring-day-selector.active {
             transform: scale(1.05);
         }
+        
+        /* Tab styles */
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+            border-bottom-color: #059669;
+            color: #059669;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -179,8 +209,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h1 class="text-2xl font-bold text-white" id="classJobTitle">Class Job Details</h1>
-                                <p class="text-emerald-100 text-sm mt-0.5" id="classJobId">JOB-2024-001</p>
+                                <h1 class="text-2xl font-bold text-white" id="classTitle">Class Details</h1>
+                                <p class="text-emerald-100 text-sm mt-0.5" id="classId">CLASS-2024-001</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -249,13 +279,57 @@
                 </div>
             </div>
 
+            <!-- Tabs Navigation -->
+            <div class="bg-white rounded-lg shadow-sm mb-4 border-b border-gray-200">
+                <div class="flex space-x-1 px-6">
+                    <button 
+                        onclick="switchTab('details')"
+                        id="tab-details"
+                        class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-emerald-600 text-emerald-600 transition-colors active"
+                    >
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span>Details</span>
+                        </div>
+                    </button>
+                    <button 
+                        onclick="switchTab('jobs')"
+                        id="tab-jobs"
+                        class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                    >
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                            <span>Linked Jobs</span>
+                        </div>
+                    </button>
+                    <button 
+                        onclick="switchTab('bookings')"
+                        id="tab-bookings"
+                        class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                    >
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span>All Bookings</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
             <!-- Main Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 
                 <!-- Left Column - Main Content (3 columns) -->
                 <div class="lg:col-span-3 space-y-4">
                     
-                    <!-- Class Information Card -->
+                    <!-- Details Tab Content -->
+                    <div id="tab-content-details" class="space-y-4 active">
+                        <!-- Class Information Card -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Class Information</h2>
                         
@@ -635,59 +709,147 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                     
-                    <!-- Slot Bookings Management Card -->
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold text-gray-900">Slot Bookings</h2>
-                            <p class="text-sm text-gray-500 mt-1">Search for customers and book slots from their quotes</p>
-                        </div>
-                        
-                        <!-- Customer Search Panel -->
-                        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                            <h2 class="text-lg font-semibold text-gray-900 mb-4">Book Slots for Customers <span class="text-red-500">*</span></h2>
-                            
-                            <!-- Add Customer Search -->
-                            <div class="mb-4">
-                                <div class="relative">
-                                    <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <!-- Linked Jobs Tab Content -->
+                    <div id="tab-content-jobs" class="space-y-4 hidden">
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h2 class="text-xl font-semibold text-gray-900">Linked Jobs</h2>
+                                    <p class="text-sm text-gray-500 mt-1">Jobs created from this class template</p>
+                                </div>
+                                <button 
+                                    onclick="createNewJob()"
+                                    class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 font-medium"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                     </svg>
-                                    <input 
-                                        type="text" 
-                                        id="customerSearchInput"
-                                        placeholder="Type to search customers with quotes for the selected pricebook item..."
-                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                                        autocomplete="off"
-                                        oninput="searchCustomers(this.value)"
-                                        disabled
-                                    />
-                                    <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
-                                        <!-- Customer search results will appear here -->
+                                    Create New Job
+                                </button>
+                            </div>
+                            
+                            <div id="linkedJobsList" class="space-y-3">
+                                <!-- Linked jobs will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bookings Tab Content -->
+                    <div id="tab-content-bookings" class="space-y-4 hidden">
+                        <!-- Slot Bookings Management Card -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900">Slot Bookings</h2>
+                                <p class="text-sm text-gray-500 mt-1">Search for customers and book slots from their quotes</p>
+                            </div>
+                            
+                            <!-- Quick Book Section -->
+                            <div class="bg-white rounded-lg shadow-sm p-4 mb-6 border-2 border-dashed border-gray-200">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Book <span class="text-red-500">*</span></h2>
+                                
+                                <!-- Customer Search -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <input 
+                                            type="text" 
+                                            id="customerSearchInput"
+                                            placeholder="Type to search customers with quotes..."
+                                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                                            autocomplete="off"
+                                            oninput="searchCustomers(this.value)"
+                                            disabled
+                                        />
+                                        <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                            <!-- Customer search results will appear here -->
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
+                                        <span class="text-amber-600">⚠️</span> Please select a pricebook item in the Details tab to search for customers
+                                    </p>
+                                </div>
+                                
+                                <!-- Quick Book Form (shown when customer selected) -->
+                                <div id="quickBookForm" class="hidden">
+                                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div>
+                                                <p class="text-xs uppercase tracking-wide text-emerald-600 font-semibold mb-1">Selected Customer</p>
+                                                <h3 class="text-lg font-semibold text-gray-900" id="quickBookCustomerName"></h3>
+                                                <p class="text-sm text-gray-600" id="quickBookCustomerEmail"></p>
+                                            </div>
+                                            <button 
+                                                onclick="clearQuickBook()"
+                                                class="text-gray-400 hover:text-red-500 transition-colors"
+                                                title="Clear selection"
+                                            >
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="grid gap-4 md:grid-cols-3 mb-4">
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-1">Quote</label>
+                                                <div id="quickBookQuoteDisplay" class="p-3 border border-emerald-200 rounded-lg bg-white">
+                                                    <!-- Quote info will be populated here -->
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-1">Number of Slots <span class="text-red-500">*</span></label>
+                                                <input 
+                                                    type="number"
+                                                    id="quickBookSlots"
+                                                    value="1"
+                                                    min="1"
+                                                    max="20"
+                                                    class="w-full px-3 py-2 text-center text-lg font-semibold text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                                />
+                                                <p class="text-[11px] text-gray-400 mt-1 text-center">Slots to book</p>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-1">Payment Status</label>
+                                                <div id="quickBookPaymentStatus" class="p-3 border border-gray-200 rounded-lg bg-white">
+                                                    <!-- Payment status will be populated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="text-xs text-gray-500 block mb-1">Booking Notes <span class="text-gray-400">(optional)</span></label>
+                                            <textarea 
+                                                id="quickBookNotes"
+                                                rows="2"
+                                                class="w-full px-3 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-y"
+                                                placeholder="Add any notes for this booking (e.g., student names, preferences, special considerations)"></textarea>
+                                        </div>
+                                        
+                                        <button 
+                                            onclick="bookQuickCustomer()"
+                                            id="quickBookButton"
+                                            class="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold flex items-center justify-center gap-2"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Book Slots
+                                        </button>
                                     </div>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
-                                    <span class="text-amber-600">⚠️</span> Please select a pricebook item above to search for customers
-                                </p>
                             </div>
                             
-                            <!-- Empty State -->
-                            <div id="emptyCustomerState" class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                                <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                <p class="text-sm font-medium text-gray-700 mb-1">No customers added yet</p>
-                                <p class="text-xs text-gray-500">Search and select customers above to book slots</p>
+                            <!-- Booked Customers List -->
+                            <div class="mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Booked Customers</h3>
+                                <div id="bookingsList" class="space-y-3">
+                                    <!-- Bookings will be rendered here -->
+                                </div>
                             </div>
-                            
-                            <!-- Selected Customers Container (like quote items) -->
-                            <div id="selectedCustomersContainer" class="hidden space-y-3">
-                                <!-- Selected customer cards will be populated here -->
-                            </div>
-                        </div>
-                        
-                        <div id="bookingsList" class="space-y-3">
-                            <!-- Bookings will be rendered here -->
                         </div>
                     </div>
                     
@@ -852,6 +1014,343 @@
                 <div id="pricebookItemsList" class="space-y-2">
                     <!-- Pricebook items will be rendered here -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Job Modal -->
+    <div id="createJobModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-200 flex-shrink-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Create New Job</h3>
+                        <p class="text-sm text-gray-500 mt-1">Create a job instance from this class</p>
+                    </div>
+                    <button onclick="closeCreateJobModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column - Job Configuration -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <!-- Job Details -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Job Details</h4>
+                            
+                            <div class="space-y-4">
+                                <!-- Date -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="date" 
+                                        id="newJobDate"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        required
+                                    />
+                                </div>
+                                
+                                <!-- Preferred Time -->
+                                <div>
+                                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Preferred Time <span class="text-gray-400 font-normal">(Optional)</span>
+                                    </label>
+                                    
+                                    <div class="space-y-2">
+                                        <select 
+                                            id="newJobPreferredTime"
+                                            onchange="toggleNewJobCustomTime()"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none cursor-pointer"
+                                            style="background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3e%3cpolyline points=%276 9 12 15 18 9%27%3e%3c/polyline%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em 1.25em; padding-right: 2.5rem;"
+                                        >
+                                            <option value="flexible" selected>Flexible (Anytime)</option>
+                                            <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                                            <option value="afternoon">Afternoon (12:00 PM - 5:00 PM)</option>
+                                            <option value="evening">Evening (5:00 PM - 9:00 PM)</option>
+                                            <option value="custom">Specific Time...</option>
+                                        </select>
+                                        
+                                        <!-- Custom Time Input (Hidden by default) -->
+                                        <div id="newJobCustomTimeContainer" class="hidden">
+                                            <div class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <input 
+                                                    type="time" 
+                                                    id="newJobCustomTime"
+                                                    class="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                                />
+                                                <button 
+                                                    type="button"
+                                                    onclick="clearNewJobCustomTime()"
+                                                    class="text-gray-400 hover:text-gray-600 transition-colors"
+                                                    title="Clear"
+                                                >
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Time Range -->
+                                <div>
+                                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Time Range <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="grid grid-cols-2 gap-4 max-w-md">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Start Time</label>
+                                            <input 
+                                                type="time" 
+                                                id="newJobStartTime"
+                                                onchange="calculateNewJobDuration()"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold"
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">End Time</label>
+                                            <input 
+                                                type="time" 
+                                                id="newJobEndTime"
+                                                onchange="calculateNewJobDuration()"
+                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-semibold"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Calculated Duration Display -->
+                                    <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                        <div class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            </svg>
+                                            <span class="text-sm font-medium text-blue-800">Calculated Duration:</span>
+                                            <span id="newJobCalculatedDuration" class="text-sm font-semibold text-blue-900">--</span>
+                                        </div>
+                                        <p class="text-xs text-blue-600 mt-1">Duration is automatically calculated based on start and end times</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Priority -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
+                                    <select id="newJobPriority" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="medium" selected>🔵 Medium</option>
+                                        <option value="high">🔴 High</option>
+                                        <option value="low">🟢 Low</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Assignment -->
+                                <div>
+                                    <label class="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        Assignment <span class="text-gray-400 font-normal">(Optional)</span>
+                                    </label>
+                                    
+                                    <div class="mb-3">
+                                        <div class="relative">
+                                            <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                            <input 
+                                                type="text" 
+                                                id="newJobStaffSearch"
+                                                placeholder="Search staff by name, skills, or role..."
+                                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                autocomplete="off"
+                                                oninput="searchNewJobStaff(this.value)"
+                                            />
+                                            <div id="newJobStaffAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                                <!-- Staff search results will appear here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Selected Assignments List -->
+                                    <div id="newJobSelectedAssignmentsContainer" class="mb-3">
+                                        <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments (<span id="newJobSelectedAssignmentsCount">0</span>)</p>
+                                        <div id="newJobSelectedAssignmentsList" class="space-y-2">
+                                            <!-- Selected assignments will appear here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Auto-assign Option -->
+                                    <div class="mt-3 pt-3 border-t border-gray-200">
+                                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                            <input type="checkbox" id="newJobAutoAssign" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <span>Auto-assign if no selection made (System will choose best match)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Notes -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
+                                    <textarea 
+                                        id="newJobNotes"
+                                        rows="3"
+                                        placeholder="Add any notes for this job..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recurring Job Configuration -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900">Recurring Job</h4>
+                                    <p class="text-sm text-gray-600">Set up automatic recurring schedule</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        id="newJobEnableRecurring"
+                                        onchange="toggleNewJobRecurringSection()"
+                                        class="sr-only peer"
+                                    >
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                            </div>
+                            
+                            <!-- Recurring Configuration (Hidden by default) -->
+                            <div id="newJobRecurringConfigSection" class="hidden space-y-4">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <p class="text-sm text-blue-800">
+                                        <strong>Note:</strong> This will create a recurring job series. Future jobs will be auto-created based on your schedule.
+                                    </p>
+                                </div>
+                                
+                                <!-- Repeat Every -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Repeat every</label>
+                                    <div class="flex items-center gap-3">
+                                        <input 
+                                            type="number" 
+                                            id="newJobRecurringInterval" 
+                                            min="1" 
+                                            max="99"
+                                            value="1" 
+                                            class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                                        >
+                                        <select 
+                                            id="newJobRecurringFrequency" 
+                                            onchange="toggleNewJobDayOfWeekContainer()"
+                                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value="days">day(s)</option>
+                                            <option value="weeks" selected>week(s)</option>
+                                            <option value="months">month(s)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Repeat On (for weeks) -->
+                                <div id="newJobDayOfWeekContainer">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Repeat on</label>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <button type="button" data-day="Sunday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">S</button>
+                                        <button type="button" data-day="Monday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-blue-500 bg-blue-500 text-white font-medium text-sm hover:border-blue-600 hover:bg-blue-600 transition-all active">M</button>
+                                        <button type="button" data-day="Tuesday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">T</button>
+                                        <button type="button" data-day="Wednesday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">W</button>
+                                        <button type="button" data-day="Thursday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">T</button>
+                                        <button type="button" data-day="Friday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">F</button>
+                                        <button type="button" data-day="Saturday" onclick="toggleNewJobDaySelection(this)" class="w-10 h-10 rounded-full border-2 border-gray-300 bg-white text-gray-700 font-medium text-sm hover:border-blue-400 hover:bg-blue-50 transition-all">S</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ends -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ends</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center gap-2">
+                                            <input type="radio" name="newJobRecurringEndCondition" value="never" class="w-4 h-4 text-blue-600">
+                                            <span class="text-sm text-gray-700">Never</span>
+                                        </label>
+                                        <label class="flex items-start gap-2">
+                                            <input type="radio" name="newJobRecurringEndCondition" value="date" checked class="w-4 h-4 text-blue-600 mt-0.5">
+                                            <div class="flex-1">
+                                                <span class="text-sm text-gray-700 block mb-1">On</span>
+                                                <input type="date" id="newJobRecurringEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                            </div>
+                                        </label>
+                                        <label class="flex items-start gap-2">
+                                            <input type="radio" name="newJobRecurringEndCondition" value="occurrences" class="w-4 h-4 text-blue-600 mt-0.5">
+                                            <div class="flex-1">
+                                                <span class="text-sm text-gray-700 block mb-1">After</span>
+                                                <div class="flex items-center gap-2">
+                                                    <input type="number" id="newJobRecurringOccurrences" min="1" max="999" value="12" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-sm">
+                                                    <span class="text-sm text-gray-600">occurrences</span>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 sticky top-4">
+                            <h4 class="text-sm font-semibold text-gray-900 mb-3">Class Info</h4>
+                            <div class="space-y-2 text-sm">
+                                <div>
+                                    <p class="text-xs text-gray-500">Class Name</p>
+                                    <p class="font-semibold text-gray-900" id="newJobClassName">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Pricebook Item</p>
+                                    <p class="font-semibold text-gray-900" id="newJobPricebookItem">-</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Max Capacity</p>
+                                    <p class="font-semibold text-gray-900" id="newJobMaxCapacity">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 flex-shrink-0 flex justify-end gap-3">
+                <button 
+                    onclick="closeCreateJobModal()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="submitNewJob()"
+                    id="submitNewJobBtn"
+                    class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium flex items-center gap-2"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Create Job
+                </button>
             </div>
         </div>
     </div>
