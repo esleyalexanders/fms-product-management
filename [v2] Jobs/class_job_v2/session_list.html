@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sessions - FMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom scrollbar */
@@ -22,12 +27,81 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+        body {
+            overflow: hidden;
+        }
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gray-50">
-    
-    <div class="p-4">
-        <div class="max-w-7xl mx-auto">
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">CLASSES</div>
+                <a href="class_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-chalkboard-teacher"></i><span>Classes</span></a>
+                <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-day"></i><span>Sessions</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="../job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="assignment_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-check"></i><span>Assignment Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar"></i><span>My Calendar</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff Timesheets</span></a>
+
+            <div class="sidebar-footer">
+                <a href="../../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
             
             <!-- Header -->
             <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -192,7 +266,9 @@
                 </div>
             </div>
 
-        </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script src="session_list_script.js"></script>
