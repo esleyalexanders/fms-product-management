@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Class - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-2xl font-bold text-gray-900">Edit Class</h1>
+                            <span id="classIdBadge" class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-medium">CLASS-2024-001</span>
+                            <span id="classStatusBadge" class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">Active</span>
+                        </div>
+                        <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
+                    </div>
+                    <div id="headerActions" class="flex gap-2">
+                        <button 
+                            onclick="window.location.href='class_list.html'"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Classes
+                        </button>
+                        <button 
+                            onclick="viewDetails()"
+                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-lg shadow-sm mb-4">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                        <button 
+                            id="classInfoTab"
+                            class="tab-button active py-4 px-1 border-b-2 border-emerald-500 font-medium text-sm text-emerald-600 transition-colors"
+                            onclick="switchTab('classInfo', event)"
+                        >
+                            Class Information
+                        </button>
+                        <button 
+                            id="scheduleTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                            onclick="switchTab('schedule', event)"
+                        >
+                            Schedule
+                        </button>
+                        <button 
+                            id="staffTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                            onclick="switchTab('staff', event)"
+                        >
+                            Staff Assignment
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Class Information Tab Content -->
+            <div id="classInfoContent" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Main Form -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Basic Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="className" class="block text-sm font-medium text-gray-700 mb-1">Class Name <span class="text-red-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    id="className"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea 
+                                    id="description"
+                                    rows="3"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                ></textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="skillLevel" class="block text-sm font-medium text-gray-700 mb-1">Skill Level</label>
+                                    <select 
+                                        id="skillLevel"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    >
+                                        <option value="">Select skill level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="All levels">All levels</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                    <select 
+                                        id="status"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    >
+                                        <option value="active">Active</option>
+                                        <option value="paused">Paused</option>
+                                        <option value="archived">Archived</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Book Item -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Price Book Item <span class="text-red-500">*</span></h2>
+                        
+                        <div id="pricebookItemContainer">
+                            <button 
+                                type="button"
+                                id="selectPricebookBtn"
+                                onclick="showPricebookModal()"
+                                class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors text-left"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-gray-700">Select Price Book Item</p>
+                                        <p class="text-sm text-gray-500">Link this class to a purchasable service</p>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Capacity Settings -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Capacity Settings</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="maxCapacity" class="block text-sm font-medium text-gray-700 mb-1">Max Capacity <span class="text-red-500">*</span></label>
+                                <input 
+                                    type="number" 
+                                    id="maxCapacity"
+                                    required
+                                    min="1"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">Maximum number of students per session</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Summary & Actions -->
+                <div class="space-y-4">
+                    
+                    <!-- Class Summary -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Class Summary</h2>
+                        
+                        <div class="space-y-3 mb-4">
+                            <div class="p-3 bg-emerald-50 rounded-lg">
+                                <div class="text-xs text-emerald-600 mb-1">Price Book Item</div>
+                                <div class="text-sm font-bold text-emerald-700" id="summaryPricebookItem">-</div>
+                            </div>
+
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Max Capacity</span>
+                                    <span class="font-medium text-gray-900" id="summaryCapacity">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Default Staff</span>
+                                    <span class="font-medium text-gray-900" id="summaryStaff">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Schedule</span>
+                                    <span class="font-medium text-gray-900 text-xs" id="summarySchedule">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-4 space-y-2">
+                            <button 
+                                type="button"
+                                onclick="handleSave()"
+                                class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                            >
+                                Save Changes
+                            </button>
+                            <button 
+                                type="button"
+                                onclick="handleArchive()"
+                                class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                Archive Class
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Schedule Tab Content -->
+            <div id="scheduleContent" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Schedule Form -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Schedule Configuration -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Schedule Configuration</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="frequency" class="block text-sm font-medium text-gray-700 mb-1">Frequency <span class="text-red-500">*</span></label>
+                                <select 
+                                    id="frequency"
+                                    required
+                                    onchange="handleFrequencyChange()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="weekly">Weekly</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="custom">Custom Interval</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Days of Week (for weekly) -->
+                            <div id="daysOfWeekSection">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Days of Week <span class="text-red-500">*</span></label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Monday">Mon</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Tuesday">Tue</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Wednesday">Wed</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Thursday">Thu</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Friday">Fri</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Saturday">Sat</button>
+                                    <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium text-sm" data-day="Sunday">Sun</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Interval -->
+                            <div id="customIntervalSection" class="hidden grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="customInterval" class="block text-sm font-medium text-gray-700 mb-1">Interval</label>
+                                    <input 
+                                        type="number" 
+                                        id="customInterval"
+                                        min="1"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label for="customIntervalUnit" class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                                    <select 
+                                        id="customIntervalUnit"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    >
+                                        <option value="days">Days</option>
+                                        <option value="weeks" selected>Weeks</option>
+                                        <option value="months">Months</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Start Time <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="time" 
+                                        id="startTime"
+                                        required
+                                        onchange="calculateDuration()"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label for="endTime" class="block text-sm font-medium text-gray-700 mb-1">End Time <span class="text-red-500">*</span></label>
+                                    <input 
+                                        type="time" 
+                                        id="endTime"
+                                        required
+                                        onchange="calculateDuration()"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+                                <input 
+                                    type="number" 
+                                    id="duration"
+                                    min="1"
+                                    readonly
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
+                                />
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date (Optional)</label>
+                                    <input 
+                                        type="date" 
+                                        id="startDate"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">End Date (Optional)</label>
+                                    <input 
+                                        type="date" 
+                                        id="endDate"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Banner (if schedule changed) -->
+                    <div id="scheduleWarningBanner" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-800">Schedule Change Detected</p>
+                                <p class="text-xs text-yellow-700 mt-1">Changing the schedule may affect existing sessions. You can choose to update existing sessions or only apply to new ones.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Schedule Summary -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Schedule Summary</h2>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 bg-blue-50 rounded-lg">
+                                <div class="text-xs text-blue-600 mb-1">Frequency</div>
+                                <div class="text-sm font-bold text-blue-700" id="summaryFrequency">-</div>
+                            </div>
+
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Days</span>
+                                    <span class="font-medium text-gray-900 text-xs" id="summaryDays">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Time</span>
+                                    <span class="font-medium text-gray-900" id="summaryTime">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Duration</span>
+                                    <span class="font-medium text-gray-900" id="summaryDuration">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Staff Assignment Tab Content -->
+            <div id="staffContent" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Staff Selection -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Staff Assignment -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Default Staff Assignment <span class="text-red-500">*</span></h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label for="staffSearch" class="block text-sm font-medium text-gray-700 mb-1">Search Staff</label>
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        id="staffSearch"
+                                        placeholder="Search by name..."
+                                        oninput="filterStaff()"
+                                        class="w-full px-3 py-2 pl-10 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    />
+                                    <svg class="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div id="staffListContainer" class="max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-2 custom-scrollbar">
+                                <!-- Staff list will be rendered here -->
+                            </div>
+                            
+                            <div id="selectedStaffContainer">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Selected Staff (<span id="selectedStaffCount">0</span>)
+                                </label>
+                                <div id="selectedStaffList" class="flex flex-wrap gap-2">
+                                    <!-- Selected staff chips will appear here -->
+                                </div>
+                                <p class="text-xs text-red-500 mt-2 hidden" id="staffError">At least one staff member is required</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Warning Banner (if staff changed) -->
+                    <div id="staffWarningBanner" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <div>
+                                <p class="text-sm font-medium text-yellow-800">Staff Change Detected</p>
+                                <p class="text-xs text-yellow-700 mt-1">Changing default staff may affect existing sessions. You can choose to update existing sessions or only apply to new ones.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Staff Summary -->
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Staff Summary</h2>
+                        
+                        <div class="space-y-3">
+                            <div class="p-3 bg-orange-50 rounded-lg">
+                                <div class="text-xs text-orange-600 mb-1">Default Staff</div>
+                                <div class="text-sm font-bold text-orange-700" id="summaryStaffCount">0 selected</div>
+                            </div>
+
+                            <div id="summaryStaffList" class="space-y-2">
+                                <!-- Staff list will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pricebook Selection Modal -->
+    <div id="pricebookModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Select Price Book Item</h3>
+                <button onclick="closePricebookModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+                <div class="mb-4">
+                    <input 
+                        type="text" 
+                        id="pricebookSearch"
+                        placeholder="Search pricebook items..."
+                        oninput="filterPricebookItems()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                </div>
+                <div id="pricebookItemsList" class="space-y-2">
+                    <!-- Pricebook items will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="class_edit_script.js"></script>
+</body>
+</html>
+
+
+

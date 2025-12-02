@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Class - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
+    <style>
+        body {
+            overflow: hidden;
+        }
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+        
+        /* Form validation styles */
+        .field-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .field-success {
+            border-color: #10b981 !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Day selector styles */
+        .day-selector {
+            transition: all 0.2s ease;
+        }
+        
+        .day-selector:hover {
+            transform: scale(1.05);
+        }
+        
+        .day-selector.selected {
+            background-color: #059669;
+            color: white;
+            border-color: #059669;
+        }
+        
+        /* Staff chip styles */
+        .staff-chip {
+            transition: all 0.2s ease;
+        }
+        
+        .staff-chip:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Smooth transitions */
+        .section-card {
+            transition: all 0.2s ease;
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS & SCHEDULE</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
+                <a href="../job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="class_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Classes</span></a>
+                
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+
+            <div class="sidebar-footer">
+                <a href="../../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Manage roles</span>
+                </a>
+                <div class="nav-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Get Set Up</span>
+                </div>
+                <div class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content" style="overflow-y: auto; height: 100vh;">
+            <div class="p-4">
+                <div class="max-w-5xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
+                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-bold text-white">Create New Class</h1>
+                                <p class="text-emerald-100 text-sm mt-0.5">Set up a new class with schedule and staff</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button 
+                                onclick="window.location.href='class_list.html'"
+                                class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="classCreateForm" onsubmit="handleSubmit(event)">
+                
+                <!-- Section 1: Basic Information -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Basic Information</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="className" class="block text-sm font-medium text-gray-700 mb-2">
+                                Class Name <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="className"
+                                name="className"
+                                required
+                                placeholder="e.g., Advanced Yoga Class"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                            <p class="text-xs text-gray-500 mt-1">A descriptive name for this class</p>
+                        </div>
+                        
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                                Description
+                            </label>
+                            <textarea 
+                                id="description"
+                                name="description"
+                                rows="3"
+                                placeholder="Describe the class, its goals, and target audience..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="skillLevel" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Skill Level
+                                </label>
+                                <select 
+                                    id="skillLevel"
+                                    name="skillLevel"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="">Select skill level</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="All levels">All levels</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status
+                                </label>
+                                <select 
+                                    id="status"
+                                    name="status"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="active" selected>Active</option>
+                                    <option value="paused">Paused</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Price Book Item Selection -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Price Book Item</h2>
+                        <span class="text-red-500">*</span>
+                    </div>
+                    
+                    <div id="pricebookItemContainer">
+                        <button 
+                            type="button"
+                            id="selectPricebookBtn"
+                            onclick="showPricebookModal()"
+                            class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-emerald-500 hover:bg-emerald-50 transition-colors text-left"
+                        >
+                            <div class="flex items-center gap-3">
+                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-700">Select Price Book Item</p>
+                                    <p class="text-sm text-gray-500">Link this class to a purchasable service</p>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <p class="text-xs text-gray-500 mt-2">This pricebook item determines which quotes customers can use to book slots in this class</p>
+                </div>
+
+                <!-- Section 3: Schedule Configuration -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Schedule Configuration</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="frequency" class="block text-sm font-medium text-gray-700 mb-2">
+                                Frequency <span class="text-red-500">*</span>
+                            </label>
+                            <select 
+                                id="frequency"
+                                name="frequency"
+                                required
+                                onchange="handleFrequencyChange()"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            >
+                                <option value="weekly" selected>Weekly</option>
+                                <option value="daily">Daily</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="custom">Custom Interval</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Days of Week (for weekly) -->
+                        <div id="daysOfWeekSection">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Days of Week <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Monday">Mon</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Tuesday">Tue</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Wednesday">Wed</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Thursday">Thu</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Friday">Fri</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Saturday">Sat</button>
+                                <button type="button" class="day-selector px-4 py-2 border border-gray-300 rounded-lg font-medium" data-day="Sunday">Sun</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Custom Interval (for custom frequency) -->
+                        <div id="customIntervalSection" class="hidden grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="customInterval" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Interval
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="customInterval"
+                                    name="customInterval"
+                                    min="1"
+                                    value="2"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            <div>
+                                <label for="customIntervalUnit" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Unit
+                                </label>
+                                <select 
+                                    id="customIntervalUnit"
+                                    name="customIntervalUnit"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                >
+                                    <option value="days">Days</option>
+                                    <option value="weeks" selected>Weeks</option>
+                                    <option value="months">Months</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Start Time <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="time" 
+                                    id="startTime"
+                                    name="startTime"
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label for="endTime" class="block text-sm font-medium text-gray-700 mb-2">
+                                    End Time <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="time" 
+                                    id="endTime"
+                                    name="endTime"
+                                    required
+                                    onchange="calculateDuration()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
+                                Duration (minutes)
+                            </label>
+                            <input 
+                                type="number" 
+                                id="duration"
+                                name="duration"
+                                min="1"
+                                readonly
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                            />
+                            <p class="text-xs text-gray-500 mt-1">Auto-calculated from start and end time</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="startDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Start Date (Optional)
+                                </label>
+                                <input 
+                                    type="date" 
+                                    id="startDate"
+                                    name="startDate"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">When sessions should start being generated</p>
+                            </div>
+                            
+                            <div>
+                                <label for="endDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                    End Date (Optional)
+                                </label>
+                                <input 
+                                    type="date" 
+                                    id="endDate"
+                                    name="endDate"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                />
+                                <p class="text-xs text-gray-500 mt-1">Leave empty for ongoing classes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Default Staff Assignment -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Default Staff Assignment</h2>
+                        <span class="text-red-500">*</span>
+                    </div>
+                    
+                    <!-- Unified Assignment Search -->
+                    <div id="unifiedAssignmentMode">
+                        <div class="mb-3">
+                            <div class="relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input 
+                                    type="text" 
+                                    id="assignmentSearchInput"
+                                    placeholder="Search staff or teams by name, skills, or role..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    autocomplete="off"
+                                />
+                                <div id="assignmentAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                    <!-- Unified search results -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Selected Assignments List -->
+                        <div id="selectedAssignmentsContainer" class="mb-3">
+                            <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments (<span id="selectedAssignmentsCount">0</span>)</p>
+                            <div id="selectedAssignmentsList" class="space-y-2">
+                                <!-- Selected assignments will appear here -->
+                            </div>
+                            <p class="text-xs text-red-500 mt-2 hidden" id="staffError">At least one staff member is required</p>
+                        </div>
+                        
+                        <!-- Recommended Assignments Section -->
+                        <div id="recommendedAssignmentsSection" class="mb-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-xs font-medium text-gray-700">Recommended Assignments</p>
+                                <button id="refreshAssignmentRecommendations" class="text-xs text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Refresh
+                                </button>
+                            </div>
+                            <div id="recommendedAssignmentsList" class="space-y-2">
+                                <!-- Recommended assignments will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Auto-assign Option -->
+                    <div class="mt-3 pt-3 border-t border-gray-200">
+                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" id="autoAssignStaff" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                            <span>Auto-assign if no selection made (System will choose best match)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 5: Capacity Settings -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-xl font-semibold text-gray-900">Capacity Settings</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="maxCapacity" class="block text-sm font-medium text-gray-700 mb-2">
+                                Max Capacity <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="maxCapacity"
+                                name="maxCapacity"
+                                required
+                                min="1"
+                                value="10"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            />
+                            <p class="text-xs text-gray-500 mt-1">Maximum number of students per session</p>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                    <div class="flex justify-end gap-3">
+                        <button 
+                            type="button"
+                            onclick="window.location.href='class_list.html'"
+                            class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit"
+                            id="createClassBtn"
+                            class="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Create Class
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+        </main>
+    </div>
+
+    <!-- Pricebook Selection Modal -->
+    <div id="pricebookModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Select Price Book Item</h3>
+                <button onclick="closePricebookModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="mb-4">
+                    <input 
+                        type="text" 
+                        id="pricebookSearch"
+                        placeholder="Search pricebook items..."
+                        oninput="filterPricebookItems()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                </div>
+                <div id="pricebookItemsList" class="space-y-2">
+                    <!-- Pricebook items will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <script src="class_create_script.js"></script>
+</body>
+</html>
+
+
+

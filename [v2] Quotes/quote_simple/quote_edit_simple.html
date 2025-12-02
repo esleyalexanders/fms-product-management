@@ -454,7 +454,7 @@
                                 <div class="space-y-3">
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Billing Frequency</label>
-                                        <select id="billingFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <select id="billingFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="updateBillingDateField()">
                                             <option value="weekly">Weekly</option>
                                             <option value="biweekly">Bi-weekly (Every 2 weeks)</option>
                                             <option value="monthly" selected>Monthly</option>
@@ -464,7 +464,39 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Subscription Start Date</label>
-                                        <input type="date" id="subscriptionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                        <input type="date" id="subscriptionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="updateBillingDateField(); calculateNextInvoiceDate();" />
+                                    </div>
+                                    <div id="billingDateSection">
+                                        <label class="block text-xs text-gray-600 mb-1">Billing Date</label>
+                                        <div class="space-y-2">
+                                            <div id="billingDayOfMonth" class="hidden flex items-center gap-2">
+                                                <span class="text-xs text-gray-500 whitespace-nowrap">Bill on day</span>
+                                                <input 
+                                                    type="number" 
+                                                    id="billingDay" 
+                                                    min="1" 
+                                                    max="31" 
+                                                    value="1"
+                                                    placeholder="Day"
+                                                    class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    onchange="calculateNextInvoiceDate()"
+                                                />
+                                                <span class="text-xs text-gray-500" id="billingDayPeriod">of each period</span>
+                                            </div>
+                                            <div id="billingDayOfWeek" class="hidden flex items-center gap-2">
+                                                <span class="text-xs text-gray-500 whitespace-nowrap">Bill every</span>
+                                                <select id="billingWeekday" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateNextInvoiceDate()">
+                                                    <option value="0">Sunday</option>
+                                                    <option value="1">Monday</option>
+                                                    <option value="2">Tuesday</option>
+                                                    <option value="3">Wednesday</option>
+                                                    <option value="4">Thursday</option>
+                                                    <option value="5">Friday</option>
+                                                    <option value="6">Saturday</option>
+                                                </select>
+                                            </div>
+                                            <p class="text-xs text-gray-500 italic" id="billingDatePreview">First billing will occur on the selected date</p>
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Subscription End (Optional)</label>
@@ -535,7 +567,52 @@
                                         <button type="button" onclick="setDepositPercentage(75)" class="flex-1 px-3 py-1.5 text-xs border border-gray-300 rounded hover:bg-gray-50">75%</button>
                                     </div>
                                     <div class="p-2 bg-blue-50 rounded text-xs text-blue-800">
-                                        <strong>Remaining Balance:</strong> <span id="remainingBalance">$0.00</span> (due after service completion)
+                                        <strong>Remaining Balance:</strong> <span id="remainingBalance">$0.00</span>
+                                    </div>
+                                    <div class="pt-3 border-t border-gray-200">
+                                        <label class="block text-xs text-gray-600 mb-1">Remaining Balance Due Date</label>
+                                        <div class="space-y-2">
+                                            <select id="remainingBalanceDueType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="toggleRemainingBalanceDueDate()">
+                                                <option value="specific_date">Specific Date</option>
+                                                <option value="days_after_deposit">Days After Deposit</option>
+                                                <option value="days_before_service">Days Before Service Completion</option>
+                                                <option value="after_service">After Service Completion</option>
+                                            </select>
+                                            <div id="specificDateInput">
+                                                <input 
+                                                    type="date" 
+                                                    id="remainingBalanceDueDate" 
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                />
+                                            </div>
+                                            <div id="daysAfterDepositInput" class="hidden">
+                                                <div class="flex items-center gap-2">
+                                                    <input 
+                                                        type="number" 
+                                                        id="daysAfterDeposit" 
+                                                        min="1" 
+                                                        value="30"
+                                                        placeholder="30"
+                                                        class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                    <span class="text-xs text-gray-500">days after deposit payment</span>
+                                                </div>
+                                            </div>
+                                            <div id="daysBeforeServiceInput" class="hidden">
+                                                <div class="flex items-center gap-2">
+                                                    <input 
+                                                        type="number" 
+                                                        id="daysBeforeService" 
+                                                        min="1" 
+                                                        value="30"
+                                                        placeholder="30"
+                                                        class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                    />
+                                                    <span class="text-xs text-gray-500">days before service completion</span>
+                                                </div>
+                                            </div>
+                                            <p class="text-xs text-gray-500 italic" id="remainingBalanceDuePreview">Due date will be calculated based on your selection</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -3351,7 +3428,36 @@
                 subscriptionStartDate.addEventListener('change', calculateNextInvoiceDate);
             }
             if (billingFrequency) {
-                billingFrequency.addEventListener('change', calculateNextInvoiceDate);
+                billingFrequency.addEventListener('change', updateBillingDateField);
+            }
+            
+            // Billing date field changes
+            const billingDay = document.getElementById('billingDay');
+            const billingWeekday = document.getElementById('billingWeekday');
+            if (billingDay) {
+                billingDay.addEventListener('change', calculateNextInvoiceDate);
+            }
+            if (billingWeekday) {
+                billingWeekday.addEventListener('change', calculateNextInvoiceDate);
+            }
+            
+            // Remaining balance due date changes
+            const remainingBalanceDueType = document.getElementById('remainingBalanceDueType');
+            const remainingBalanceDueDate = document.getElementById('remainingBalanceDueDate');
+            const daysAfterDeposit = document.getElementById('daysAfterDeposit');
+            const daysBeforeService = document.getElementById('daysBeforeService');
+            
+            if (remainingBalanceDueType) {
+                remainingBalanceDueType.addEventListener('change', toggleRemainingBalanceDueDate);
+            }
+            if (remainingBalanceDueDate) {
+                remainingBalanceDueDate.addEventListener('change', updateRemainingBalanceDuePreview);
+            }
+            if (daysAfterDeposit) {
+                daysAfterDeposit.addEventListener('input', updateRemainingBalanceDuePreview);
+            }
+            if (daysBeforeService) {
+                daysBeforeService.addEventListener('input', updateRemainingBalanceDuePreview);
             }
             
             // Initialize payment configuration displays
@@ -3516,6 +3622,8 @@
                 if (depositSection) depositSection.classList.remove('hidden');
                 if (depositInfo) depositInfo.classList.remove('hidden');
                 if (paymentModelDisplay) paymentModelDisplay.textContent = 'Down Payment';
+                // Initialize remaining balance due date
+                toggleRemainingBalanceDueDate();
                 
                 // Enable both payment methods for deposit
                 if (cashRadio) {
@@ -3534,7 +3642,11 @@
                 if (paymentModelDisplay) paymentModelDisplay.textContent = 'Subscription';
                 // Set default subscription start date to today
                 const startDateInput = document.getElementById('subscriptionStartDate');
-                if (startDateInput) startDateInput.value = new Date().toISOString().split('T')[0];
+                if (startDateInput && !startDateInput.value) {
+                    startDateInput.value = new Date().toISOString().split('T')[0];
+                }
+                // Initialize billing date field
+                updateBillingDateField();
                 calculateNextInvoiceDate();
                 
                 // Disable Cash for subscription - only Stripe is supported
@@ -3633,36 +3745,177 @@
             calculateNextInvoiceDate();
         }
 
+        function updateBillingDateField() {
+            const frequency = document.getElementById('billingFrequency').value;
+            const billingDayOfMonth = document.getElementById('billingDayOfMonth');
+            const billingDayOfWeek = document.getElementById('billingDayOfWeek');
+            const billingDatePreview = document.getElementById('billingDatePreview');
+            
+            // Hide both initially
+            if (billingDayOfMonth) billingDayOfMonth.classList.add('hidden');
+            if (billingDayOfWeek) billingDayOfWeek.classList.add('hidden');
+            
+            // Show appropriate field based on frequency
+            if (frequency === 'monthly' || frequency === 'quarterly' || frequency === 'yearly') {
+                if (billingDayOfMonth) billingDayOfMonth.classList.remove('hidden');
+                const billingDayPeriod = document.getElementById('billingDayPeriod');
+                if (billingDayPeriod) {
+                    const periodText = frequency === 'monthly' ? 'month' : frequency === 'quarterly' ? 'quarter' : 'year';
+                    billingDayPeriod.textContent = `of each ${periodText}`;
+                }
+                if (billingDatePreview) {
+                    const billingDay = document.getElementById('billingDay').value || 1;
+                    const periodText = frequency === 'monthly' ? 'month' : frequency === 'quarterly' ? 'quarter' : 'year';
+                    billingDatePreview.textContent = `Billing will occur on day ${billingDay} of each ${periodText}`;
+                }
+            } else if (frequency === 'weekly' || frequency === 'biweekly') {
+                if (billingDayOfWeek) billingDayOfWeek.classList.remove('hidden');
+                if (billingDatePreview) {
+                    const weekday = document.getElementById('billingWeekday');
+                    const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const selectedDay = weekdayNames[parseInt(weekday.value) || 0];
+                    billingDatePreview.textContent = `Billing will occur every ${frequency === 'weekly' ? 'week' : '2 weeks'} on ${selectedDay}`;
+                }
+            }
+            
+            calculateNextInvoiceDate();
+        }
+
         function calculateNextInvoiceDate() {
-            const startDate = new Date(document.getElementById('subscriptionStartDate').value);
+            const startDateInput = document.getElementById('subscriptionStartDate');
             const frequency = document.getElementById('billingFrequency').value;
             
-            if (!startDate || isNaN(startDate)) {
-                document.getElementById('nextInvoiceDate').textContent = '-';
+            if (!startDateInput || !startDateInput.value) {
+                const nextInvoiceDateEl = document.getElementById('nextInvoiceDate');
+                if (nextInvoiceDateEl) nextInvoiceDateEl.textContent = '-';
+                return;
+            }
+            
+            const startDate = new Date(startDateInput.value);
+            if (isNaN(startDate.getTime())) {
+                const nextInvoiceDateEl = document.getElementById('nextInvoiceDate');
+                if (nextInvoiceDateEl) nextInvoiceDateEl.textContent = '-';
                 return;
             }
             
             const nextDate = new Date(startDate);
+            const billingDatePreview = document.getElementById('billingDatePreview');
             
             switch(frequency) {
                 case 'weekly':
+                    // Use the selected weekday
+                    const weekday = parseInt(document.getElementById('billingWeekday').value) || startDate.getDay();
                     nextDate.setDate(nextDate.getDate() + 7);
+                    // Adjust to the selected weekday
+                    const daysUntilWeekday = (weekday - nextDate.getDay() + 7) % 7;
+                    nextDate.setDate(nextDate.getDate() + daysUntilWeekday);
                     break;
                 case 'biweekly':
+                    const biweeklyWeekday = parseInt(document.getElementById('billingWeekday').value) || startDate.getDay();
                     nextDate.setDate(nextDate.getDate() + 14);
+                    const daysUntilBiweeklyWeekday = (biweeklyWeekday - nextDate.getDay() + 7) % 7;
+                    nextDate.setDate(nextDate.getDate() + daysUntilBiweeklyWeekday);
                     break;
                 case 'monthly':
+                    // Use the selected day of month
+                    const billingDay = parseInt(document.getElementById('billingDay').value) || 1;
                     nextDate.setMonth(nextDate.getMonth() + 1);
+                    // Set to the billing day, but handle months with fewer days
+                    const lastDayOfMonth = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+                    nextDate.setDate(Math.min(billingDay, lastDayOfMonth));
                     break;
                 case 'quarterly':
+                    const quarterlyBillingDay = parseInt(document.getElementById('billingDay').value) || 1;
                     nextDate.setMonth(nextDate.getMonth() + 3);
+                    const lastDayOfQuarter = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+                    nextDate.setDate(Math.min(quarterlyBillingDay, lastDayOfQuarter));
                     break;
                 case 'yearly':
+                    const yearlyBillingDay = parseInt(document.getElementById('billingDay').value) || 1;
                     nextDate.setFullYear(nextDate.getFullYear() + 1);
+                    const lastDayOfYear = new Date(nextDate.getFullYear(), nextDate.getMonth() + 1, 0).getDate();
+                    nextDate.setDate(Math.min(yearlyBillingDay, lastDayOfYear));
                     break;
             }
             
-            document.getElementById('nextInvoiceDate').textContent = nextDate.toLocaleDateString();
+            const nextInvoiceDateEl = document.getElementById('nextInvoiceDate');
+            if (nextInvoiceDateEl) {
+                nextInvoiceDateEl.textContent = nextDate.toLocaleDateString();
+            }
+            
+            // Update preview text
+            if (billingDatePreview) {
+                if (frequency === 'monthly' || frequency === 'quarterly' || frequency === 'yearly') {
+                    const billingDay = document.getElementById('billingDay').value || 1;
+                    const period = frequency === 'monthly' ? 'month' : frequency === 'quarterly' ? 'quarter' : 'year';
+                    billingDatePreview.textContent = `Bill every ${period} on day ${billingDay}. Next invoice: ${nextDate.toLocaleDateString()}`;
+                } else {
+                    const weekday = document.getElementById('billingWeekday');
+                    const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const selectedDay = weekdayNames[parseInt(weekday.value) || 0];
+                    const period = frequency === 'weekly' ? 'week' : '2 weeks';
+                    billingDatePreview.textContent = `Bill every ${period} on ${selectedDay}. Next invoice: ${nextDate.toLocaleDateString()}`;
+                }
+            }
+        }
+
+        function toggleRemainingBalanceDueDate() {
+            const dueType = document.getElementById('remainingBalanceDueType').value;
+            const specificDateInput = document.getElementById('specificDateInput');
+            const daysAfterDepositInput = document.getElementById('daysAfterDepositInput');
+            const daysBeforeServiceInput = document.getElementById('daysBeforeServiceInput');
+            
+            // Hide all inputs
+            if (specificDateInput) specificDateInput.classList.add('hidden');
+            if (daysAfterDepositInput) daysAfterDepositInput.classList.add('hidden');
+            if (daysBeforeServiceInput) daysBeforeServiceInput.classList.add('hidden');
+            
+            // Show appropriate input
+            if (dueType === 'specific_date') {
+                if (specificDateInput) specificDateInput.classList.remove('hidden');
+            } else if (dueType === 'days_after_deposit') {
+                if (daysAfterDepositInput) daysAfterDepositInput.classList.remove('hidden');
+            } else if (dueType === 'days_before_service') {
+                if (daysBeforeServiceInput) daysBeforeServiceInput.classList.remove('hidden');
+            }
+            
+            updateRemainingBalanceDuePreview();
+        }
+
+        function updateRemainingBalanceDuePreview() {
+            const dueType = document.getElementById('remainingBalanceDueType').value;
+            const preview = document.getElementById('remainingBalanceDuePreview');
+            
+            if (!preview) return;
+            
+            let previewText = '';
+            
+            switch(dueType) {
+                case 'specific_date':
+                    const specificDate = document.getElementById('remainingBalanceDueDate').value;
+                    if (specificDate) {
+                        const date = new Date(specificDate);
+                        previewText = `Remaining balance due on ${date.toLocaleDateString()}`;
+                    } else {
+                        previewText = 'Select a specific date for remaining balance due date';
+                    }
+                    break;
+                case 'days_after_deposit':
+                    const daysAfter = document.getElementById('daysAfterDeposit').value || 30;
+                    previewText = `Remaining balance due ${daysAfter} days after deposit payment`;
+                    break;
+                case 'days_before_service':
+                    const daysBefore = document.getElementById('daysBeforeService').value || 30;
+                    previewText = `Remaining balance due ${daysBefore} days before service completion`;
+                    break;
+                case 'after_service':
+                    previewText = 'Remaining balance due after service completion';
+                    break;
+                default:
+                    previewText = 'Due date will be calculated based on your selection';
+            }
+            
+            preview.textContent = previewText;
         }
 
         function updateDepositCalculation() {

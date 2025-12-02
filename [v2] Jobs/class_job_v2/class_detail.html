@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Details - FMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    
+    <div class="p-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h1 class="text-2xl font-bold text-gray-900" id="classNameHeader">Class Details</h1>
+                            <span id="classIdBadge" class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-sm font-medium">CLASS-2024-001</span>
+                            <span id="classStatusBadge" class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">Active</span>
+                        </div>
+                        <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
+                    </div>
+                    <div id="headerActions" class="flex gap-2">
+                        <button 
+                            onclick="window.location.href='class_list.html'"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Classes
+                        </button>
+                        <button 
+                            id="editClassBtn"
+                            onclick="editClass()"
+                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit Class
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="bg-white rounded-lg shadow-sm mb-4">
+                <div class="border-b border-gray-200">
+                    <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                        <button 
+                            id="overviewTab"
+                            class="tab-button active py-4 px-1 border-b-2 border-emerald-500 font-medium text-sm text-emerald-600 transition-colors"
+                            onclick="switchTab('overview', event)"
+                        >
+                            Overview
+                        </button>
+                        <button 
+                            id="sessionsTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                            onclick="switchTab('sessions', event)"
+                        >
+                            Sessions
+                        </button>
+                        <button 
+                            id="enrollmentTab"
+                            class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors"
+                            onclick="switchTab('enrollment', event)"
+                        >
+                            Enrollment
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Overview Tab Content -->
+            <div id="overviewContent" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                
+                <!-- Left Column - Class Information -->
+                <div class="lg:col-span-2 space-y-4">
+                    
+                    <!-- Class Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Class Information</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Class Name</label>
+                                <p class="text-sm font-semibold text-gray-900" id="displayClassName">-</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                                <p class="text-sm text-gray-700" id="displayDescription">-</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Skill Level</label>
+                                    <p class="text-sm text-gray-900" id="displaySkillLevel">-</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Status</label>
+                                    <span id="displayStatus" class="inline-block px-2 py-1 text-xs rounded">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Book Item -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Price Book Item</h2>
+                        
+                        <div id="pricebookItemDisplay" class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-emerald-900" id="displayPricebookName">-</h4>
+                                    <p class="text-sm text-emerald-700 mt-1" id="displayPricebookDescription">-</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="px-2 py-1 text-xs bg-emerald-200 text-emerald-800 rounded" id="displayPricebookTag">-</span>
+                                        <span class="text-sm font-semibold text-emerald-900" id="displayPricebookPrice">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule Configuration -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Schedule Configuration</h2>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Frequency</label>
+                                <p class="text-sm font-semibold text-gray-900" id="displayFrequency">-</p>
+                            </div>
+                            
+                            <div id="displayDaysSection">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Days of Week</label>
+                                <div id="displayDays" class="flex flex-wrap gap-2">
+                                    <!-- Days will be rendered here -->
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Start Time</label>
+                                    <p class="text-sm text-gray-900" id="displayStartTime">-</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">End Time</label>
+                                    <p class="text-sm text-gray-900" id="displayEndTime">-</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Duration</label>
+                                <p class="text-sm text-gray-900" id="displayDuration">-</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">Start Date</label>
+                                    <p class="text-sm text-gray-900" id="displayStartDate">-</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">End Date</label>
+                                    <p class="text-sm text-gray-900" id="displayEndDate">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default Staff -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Default Staff</h2>
+                        
+                        <div id="displayStaffList" class="space-y-2">
+                            <!-- Staff will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Capacity Settings -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Capacity Settings</h2>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">Max Capacity</label>
+                                <p class="text-sm font-semibold text-gray-900" id="displayMaxCapacity">-</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Summary & Actions -->
+                <div class="space-y-4">
+                    
+                    <!-- Class Summary -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Class Summary</h2>
+                        
+                        <div class="space-y-3 mb-4">
+                            <div class="p-3 bg-emerald-50 rounded-lg">
+                                <div class="text-xs text-emerald-600 mb-1">Price Book Item</div>
+                                <div class="text-sm font-bold text-emerald-700" id="summaryPricebookItem">-</div>
+                            </div>
+
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Max Capacity</span>
+                                    <span class="font-medium text-gray-900" id="summaryCapacity">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Default Staff</span>
+                                    <span class="font-medium text-gray-900" id="summaryStaff">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Total Sessions</span>
+                                    <span class="font-medium text-gray-900" id="summarySessions">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Avg. Enrollment</span>
+                                    <span class="font-medium text-gray-900" id="summaryEnrollment">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="border-t border-gray-200 pt-4 space-y-2">
+                            <button 
+                                onclick="generateSessions()"
+                                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            >
+                                Generate Sessions
+                            </button>
+                            <button 
+                                onclick="viewAllSessions()"
+                                class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                View All Sessions
+                            </button>
+                            <button 
+                                onclick="handleArchive()"
+                                class="w-full px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors"
+                            >
+                                Archive Class
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Sessions Tab Content -->
+            <div id="sessionsContent" class="tab-content hidden">
+                <div class="space-y-4">
+                    
+                    <!-- Sessions Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900">Class Sessions</h2>
+                                <p class="text-sm text-gray-500 mt-1">All sessions for this class</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button 
+                                    onclick="createSession()"
+                                    class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Create Session
+                                </button>
+                                <button 
+                                    onclick="generateSessions()"
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    Generate Sessions
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sessions List -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div id="sessionsListContainer" class="space-y-3">
+                            <!-- Sessions will be rendered here -->
+                        </div>
+                        
+                        <div id="emptySessionsState" class="text-center py-12 text-gray-500">
+                            <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-700 mb-1">No sessions created yet</p>
+                            <p class="text-xs text-gray-500">Generate sessions automatically or create them manually</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Tab Content -->
+            <div id="enrollmentContent" class="tab-content hidden">
+                <div class="space-y-4">
+                    
+                    <!-- Enrollment Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="text-xs text-gray-500 mb-1">Total Bookings</div>
+                            <div class="text-2xl font-bold text-gray-900" id="totalBookings">0</div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="text-xs text-gray-500 mb-1">Confirmed</div>
+                            <div class="text-2xl font-bold text-emerald-600" id="confirmedBookings">0</div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="text-xs text-gray-500 mb-1">Avg. Enrollment</div>
+                            <div class="text-2xl font-bold text-blue-600" id="avgEnrollment">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Slot Bookings Section -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-900">Slot Bookings</h2>
+                                <p class="text-sm text-gray-500 mt-1">Manage customer bookings for this class</p>
+                            </div>
+                            <button 
+                                onclick="openBookCustomerModal()"
+                                class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium flex items-center gap-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Book Customer
+                            </button>
+                        </div>
+                        
+                        <!-- Search Existing Bookings -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Search Booked Customers</label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    id="searchBookedCustomers"
+                                    placeholder="Search by customer name, email, or quote ID..."
+                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                    autocomplete="off"
+                                    oninput="searchBookedCustomers(this.value)"
+                                />
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Booked Customers List -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="text-lg font-semibold text-gray-900">Booked Customers</h3>
+                                <span class="text-sm text-gray-500" id="bookingsCount">0 bookings</span>
+                            </div>
+                            <div id="bookingsList" class="space-y-3">
+                                <!-- Bookings will be rendered here -->
+                            </div>
+                            
+                            <div id="emptyBookingsState" class="text-center py-12 text-gray-500">
+                                <svg class="mx-auto mb-3 text-gray-400 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 mb-1">No bookings yet</p>
+                                <p class="text-xs text-gray-500">Click "Book Customer" to add new bookings</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Book Customer Modal -->
+                    <div id="bookCustomerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onclick="if(event.target === this) closeBookCustomerModal()">
+                        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col" onclick="event.stopPropagation()">
+                            <div class="px-6 py-4 border-b border-gray-200 flex-shrink-0">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Book Customer</h3>
+                                        <p class="text-sm text-gray-500 mt-1">Search for customers and book slots from their quotes</p>
+                                    </div>
+                                    <button 
+                                        onclick="closeBookCustomerModal()"
+                                        class="text-gray-400 hover:text-gray-600"
+                                    >
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                                <!-- Customer Search -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                                    <div class="relative">
+                                        <input 
+                                            type="text" 
+                                            id="customerSearchInput"
+                                            placeholder="Type to search customers with quotes..."
+                                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                            autocomplete="off"
+                                            oninput="searchCustomersForBooking(this.value)"
+                                        />
+                                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <div id="customerAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                            <!-- Customer search results will appear here -->
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
+                                        <span class="text-amber-600">⚠️</span> Please ensure a pricebook item is linked to this class to search for customers
+                                    </p>
+                                </div>
+                                
+                                <!-- Quick Book Form (shown when customer selected) -->
+                                <div id="quickBookForm" class="hidden">
+                                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div>
+                                                <p class="text-xs uppercase tracking-wide text-emerald-600 font-semibold mb-1">Selected Customer</p>
+                                                <h4 class="text-base font-semibold text-gray-900" id="quickBookCustomerName">-</h4>
+                                                <p class="text-sm text-gray-600" id="quickBookCustomerEmail">-</p>
+                                            </div>
+                                            <button 
+                                                onclick="clearQuickBook()"
+                                                class="text-gray-400 hover:text-red-500 transition-colors"
+                                                title="Clear selection"
+                                            >
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="grid gap-4 md:grid-cols-3 mb-4">
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-2">Quote</label>
+                                                <div id="quickBookQuoteDisplay" class="p-3 border border-emerald-200 rounded-lg bg-white">
+                                                    <!-- Quote info will be populated here -->
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-2">Number of Slots <span class="text-red-500">*</span></label>
+                                                <input 
+                                                    type="number"
+                                                    id="quickBookSlots"
+                                                    value="1"
+                                                    min="1"
+                                                    max="20"
+                                                    class="w-full px-3 py-2 text-center text-lg font-semibold text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                                    onchange="updateQuickBookSlots()"
+                                                />
+                                                <p class="text-xs text-gray-400 mt-1 text-center">Slots to book</p>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-500 block mb-2">Payment Status</label>
+                                                <div id="quickBookPaymentStatus" class="p-3 border border-gray-200 rounded-lg bg-white">
+                                                    <!-- Payment status will be populated here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="text-xs text-gray-500 block mb-2">Booking Notes <span class="text-gray-400">(optional)</span></label>
+                                            <textarea 
+                                                id="quickBookNotes"
+                                                rows="2"
+                                                class="w-full px-3 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-y"
+                                                placeholder="Add any notes for this booking (e.g., student names, preferences, special considerations)"
+                                            ></textarea>
+                                        </div>
+                                        
+                                        <button 
+                                            onclick="bookQuickCustomer()"
+                                            id="quickBookButton"
+                                            class="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold flex items-center justify-center gap-2"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Book Slots
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="class_detail_script.js"></script>
+</body>
+</html>
+
+
+

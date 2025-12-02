@@ -97,7 +97,7 @@
                     <!-- Modify Form -->
                     <div id="modifyForm" class="bg-white rounded-lg shadow-sm p-6 hidden">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Modify Schedule & Assignment</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">Date</label>
                                 <input type="date" id="dateInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -106,26 +106,74 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1">Time</label>
                                 <input type="time" id="timeInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Team</label>
-                                <select id="teamInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="team1">Team 1 - Primary</option>
-                                    <option value="team2">Team 2 - Support</option>
-                                    <option value="team3">Team 3 - Specialized</option>
-                                </select>
+                        </div>
+
+                        <!-- Assignment Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <div class="flex items-center mb-4">
+                                <label class="flex items-center gap-2 text-base font-semibold text-gray-900">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    Assignment <span class="text-sm text-gray-500 font-normal">(Optional)</span>
+                                </label>
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Members</label>
-                                <div class="grid grid-cols-2 gap-2 text-sm">
-                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="John Smith" checked> John Smith</label>
-                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Jane Doe" checked> Jane Doe</label>
-                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Alice Brown"> Alice Brown</label>
-                                    <label class="inline-flex items-center gap-2"><input type="checkbox" class="memberCheck" value="Bob Taylor"> Bob Taylor</label>
+                                
+                            <!-- Unified Assignment Search -->
+                            <div id="unifiedAssignmentMode">
+                                <div class="mb-3">
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <input 
+                                            type="text" 
+                                            id="assignmentSearchInput"
+                                            placeholder="Search staff or teams by name, skills, or role..."
+                                            class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            autocomplete="off"
+                                        />
+                                        <div id="assignmentAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                            <!-- Unified search results -->
+                                        </div>
+                                    </div>
                                 </div>
+                                
+                                <!-- Selected Assignments List -->
+                                <div id="selectedAssignmentsContainer" class="mb-3">
+                                    <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments (<span id="selectedAssignmentsCount">0</span>)</p>
+                                    <div id="selectedAssignmentsList" class="space-y-2">
+                                        <!-- Selected assignments will appear here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Recommended Assignments Section -->
+                                <div id="recommendedAssignmentsSection" class="mb-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p class="text-xs font-medium text-gray-700">Recommended Assignments</p>
+                                        <button id="refreshAssignmentRecommendations" class="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                            </svg>
+                                            Refresh
+                                        </button>
+                                    </div>
+                                    <div id="recommendedAssignmentsList" class="space-y-2">
+                                        <!-- Recommended assignments will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Auto-assign Option -->
+                            <div class="mt-3 pt-3 border-t border-gray-200">
+                                <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                    <input type="checkbox" id="autoAssignStaff" checked class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Auto-assign if no selection made (System will choose best match)</span>
+                                </label>
                             </div>
                         </div>
 
-                        <div id="formError" class="hidden mt-3 text-sm text-red-600">Please fill date, time and select at least one member.</div>
+                        <div id="formError" class="hidden mt-3 text-sm text-red-600">Please fill date, time and select at least one assignment.</div>
 
                         <div class="mt-6 flex gap-3">
                             <button id="saveChangesBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Changes</button>
@@ -171,6 +219,283 @@
     </div>
 
     <script>
+        // ============================================================================
+        // SAMPLE DATA - Staff Database
+        // ============================================================================
+        
+        const availableStaff = [
+            { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', skills: ['Math', 'Algebra', 'Calculus'], avatar: 'JS', color: 'blue', availability: 'high' },
+            { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', skills: ['Physics', 'Chemistry', 'Biology'], avatar: 'ED', color: 'purple', availability: 'high' },
+            { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', skills: ['English', 'Literature', 'Writing'], avatar: 'MB', color: 'green', availability: 'medium' },
+            { id: 'staff-4', name: 'Sarah Wilson', role: 'General Tutor', skills: ['Math', 'English', 'General'], avatar: 'SW', color: 'orange', availability: 'high' },
+            { id: 'staff-5', name: 'David Lee', role: 'Math Tutor', skills: ['Math', 'Statistics', 'Geometry'], avatar: 'DL', color: 'red', availability: 'low' }
+        ];
+
+        // Available teams for assignment
+        const availableTeams = [
+            { 
+                id: 'team-1', 
+                name: 'Math & Science Team', 
+                type: 'team',
+                avatar: 'MST', 
+                color: 'indigo',
+                skills: ['Math', 'Science', 'Physics', 'Chemistry'],
+                members: [
+                    { id: 'staff-1', name: 'John Smith', role: 'Math Tutor', avatar: 'JS' },
+                    { id: 'staff-2', name: 'Emily Davis', role: 'Science Tutor', avatar: 'ED' }
+                ]
+            },
+            { 
+                id: 'team-2', 
+                name: 'English & Literature Team', 
+                type: 'team',
+                avatar: 'ELT', 
+                color: 'pink',
+                skills: ['English', 'Literature', 'Writing', 'Grammar'],
+                members: [
+                    { id: 'staff-3', name: 'Michael Brown', role: 'English Tutor', avatar: 'MB' }
+                ]
+            }
+        ];
+
+        // Combined assignable entities (staff + teams)
+        function getAssignableEntities() {
+            const individuals = availableStaff.map(staff => ({
+                ...staff,
+                type: 'individual',
+                displayName: `${staff.name} (User)`
+            }));
+            
+            const teams = availableTeams.map(team => ({
+                ...team,
+                displayName: `${team.name} (Team)`
+            }));
+            
+            return [...individuals, ...teams];
+        }
+
+        // Selected assignments tracking
+        let selectedAssignments = [];
+
+        // ============================================================================
+        // UNIFIED ASSIGNMENT FUNCTIONS
+        // ============================================================================
+
+        function initializeUnifiedAssignment() {
+            const searchInput = document.getElementById('assignmentSearchInput');
+            const autocompleteDiv = document.getElementById('assignmentAutocomplete');
+            
+            if (!searchInput || !autocompleteDiv) return;
+            
+            // Search input handler
+            searchInput.addEventListener('input', handleAssignmentSearch);
+            
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !autocompleteDiv.contains(e.target)) {
+                    autocompleteDiv.classList.add('hidden');
+                }
+            });
+            
+            // Initialize display
+            renderSelectedAssignments();
+            loadRecommendedAssignments();
+        }
+
+        function handleAssignmentSearch(e) {
+            const query = e.target.value.toLowerCase().trim();
+            const autocomplete = document.getElementById('assignmentAutocomplete');
+            
+            if (!query) {
+                autocomplete.classList.add('hidden');
+                return;
+            }
+            
+            const entities = getAssignableEntities();
+            const filtered = entities.filter(entity => 
+                entity.name.toLowerCase().includes(query) || 
+                entity.role?.toLowerCase().includes(query) ||
+                entity.skills?.some(skill => skill.toLowerCase().includes(query)) ||
+                entity.displayName.toLowerCase().includes(query)
+            );
+            
+            if (filtered.length === 0) {
+                autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No matches found</div>';
+                autocomplete.classList.remove('hidden');
+                return;
+            }
+            
+            autocomplete.innerHTML = filtered.map(entity => {
+                const colorMap = {
+                    'blue': 'bg-blue-100 text-blue-600',
+                    'purple': 'bg-purple-100 text-purple-600',
+                    'green': 'bg-green-100 text-green-600',
+                    'orange': 'bg-orange-100 text-orange-600',
+                    'red': 'bg-red-100 text-red-600',
+                    'pink': 'bg-pink-100 text-pink-600',
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
+                };
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
+                
+                return `
+                    <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left">
+                        <div class="w-10 h-10 ${colorClass} rounded-full flex items-center justify-center font-semibold text-sm">
+                            ${entity.avatar}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                            ${entity.skills ? `<p class="text-xs text-gray-500">${entity.skills.join(', ')}</p>` : ''}
+                        </div>
+                    </button>
+                `;
+            }).join('');
+            
+            autocomplete.classList.remove('hidden');
+        }
+
+        function selectAssignment(entityId, entityType) {
+            const entities = getAssignableEntities();
+            const entity = entities.find(e => e.id === entityId);
+            
+            if (!entity) return;
+            
+            // Check if already selected
+            if (selectedAssignments.find(s => s.id === entityId)) {
+                alert('Already selected');
+                return;
+            }
+            
+            selectedAssignments.push(entity);
+            renderSelectedAssignments();
+            loadRecommendedAssignments();
+            
+            // Clear search
+            document.getElementById('assignmentSearchInput').value = '';
+            document.getElementById('assignmentAutocomplete').classList.add('hidden');
+        }
+
+        function removeAssignment(entityId) {
+            selectedAssignments = selectedAssignments.filter(s => s.id !== entityId);
+            renderSelectedAssignments();
+            loadRecommendedAssignments();
+        }
+
+        function renderSelectedAssignments() {
+            const container = document.getElementById('selectedAssignmentsList');
+            const countEl = document.getElementById('selectedAssignmentsCount');
+            
+            if (!container || !countEl) return;
+            
+            countEl.textContent = selectedAssignments.length;
+            
+            if (selectedAssignments.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 italic">No assignments selected yet</p>';
+                return;
+            }
+            
+            container.innerHTML = selectedAssignments.map(entity => {
+                const colorMap = {
+                    'blue': 'bg-blue-100 text-blue-600',
+                    'purple': 'bg-purple-100 text-purple-600',
+                    'green': 'bg-green-100 text-green-600',
+                    'orange': 'bg-orange-100 text-orange-600',
+                    'red': 'bg-red-100 text-red-600',
+                    'pink': 'bg-pink-100 text-pink-600',
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
+                };
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
+                
+                let html = `
+                    <div class="flex items-center gap-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                            ${entity.avatar}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                        </div>
+                        <button onclick="removeAssignment('${entity.id}')" class="p-1 hover:bg-red-100 rounded">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                
+                // Add team members display if it's a team
+                if (entity.type === 'team' && entity.members) {
+                    html += `
+                        <div class="ml-11 mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                            <p class="text-xs font-medium text-gray-700 mb-2">Team Members:</p>
+                            <div class="space-y-1">
+                                ${entity.members.map(member => `
+                                    <div class="flex items-center gap-2 text-xs">
+                                        <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center font-semibold text-gray-600">
+                                            ${member.avatar}
+                                        </div>
+                                        <span class="text-gray-700">${member.name}</span>
+                                        <span class="text-gray-500">• ${member.role}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                return html;
+            }).join('');
+        }
+
+        function loadRecommendedAssignments() {
+            const container = document.getElementById('recommendedAssignmentsList');
+            if (!container) return;
+            
+            const entities = getAssignableEntities();
+            // Get entities not already selected
+            const recommended = entities.filter(e => !selectedAssignments.find(sel => sel.id === e.id)).slice(0, 3);
+            
+            if (recommended.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 italic">All available assignments selected</p>';
+                return;
+            }
+            
+            container.innerHTML = recommended.map(entity => {
+                const colorMap = {
+                    'blue': 'bg-blue-100 text-blue-600',
+                    'purple': 'bg-purple-100 text-purple-600',
+                    'green': 'bg-green-100 text-green-600',
+                    'orange': 'bg-orange-100 text-orange-600',
+                    'red': 'bg-red-100 text-red-600',
+                    'pink': 'bg-pink-100 text-pink-600',
+                    'indigo': 'bg-indigo-100 text-indigo-600',
+                    'gray': 'bg-gray-100 text-gray-600'
+                };
+                const colorClass = colorMap[entity.color] || colorMap['blue'];
+                
+                return `
+                    <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors text-left">
+                        <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                            ${entity.avatar}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                            <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // ============================================================================
+        // PROPOSAL & SCHEDULING FUNCTIONS
+        // ============================================================================
+
         const proposal = {
             date: document.getElementById('propDate').textContent,
             time: document.getElementById('propTime').textContent,
@@ -183,47 +508,63 @@
         const modifyForm = document.getElementById('modifyForm');
         const dateInput = document.getElementById('dateInput');
         const timeInput = document.getElementById('timeInput');
-        const teamInput = document.getElementById('teamInput');
         const formError = document.getElementById('formError');
 
         document.getElementById('modifyBtn').addEventListener('click', () => {
             // prefill with proposal
             dateInput.value = proposal.date;
             timeInput.value = '10:00';
-            teamInput.value = proposal.team;
             modifyForm.classList.remove('hidden');
             window.scrollTo({ top: modifyForm.offsetTop - 20, behavior: 'smooth' });
+            
+            // Initialize assignment system when form is shown
+            initializeUnifiedAssignment();
         });
 
         document.getElementById('cancelModifyBtn').addEventListener('click', () => {
             modifyForm.classList.add('hidden');
+            selectedAssignments = [];
         });
 
         document.getElementById('confirmProposalBtn').addEventListener('click', () => {
             // Confirm the proposal -> Scheduled
-            setScheduledUI(proposal.date, proposal.time, proposal.members);
+            const members = proposal.members;
+            setScheduledUI(proposal.date, proposal.time, members);
             appendTimeline('bg-blue-600', 'Schedule confirmed by admin');
         });
 
         document.getElementById('saveChangesBtn').addEventListener('click', () => {
             const pickedDate = dateInput.value;
             const pickedTime = timeInput.value;
-            const pickedMembers = Array.from(document.querySelectorAll('.memberCheck:checked')).map(i => i.value);
+            const autoAssign = document.getElementById('autoAssignStaff').checked;
 
-            if (!pickedDate || !pickedTime || pickedMembers.length === 0) {
+            if (!pickedDate || !pickedTime) {
                 formError.classList.remove('hidden');
+                formError.textContent = 'Please fill date and time.';
+                return;
+            }
+
+            // Check assignments
+            if (selectedAssignments.length === 0 && !autoAssign) {
+                formError.classList.remove('hidden');
+                formError.textContent = 'Please select at least one assignment or enable auto-assign.';
                 return;
             }
             formError.classList.add('hidden');
 
+            const memberNames = selectedAssignments.length > 0 
+                ? selectedAssignments.map(a => a.name).join(', ')
+                : (autoAssign ? 'Auto-assigned' : 'None');
+
             modifyForm.classList.add('hidden');
-            setScheduledUI(pickedDate, pickedTime, pickedMembers);
+            setScheduledUI(pickedDate, pickedTime, memberNames.split(', '));
             appendTimeline('bg-blue-500', 'Schedule updated manually by admin');
         });
 
         function setScheduledUI(date, time, members) {
             statusBadge.innerHTML = '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">📅 Scheduled</span>';
-            appendTimeline('bg-blue-500', `Job scheduled on ${formatDate(date)} at ${formatTime(time)} (Members: ${members.join(', ')})`);
+            const memberText = Array.isArray(members) ? members.join(', ') : members;
+            appendTimeline('bg-blue-500', `Job scheduled on ${formatDate(date)} at ${formatTime(time)} (Assignments: ${memberText})`);
         }
 
         function appendTimeline(colorClass, text) {
@@ -253,9 +594,26 @@
             date.setHours(h, m);
             return date.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
         }
+
+        // Initialize refresh button for recommendations
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refreshAssignmentRecommendations');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loadRecommendedAssignments();
+                });
+            }
+        });
     </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
