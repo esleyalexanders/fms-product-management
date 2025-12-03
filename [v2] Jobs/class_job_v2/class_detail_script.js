@@ -555,7 +555,8 @@ const sampleCustomers = [
         phone: '+61 400 123 456',
         quotes: [
             { id: 'Q-2025-001', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 5, total: 100.00, status: 'approved', paymentStatus: 'paid', amountPaid: 100.00 },
-            { id: 'Q-2025-002', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 3, total: 60.00, status: 'approved', paymentStatus: 'partial', amountPaid: 30.00 }
+            { id: 'Q-2025-002', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 3, total: 60.00, status: 'approved', paymentStatus: 'partial', amountPaid: 30.00 },
+            { id: 'Q-2025-010', pricebookItemId: 'PB-YOGA-CLASS', slots: 4, total: 200.00, status: 'approved', paymentStatus: 'paid', amountPaid: 200.00 }
         ]
     },
     { 
@@ -564,7 +565,8 @@ const sampleCustomers = [
         email: 'm.chen@email.com', 
         phone: '+61 400 234 567',
         quotes: [
-            { id: 'Q-2025-003', pricebookItemId: 'PB-MATH-TUTORING', slots: 10, total: 500.00, status: 'approved', paymentStatus: 'paid', amountPaid: 500.00 }
+            { id: 'Q-2025-003', pricebookItemId: 'PB-MATH-TUTORING', slots: 10, total: 500.00, status: 'approved', paymentStatus: 'paid', amountPaid: 500.00 },
+            { id: 'Q-2025-011', pricebookItemId: 'PB-ALGEBRA-II', slots: 6, total: 1080.00, status: 'approved', paymentStatus: 'partial', amountPaid: 540.00 }
         ]
     },
     { 
@@ -573,7 +575,99 @@ const sampleCustomers = [
         email: 'emma.w@email.com', 
         phone: '+61 400 345 678',
         quotes: [
-            { id: 'Q-2025-004', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 2, total: 40.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
+            { id: 'Q-2025-004', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 2, total: 40.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 },
+            { id: 'Q-2025-012', pricebookItemId: 'PB-YOGA-CLASS', slots: 3, total: 150.00, status: 'approved', paymentStatus: 'paid', amountPaid: 150.00 }
+        ]
+    },
+    { 
+        id: 'CUST-004', 
+        name: 'David Thompson', 
+        email: 'david.t@email.com', 
+        phone: '+61 400 456 789',
+        quotes: [
+            { id: 'Q-2025-005', pricebookItemId: 'PB-MATH-TUTORING', slots: 8, total: 960.00, status: 'approved', paymentStatus: 'paid', amountPaid: 960.00 },
+            { id: 'Q-2025-013', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 5, total: 1000.00, status: 'approved', paymentStatus: 'partial', amountPaid: 500.00 }
+        ]
+    },
+    { 
+        id: 'CUST-005', 
+        name: 'Lisa Anderson', 
+        email: 'lisa.a@email.com', 
+        phone: '+61 400 567 890',
+        quotes: [
+            { id: 'Q-2025-006', pricebookItemId: 'PB-YOGA-CLASS', slots: 6, total: 300.00, status: 'approved', paymentStatus: 'paid', amountPaid: 300.00 },
+            { id: 'Q-2025-014', pricebookItemId: 'PB-WELLNESS-PASS', slots: 10, total: 350.00, status: 'approved', paymentStatus: 'paid', amountPaid: 350.00 }
+        ]
+    },
+    { 
+        id: 'CUST-006', 
+        name: 'James Martinez', 
+        email: 'james.m@email.com', 
+        phone: '+61 400 678 901',
+        quotes: [
+            { id: 'Q-2025-007', pricebookItemId: 'PB-GUITAR-SESSION', slots: 4, total: 180.00, status: 'approved', paymentStatus: 'paid', amountPaid: 180.00 },
+            { id: 'Q-2025-015', pricebookItemId: 'PB-GUITAR-SESSION', slots: 2, total: 90.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
+        ]
+    },
+    { 
+        id: 'CUST-007', 
+        name: 'Miss A', 
+        email: 'missa@email.com', 
+        phone: '+61 400 789 012',
+        quotes: [
+            { id: 'Q-2025-008', pricebookItemId: 'PB-YOGA-CLASS', slots: 2, total: 100.00, status: 'approved', paymentStatus: 'paid', amountPaid: 100.00 },
+            { id: 'Q-2025-016', pricebookItemId: 'PB-MATH-TUTORING', slots: 5, total: 600.00, status: 'approved', paymentStatus: 'partial', amountPaid: 300.00 },
+            { id: 'Q-2025-017', pricebookItemId: 'PB-SCIENCE-LAB', slots: 3, total: 240.00, status: 'approved', paymentStatus: 'paid', amountPaid: 240.00 }
+        ]
+    },
+    { 
+        id: 'CUST-008', 
+        name: 'Robert Kim', 
+        email: 'robert.k@email.com', 
+        phone: '+61 400 890 123',
+        quotes: [
+            { id: 'Q-2025-009', pricebookItemId: 'PB-ALGEBRA-II', slots: 8, total: 1440.00, status: 'approved', paymentStatus: 'paid', amountPaid: 1440.00 },
+            { id: 'Q-2025-018', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 4, total: 800.00, status: 'approved', paymentStatus: 'paid', amountPaid: 800.00 }
+        ]
+    },
+    { 
+        id: 'CUST-009', 
+        name: 'Maria Garcia', 
+        email: 'maria.g@email.com', 
+        phone: '+61 400 901 234',
+        quotes: [
+            { id: 'Q-2025-019', pricebookItemId: 'PB-YOGA-CLASS', slots: 5, total: 250.00, status: 'approved', paymentStatus: 'paid', amountPaid: 250.00 },
+            { id: 'Q-2025-020', pricebookItemId: 'PB-WELLNESS-PASS', slots: 8, total: 280.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
+        ]
+    },
+    { 
+        id: 'CUST-010', 
+        name: 'Thomas Brown', 
+        email: 'thomas.b@email.com', 
+        phone: '+61 400 012 345',
+        quotes: [
+            { id: 'Q-2025-021', pricebookItemId: 'PB-MATH-TUTORING', slots: 12, total: 1440.00, status: 'approved', paymentStatus: 'partial', amountPaid: 720.00 },
+            { id: 'Q-2025-022', pricebookItemId: 'PB-SCIENCE-LAB', slots: 6, total: 480.00, status: 'approved', paymentStatus: 'paid', amountPaid: 480.00 }
+        ]
+    },
+    { 
+        id: 'CUST-011', 
+        name: 'Jennifer Lee', 
+        email: 'jennifer.l@email.com', 
+        phone: '+61 400 123 456',
+        quotes: [
+            { id: 'Q-2025-023', pricebookItemId: 'PB-GUITAR-SESSION', slots: 6, total: 270.00, status: 'approved', paymentStatus: 'paid', amountPaid: 270.00 },
+            { id: 'Q-2025-024', pricebookItemId: 'PB-YOGA-CLASS', slots: 4, total: 200.00, status: 'approved', paymentStatus: 'paid', amountPaid: 200.00 }
+        ]
+    },
+    { 
+        id: 'CUST-012', 
+        name: 'Christopher White', 
+        email: 'chris.w@email.com', 
+        phone: '+61 400 234 567',
+        quotes: [
+            { id: 'Q-2025-025', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 7, total: 1400.00, status: 'approved', paymentStatus: 'paid', amountPaid: 1400.00 },
+            { id: 'Q-2025-026', pricebookItemId: 'PB-ALGEBRA-II', slots: 4, total: 720.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
         ]
     }
 ];
