@@ -6,17 +6,17 @@ let currentClass = null;
 let classIdFromUrl = null; // Store class ID from URL
 
 // Initialize page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadClassData();
 });
 
 function loadClassData() {
     const urlParams = new URLSearchParams(window.location.search);
     const classId = urlParams.get('id');
-    
+
     // Store class ID from URL for use in getClassId()
     classIdFromUrl = classId;
-    
+
     if (!classId) {
         // Hide content and show error message
         hidePageContent();
@@ -26,7 +26,7 @@ function loadClassData() {
         }, 2000);
         return;
     }
-    
+
     // Load from localStorage
     try {
         // Initialize sample data if needed (same as class_list)
@@ -39,9 +39,9 @@ function loadClassData() {
             // This matches the pattern from class_list_script.js
             classes = [];
         }
-        
+
         currentClass = classes.find(c => c.id === classId);
-        
+
         if (!currentClass) {
             hidePageContent();
             showPageError('Class not found. Redirecting to class list...');
@@ -50,10 +50,10 @@ function loadClassData() {
             }, 2000);
             return;
         }
-        
+
         // Initialize sample bookings if needed
         initializeSampleBookings();
-        
+
         // Show content and render
         showPageContent();
         renderClassDetails();
@@ -90,7 +90,7 @@ function showPageError(message) {
     if (existingError) {
         existingError.remove();
     }
-    
+
     // Create error message
     const errorDiv = document.createElement('div');
     errorDiv.id = 'pageError';
@@ -120,13 +120,13 @@ function renderClassDetails() {
     document.getElementById('classNameHeader').textContent = currentClass.name || 'Class Details';
     document.getElementById('classIdBadge').textContent = currentClass.id;
     updateStatusBadge();
-    
+
     // Basic Information
     document.getElementById('displayClassName').textContent = currentClass.name || '-';
     document.getElementById('displayDescription').textContent = currentClass.description || 'No description';
     document.getElementById('displaySkillLevel').textContent = currentClass.skillLevel || '-';
     updateStatusDisplay();
-    
+
     // Price Book Item
     if (currentClass.pricebookItem) {
         document.getElementById('displayPricebookName').textContent = currentClass.pricebookItem.name;
@@ -134,12 +134,12 @@ function renderClassDetails() {
         document.getElementById('displayPricebookTag').textContent = currentClass.pricebookItem.tag || 'General';
         document.getElementById('displayPricebookPrice').textContent = `$${currentClass.pricebookItem.price?.toFixed(2) || '0.00'}`;
     }
-    
+
     // Schedule
     if (currentClass.schedule) {
         const schedule = currentClass.schedule;
         document.getElementById('displayFrequency').textContent = schedule.frequency ? schedule.frequency.charAt(0).toUpperCase() + schedule.frequency.slice(1) : '-';
-        
+
         // Days of week
         if (schedule.daysOfWeek && schedule.daysOfWeek.length > 0) {
             const daysContainer = document.getElementById('displayDays');
@@ -150,14 +150,14 @@ function renderClassDetails() {
         } else {
             document.getElementById('displayDaysSection').classList.add('hidden');
         }
-        
+
         document.getElementById('displayStartTime').textContent = schedule.startTime || '-';
         document.getElementById('displayEndTime').textContent = schedule.endTime || '-';
         document.getElementById('displayDuration').textContent = schedule.duration ? `${schedule.duration} minutes` : '-';
         document.getElementById('displayStartDate').textContent = schedule.startDate ? formatDate(schedule.startDate) : 'Not set';
         document.getElementById('displayEndDate').textContent = schedule.endDate ? formatDate(schedule.endDate) : 'Ongoing';
     }
-    
+
     // Default Staff
     if (currentClass.defaultStaff && currentClass.defaultStaff.length > 0) {
         const staffContainer = document.getElementById('displayStaffList');
@@ -177,10 +177,10 @@ function renderClassDetails() {
     } else {
         document.getElementById('displayStaffList').innerHTML = '<p class="text-sm text-gray-400">No staff assigned</p>';
     }
-    
+
     // Capacity
     document.getElementById('displayMaxCapacity').textContent = currentClass.maxCapacity || '-';
-    
+
     // Update summary
     updateSummary();
 }
@@ -188,13 +188,13 @@ function renderClassDetails() {
 function updateStatusBadge() {
     const badge = document.getElementById('classStatusBadge');
     const status = currentClass.status || 'active';
-    
+
     const statusConfig = {
         active: { text: 'Active', class: 'bg-green-100 text-green-700' },
         paused: { text: 'Paused', class: 'bg-yellow-100 text-yellow-700' },
         archived: { text: 'Archived', class: 'bg-gray-100 text-gray-700' }
     };
-    
+
     const config = statusConfig[status] || statusConfig.active;
     badge.textContent = config.text;
     badge.className = `px-2 py-1 text-xs rounded ${config.class}`;
@@ -203,13 +203,13 @@ function updateStatusBadge() {
 function updateStatusDisplay() {
     const status = currentClass.status || 'active';
     const statusEl = document.getElementById('displayStatus');
-    
+
     const statusConfig = {
         active: { text: 'Active', class: 'bg-green-100 text-green-700' },
         paused: { text: 'Paused', class: 'bg-yellow-100 text-yellow-700' },
         archived: { text: 'Archived', class: 'bg-gray-100 text-gray-700' }
     };
-    
+
     const config = statusConfig[status] || statusConfig.active;
     statusEl.textContent = config.text;
     statusEl.className = `inline-block px-2 py-1 text-xs rounded ${config.class}`;
@@ -229,14 +229,14 @@ function updateSummary() {
     } else {
         pricebookEl.textContent = '-';
     }
-    
+
     // Capacity
     document.getElementById('summaryCapacity').textContent = currentClass.maxCapacity || '-';
-    
+
     // Staff
     const staffCount = currentClass.defaultStaff?.length || 0;
     document.getElementById('summaryStaff').textContent = `${staffCount} staff`;
-    
+
     // Sessions (will be updated when sessions load)
     // Enrollment (will be updated when enrollment loads)
 }
@@ -248,7 +248,7 @@ function switchTab(tabName, event) {
     if (event) {
         event.preventDefault();
     }
-    
+
     // Hide all tab contents with fade effect
     document.querySelectorAll('.tab-content').forEach(content => {
         content.style.opacity = '0';
@@ -256,13 +256,13 @@ function switchTab(tabName, event) {
             content.classList.add('hidden');
         }, 150);
     });
-    
+
     // Remove active class from all tab buttons
     document.querySelectorAll('.tab-button').forEach(button => {
         button.classList.remove('active', 'border-emerald-500', 'text-emerald-600');
         button.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
     });
-    
+
     // Show selected tab content with fade effect
     setTimeout(() => {
         const selectedContent = document.getElementById(tabName + 'Content');
@@ -274,14 +274,14 @@ function switchTab(tabName, event) {
                 selectedContent.style.transition = 'opacity 0.3s ease-in-out';
             }, 10);
         }
-        
+
         // Add active class to selected tab button
         const selectedButton = document.getElementById(tabName + 'Tab');
         if (selectedButton) {
             selectedButton.classList.add('active', 'border-emerald-500', 'text-emerald-600');
             selectedButton.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
         }
-        
+
         // Load data for specific tabs
         if (tabName === 'sessions') {
             loadSessions();
@@ -297,7 +297,7 @@ function loadSessions() {
     try {
         const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
         const classSessions = sessions.filter(s => s.classId === currentClass.id);
-        
+
         renderSessionsList(classSessions);
         updateSessionsSummary(classSessions);
     } catch (error) {
@@ -308,38 +308,38 @@ function loadSessions() {
 function renderSessionsList(sessions) {
     const container = document.getElementById('sessionsListContainer');
     const emptyState = document.getElementById('emptySessionsState');
-    
+
     if (sessions.length === 0) {
         container.classList.add('hidden');
         emptyState.classList.remove('hidden');
         return;
     }
-    
+
     container.classList.remove('hidden');
     emptyState.classList.add('hidden');
-    
+
     // Sort by date
     sessions.sort((a, b) => new Date(a.date) - new Date(b.date));
-    
+
     container.innerHTML = sessions.map(session => {
         const date = formatDate(session.date);
-        const time = session.startTime && session.endTime 
+        const time = session.startTime && session.endTime
             ? `${session.startTime} - ${session.endTime}`
             : session.startTime || '-';
-        
+
         const confirmedSlots = session.confirmedSlots || 0;
         const capacity = currentClass.maxCapacity || 0;
         const enrollmentPercent = capacity > 0 ? Math.round((confirmedSlots / capacity) * 100) : 0;
-        
+
         const statusConfig = {
             scheduled: { text: 'Scheduled', class: 'bg-blue-100 text-blue-700' },
             in_progress: { text: 'In Progress', class: 'bg-green-100 text-green-700' },
             completed: { text: 'Completed', class: 'bg-gray-100 text-gray-700' },
             cancelled: { text: 'Cancelled', class: 'bg-red-100 text-red-700' }
         };
-        
+
         const status = statusConfig[session.status] || statusConfig.scheduled;
-        
+
         return `
             <div class="border border-gray-200 rounded-lg p-4 hover:border-emerald-300 hover:shadow-md transition-all">
                 <div class="flex items-start justify-between mb-3">
@@ -374,14 +374,14 @@ function renderSessionsList(sessions) {
                         <span class="text-xs text-gray-600">Staff:</span>
                         <div class="flex -space-x-2">
                             ${(session.assignedStaff || []).slice(0, 3).map((staff, idx) => {
-                                const colors = ['bg-blue-500', 'bg-purple-500', 'bg-green-500'];
-                                const initials = staff.name.split(' ').map(n => n[0]).join('');
-                                return `
+            const colors = ['bg-blue-500', 'bg-purple-500', 'bg-green-500'];
+            const initials = staff.name.split(' ').map(n => n[0]).join('');
+            return `
                                     <div class="w-7 h-7 ${colors[idx % 3]} rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold" title="${staff.name}">
                                         ${initials}
                                     </div>
                                 `;
-                            }).join('')}
+        }).join('')}
                             ${(session.assignedStaff || []).length === 0 ? '<span class="text-xs text-gray-400">Unassigned</span>' : ''}
                         </div>
                     </div>
@@ -401,7 +401,7 @@ function renderSessionsList(sessions) {
 
 function updateSessionsSummary(sessions) {
     document.getElementById('summarySessions').textContent = sessions.length;
-    
+
     // Calculate average enrollment
     if (sessions.length > 0) {
         const capacity = currentClass.maxCapacity || 0;
@@ -423,7 +423,7 @@ function initializeSampleBookings() {
     try {
         let allSessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
         let classSessions = allSessions.filter(s => s.classId === currentClass.id);
-        
+
         // If no sessions exist for this class, create some sample sessions
         if (classSessions.length === 0) {
             const today = new Date();
@@ -433,12 +433,12 @@ function initializeSampleBookings() {
             const endTime = schedule.endTime || '15:00';
             const duration = schedule.duration || 60;
             const maxCapacity = currentClass.maxCapacity || 20;
-            
+
             // Create 3 sample sessions for the next 2 weeks
             for (let i = 0; i < 3; i++) {
                 const sessionDate = new Date(today);
                 sessionDate.setDate(today.getDate() + (i * 7)); // One week apart
-                
+
                 const sessionId = `SESSION-${currentClass.id}-${sessionDate.toISOString().split('T')[0]}`;
                 const newSession = {
                     id: sessionId,
@@ -456,26 +456,26 @@ function initializeSampleBookings() {
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
-                
+
                 allSessions.push(newSession);
                 classSessions.push(newSession);
             }
-            
+
             localStorage.setItem('class_sessions_v2', JSON.stringify(allSessions));
         }
-        
+
         // If no sessions have bookings, add sample bookings
         const hasBookings = classSessions.some(s => s.bookings && s.bookings.length > 0);
-        
+
         if (!hasBookings && classSessions.length > 0) {
             // Add sample bookings to first few sessions
             const sessionsToUpdate = classSessions.slice(0, Math.min(3, classSessions.length));
-            
+
             sessionsToUpdate.forEach((session, index) => {
                 if (!session.bookings) {
                     session.bookings = [];
                 }
-                
+
                 // Add different bookings based on index
                 if (index === 0) {
                     // First session: Sarah Johnson (confirmed)
@@ -527,9 +527,9 @@ function initializeSampleBookings() {
                     });
                     session.confirmedSlots = (session.confirmedSlots || 0) + 1;
                 }
-                
+
                 session.updatedAt = new Date().toISOString();
-                
+
                 // Update session in localStorage
                 const sessionIndex = allSessions.findIndex(s => s.id === session.id);
                 if (sessionIndex > -1) {
@@ -538,7 +538,7 @@ function initializeSampleBookings() {
                     allSessions.push(session);
                 }
             });
-            
+
             localStorage.setItem('class_sessions_v2', JSON.stringify(allSessions));
         }
     } catch (error) {
@@ -548,10 +548,10 @@ function initializeSampleBookings() {
 
 // Sample customers (in real app, from API/localStorage)
 const sampleCustomers = [
-    { 
-        id: 'CUST-001', 
-        name: 'Sarah Johnson', 
-        email: 'sarah.j@email.com', 
+    {
+        id: 'CUST-001',
+        name: 'Sarah Johnson',
+        email: 'sarah.j@email.com',
         phone: '+61 400 123 456',
         quotes: [
             { id: 'Q-2025-001', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 5, total: 100.00, status: 'approved', paymentStatus: 'paid', amountPaid: 100.00 },
@@ -559,60 +559,60 @@ const sampleCustomers = [
             { id: 'Q-2025-010', pricebookItemId: 'PB-YOGA-CLASS', slots: 4, total: 200.00, status: 'approved', paymentStatus: 'paid', amountPaid: 200.00 }
         ]
     },
-    { 
-        id: 'CUST-002', 
-        name: 'Michael Chen', 
-        email: 'm.chen@email.com', 
+    {
+        id: 'CUST-002',
+        name: 'Michael Chen',
+        email: 'm.chen@email.com',
         phone: '+61 400 234 567',
         quotes: [
             { id: 'Q-2025-003', pricebookItemId: 'PB-MATH-TUTORING', slots: 10, total: 500.00, status: 'approved', paymentStatus: 'paid', amountPaid: 500.00 },
             { id: 'Q-2025-011', pricebookItemId: 'PB-ALGEBRA-II', slots: 6, total: 1080.00, status: 'approved', paymentStatus: 'partial', amountPaid: 540.00 }
         ]
     },
-    { 
-        id: 'CUST-003', 
-        name: 'Emma Wilson', 
-        email: 'emma.w@email.com', 
+    {
+        id: 'CUST-003',
+        name: 'Emma Wilson',
+        email: 'emma.w@email.com',
         phone: '+61 400 345 678',
         quotes: [
             { id: 'Q-2025-004', pricebookItemId: 'PB-YOGA-AEROBIC', slots: 2, total: 40.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 },
             { id: 'Q-2025-012', pricebookItemId: 'PB-YOGA-CLASS', slots: 3, total: 150.00, status: 'approved', paymentStatus: 'paid', amountPaid: 150.00 }
         ]
     },
-    { 
-        id: 'CUST-004', 
-        name: 'David Thompson', 
-        email: 'david.t@email.com', 
+    {
+        id: 'CUST-004',
+        name: 'David Thompson',
+        email: 'david.t@email.com',
         phone: '+61 400 456 789',
         quotes: [
             { id: 'Q-2025-005', pricebookItemId: 'PB-MATH-TUTORING', slots: 8, total: 960.00, status: 'approved', paymentStatus: 'paid', amountPaid: 960.00 },
             { id: 'Q-2025-013', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 5, total: 1000.00, status: 'approved', paymentStatus: 'partial', amountPaid: 500.00 }
         ]
     },
-    { 
-        id: 'CUST-005', 
-        name: 'Lisa Anderson', 
-        email: 'lisa.a@email.com', 
+    {
+        id: 'CUST-005',
+        name: 'Lisa Anderson',
+        email: 'lisa.a@email.com',
         phone: '+61 400 567 890',
         quotes: [
             { id: 'Q-2025-006', pricebookItemId: 'PB-YOGA-CLASS', slots: 6, total: 300.00, status: 'approved', paymentStatus: 'paid', amountPaid: 300.00 },
             { id: 'Q-2025-014', pricebookItemId: 'PB-WELLNESS-PASS', slots: 10, total: 350.00, status: 'approved', paymentStatus: 'paid', amountPaid: 350.00 }
         ]
     },
-    { 
-        id: 'CUST-006', 
-        name: 'James Martinez', 
-        email: 'james.m@email.com', 
+    {
+        id: 'CUST-006',
+        name: 'James Martinez',
+        email: 'james.m@email.com',
         phone: '+61 400 678 901',
         quotes: [
             { id: 'Q-2025-007', pricebookItemId: 'PB-GUITAR-SESSION', slots: 4, total: 180.00, status: 'approved', paymentStatus: 'paid', amountPaid: 180.00 },
             { id: 'Q-2025-015', pricebookItemId: 'PB-GUITAR-SESSION', slots: 2, total: 90.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
         ]
     },
-    { 
-        id: 'CUST-007', 
-        name: 'Miss A', 
-        email: 'missa@email.com', 
+    {
+        id: 'CUST-007',
+        name: 'Miss A',
+        email: 'missa@email.com',
         phone: '+61 400 789 012',
         quotes: [
             { id: 'Q-2025-008', pricebookItemId: 'PB-YOGA-CLASS', slots: 2, total: 100.00, status: 'approved', paymentStatus: 'paid', amountPaid: 100.00 },
@@ -620,50 +620,50 @@ const sampleCustomers = [
             { id: 'Q-2025-017', pricebookItemId: 'PB-SCIENCE-LAB', slots: 3, total: 240.00, status: 'approved', paymentStatus: 'paid', amountPaid: 240.00 }
         ]
     },
-    { 
-        id: 'CUST-008', 
-        name: 'Robert Kim', 
-        email: 'robert.k@email.com', 
+    {
+        id: 'CUST-008',
+        name: 'Robert Kim',
+        email: 'robert.k@email.com',
         phone: '+61 400 890 123',
         quotes: [
             { id: 'Q-2025-009', pricebookItemId: 'PB-ALGEBRA-II', slots: 8, total: 1440.00, status: 'approved', paymentStatus: 'paid', amountPaid: 1440.00 },
             { id: 'Q-2025-018', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 4, total: 800.00, status: 'approved', paymentStatus: 'paid', amountPaid: 800.00 }
         ]
     },
-    { 
-        id: 'CUST-009', 
-        name: 'Maria Garcia', 
-        email: 'maria.g@email.com', 
+    {
+        id: 'CUST-009',
+        name: 'Maria Garcia',
+        email: 'maria.g@email.com',
         phone: '+61 400 901 234',
         quotes: [
             { id: 'Q-2025-019', pricebookItemId: 'PB-YOGA-CLASS', slots: 5, total: 250.00, status: 'approved', paymentStatus: 'paid', amountPaid: 250.00 },
             { id: 'Q-2025-020', pricebookItemId: 'PB-WELLNESS-PASS', slots: 8, total: 280.00, status: 'approved', paymentStatus: 'unpaid', amountPaid: 0 }
         ]
     },
-    { 
-        id: 'CUST-010', 
-        name: 'Thomas Brown', 
-        email: 'thomas.b@email.com', 
+    {
+        id: 'CUST-010',
+        name: 'Thomas Brown',
+        email: 'thomas.b@email.com',
         phone: '+61 400 012 345',
         quotes: [
             { id: 'Q-2025-021', pricebookItemId: 'PB-MATH-TUTORING', slots: 12, total: 1440.00, status: 'approved', paymentStatus: 'partial', amountPaid: 720.00 },
             { id: 'Q-2025-022', pricebookItemId: 'PB-SCIENCE-LAB', slots: 6, total: 480.00, status: 'approved', paymentStatus: 'paid', amountPaid: 480.00 }
         ]
     },
-    { 
-        id: 'CUST-011', 
-        name: 'Jennifer Lee', 
-        email: 'jennifer.l@email.com', 
+    {
+        id: 'CUST-011',
+        name: 'Jennifer Lee',
+        email: 'jennifer.l@email.com',
         phone: '+61 400 123 456',
         quotes: [
             { id: 'Q-2025-023', pricebookItemId: 'PB-GUITAR-SESSION', slots: 6, total: 270.00, status: 'approved', paymentStatus: 'paid', amountPaid: 270.00 },
             { id: 'Q-2025-024', pricebookItemId: 'PB-YOGA-CLASS', slots: 4, total: 200.00, status: 'approved', paymentStatus: 'paid', amountPaid: 200.00 }
         ]
     },
-    { 
-        id: 'CUST-012', 
-        name: 'Christopher White', 
-        email: 'chris.w@email.com', 
+    {
+        id: 'CUST-012',
+        name: 'Christopher White',
+        email: 'chris.w@email.com',
         phone: '+61 400 234 567',
         quotes: [
             { id: 'Q-2025-025', pricebookItemId: 'PB-PHYSICS-WORKSHOP', slots: 7, total: 1400.00, status: 'approved', paymentStatus: 'paid', amountPaid: 1400.00 },
@@ -679,7 +679,7 @@ let currentQuickBookCustomer = null;
 function searchCustomersForBooking(query) {
     const resultsContainer = document.getElementById('customerAutocomplete');
     const pricebookItemId = currentClass?.pricebookItemId;
-    
+
     // Check if pricebook item is selected
     if (!pricebookItemId) {
         if (query && query.length >= 2) {
@@ -690,45 +690,40 @@ function searchCustomersForBooking(query) {
         }
         return;
     }
-    
+
     if (!query || query.trim().length < 2) {
         resultsContainer.classList.add('hidden');
         return;
     }
-    
+
     query = query.trim().toLowerCase();
-    
-    // Get all bookings from all sessions of this class
-    const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
-    const classSessions = sessions.filter(s => s.classId === currentClass.id);
-    const bookedQuoteIds = [];
-    classSessions.forEach(session => {
-        (session.bookings || []).forEach(booking => {
-            if (booking.quoteId) bookedQuoteIds.push(booking.quoteId);
-        });
-    });
-    
+
     // Filter customers
     const matchingEntries = sampleCustomers.reduce((entries, customer) => {
-        const matchesSearch = customer.name.toLowerCase().includes(query) || 
-                             customer.email.toLowerCase().includes(query);
-        
+        const matchesSearch = customer.name.toLowerCase().includes(query) ||
+            customer.email.toLowerCase().includes(query);
+
         if (!matchesSearch || !customer.quotes) return entries;
-        
-        // Get quotes matching the pricebook item
-        const matchingQuotes = customer.quotes.filter(quote => 
-            quote.pricebookItemId === pricebookItemId && 
-            quote.status === 'approved' &&
-            !bookedQuoteIds.includes(quote.id) // Exclude already booked quotes
-        );
-        
-        matchingQuotes.forEach(quote => {
-            entries.push({ customer, quote });
+
+        // Get quotes matching the pricebook item with available slots
+        const matchingQuotes = customer.quotes.filter(quote => {
+            if (quote.pricebookItemId !== pricebookItemId || quote.status !== 'approved') {
+                return false;
+            }
+
+            // Calculate available slots for this quote
+            const inventory = calculateSlotInventory(customer.id, quote.id);
+            return inventory.available > 0; // Only show quotes with available slots
         });
-        
+
+        matchingQuotes.forEach(quote => {
+            const inventory = calculateSlotInventory(customer.id, quote.id);
+            entries.push({ customer, quote, inventory });
+        });
+
         return entries;
     }, []);
-    
+
     if (matchingEntries.length === 0) {
         resultsContainer.innerHTML = `
             <div class="p-3 text-sm text-gray-500">
@@ -738,16 +733,16 @@ function searchCustomersForBooking(query) {
         resultsContainer.classList.remove('hidden');
         return;
     }
-    
+
     // Group by customer
     const groupedByCustomer = matchingEntries.reduce((map, entry) => {
         if (!map.has(entry.customer.id)) {
             map.set(entry.customer.id, { customer: entry.customer, quotes: [] });
         }
-        map.get(entry.customer.id).quotes.push(entry.quote);
+        map.get(entry.customer.id).quotes.push({ quote: entry.quote, inventory: entry.inventory });
         return map;
     }, new Map());
-    
+
     resultsContainer.innerHTML = Array.from(groupedByCustomer.values()).map(group => `
         <div class="p-3 border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
             <div class="flex items-center justify-between mb-2">
@@ -758,25 +753,26 @@ function searchCustomersForBooking(query) {
                 <span class="text-xs text-gray-500">${group.quotes.length} quote${group.quotes.length > 1 ? 's' : ''}</span>
             </div>
             <div class="space-y-1">
-                ${group.quotes.map(quote => `
+                ${group.quotes.map(item => `
                     <button 
                         type="button"
-                        onclick="selectCustomerForBooking('${group.customer.id}', '${quote.id}')"
+                        onclick="selectCustomerForBooking('${group.customer.id}', '${item.quote.id}')"
                         class="w-full text-left px-3 py-2 border border-gray-200 rounded-lg bg-white hover:bg-emerald-50 hover:border-emerald-200 transition-colors flex items-center justify-between text-xs"
                     >
                         <div>
-                            <p class="font-medium text-gray-900">${quote.id}</p>
-                            <p class="text-[11px] text-gray-500">Total: $${quote.total.toFixed(2)}</p>
+                            <p class="font-medium text-gray-900">${item.quote.id}</p>
+                            <p class="text-[11px] text-gray-500">Total: $${item.quote.total.toFixed(2)}</p>
                         </div>
-                        <div class="text-right text-[11px] text-emerald-600">
-                            <p>${quote.slots} slot${quote.slots === 1 ? '' : 's'}</p>
+                        <div class="text-right text-[11px]">
+                            <p class="text-emerald-600">${item.inventory.available} available</p>
+                            <p class="text-gray-400">${item.inventory.booked} booked</p>
                         </div>
                     </button>
                 `).join('')}
             </div>
         </div>
     `).join('');
-    
+
     resultsContainer.classList.remove('hidden');
 }
 
@@ -784,85 +780,101 @@ function searchCustomersForBooking(query) {
 function selectCustomerForBooking(customerId, quoteId) {
     const customer = sampleCustomers.find(c => c.id === customerId);
     if (!customer) return;
-    
+
     const pricebookItemId = currentClass?.pricebookItemId;
-    const matchingQuotes = customer.quotes.filter(quote => 
-        quote.pricebookItemId === pricebookItemId && 
+    const matchingQuotes = customer.quotes.filter(quote =>
+        quote.pricebookItemId === pricebookItemId &&
         quote.status === 'approved'
     );
     const selectedQuote = matchingQuotes.find(q => q.id === quoteId);
-    
+
     if (!selectedQuote) {
         showNotification('Quote not found', 'error');
         return;
     }
-    
-    const paymentStatus = selectedQuote.paymentStatus || 'unpaid';
-    const amountPaid = selectedQuote.amountPaid || 0;
-    
-    // Store current quick book customer
-    currentQuickBookCustomer = {
-        ...customer,
-        matchingQuotes: matchingQuotes,
-        selectedQuoteId: quoteId,
-        paymentStatus,
-        amountPaid,
-        quoteTotal: selectedQuote.total || 0,
-        slots: 1
+
+    // Calculate slot inventory for this customer/quote
+    const inventory = calculateSlotInventory(customer.id, quoteId);
+
+    // Store current booking state
+    currentSlotBookingState = {
+        customer: customer,
+        quote: selectedQuote,
+        inventory: inventory,
+        slotEntries: [],
+        selectedSessionId: null
     };
-    
+
     // Hide autocomplete and clear search
     document.getElementById('customerAutocomplete').classList.add('hidden');
     document.getElementById('customerSearchInput').value = '';
-    
-    // Show quick book form
-    showQuickBookForm();
+
+    // Show slot booking form
+    showSlotBookingForm();
 }
 
-// Show quick book form
-function showQuickBookForm() {
-    if (!currentQuickBookCustomer) return;
-    
-    const form = document.getElementById('quickBookForm');
-    const customerName = document.getElementById('quickBookCustomerName');
-    const customerEmail = document.getElementById('quickBookCustomerEmail');
-    const quoteDisplay = document.getElementById('quickBookQuoteDisplay');
-    const slotsInput = document.getElementById('quickBookSlots');
-    const paymentStatusDisplay = document.getElementById('quickBookPaymentStatus');
-    
-    customerName.textContent = currentQuickBookCustomer.name;
-    customerEmail.textContent = currentQuickBookCustomer.email;
-    
-    const selectedQuote = currentQuickBookCustomer.matchingQuotes.find(q => q.id === currentQuickBookCustomer.selectedQuoteId);
-    quoteDisplay.innerHTML = `
-        <div class="flex items-center justify-between text-sm font-semibold text-emerald-900">
-            <span>${currentQuickBookCustomer.selectedQuoteId}</span>
-            <span>$${currentQuickBookCustomer.quoteTotal.toFixed(2)}</span>
-        </div>
-        ${selectedQuote ? `
-            <div class="flex items-center gap-2 text-xs text-emerald-700 mt-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>${selectedQuote.slots} slot${selectedQuote.slots === 1 ? '' : 's'} available</span>
-            </div>
-        ` : ''}
-    `;
-    
-    const maxSlots = selectedQuote?.slots || 1;
-    slotsInput.max = maxSlots;
-    slotsInput.value = Math.min(currentQuickBookCustomer.slots || 1, maxSlots);
-    
-    const paymentInfo = getPaymentStatusInfo(currentQuickBookCustomer.paymentStatus);
-    paymentStatusDisplay.innerHTML = `
-        <div class="flex items-center gap-2 text-sm font-semibold text-${paymentInfo.color}-800">
-            <span>${paymentInfo.icon}</span>
-            <span>${paymentInfo.label}</span>
-        </div>
-        <p class="text-xs text-gray-600 mt-1">Paid $${currentQuickBookCustomer.amountPaid.toFixed(2)} of $${currentQuickBookCustomer.quoteTotal.toFixed(2)}</p>
-    `;
-    
-    form.classList.remove('hidden');
+// Current slot booking state
+let currentSlotBookingState = null;
+
+// Calculate slot inventory for a customer and quote
+function calculateSlotInventory(customerId, quoteId) {
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const classSessions = sessions.filter(s => s.classId === currentClass.id);
+
+        // Find the customer and quote
+        const customer = sampleCustomers.find(c => c.id === customerId);
+        const quote = customer?.quotes.find(q => q.id === quoteId);
+
+        if (!quote) {
+            return { totalPurchased: 0, booked: 0, available: 0, bookedSlots: [] };
+        }
+
+        // Count booked slots from this quote across all sessions
+        let bookedSlots = [];
+        classSessions.forEach(session => {
+            (session.bookings || []).forEach(booking => {
+                if (booking.quoteId === quoteId) {
+                    // Check if booking uses new slot structure or old slotsUsed
+                    if (booking.slots && Array.isArray(booking.slots)) {
+                        booking.slots.forEach(slot => {
+                            bookedSlots.push({
+                                ...slot,
+                                sessionId: session.id,
+                                sessionDate: session.date,
+                                customerName: booking.customerName
+                            });
+                        });
+                    } else {
+                        // Legacy booking - create pseudo-slots
+                        for (let i = 0; i < (booking.slotsUsed || 1); i++) {
+                            bookedSlots.push({
+                                slotId: `${booking.id}-SLOT-${i + 1}`,
+                                studentName: booking.customerName,
+                                sessionId: session.id,
+                                sessionDate: session.date,
+                                customerName: booking.customerName,
+                                status: 'booked'
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
+        const totalPurchased = quote.slots || 0;
+        const bookedCount = bookedSlots.length;
+
+        return {
+            totalPurchased: totalPurchased,
+            booked: bookedCount,
+            available: Math.max(0, totalPurchased - bookedCount),
+            bookedSlots: bookedSlots
+        };
+    } catch (error) {
+        console.error('Error calculating slot inventory:', error);
+        return { totalPurchased: 0, booked: 0, available: 0, bookedSlots: [] };
+    }
 }
 
 // Get payment status info
@@ -875,88 +887,366 @@ function getPaymentStatusInfo(status) {
     return statusMap[status] || statusMap.unpaid;
 }
 
-// Clear quick book form
-function clearQuickBook() {
-    currentQuickBookCustomer = null;
-    document.getElementById('quickBookForm').classList.add('hidden');
-    document.getElementById('customerSearchInput').value = '';
-    const slotsInput = document.getElementById('quickBookSlots');
-    if (slotsInput) {
-        slotsInput.value = 1;
-    }
-    const notesInput = document.getElementById('quickBookNotes');
-    if (notesInput) {
-        notesInput.value = '';
-    }
-}
+// Show slot booking form
+function showSlotBookingForm() {
+    if (!currentSlotBookingState) return;
 
-// Update quick book slots
-function updateQuickBookSlots() {
-    if (!currentQuickBookCustomer) return;
-    
-    const slotsInput = document.getElementById('quickBookSlots');
-    const slots = parseInt(slotsInput.value) || 1;
-    const selectedQuote = currentQuickBookCustomer.matchingQuotes.find(q => q.id === currentQuickBookCustomer.selectedQuoteId);
-    
-    if (selectedQuote && slots > selectedQuote.slots) {
-        showNotification(`Maximum ${selectedQuote.slots} slots available from this quote`, 'warning');
-        slotsInput.value = selectedQuote.slots;
-        currentQuickBookCustomer.slots = selectedQuote.slots;
+    const { customer, quote, inventory } = currentSlotBookingState;
+
+    // Update customer info
+    document.getElementById('slotBookCustomerName').textContent = customer.name;
+    document.getElementById('slotBookCustomerEmail').textContent = customer.email;
+
+    // Update inventory display
+    document.getElementById('inventoryTotal').textContent = inventory.totalPurchased;
+    document.getElementById('inventoryBooked').textContent = inventory.booked;
+    document.getElementById('inventoryAvailable').textContent = inventory.available;
+
+    // Update quote display
+    const paymentStatus = quote.paymentStatus || 'unpaid';
+    const paymentInfo = getPaymentStatusInfo(paymentStatus);
+    document.getElementById('slotBookQuoteDisplay').innerHTML = `
+        <div class="flex items-center justify-between">
+            <span class="font-semibold text-emerald-900">${quote.id}</span>
+            <span class="text-gray-600">$${quote.total.toFixed(2)}</span>
+        </div>
+        <div class="flex items-center gap-2 mt-1">
+            <span class="text-xs ${paymentInfo.color === 'green' ? 'text-green-600' : paymentInfo.color === 'yellow' ? 'text-amber-600' : 'text-red-600'}">${paymentInfo.icon} ${paymentInfo.label}</span>
+        </div>
+    `;
+
+    // Show/hide payment warning
+    const paymentWarning = document.getElementById('paymentWarning');
+    if (paymentStatus !== 'paid') {
+        paymentWarning.classList.remove('hidden');
+        document.getElementById('paymentWarningText').textContent =
+            paymentStatus === 'partial' ? 'This quote is only partially paid.' : 'This quote has not been paid yet.';
     } else {
-        currentQuickBookCustomer.slots = slots;
+        paymentWarning.classList.add('hidden');
+    }
+
+    // Update session count display
+    updateSessionCountDisplay();
+
+    // Reset slot entries
+    currentSlotBookingState.slotEntries = [];
+    document.getElementById('slotEntriesContainer').innerHTML = '';
+    document.getElementById('noSlotsMessage').classList.remove('hidden');
+
+    // Update add slot button state
+    updateAddSlotButtonState();
+    updateConfirmBookingButton();
+
+    // Show form
+    document.getElementById('slotBookingForm').classList.remove('hidden');
+}
+
+// Update session count display
+function updateSessionCountDisplay() {
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const classSessions = sessions.filter(s =>
+            s.classId === currentClass.id &&
+            s.status !== 'cancelled' &&
+            s.status !== 'completed'
+        );
+
+        const sessionCount = classSessions.length;
+        const display = document.getElementById('sessionCountDisplay');
+        if (display) {
+            display.textContent = `${sessionCount} session${sessionCount !== 1 ? 's' : ''}`;
+        }
+
+        // Store sessions in state for booking
+        currentSlotBookingState.allSessions = classSessions;
+    } catch (error) {
+        console.error('Error updating session count:', error);
     }
 }
 
-// Book quick customer
-function bookQuickCustomer() {
-    if (!currentQuickBookCustomer) {
+// Add a new slot entry
+function addSlotEntry() {
+    if (!currentSlotBookingState) return;
+
+    const { inventory, slotEntries } = currentSlotBookingState;
+
+    // Check if we can add more slots
+    if (slotEntries.length >= inventory.available) {
+        showNotification(`Maximum ${inventory.available} slots available from this quote`, 'warning');
+        return;
+    }
+
+    const slotIndex = slotEntries.length;
+    const slotId = `slot-entry-${Date.now()}-${slotIndex}`;
+
+    // Add to state
+    currentSlotBookingState.slotEntries.push({
+        id: slotId,
+        studentName: '',
+        notes: ''
+    });
+
+    // Hide "no slots" message
+    document.getElementById('noSlotsMessage').classList.add('hidden');
+
+    // Create slot entry UI
+    const container = document.getElementById('slotEntriesContainer');
+    const slotHtml = `
+        <div id="${slotId}" class="border border-gray-200 rounded-lg p-3 bg-white">
+            <div class="flex items-start justify-between mb-2">
+                <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Attendee ${slotIndex + 1}</span>
+                <button type="button" onclick="removeSlotEntry('${slotId}')" 
+                    class="text-gray-400 hover:text-red-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-2">
+                <div>
+                    <label class="text-xs text-gray-500">Attendee Name <span class="text-red-500">*</span></label>
+                    <input type="text" 
+                        id="${slotId}-name"
+                        placeholder="Enter attendee name"
+                        class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        oninput="updateSlotEntry('${slotId}', 'studentName', this.value)"
+                    />
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500">Notes <span class="text-gray-400">(optional)</span></label>
+                    <input type="text" 
+                        id="${slotId}-notes"
+                        placeholder="Special notes for this attendee"
+                        class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                        oninput="updateSlotEntry('${slotId}', 'notes', this.value)"
+                    />
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', slotHtml);
+
+    updateAddSlotButtonState();
+    updateConfirmBookingButton();
+}
+
+// Update a slot entry
+function updateSlotEntry(slotId, field, value) {
+    if (!currentSlotBookingState) return;
+
+    const entry = currentSlotBookingState.slotEntries.find(e => e.id === slotId);
+    if (entry) {
+        entry[field] = value;
+        updateConfirmBookingButton();
+    }
+}
+
+// Remove a slot entry
+function removeSlotEntry(slotId) {
+    if (!currentSlotBookingState) return;
+
+    // Remove from state
+    currentSlotBookingState.slotEntries = currentSlotBookingState.slotEntries.filter(e => e.id !== slotId);
+
+    // Remove from UI
+    const element = document.getElementById(slotId);
+    if (element) {
+        element.remove();
+    }
+
+    // Re-number remaining slots
+    const container = document.getElementById('slotEntriesContainer');
+    const slotElements = container.querySelectorAll('[id^="slot-entry-"]');
+    slotElements.forEach((el, index) => {
+        const badge = el.querySelector('.text-emerald-700');
+        if (badge) {
+            badge.textContent = `Attendee ${index + 1}`;
+        }
+    });
+
+    // Show "no slots" message if empty
+    if (currentSlotBookingState.slotEntries.length === 0) {
+        document.getElementById('noSlotsMessage').classList.remove('hidden');
+    }
+
+    updateAddSlotButtonState();
+    updateConfirmBookingButton();
+}
+
+// Update add slot button state
+function updateAddSlotButtonState() {
+    if (!currentSlotBookingState) return;
+
+    const btn = document.getElementById('addSlotBtn');
+    const { inventory, slotEntries } = currentSlotBookingState;
+
+    if (slotEntries.length >= inventory.available) {
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+// Update confirm booking button
+function updateConfirmBookingButton() {
+    if (!currentSlotBookingState) return;
+
+    const btn = document.getElementById('confirmBookingBtn');
+    const btnText = document.getElementById('confirmBookingBtnText');
+    const { slotEntries, allSessions = [] } = currentSlotBookingState;
+
+    // Count valid slot entries (with student names)
+    const validSlots = slotEntries.filter(e => e.studentName && e.studentName.trim());
+
+    const sessionCount = allSessions.length;
+    btnText.textContent = `Book ${validSlots.length} Slot${validSlots.length !== 1 ? 's' : ''} for ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`;
+
+    // Enable button only if we have valid slots
+    if (validSlots.length > 0 && sessionCount > 0) {
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
+
+// Clear slot booking form
+function clearSlotBooking() {
+    currentSlotBookingState = null;
+    document.getElementById('slotBookingForm').classList.add('hidden');
+    document.getElementById('customerSearchInput').value = '';
+    document.getElementById('slotEntriesContainer').innerHTML = '';
+}
+
+// Confirm and save slot booking (for all sessions)
+function confirmSlotBooking() {
+    if (!currentSlotBookingState) {
         showNotification('Please select a customer first', 'warning');
         return;
     }
-    
-    const slotsInput = document.getElementById('quickBookSlots');
-    const slots = parseInt(slotsInput.value) || 1;
-    const notesInput = document.getElementById('quickBookNotes');
-    const bookingNote = notesInput ? notesInput.value.trim() : '';
-    
-    if (slots < 1) {
-        showNotification('Please enter a valid number of slots', 'error');
+
+    const { customer, quote, slotEntries, allSessions = [] } = currentSlotBookingState;
+
+    // Validate
+    const validSlots = slotEntries.filter(e => e.studentName && e.studentName.trim());
+    if (validSlots.length === 0) {
+        showNotification('Please add at least one slot with a student name', 'error');
         return;
     }
-    
-    const selectedQuote = currentQuickBookCustomer.matchingQuotes.find(q => q.id === currentQuickBookCustomer.selectedQuoteId);
-    if (slots > (selectedQuote?.slots || 0)) {
-        showNotification(`Maximum ${selectedQuote.slots} slots available from this quote`, 'error');
+
+    if (allSessions.length === 0) {
+        showNotification('No sessions available for this class', 'error');
         return;
     }
-    
-    // Find the next available session or create a booking record
-    // For now, we'll create a booking that can be assigned to a session later
-    // In a real system, you'd select which session to book into
-    
-    showNotification('Booking feature: Select a session to book this customer into', 'info');
-    
-    // TODO: Implement actual booking logic - assign to a specific session
-    // For now, just clear the form and close modal
-    clearQuickBook();
-    closeBookCustomerModal();
+
+    try {
+        const allSessionsData = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const now = new Date().toISOString();
+        let totalBooked = 0;
+        const capacity = currentClass.maxCapacity || 20;
+
+        // Book slots for each session
+        allSessions.forEach(session => {
+            const sessionIndex = allSessionsData.findIndex(s => s.id === session.id);
+            if (sessionIndex === -1) return;
+
+            const currentSession = allSessionsData[sessionIndex];
+            const currentFilled = currentSession.confirmedSlots || 0;
+
+            // Check capacity for this session
+            if (currentFilled + validSlots.length > capacity) {
+                showNotification(`Session on ${formatDate(session.date)} is full. Skipping.`, 'warning');
+                return;
+            }
+
+            // Create booking with individual slots
+            const bookingId = `BOOKING-${session.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+            const newBooking = {
+                id: bookingId,
+                customerId: customer.id,
+                customerName: customer.name,
+                customerEmail: customer.email,
+                quoteId: quote.id,
+                sessionId: session.id,
+                classId: currentClass.id,
+                slots: validSlots.map((entry, index) => ({
+                    slotId: `${bookingId}-SLOT-${index + 1}`,
+                    studentName: entry.studentName.trim(),
+                    notes: entry.notes?.trim() || '',
+                    status: 'booked',
+                    bookedAt: now,
+                    sessionId: session.id
+                })),
+                status: 'confirmed',
+                bookedAt: now,
+                updatedAt: now
+            };
+
+            // Add booking to session
+            if (!currentSession.bookings) {
+                currentSession.bookings = [];
+            }
+            currentSession.bookings.push(newBooking);
+            currentSession.confirmedSlots = (currentSession.confirmedSlots || 0) + validSlots.length;
+            currentSession.updatedAt = now;
+
+            allSessionsData[sessionIndex] = currentSession;
+            totalBooked++;
+        });
+
+        // Save all sessions
+        localStorage.setItem('class_sessions_v2', JSON.stringify(allSessionsData));
+
+        // Success
+        showNotification(`Successfully booked ${validSlots.length} slot${validSlots.length > 1 ? 's' : ''} for ${customer.name} across ${totalBooked} session${totalBooked > 1 ? 's' : ''}`, 'success');
+
+        // Close modal and refresh
+        clearSlotBooking();
+        closeBookCustomerModal();
+        loadEnrollmentData();
+        loadSessions();
+
+    } catch (error) {
+        console.error('Error saving booking:', error);
+        showNotification('Error saving booking', 'error');
+    }
 }
+
+// Legacy functions for backwards compatibility
+function clearQuickBook() {
+    clearSlotBooking();
+}
+
+function showQuickBookForm() {
+    showSlotBookingForm();
+}
+
+function updateQuickBookSlots() {
+    // Legacy - no longer used
+}
+
+function bookQuickCustomer() {
+    confirmSlotBooking();
+}
+
 
 // Open book customer modal
 function openBookCustomerModal() {
     const modal = document.getElementById('bookCustomerModal');
     if (!modal) return;
-    
+
     // Reset form
     clearQuickBook();
     document.getElementById('customerSearchInput').value = '';
     document.getElementById('customerAutocomplete').classList.add('hidden');
-    
+
     // Check if pricebook item is linked
     const pricebookItemId = currentClass?.pricebookItemId;
     const searchInput = document.getElementById('customerSearchInput');
     const hint = document.getElementById('customerSearchHint');
-    
+
     if (pricebookItemId) {
         if (searchInput) searchInput.disabled = false;
         if (hint) hint.innerHTML = '<span class="text-emerald-600">✓</span> Ready to search for customers';
@@ -964,7 +1254,7 @@ function openBookCustomerModal() {
         if (searchInput) searchInput.disabled = true;
         if (hint) hint.innerHTML = '<span class="text-amber-600">⚠️</span> Please ensure a pricebook item is linked to this class to search for customers';
     }
-    
+
     modal.classList.remove('hidden');
 }
 
@@ -978,7 +1268,7 @@ function closeBookCustomerModal() {
 }
 
 // Close modal on ESC key
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         const modal = document.getElementById('bookCustomerModal');
         if (modal && !modal.classList.contains('hidden')) {
@@ -990,45 +1280,70 @@ document.addEventListener('keydown', function(e) {
 // Store all bookings for filtering
 let allBookingsData = [];
 
-// Render bookings list
+// Render bookings list with individual slots
 function renderBookingsList(filterQuery = '') {
     const container = document.getElementById('bookingsList');
     const emptyState = document.getElementById('emptyBookingsState');
     const countEl = document.getElementById('bookingsCount');
-    
+
     try {
         const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
         const classSessions = sessions.filter(s => s.classId === currentClass.id);
-        
-        // Collect all bookings
+
+        // Collect all bookings with slot expansion
         allBookingsData = [];
+        let totalSlotCount = 0;
+
         classSessions.forEach(session => {
             (session.bookings || []).forEach(booking => {
-                allBookingsData.push({
-                    ...booking,
-                    sessionId: session.id,
-                    sessionDate: session.date,
-                    sessionTime: session.startTime
-                });
+                // Check if booking uses new slot array structure
+                if (booking.slots && Array.isArray(booking.slots) && booking.slots.length > 0) {
+                    // Expand each slot as a separate entry for display
+                    booking.slots.forEach(slot => {
+                        allBookingsData.push({
+                            ...booking,
+                            slotData: slot,
+                            studentName: slot.studentName,
+                            slotId: slot.slotId,
+                            slotNotes: slot.notes,
+                            sessionId: session.id,
+                            sessionDate: session.date,
+                            sessionTime: session.startTime,
+                            isSlotBooking: true
+                        });
+                        totalSlotCount++;
+                    });
+                } else {
+                    // Legacy booking format
+                    allBookingsData.push({
+                        ...booking,
+                        sessionId: session.id,
+                        sessionDate: session.date,
+                        sessionTime: session.startTime,
+                        isSlotBooking: false
+                    });
+                    totalSlotCount += (booking.slotsUsed || 1);
+                }
             });
         });
-        
+
         // Filter bookings if search query provided
         let filteredBookings = allBookingsData;
         if (filterQuery && filterQuery.trim()) {
             const query = filterQuery.toLowerCase().trim();
-            filteredBookings = allBookingsData.filter(booking => 
+            filteredBookings = allBookingsData.filter(booking =>
                 booking.customerName?.toLowerCase().includes(query) ||
                 booking.customerEmail?.toLowerCase().includes(query) ||
-                booking.quoteId?.toLowerCase().includes(query)
+                booking.quoteId?.toLowerCase().includes(query) ||
+                booking.studentName?.toLowerCase().includes(query)
             );
         }
-        
+
         // Update count
         if (countEl) {
-            countEl.textContent = `${filteredBookings.length} booking${filteredBookings.length !== 1 ? 's' : ''}`;
+            countEl.textContent = `${filteredBookings.length} slot${filteredBookings.length !== 1 ? 's' : ''} booked`;
         }
-        
+
         if (filteredBookings.length === 0) {
             container.classList.add('hidden');
             emptyState.classList.remove('hidden');
@@ -1055,39 +1370,61 @@ function renderBookingsList(filterQuery = '') {
             }
             return;
         }
-        
+
         container.classList.remove('hidden');
         emptyState.classList.add('hidden');
-        
+
         container.innerHTML = filteredBookings.map(booking => {
             const statusConfig = {
                 confirmed: { text: 'Confirmed', class: 'bg-green-100 text-green-700' },
                 cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
             };
             const status = statusConfig[booking.status] || statusConfig.confirmed;
-            
-            return `
-                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:border-emerald-300 transition-colors">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <h4 class="font-semibold text-gray-900">${booking.customerName}</h4>
-                            <span class="px-2 py-1 text-xs rounded ${status.class}">${status.text}</span>
+
+            if (booking.isSlotBooking) {
+                // New slot-level display - focus on attendee only
+                return `
+                    <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h4 class="font-semibold text-gray-900">${booking.studentName}</h4>
+                                    <span class="px-2 py-0.5 text-xs rounded ${status.class}">${status.text}</span>
+                                </div>
+                                <div class="text-xs text-gray-500 space-y-0.5">
+                                    <div class="flex items-center gap-3">
+                                        <span>Customer: ${booking.customerName}</span>
+                                        <span>Quote: ${booking.quoteId || '-'}</span>
+                                    </div>
+                                    ${booking.sessionDate ? `<div class="text-gray-500">Session: ${formatDate(new Date(booking.sessionDate))} at ${booking.sessionTime || ''}</div>` : ''}
+                                    ${booking.slotNotes ? `<p class="text-gray-600 italic mt-1">"${booking.slotNotes}"</p>` : ''}
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                            <span>Quote: ${booking.quoteId || '-'}</span>
-                            <span>Slots: ${booking.slotsUsed || 1}</span>
-                            ${booking.sessionDate ? `<span>Session: ${formatDate(new Date(booking.sessionDate))}</span>` : ''}
+                        <div class="flex gap-2 pt-2 border-t border-gray-100">
+                            <button 
+                                onclick="openTransferSlotModal('${booking.slotId}', '${booking.id}', '${booking.sessionId}')"
+                                class="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 flex items-center justify-center gap-1"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                </svg>
+                                Transfer
+                            </button>
+                            <button 
+                                onclick="cancelSlot('${booking.slotId}', '${booking.id}', '${booking.sessionId}')"
+                                class="flex-1 px-3 py-1.5 text-xs font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50"
+                            >
+                                Remove
+                            </button>
                         </div>
                     </div>
-                    <button 
-                        onclick="cancelBooking('${booking.id}', '${booking.sessionId}')"
-                        class="px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg"
-                    >
-                        Cancel
-                    </button>
-                </div>
-            `;
-        }).join('');
+                `;
+            } else {
+                // Hide legacy bookings - only show slot-level bookings
+                return '';
+            }
+        }).filter(html => html).join('');
     } catch (error) {
         console.error('Error rendering bookings:', error);
         container.classList.add('hidden');
@@ -1100,35 +1437,86 @@ function searchBookedCustomers(query) {
     renderBookingsList(query);
 }
 
-// Cancel booking
+// Cancel individual slot
+function cancelSlot(slotId, bookingId, sessionId) {
+    if (!confirm('Are you sure you want to cancel this slot?')) {
+        return;
+    }
+
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const session = sessions.find(s => s.id === sessionId);
+
+        if (session && session.bookings) {
+            const booking = session.bookings.find(b => b.id === bookingId);
+
+            if (booking && booking.slots) {
+                // Remove the slot from the booking
+                booking.slots = booking.slots.filter(s => s.slotId !== slotId);
+
+                // If no slots left, remove the entire booking
+                if (booking.slots.length === 0) {
+                    session.bookings = session.bookings.filter(b => b.id !== bookingId);
+                }
+
+                // Update confirmed slots count
+                let totalSlots = 0;
+                session.bookings.forEach(b => {
+                    if (b.status === 'confirmed') {
+                        totalSlots += (b.slots && Array.isArray(b.slots)) ? b.slots.length : (b.slotsUsed || 1);
+                    }
+                });
+                session.confirmedSlots = totalSlots;
+                session.updatedAt = new Date().toISOString();
+
+                const index = sessions.findIndex(s => s.id === sessionId);
+                if (index > -1) {
+                    sessions[index] = session;
+                    localStorage.setItem('class_sessions_v2', JSON.stringify(sessions));
+                }
+
+                renderBookingsList();
+                loadEnrollmentData();
+                loadSessions();
+                showNotification('Slot cancelled successfully', 'success');
+            }
+        }
+    } catch (error) {
+        console.error('Error cancelling slot:', error);
+        showNotification('Error cancelling slot', 'error');
+    }
+}
+
+// Cancel entire booking (legacy)
 function cancelBooking(bookingId, sessionId) {
     if (!confirm('Are you sure you want to cancel this booking?')) {
         return;
     }
-    
+
     try {
         const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
         const session = sessions.find(s => s.id === sessionId);
-        
+
         if (session && session.bookings) {
+            const booking = session.bookings.find(b => b.id === bookingId);
+            const slotsRemoved = booking ?
+                (booking.slots && Array.isArray(booking.slots) ? booking.slots.length : (booking.slotsUsed || 1)) : 0;
+
             session.bookings = session.bookings.filter(b => b.id !== bookingId);
-            
+
             // Update session stats
-            if (session.bookings) {
-                const confirmed = session.bookings.filter(b => b.status === 'confirmed').length;
-                session.confirmedSlots = confirmed;
-            }
-            
+            session.confirmedSlots = Math.max(0, (session.confirmedSlots || 0) - slotsRemoved);
             session.updatedAt = new Date().toISOString();
-            
+
             const index = sessions.findIndex(s => s.id === sessionId);
             if (index > -1) {
                 sessions[index] = session;
                 localStorage.setItem('class_sessions_v2', JSON.stringify(sessions));
             }
-            
+
             renderBookingsList();
             loadEnrollmentData();
+            loadSessions();
             showNotification('Booking cancelled successfully', 'success');
         }
     } catch (error) {
@@ -1137,18 +1525,214 @@ function cancelBooking(bookingId, sessionId) {
     }
 }
 
+// Current transfer state
+let currentTransferState = null;
+
+// Open transfer slot modal
+function openTransferSlotModal(slotId, bookingId, sessionId) {
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const session = sessions.find(s => s.id === sessionId);
+        const booking = session?.bookings?.find(b => b.id === bookingId);
+        const slot = booking?.slots?.find(s => s.slotId === slotId);
+
+        if (!slot) {
+            showNotification('Slot not found', 'error');
+            return;
+        }
+
+        currentTransferState = {
+            slotId,
+            bookingId,
+            fromSessionId: sessionId,
+            slot,
+            booking,
+            session
+        };
+
+        // Update modal display
+        document.getElementById('transferSlotStudent').textContent = slot.studentName;
+        document.getElementById('transferSlotCustomer').textContent = booking.customerName;
+        document.getElementById('transferSlotFromSession').textContent = `${formatDate(session.date)} at ${session.startTime}`;
+        document.getElementById('transferSlotQuote').textContent = booking.quoteId;
+
+        // Populate target sessions (exclude current session)
+        const targetSelect = document.getElementById('transferTargetSession');
+        const classSessions = sessions.filter(s =>
+            s.classId === currentClass.id &&
+            s.id !== sessionId &&
+            s.status !== 'cancelled' &&
+            s.status !== 'completed'
+        );
+
+        classSessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        targetSelect.innerHTML = '<option value="">Select destination session...</option>';
+        classSessions.forEach(s => {
+            const capacity = currentClass.maxCapacity || 20;
+            const filled = s.confirmedSlots || 0;
+            const available = capacity - filled;
+
+            const option = document.createElement('option');
+            option.value = s.id;
+            option.textContent = `${formatDate(s.date)} at ${s.startTime} (${available} slots available)`;
+            option.disabled = available <= 0;
+            targetSelect.appendChild(option);
+        });
+
+        // Clear reason
+        document.getElementById('transferReason').value = '';
+
+        // Show modal
+        document.getElementById('transferSlotModal').classList.remove('hidden');
+    } catch (error) {
+        console.error('Error opening transfer modal:', error);
+        showNotification('Error opening transfer modal', 'error');
+    }
+}
+
+// Close transfer slot modal
+function closeTransferSlotModal() {
+    document.getElementById('transferSlotModal').classList.add('hidden');
+    currentTransferState = null;
+}
+
+// Confirm transfer slot
+function confirmTransferSlot() {
+    if (!currentTransferState) {
+        showNotification('No slot selected for transfer', 'error');
+        return;
+    }
+
+    const toSessionId = document.getElementById('transferTargetSession').value;
+    if (!toSessionId) {
+        showNotification('Please select a destination session', 'error');
+        return;
+    }
+
+    const reason = document.getElementById('transferReason').value.trim();
+
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const { slotId, bookingId, fromSessionId, slot, booking } = currentTransferState;
+
+        const fromSession = sessions.find(s => s.id === fromSessionId);
+        const toSession = sessions.find(s => s.id === toSessionId);
+
+        if (!fromSession || !toSession) {
+            showNotification('Session not found', 'error');
+            return;
+        }
+
+        // Check target session capacity
+        const capacity = currentClass.maxCapacity || 20;
+        const toFilled = toSession.confirmedSlots || 0;
+        if (toFilled >= capacity) {
+            showNotification('Target session is full', 'error');
+            return;
+        }
+
+        const fromBooking = fromSession.bookings.find(b => b.id === bookingId);
+        if (!fromBooking) {
+            showNotification('Booking not found', 'error');
+            return;
+        }
+
+        // Remove slot from source booking
+        const slotIndex = fromBooking.slots.findIndex(s => s.slotId === slotId);
+        if (slotIndex === -1) {
+            showNotification('Slot not found in booking', 'error');
+            return;
+        }
+
+        const [transferredSlot] = fromBooking.slots.splice(slotIndex, 1);
+
+        // Add transfer history
+        transferredSlot.transferHistory = transferredSlot.transferHistory || [];
+        transferredSlot.transferHistory.push({
+            fromSessionId,
+            toSessionId,
+            transferredAt: new Date().toISOString(),
+            reason
+        });
+        transferredSlot.sessionId = toSessionId;
+
+        // If source booking is empty, remove it
+        if (fromBooking.slots.length === 0) {
+            fromSession.bookings = fromSession.bookings.filter(b => b.id !== bookingId);
+        }
+
+        // Find or create booking in target session
+        let toBooking = toSession.bookings?.find(b =>
+            b.customerId === booking.customerId &&
+            b.quoteId === booking.quoteId
+        );
+
+        if (toBooking) {
+            // Add slot to existing booking
+            toBooking.slots.push(transferredSlot);
+            toBooking.updatedAt = new Date().toISOString();
+        } else {
+            // Create new booking in target session
+            const newBookingId = `BOOKING-${toSessionId}-${Date.now()}`;
+            toBooking = {
+                id: newBookingId,
+                customerId: booking.customerId,
+                customerName: booking.customerName,
+                customerEmail: booking.customerEmail,
+                quoteId: booking.quoteId,
+                sessionId: toSessionId,
+                classId: currentClass.id,
+                slots: [transferredSlot],
+                status: 'confirmed',
+                bookedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            if (!toSession.bookings) {
+                toSession.bookings = [];
+            }
+            toSession.bookings.push(toBooking);
+        }
+
+        // Update session slot counts
+        fromSession.confirmedSlots = Math.max(0, (fromSession.confirmedSlots || 0) - 1);
+        toSession.confirmedSlots = (toSession.confirmedSlots || 0) + 1;
+        fromSession.updatedAt = new Date().toISOString();
+        toSession.updatedAt = new Date().toISOString();
+
+        // Save
+        const fromIndex = sessions.findIndex(s => s.id === fromSessionId);
+        const toIndex = sessions.findIndex(s => s.id === toSessionId);
+        if (fromIndex > -1) sessions[fromIndex] = fromSession;
+        if (toIndex > -1) sessions[toIndex] = toSession;
+        localStorage.setItem('class_sessions_v2', JSON.stringify(sessions));
+
+        // Success
+        showNotification(`Slot transferred to ${formatDate(toSession.date)}`, 'success');
+        closeTransferSlotModal();
+        renderBookingsList();
+        loadEnrollmentData();
+        loadSessions();
+
+    } catch (error) {
+        console.error('Error transferring slot:', error);
+        showNotification('Error transferring slot', 'error');
+    }
+}
+
+
 // Update enrollment tab when switching to it (replaces old loadEnrollmentData)
 function loadEnrollmentData() {
     try {
         const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
         const classSessions = sessions.filter(s => s.classId === currentClass.id);
-        
+
         // Aggregate enrollment data
         let totalBookings = 0;
         let confirmedBookings = 0;
         let totalSlots = 0;
         let totalFilled = 0;
-        
+
         classSessions.forEach(session => {
             const bookings = session.bookings || [];
             totalBookings += bookings.length;
@@ -1156,17 +1740,17 @@ function loadEnrollmentData() {
             totalSlots += (session.confirmedSlots || 0);
             totalFilled += (currentClass.maxCapacity || 0) * classSessions.length;
         });
-        
+
         // Update stats
         document.getElementById('totalBookings').textContent = totalBookings;
         document.getElementById('confirmedBookings').textContent = confirmedBookings;
-        
+
         const avgEnrollment = totalFilled > 0 ? Math.round((totalSlots / totalFilled) * 100) : 0;
         document.getElementById('avgEnrollment').textContent = `${avgEnrollment}%`;
-        
+
         // Render bookings list
         renderBookingsList();
-        
+
         // Enable/disable search based on pricebook item
         const searchInput = document.getElementById('customerSearchInput');
         const hint = document.getElementById('customerSearchHint');
@@ -1195,14 +1779,14 @@ function handleArchive() {
     if (confirm('Are you sure you want to archive this class? This will pause all future session generation.')) {
         currentClass.status = 'archived';
         currentClass.updatedAt = new Date().toISOString();
-        
+
         try {
             const classes = JSON.parse(localStorage.getItem('classes_v2') || '[]');
             const index = classes.findIndex(c => c.id === currentClass.id);
             if (index > -1) {
                 classes[index] = currentClass;
                 localStorage.setItem('classes_v2', JSON.stringify(classes));
-                
+
                 showNotification('Class archived successfully', 'success');
                 setTimeout(() => {
                     window.location.reload();
@@ -1260,16 +1844,15 @@ function createSession() {
 
 function showNotification(message, type = 'info') {
     const container = document.createElement('div');
-    container.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
-        type === 'success' ? 'bg-green-500' :
+    container.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-500' :
         type === 'error' ? 'bg-red-500' :
-        type === 'warning' ? 'bg-yellow-500' :
-        'bg-blue-500'
-    }`;
+            type === 'warning' ? 'bg-yellow-500' :
+                'bg-blue-500'
+        }`;
     container.textContent = message;
-    
+
     document.body.appendChild(container);
-    
+
     setTimeout(() => {
         container.style.opacity = '0';
         container.style.transition = 'opacity 0.3s';
