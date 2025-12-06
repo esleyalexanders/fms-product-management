@@ -121,65 +121,55 @@ function renderClassDetails() {
     document.getElementById('classIdBadge').textContent = currentClass.id;
     updateStatusBadge();
 
-    // Basic Information
-    document.getElementById('displayClassName').textContent = currentClass.name || '-';
-    document.getElementById('displayDescription').textContent = currentClass.description || 'No description';
-    document.getElementById('displaySkillLevel').textContent = currentClass.skillLevel || '-';
-    updateStatusDisplay();
+    // Basic Information - Now populate input fields
+    document.getElementById('className').value = currentClass.name || '';
+    document.getElementById('description').value = currentClass.description || '';
+    document.getElementById('skillLevel').value = currentClass.skillLevel || '';
+    document.getElementById('status').value = currentClass.status || 'active';
 
-    // Price Book Item
+    // Price Book Item - Update container to show selected item
     if (currentClass.pricebookItem) {
-        document.getElementById('displayPricebookName').textContent = currentClass.pricebookItem.name;
-        document.getElementById('displayPricebookDescription').textContent = currentClass.pricebookItem.description || '';
-        document.getElementById('displayPricebookTag').textContent = currentClass.pricebookItem.tag || 'General';
-        document.getElementById('displayPricebookPrice').textContent = `$${currentClass.pricebookItem.price?.toFixed(2) || '0.00'}`;
+        updatePricebookDisplay(currentClass.pricebookItem);
     }
 
-    // Schedule
+    // Schedule - Populate form fields
     if (currentClass.schedule) {
         const schedule = currentClass.schedule;
-        document.getElementById('displayFrequency').textContent = schedule.frequency ? schedule.frequency.charAt(0).toUpperCase() + schedule.frequency.slice(1) : '-';
+        document.getElementById('frequency').value = schedule.frequency || 'weekly';
 
-        // Days of week
+        // Set selected days
         if (schedule.daysOfWeek && schedule.daysOfWeek.length > 0) {
-            const daysContainer = document.getElementById('displayDays');
-            daysContainer.innerHTML = schedule.daysOfWeek.map(day => {
-                const shortDay = day.substring(0, 3);
-                return `<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs font-medium">${shortDay}</span>`;
-            }).join('');
-        } else {
-            document.getElementById('displayDaysSection').classList.add('hidden');
+            // Clear all day selections first
+            document.querySelectorAll('.day-selector').forEach(btn => {
+                btn.classList.remove('selected', 'bg-emerald-500', 'text-white');
+                btn.classList.add('border-gray-300');
+            });
+            // Select the days from schedule
+            schedule.daysOfWeek.forEach(day => {
+                const btn = document.querySelector(`.day-selector[data-day="${day}"]`);
+                if (btn) {
+                    btn.classList.add('selected', 'bg-emerald-500', 'text-white');
+                    btn.classList.remove('border-gray-300');
+                }
+            });
         }
 
-        document.getElementById('displayStartTime').textContent = schedule.startTime || '-';
-        document.getElementById('displayEndTime').textContent = schedule.endTime || '-';
-        document.getElementById('displayDuration').textContent = schedule.duration ? `${schedule.duration} minutes` : '-';
-        document.getElementById('displayStartDate').textContent = schedule.startDate ? formatDate(schedule.startDate) : 'Not set';
-        document.getElementById('displayEndDate').textContent = schedule.endDate ? formatDate(schedule.endDate) : 'Ongoing';
+        document.getElementById('startTime').value = schedule.startTime || '';
+        document.getElementById('endTime').value = schedule.endTime || '';
+        document.getElementById('duration').value = schedule.duration || '';
+        document.getElementById('startDate').value = schedule.startDate || '';
+        document.getElementById('endDate').value = schedule.endDate || '';
     }
 
-    // Default Staff
+    // Default Staff - Populate staff selection
     if (currentClass.defaultStaff && currentClass.defaultStaff.length > 0) {
-        const staffContainer = document.getElementById('displayStaffList');
-        staffContainer.innerHTML = currentClass.defaultStaff.map(staff => {
-            const initials = staff.name.split(' ').map(n => n[0]).join('');
-            return `
-                <div class="flex items-center gap-3 p-2 border border-gray-200 rounded-lg">
-                    <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                        <span class="text-xs font-semibold text-emerald-700">${initials}</span>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-900">${staff.name}</p>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    } else {
-        document.getElementById('displayStaffList').innerHTML = '<p class="text-sm text-gray-400">No staff assigned</p>';
+        // This will be handled by staff selection functions
+        // For now, just update the selected staff display
+        updateSelectedStaffDisplay(currentClass.defaultStaff);
     }
 
-    // Capacity
-    document.getElementById('displayMaxCapacity').textContent = currentClass.maxCapacity || '-';
+    // Capacity - Populate input field
+    document.getElementById('maxCapacity').value = currentClass.maxCapacity || '';
 
     // Update summary
     updateSummary();
@@ -213,6 +203,60 @@ function updateStatusDisplay() {
     const config = statusConfig[status] || statusConfig.active;
     statusEl.textContent = config.text;
     statusEl.className = `inline-block px-2 py-1 text-xs rounded ${config.class}`;
+}
+
+function updatePricebookDisplay(pricebookItem) {
+    const container = document.getElementById('pricebookItemContainer');
+    if (!pricebookItem) return;
+
+    container.innerHTML = `
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg relative">
+            <button onclick="showPricebookModal()" class="absolute top-2 right-2 p-2 text-emerald-700 hover:bg-emerald-100 rounded">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+            </button>
+            <div class="flex items-start justify-between pr-8">
+                <div class="flex-1">
+                    <h4 class="font-semibold text-emerald-900">${pricebookItem.name}</h4>
+                    <p class="text-sm text-emerald-700 mt-1">${pricebookItem.description || ''}</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="px-2 py-1 text-xs bg-emerald-200 text-emerald-800 rounded">${pricebookItem.tag || 'General'}</span>
+                        <span class="text-sm font-semibold text-emerald-900">$${pricebookItem.price?.toFixed(2) || '0.00'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function updateSelectedStaffDisplay(staffList) {
+    const selectedList = document.getElementById('selectedStaffList');
+    const staffCount = document.getElementById('selectedStaffCount');
+
+    if (!staffList || staffList.length === 0) {
+        selectedList.innerHTML = '<p class="text-sm text-gray-400">No staff selected</p>';
+        staffCount.textContent = '0';
+        return;
+    }
+
+    staffCount.textContent = staffList.length;
+    selectedList.innerHTML = staffList.map(staff => {
+        const initials = staff.name.split(' ').map(n => n[0]).join('');
+        return `
+            <div class="flex items-center gap-2 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                    <span class="text-xs font-semibold text-white">${initials}</span>
+                </div>
+                <span class="text-sm font-medium text-gray-900">${staff.name}</span>
+                <button onclick="removeStaff('${staff.id}')" class="ml-2 text-gray-400 hover:text-red-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+    }).join('');
 }
 
 function formatDate(dateString) {
@@ -928,13 +972,13 @@ function showSlotBookingForm() {
     // Update session count display
     updateSessionCountDisplay();
 
-    // Reset slot entries
-    currentSlotBookingState.slotEntries = [];
-    document.getElementById('slotEntriesContainer').innerHTML = '';
-    document.getElementById('noSlotsMessage').classList.remove('hidden');
+    // Pre-fill attendee name with customer name
+    const attendeeNameInput = document.getElementById('attendeeName');
+    const attendeeNotesInput = document.getElementById('attendeeNotes');
+    if (attendeeNameInput) attendeeNameInput.value = customer.name || '';
+    if (attendeeNotesInput) attendeeNotesInput.value = '';
 
-    // Update add slot button state
-    updateAddSlotButtonState();
+    // Update confirm button
     updateConfirmBookingButton();
 
     // Show form
@@ -1095,20 +1139,28 @@ function updateConfirmBookingButton() {
 
     const btn = document.getElementById('confirmBookingBtn');
     const btnText = document.getElementById('confirmBookingBtnText');
-    const { slotEntries, allSessions = [] } = currentSlotBookingState;
-
-    // Count valid slot entries (with student names)
-    const validSlots = slotEntries.filter(e => e.studentName && e.studentName.trim());
+    const attendeeName = document.getElementById('attendeeName')?.value?.trim() || '';
+    const { allSessions = [] } = currentSlotBookingState;
 
     const sessionCount = allSessions.length;
-    btnText.textContent = `Book ${validSlots.length} Slot${validSlots.length !== 1 ? 's' : ''} for ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`;
 
-    // Enable button only if we have valid slots
-    if (validSlots.length > 0 && sessionCount > 0) {
+    if (attendeeName) {
+        btnText.textContent = `Book 1 Slot for ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`;
+    } else {
+        btnText.textContent = `Book 0 Slots`;
+    }
+
+    // Enable button only if we have an attendee name and sessions
+    if (attendeeName && sessionCount > 0) {
         btn.disabled = false;
     } else {
         btn.disabled = true;
     }
+}
+
+// Update attendee state when input changes
+function updateAttendeeState() {
+    updateConfirmBookingButton();
 }
 
 // Clear slot booking form
@@ -1116,7 +1168,12 @@ function clearSlotBooking() {
     currentSlotBookingState = null;
     document.getElementById('slotBookingForm').classList.add('hidden');
     document.getElementById('customerSearchInput').value = '';
-    document.getElementById('slotEntriesContainer').innerHTML = '';
+
+    // Clear attendee inputs
+    const attendeeNameInput = document.getElementById('attendeeName');
+    const attendeeNotesInput = document.getElementById('attendeeNotes');
+    if (attendeeNameInput) attendeeNameInput.value = '';
+    if (attendeeNotesInput) attendeeNotesInput.value = '';
 }
 
 // Confirm and save slot booking (for all sessions)
@@ -1126,14 +1183,20 @@ function confirmSlotBooking() {
         return;
     }
 
-    const { customer, quote, slotEntries, allSessions = [] } = currentSlotBookingState;
+    const { customer, quote, allSessions = [] } = currentSlotBookingState;
+
+    // Get attendee from single input
+    const attendeeName = document.getElementById('attendeeName')?.value?.trim() || '';
+    const attendeeNotes = document.getElementById('attendeeNotes')?.value?.trim() || '';
 
     // Validate
-    const validSlots = slotEntries.filter(e => e.studentName && e.studentName.trim());
-    if (validSlots.length === 0) {
-        showNotification('Please add at least one slot with a student name', 'error');
+    if (!attendeeName) {
+        showNotification('Please enter an attendee name', 'error');
         return;
     }
+
+    // Create single slot entry
+    const validSlots = [{ studentName: attendeeName, notes: attendeeNotes }];
 
     if (allSessions.length === 0) {
         showNotification('No sessions available for this class', 'error');
@@ -1556,29 +1619,32 @@ function openTransferSlotModal(slotId, bookingId, sessionId) {
         document.getElementById('transferSlotFromSession').textContent = `${formatDate(session.date)} at ${session.startTime}`;
         document.getElementById('transferSlotQuote').textContent = booking.quoteId;
 
-        // Populate target sessions (exclude current session)
-        const targetSelect = document.getElementById('transferTargetSession');
-        const classSessions = sessions.filter(s =>
-            s.classId === currentClass.id &&
-            s.id !== sessionId &&
-            s.status !== 'cancelled' &&
-            s.status !== 'completed'
-        );
+        // Populate available classes for transfer
+        const classes = JSON.parse(localStorage.getItem('classes_v2') || '[]');
+        const activeClasses = classes.filter(c => c.status === 'active');
 
-        classSessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const classSelect = document.getElementById('transferTargetClass');
+        classSelect.innerHTML = '<option value="">Select a class...</option>';
 
-        targetSelect.innerHTML = '<option value="">Select destination session...</option>';
-        classSessions.forEach(s => {
-            const capacity = currentClass.maxCapacity || 20;
-            const filled = s.confirmedSlots || 0;
-            const available = capacity - filled;
+        // Add current class first (default)
+        const currentClassOption = document.createElement('option');
+        currentClassOption.value = currentClass.id;
+        currentClassOption.textContent = `${currentClass.name} (Current)`;
+        currentClassOption.selected = true;
+        classSelect.appendChild(currentClassOption);
 
-            const option = document.createElement('option');
-            option.value = s.id;
-            option.textContent = `${formatDate(s.date)} at ${s.startTime} (${available} slots available)`;
-            option.disabled = available <= 0;
-            targetSelect.appendChild(option);
+        // Add other classes
+        activeClasses.forEach(cls => {
+            if (cls.id !== currentClass.id) {
+                const option = document.createElement('option');
+                option.value = cls.id;
+                option.textContent = cls.name;
+                classSelect.appendChild(option);
+            }
         });
+
+        // Load sessions for current class by default
+        loadTransferClassSessions();
 
         // Clear reason
         document.getElementById('transferReason').value = '';
@@ -1588,6 +1654,101 @@ function openTransferSlotModal(slotId, bookingId, sessionId) {
     } catch (error) {
         console.error('Error opening transfer modal:', error);
         showNotification('Error opening transfer modal', 'error');
+    }
+}
+
+// Load sessions for selected class in transfer modal
+function loadTransferClassSessions() {
+    const classSelect = document.getElementById('transferTargetClass');
+    const targetSelect = document.getElementById('transferTargetSession');
+    const selectedClassId = classSelect.value;
+
+    if (!selectedClassId) {
+        targetSelect.innerHTML = '<option value="">First select a class...</option>';
+        return;
+    }
+
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const classes = JSON.parse(localStorage.getItem('classes_v2') || '[]');
+        const selectedClass = classes.find(c => c.id === selectedClassId);
+
+        if (!selectedClass) {
+            targetSelect.innerHTML = '<option value="">Class not found</option>';
+            return;
+        }
+
+        // Get sessions for selected class (exclude current session if same class)
+        const classSessions = sessions.filter(s =>
+            s.classId === selectedClassId &&
+            s.status !== 'cancelled' &&
+            s.status !== 'completed' &&
+            (selectedClassId !== currentClass.id || s.id !== currentTransferState.session.id)
+        );
+
+        classSessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        if (classSessions.length === 0) {
+            targetSelect.innerHTML = '<option value="">No available sessions</option>';
+            return;
+        }
+
+        targetSelect.innerHTML = '<option value="">Select destination session...</option>';
+        classSessions.forEach(s => {
+            const capacity = selectedClass.maxCapacity || 20;
+            const filled = s.confirmedSlots || 0;
+            const available = capacity - filled;
+
+            const option = document.createElement('option');
+            option.value = s.id;
+            option.textContent = `${formatDate(s.date)} at ${s.startTime || 'TBD'} (${available} slots available)`;
+            option.disabled = available <= 0;
+            targetSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading transfer sessions:', error);
+        targetSelect.innerHTML = '<option value="">Error loading sessions</option>';
+    }
+}
+
+// Update transfer session count info
+function updateTransferSessionCount() {
+    const targetSelect = document.getElementById('transferTargetSession');
+    const infoEl = document.getElementById('transferSessionCountInfo');
+    const targetClassId = document.getElementById('transferTargetClass').value;
+
+    if (!targetSelect.value || !targetClassId) {
+        infoEl.classList.add('hidden');
+        return;
+    }
+
+    try {
+        const sessions = JSON.parse(localStorage.getItem('class_sessions_v2') || '[]');
+        const selectedSessionId = targetSelect.value;
+
+        // Get all sessions for the target class
+        const classSessions = sessions.filter(s =>
+            s.classId === targetClassId &&
+            s.status !== 'cancelled' &&
+            s.status !== 'completed'
+        ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Find the starting session index
+        const startIndex = classSessions.findIndex(s => s.id === selectedSessionId);
+        if (startIndex === -1) {
+            infoEl.classList.add('hidden');
+            return;
+        }
+
+        // Count remaining sessions from starting point
+        const remainingSessions = classSessions.slice(startIndex);
+        const count = remainingSessions.length;
+
+        infoEl.textContent = `Attendee will be enrolled in ${count} session${count !== 1 ? 's' : ''} (from this session to the last)`;
+        infoEl.classList.remove('hidden');
+    } catch (error) {
+        console.error('Error calculating session count:', error);
+        infoEl.classList.add('hidden');
     }
 }
 
@@ -1605,8 +1766,10 @@ function confirmTransferSlot() {
     }
 
     const toSessionId = document.getElementById('transferTargetSession').value;
+    const targetClassId = document.getElementById('transferTargetClass').value;
+
     if (!toSessionId) {
-        showNotification('Please select a destination session', 'error');
+        showNotification('Please select a starting session', 'error');
         return;
     }
 
@@ -1617,19 +1780,34 @@ function confirmTransferSlot() {
         const { slotId, bookingId, fromSessionId, slot, booking } = currentTransferState;
 
         const fromSession = sessions.find(s => s.id === fromSessionId);
-        const toSession = sessions.find(s => s.id === toSessionId);
-
-        if (!fromSession || !toSession) {
-            showNotification('Session not found', 'error');
+        if (!fromSession) {
+            showNotification('Source session not found', 'error');
             return;
         }
 
-        // Check target session capacity
-        const capacity = currentClass.maxCapacity || 20;
-        const toFilled = toSession.confirmedSlots || 0;
-        if (toFilled >= capacity) {
-            showNotification('Target session is full', 'error');
+        // Get all target sessions from the starting session onwards
+        const targetClassSessions = sessions.filter(s =>
+            s.classId === targetClassId &&
+            s.status !== 'cancelled' &&
+            s.status !== 'completed'
+        ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const startIndex = targetClassSessions.findIndex(s => s.id === toSessionId);
+        if (startIndex === -1) {
+            showNotification('Starting session not found', 'error');
             return;
+        }
+
+        const sessionsToEnroll = targetClassSessions.slice(startIndex);
+        const capacity = currentClass.maxCapacity || 20;
+
+        // Check if any session is full
+        for (const session of sessionsToEnroll) {
+            const filled = session.confirmedSlots || 0;
+            if (filled >= capacity) {
+                showNotification(`Session on ${formatDate(session.date)} is full. Cannot transfer.`, 'error');
+                return;
+            }
         }
 
         const fromBooking = fromSession.bookings.find(b => b.id === bookingId);
@@ -1651,64 +1829,79 @@ function confirmTransferSlot() {
         transferredSlot.transferHistory = transferredSlot.transferHistory || [];
         transferredSlot.transferHistory.push({
             fromSessionId,
-            toSessionId,
+            toClassId: targetClassId,
+            toStartSessionId: toSessionId,
+            sessionsEnrolled: sessionsToEnroll.length,
             transferredAt: new Date().toISOString(),
             reason
         });
-        transferredSlot.sessionId = toSessionId;
 
         // If source booking is empty, remove it
         if (fromBooking.slots.length === 0) {
             fromSession.bookings = fromSession.bookings.filter(b => b.id !== bookingId);
         }
 
-        // Find or create booking in target session
-        let toBooking = toSession.bookings?.find(b =>
-            b.customerId === booking.customerId &&
-            b.quoteId === booking.quoteId
-        );
+        // Update source session
+        fromSession.confirmedSlots = Math.max(0, (fromSession.confirmedSlots || 0) - 1);
+        fromSession.updatedAt = new Date().toISOString();
 
-        if (toBooking) {
-            // Add slot to existing booking
-            toBooking.slots.push(transferredSlot);
-            toBooking.updatedAt = new Date().toISOString();
-        } else {
-            // Create new booking in target session
-            const newBookingId = `BOOKING-${toSessionId}-${Date.now()}`;
-            toBooking = {
-                id: newBookingId,
-                customerId: booking.customerId,
-                customerName: booking.customerName,
-                customerEmail: booking.customerEmail,
-                quoteId: booking.quoteId,
-                sessionId: toSessionId,
-                classId: currentClass.id,
-                slots: [transferredSlot],
-                status: 'confirmed',
-                bookedAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+        // Enroll in ALL target sessions from starting point
+        let enrolledCount = 0;
+        for (const toSession of sessionsToEnroll) {
+            const sessionIndex = sessions.findIndex(s => s.id === toSession.id);
+            if (sessionIndex === -1) continue;
+
+            // Clone slot for this session
+            const newSlot = {
+                ...transferredSlot,
+                slotId: `${transferredSlot.slotId}-${toSession.id}`,
+                sessionId: toSession.id
             };
-            if (!toSession.bookings) {
-                toSession.bookings = [];
+
+            // Find or create booking in target session
+            let toBooking = sessions[sessionIndex].bookings?.find(b =>
+                b.customerId === booking.customerId &&
+                b.quoteId === booking.quoteId
+            );
+
+            if (toBooking) {
+                toBooking.slots.push(newSlot);
+                toBooking.updatedAt = new Date().toISOString();
+            } else {
+                const newBookingId = `BOOKING-${toSession.id}-${Date.now()}`;
+                toBooking = {
+                    id: newBookingId,
+                    customerId: booking.customerId,
+                    customerName: booking.customerName,
+                    customerEmail: booking.customerEmail,
+                    quoteId: booking.quoteId,
+                    sessionId: toSession.id,
+                    classId: targetClassId,
+                    slots: [newSlot],
+                    status: 'confirmed',
+                    bookedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                if (!sessions[sessionIndex].bookings) {
+                    sessions[sessionIndex].bookings = [];
+                }
+                sessions[sessionIndex].bookings.push(toBooking);
             }
-            toSession.bookings.push(toBooking);
+
+            // Update slot count
+            sessions[sessionIndex].confirmedSlots = (sessions[sessionIndex].confirmedSlots || 0) + 1;
+            sessions[sessionIndex].updatedAt = new Date().toISOString();
+            enrolledCount++;
         }
 
-        // Update session slot counts
-        fromSession.confirmedSlots = Math.max(0, (fromSession.confirmedSlots || 0) - 1);
-        toSession.confirmedSlots = (toSession.confirmedSlots || 0) + 1;
-        fromSession.updatedAt = new Date().toISOString();
-        toSession.updatedAt = new Date().toISOString();
-
-        // Save
+        // Save source session update
         const fromIndex = sessions.findIndex(s => s.id === fromSessionId);
-        const toIndex = sessions.findIndex(s => s.id === toSessionId);
         if (fromIndex > -1) sessions[fromIndex] = fromSession;
-        if (toIndex > -1) sessions[toIndex] = toSession;
+
         localStorage.setItem('class_sessions_v2', JSON.stringify(sessions));
 
         // Success
-        showNotification(`Slot transferred to ${formatDate(toSession.date)}`, 'success');
+        showNotification(`Slot transferred to ${enrolledCount} session${enrolledCount !== 1 ? 's' : ''}`, 'success');
         closeTransferSlotModal();
         renderBookingsList();
         loadEnrollmentData();
