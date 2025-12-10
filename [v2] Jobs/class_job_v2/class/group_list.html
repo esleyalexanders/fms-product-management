@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classes - FMS</title>
+    <title>Groups - FMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -67,8 +67,8 @@
                 <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
                 <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
                 
-                <div class="nav-section-label" style="margin-top: 20px;">CLASSES</div>
-                <a href="class_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-chalkboard-teacher"></i><span>Classes</span></a>
+                <div class="nav-section-label" style="margin-top: 20px;">GROUPS</div>
+                <a href="group_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-chalkboard-teacher"></i><span>Groups</span></a>
                 <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-day"></i><span>Sessions</span></a>
                 
                 <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
@@ -108,19 +108,19 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <div class="flex items-center gap-3 mb-1">
-                            <h1 class="text-2xl font-bold text-gray-900">Classes</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">Groups</h1>
                         </div>
                         <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
                     </div>
                     <div id="headerActions" class="flex gap-2">
                         <button 
-                            onclick="window.location.href='class_create.html'"
+                            onclick="window.location.href='group_create.html'"
                             class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-2"
                         >
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            Create Class
+                            Create Group
                         </button>
                     </div>
                 </div>
@@ -131,8 +131,8 @@
                 <div class="bg-white rounded-lg shadow-sm p-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">Total Classes</p>
-                            <p class="text-2xl font-bold text-gray-900" id="totalClasses">0</p>
+                            <p class="text-sm text-gray-600">Total Groups</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalGroups">0</p>
                         </div>
                         <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-600">Active</p>
-                            <p class="text-2xl font-bold text-emerald-600" id="activeClasses">0</p>
+                            <p class="text-2xl font-bold text-emerald-600" id="activeGroups">0</p>
                         </div>
                         <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-600">Paused</p>
-                            <p class="text-2xl font-bold text-yellow-600" id="pausedClasses">0</p>
+                            <p class="text-2xl font-bold text-yellow-600" id="pausedGroups">0</p>
                         </div>
                         <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,7 +192,7 @@
                         <input 
                             type="text" 
                             id="searchInput" 
-                            placeholder="Search by class name, pricebook item, or skill level..." 
+                            placeholder="Search by group name, pricebook item, or skill level..." 
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                         />
                     </div>
@@ -230,28 +230,28 @@
                 </div>
             </div>
 
-            <!-- Classes List -->
+            <!-- Groups List -->
             <div class="bg-white rounded-lg shadow-sm p-4">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Classes</h2>
-                    <div class="text-sm text-gray-600" id="resultsCount">Showing 0 classes</div>
+                    <h2 class="text-lg font-semibold text-gray-900">Groups</h2>
+                    <div class="text-sm text-gray-600" id="resultsCount">Showing 0 groups</div>
                 </div>
 
                 <div id="emptyState" class="text-center py-12 text-gray-500">
                     <svg class="mx-auto mb-3 text-gray-300 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
-                    <p class="text-sm mb-2">No classes found</p>
+                    <p class="text-sm mb-2">No groups found</p>
                     <button 
-                        onclick="window.location.href='class_create.html'"
+                        onclick="window.location.href='group_create.html'"
                         class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
                     >
-                        Create Your First Class
+                        Create Your First Group
                     </button>
                 </div>
 
-                <div id="classesList" class="hidden space-y-3">
-                    <!-- Classes will be rendered here -->
+                <div id="groupsList" class="hidden space-y-3">
+                    <!-- Groups will be rendered here -->
                 </div>
             </div>
 
@@ -260,7 +260,7 @@
         </main>
     </div>
 
-    <script src="class_list_script.js"></script>
+    <script src="group_list_script.js"></script>
 </body>
 </html>
 

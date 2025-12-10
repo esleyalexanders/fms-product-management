@@ -16,8 +16,9 @@ let sessionSelectedStaff = []; // Staff selected for session editing
 
 // Filters
 let filters = {
-    jobs: true,
-    sessions: true,
+    classSessions: true,
+    groupSessions: true,
+    oneToOne: true,
     scheduled: true,
     inProgress: true,
     completed: true
@@ -191,9 +192,13 @@ function loadEvents() {
                 sixDaysFromNow.setDate(sixDaysFromNow.getDate() + 6); // Dec 15
                 const isBeyondOneWeek = sessionDate >= sixDaysFromNow;
 
+                // Get session type from class data, default to 'Class' if not specified
+                const sessionType = classData?.type || session.sessionType || 'Class';
+
                 allEvents.push({
                     id: session.id,
                     type: 'session',
+                    sessionType: sessionType,
                     title: classData ? classData.name : 'Class Session',
                     description: classData ? classData.description : '',
                     date: eventDate,
@@ -264,9 +269,13 @@ function loadEvents() {
                     );
 
                     if (!hasRealSession) {
+                        // Get session type from class data, default to 'Class' if not specified
+                        const sessionType = cls.type || 'Class';
+
                         allEvents.push({
                             id: previewEventId,
                             type: 'session',
+                            sessionType: sessionType,
                             title: cls.name,
                             description: cls.description || '',
                             date: dateStr,
@@ -380,6 +389,7 @@ function getSampleClasses() {
             id: 'CLASS-2025-001',
             name: 'Advanced Math Tutoring',
             description: 'Comprehensive math tutoring for advanced students',
+            type: 'Class',
             skillLevel: 'Advanced',
             maxCapacity: 15,
             status: 'active',
@@ -400,6 +410,7 @@ function getSampleClasses() {
             id: 'CLASS-2025-002',
             name: 'Yoga for Beginners',
             description: 'Gentle yoga class for beginners',
+            type: 'Group',
             skillLevel: 'Beginner',
             maxCapacity: 20,
             status: 'active',
@@ -420,6 +431,7 @@ function getSampleClasses() {
             id: 'CLASS-2025-003',
             name: 'Science Lab Session',
             description: 'Hands-on science experiments',
+            type: 'Class',
             skillLevel: 'Intermediate',
             maxCapacity: 12,
             status: 'active',
@@ -440,6 +452,7 @@ function getSampleClasses() {
             id: 'CLASS-2025-004',
             name: 'Guitar Lessons',
             description: 'Learn to play guitar from basics',
+            type: 'Group',
             skillLevel: 'All levels',
             maxCapacity: 10,
             status: 'active',
@@ -452,6 +465,69 @@ function getSampleClasses() {
             },
             defaultStaff: [
                 { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'CLASS-2025-005',
+            name: 'Private Math Tutoring',
+            description: 'One-on-one math tutoring session',
+            type: 'One-to-One',
+            skillLevel: 'All levels',
+            maxCapacity: 1,
+            status: 'active',
+            schedule: {
+                frequency: 'weekly',
+                daysOfWeek: ['Monday', 'Wednesday', 'Friday'],
+                startTime: '16:00',
+                endTime: '17:00',
+                duration: 60
+            },
+            defaultStaff: [
+                { id: 'STAFF-001', name: 'Daniel Davis', email: 'daniel.davis@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'CLASS-2025-006',
+            name: 'Pilates Group Class',
+            description: 'Group pilates sessions for all fitness levels',
+            type: 'Group',
+            skillLevel: 'All levels',
+            maxCapacity: 15,
+            status: 'active',
+            schedule: {
+                frequency: 'weekly',
+                daysOfWeek: ['Monday', 'Wednesday'],
+                startTime: '09:00',
+                endTime: '10:00',
+                duration: 60
+            },
+            defaultStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'CLASS-2025-007',
+            name: 'Art Workshop',
+            description: 'Group art sessions for creative expression',
+            type: 'Group',
+            skillLevel: 'Beginner',
+            maxCapacity: 12,
+            status: 'active',
+            schedule: {
+                frequency: 'weekly',
+                daysOfWeek: ['Thursday', 'Saturday'],
+                startTime: '14:00',
+                endTime: '16:00',
+                duration: 120
+            },
+            defaultStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
             ],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -1063,6 +1139,705 @@ function getSampleSessions() {
         }
     });
 
+    // Add additional group sessions for better visibility
+    // More Yoga for Beginners sessions (Group type - CLASS-2025-002)
+    const additionalYogaSessions = [
+        {
+            id: 'SESSION-GROUP-YOGA-001',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-11',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 18,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-002',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-16',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 16,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-003',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-23',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 14,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-004',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-30',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 19,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // More Guitar Lessons sessions (Group type - CLASS-2025-004)
+    const additionalGuitarSessions = [
+        {
+            id: 'SESSION-GROUP-GUITAR-001',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-13',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 8,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-GUITAR-002',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-20',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 9,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-GUITAR-003',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-27',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 6,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // More Yoga sessions for better visibility
+    const moreYogaSessions = [
+        {
+            id: 'SESSION-GROUP-YOGA-005',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-01',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 17,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-006',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-08',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 15,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-007',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-15',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 20,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-008',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-17',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 13,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-009',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-22',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 16,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-010',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-24',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 11,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-011',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-25',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 12,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-012',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-29',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 18,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-YOGA-013',
+            classId: 'CLASS-2025-002',
+            date: '2025-12-31',
+            startTime: '18:00',
+            endTime: '19:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 20,
+            confirmedSlots: 14,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // More Guitar sessions
+    const moreGuitarSessions = [
+        {
+            id: 'SESSION-GROUP-GUITAR-004',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-06',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 7,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-GUITAR-005',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-19',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 10,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-GUITAR-006',
+            classId: 'CLASS-2025-004',
+            date: '2025-12-26',
+            startTime: '10:00',
+            endTime: '11:30',
+            duration: 90,
+            status: 'scheduled',
+            maxCapacity: 10,
+            confirmedSlots: 5,
+            assignedStaff: [
+                { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // Pilates Group Class sessions (CLASS-2025-006)
+    const pilatesGroupSessions = [
+        {
+            id: 'SESSION-GROUP-PILATES-001',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-01',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 12,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-002',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-03',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 14,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-003',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-08',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 11,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-004',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-10',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 13,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-005',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-15',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 15,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-006',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-17',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 10,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-007',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-22',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 12,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-008',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-24',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 9,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-009',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-29',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 11,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-PILATES-010',
+            classId: 'CLASS-2025-006',
+            date: '2025-12-31',
+            startTime: '09:00',
+            endTime: '10:00',
+            duration: 60,
+            status: 'scheduled',
+            maxCapacity: 15,
+            confirmedSlots: 8,
+            assignedStaff: [
+                { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // Art Workshop sessions (CLASS-2025-007)
+    const artWorkshopSessions = [
+        {
+            id: 'SESSION-GROUP-ART-001',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-04',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 10,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-002',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-06',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 8,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-003',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-11',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 12,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-004',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-13',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 9,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-005',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-18',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 11,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-006',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-20',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 7,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-007',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-25',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 6,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        },
+        {
+            id: 'SESSION-GROUP-ART-008',
+            classId: 'CLASS-2025-007',
+            date: '2025-12-27',
+            startTime: '14:00',
+            endTime: '16:00',
+            duration: 120,
+            status: 'scheduled',
+            maxCapacity: 12,
+            confirmedSlots: 10,
+            assignedStaff: [
+                { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' }
+            ],
+            bookings: [],
+            notes: '',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        }
+    ];
+
+    // Add all additional group sessions
+    sessions.push(...additionalYogaSessions);
+    sessions.push(...additionalGuitarSessions);
+    sessions.push(...moreYogaSessions);
+    sessions.push(...moreGuitarSessions);
+    sessions.push(...pilatesGroupSessions);
+    sessions.push(...artWorkshopSessions);
+
     return sessions;
 }
 
@@ -1071,13 +1846,32 @@ function getSampleSessions() {
 function applyFilters() {
     let filtered = [...allEvents];
 
-    // Type filters
-    if (!filters.jobs) {
-        filtered = filtered.filter(e => e.type !== 'job');
-    }
-    if (!filters.sessions) {
-        filtered = filtered.filter(e => e.type !== 'session');
-    }
+    // Get filter states from checkboxes
+    filters.classSessions = document.getElementById('filterClassSessions')?.checked ?? true;
+    filters.groupSessions = document.getElementById('filterGroupSessions')?.checked ?? true;
+    filters.oneToOne = document.getElementById('filterOneToOne')?.checked ?? true;
+    filters.scheduled = document.getElementById('filterScheduled')?.checked ?? true;
+    filters.inProgress = document.getElementById('filterInProgress')?.checked ?? true;
+    filters.completed = document.getElementById('filterCompleted')?.checked ?? true;
+
+    // Type filters - filter by sessionType
+    filtered = filtered.filter(e => {
+        if (e.type === 'job') {
+            // Jobs are treated as One-to-One
+            return filters.oneToOne;
+        } else if (e.type === 'session') {
+            const sessionType = e.sessionType || 'Class';
+            if (sessionType === 'Class') {
+                return filters.classSessions;
+            } else if (sessionType === 'Group') {
+                return filters.groupSessions;
+            } else if (sessionType === 'One-to-One') {
+                return filters.oneToOne;
+            }
+            return true; // Default fallback
+        }
+        return true;
+    });
 
     // Status filters
     const statusFilters = [];
@@ -1303,7 +2097,23 @@ function createDayCell(date, dateStr, isOtherMonth) {
 
     dayEvents.slice(0, 3).forEach(event => {
         const eventEl = document.createElement('div');
-        const typeClass = event.type === 'job' ? 'event-job' : 'event-session';
+        let typeClass = '';
+        if (event.type === 'job') {
+            // Jobs are now treated as One-to-One sessions
+            typeClass = 'event-type-one-to-one';
+        } else if (event.type === 'session') {
+            // Use sessionType to determine CSS class
+            const sessionType = event.sessionType || 'Class';
+            if (sessionType === 'Class') {
+                typeClass = 'event-type-class';
+            } else if (sessionType === 'Group') {
+                typeClass = 'event-type-group';
+            } else if (sessionType === 'One-to-One') {
+                typeClass = 'event-type-one-to-one';
+            } else {
+                typeClass = 'event-type-class'; // Default fallback
+            }
+        }
         const previewClass = event.isPreview ? 'event-preview' : '';
         eventEl.className = `calendar-event ${typeClass} ${previewClass}`;
         eventEl.textContent = `${event.time.substring(0, 5)} ${event.title.substring(0, 15)}${event.title.length > 15 ? '...' : ''}`;
@@ -1427,7 +2237,23 @@ function renderWeekView() {
 
 function createWeekEvent(event) {
     const eventEl = document.createElement('div');
-    const typeClass = event.type === 'job' ? 'event-job' : 'event-session';
+    let typeClass = '';
+    if (event.type === 'job') {
+        // Jobs are now treated as One-to-One sessions
+        typeClass = 'event-type-one-to-one';
+    } else if (event.type === 'session') {
+        // Use sessionType to determine CSS class
+        const sessionType = event.sessionType || 'Class';
+        if (sessionType === 'Class') {
+            typeClass = 'event-type-class';
+        } else if (sessionType === 'Group') {
+            typeClass = 'event-type-group';
+        } else if (sessionType === 'One-to-One') {
+            typeClass = 'event-type-one-to-one';
+        } else {
+            typeClass = 'event-type-class'; // Default fallback
+        }
+    }
     const previewClass = event.isPreview ? 'event-preview' : '';
     eventEl.className = `week-event ${typeClass} ${previewClass}`;
     eventEl.dataset.eventId = event.id;
@@ -1515,12 +2341,33 @@ function renderDayView() {
     dayEvents.forEach(event => {
         const eventCard = document.createElement('div');
         const isPreview = event.isPreview || event.status === 'preview';
+        
+        // Determine session type for styling
+        let sessionTypeLabel = 'Class Session';
+        let typeBadgeClass = 'bg-purple-100 text-purple-700';
+        if (event.type === 'job') {
+            sessionTypeLabel = 'One-to-One';
+            typeBadgeClass = 'bg-cyan-100 text-cyan-700';
+        } else if (event.type === 'session') {
+            const sessionType = event.sessionType || 'Class';
+            if (sessionType === 'Class') {
+                sessionTypeLabel = 'Class Session';
+                typeBadgeClass = 'bg-purple-100 text-purple-700';
+            } else if (sessionType === 'Group') {
+                sessionTypeLabel = 'Group Session';
+                typeBadgeClass = 'bg-amber-100 text-amber-700';
+            } else if (sessionType === 'One-to-One') {
+                sessionTypeLabel = 'One-to-One';
+                typeBadgeClass = 'bg-cyan-100 text-cyan-700';
+            }
+        }
+        
         let cardClass = `border rounded-lg p-4 transition-all`;
         
         if (isPreview) {
             cardClass += ` border-amber-300 bg-amber-50 cursor-not-allowed`;
         } else {
-            cardClass += ` cursor-pointer hover:shadow-md ${event.type === 'job' ? 'border-blue-200 bg-blue-50' : 'border-green-200 bg-green-50'}`;
+            cardClass += ` cursor-pointer hover:shadow-md`;
         }
         
         eventCard.className = cardClass;
@@ -1538,8 +2385,8 @@ function renderDayView() {
         }
 
         const previewBadge = isPreview ? '<span class="px-2 py-1 text-xs rounded bg-amber-100 text-amber-800 border border-amber-300">⏳ Preview</span>' : '';
-        const typeBadge = `<span class="px-2 py-1 text-xs rounded ${event.type === 'job' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">
-            ${event.type === 'job' ? 'Job' : 'Class Session'}
+        const typeBadge = `<span class="px-2 py-1 text-xs rounded ${typeBadgeClass}">
+            ${sessionTypeLabel}
         </span>`;
 
         eventCard.innerHTML = `
@@ -1577,11 +2424,31 @@ function showEventPopover(event, element) {
     popover.style.top = `${rect.bottom + 8}px`;
     popover.classList.remove('hidden');
 
+    // Determine session type label and badge class
+    let sessionTypeLabel = 'Class Session';
+    let typeBadgeClass = 'bg-purple-100 text-purple-700';
+    if (event.type === 'job') {
+        sessionTypeLabel = 'One-to-One';
+        typeBadgeClass = 'bg-cyan-100 text-cyan-700';
+    } else if (event.type === 'session') {
+        const sessionType = event.sessionType || 'Class';
+        if (sessionType === 'Class') {
+            sessionTypeLabel = 'Class Session';
+            typeBadgeClass = 'bg-purple-100 text-purple-700';
+        } else if (sessionType === 'Group') {
+            sessionTypeLabel = 'Group Session';
+            typeBadgeClass = 'bg-amber-100 text-amber-700';
+        } else if (sessionType === 'One-to-One') {
+            sessionTypeLabel = 'One-to-One';
+            typeBadgeClass = 'bg-cyan-100 text-cyan-700';
+        }
+    }
+
     popover.innerHTML = `
         <div class="space-y-2">
             <div class="flex items-center gap-2">
-                <span class="px-2 py-1 text-xs rounded ${event.type === 'job' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">
-                    ${event.type === 'job' ? 'Job' : 'Class Session'}
+                <span class="px-2 py-1 text-xs rounded ${typeBadgeClass}">
+                    ${sessionTypeLabel}
                 </span>
                 <span class="text-xs text-gray-500">${event.status}</span>
             </div>
@@ -1613,12 +2480,32 @@ function showEventTooltip(event, mouseEvent) {
     const tooltip = document.getElementById('eventTooltip');
     if (!tooltip) return;
 
+    // Determine session type label and badge class
+    let sessionTypeLabel = 'Class Session';
+    let typeBadgeClass = 'bg-purple-500';
+    if (event.type === 'job') {
+        sessionTypeLabel = 'One-to-One';
+        typeBadgeClass = 'bg-cyan-500';
+    } else if (event.type === 'session') {
+        const sessionType = event.sessionType || 'Class';
+        if (sessionType === 'Class') {
+            sessionTypeLabel = 'Class Session';
+            typeBadgeClass = 'bg-purple-500';
+        } else if (sessionType === 'Group') {
+            sessionTypeLabel = 'Group Session';
+            typeBadgeClass = 'bg-amber-500';
+        } else if (sessionType === 'One-to-One') {
+            sessionTypeLabel = 'One-to-One';
+            typeBadgeClass = 'bg-cyan-500';
+        }
+    }
+
     // Build tooltip content
     let content = `
         <div class="space-y-2">
             <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 text-xs rounded ${event.type === 'job' ? 'bg-blue-500' : 'bg-green-500'}">
-                    ${event.type === 'job' ? 'Job' : 'Class Session'}
+                <span class="px-2 py-0.5 text-xs rounded ${typeBadgeClass}">
+                    ${sessionTypeLabel}
                 </span>
                 ${event.isPreview ? '<span class="px-2 py-0.5 text-xs rounded bg-amber-500">⏳ Preview</span>' : ''}
                 <span class="text-xs text-gray-300">${event.status || 'scheduled'}</span>
@@ -3317,26 +4204,54 @@ function showNotification(message, type = 'info') {
 
 // Update filter checkboxes
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('filterJobs').addEventListener('change', function () {
-        filters.jobs = this.checked;
-        applyFilters();
-    });
-    document.getElementById('filterSessions').addEventListener('change', function () {
-        filters.sessions = this.checked;
-        applyFilters();
-    });
-    document.getElementById('filterScheduled').addEventListener('change', function () {
-        filters.scheduled = this.checked;
-        applyFilters();
-    });
-    document.getElementById('filterInProgress').addEventListener('change', function () {
-        filters.inProgress = this.checked;
-        applyFilters();
-    });
-    document.getElementById('filterCompleted').addEventListener('change', function () {
-        filters.completed = this.checked;
-        applyFilters();
-    });
+    // Note: Filters already have onchange="applyFilters()" in HTML, but we keep these for programmatic access
+    const filterClassSessions = document.getElementById('filterClassSessions');
+    if (filterClassSessions) {
+        filterClassSessions.addEventListener('change', function () {
+            filters.classSessions = this.checked;
+            applyFilters();
+        });
+    }
+    
+    const filterGroupSessions = document.getElementById('filterGroupSessions');
+    if (filterGroupSessions) {
+        filterGroupSessions.addEventListener('change', function () {
+            filters.groupSessions = this.checked;
+            applyFilters();
+        });
+    }
+    
+    const filterOneToOne = document.getElementById('filterOneToOne');
+    if (filterOneToOne) {
+        filterOneToOne.addEventListener('change', function () {
+            filters.oneToOne = this.checked;
+            applyFilters();
+        });
+    }
+    
+    const filterScheduled = document.getElementById('filterScheduled');
+    if (filterScheduled) {
+        filterScheduled.addEventListener('change', function () {
+            filters.scheduled = this.checked;
+            applyFilters();
+        });
+    }
+    
+    const filterInProgress = document.getElementById('filterInProgress');
+    if (filterInProgress) {
+        filterInProgress.addEventListener('change', function () {
+            filters.inProgress = this.checked;
+            applyFilters();
+        });
+    }
+    
+    const filterCompleted = document.getElementById('filterCompleted');
+    if (filterCompleted) {
+        filterCompleted.addEventListener('change', function () {
+            filters.completed = this.checked;
+            applyFilters();
+        });
+    }
 });
 
 // Sample pricebook items for class linking

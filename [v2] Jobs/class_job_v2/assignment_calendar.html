@@ -116,6 +116,25 @@
             color: #7e22ce;
         }
 
+        /* Type-based styling */
+        .event-type-class {
+            background-color: #f3e8ff;
+            border-left-color: #9333ea;
+            color: #7e22ce;
+        }
+
+        .event-type-group {
+            background-color: #fff4e6;
+            border-left-color: #f59e0b;
+            color: #d97706;
+        }
+
+        .event-type-one-to-one {
+            background-color: #e0f7fa;
+            border-left-color: #00bcd4;
+            color: #00838f;
+        }
+
         /* Week View */
         .week-hour {
             min-height: 60px;
@@ -302,7 +321,7 @@
         <div class="flex items-center justify-between h-full px-6">
             <!-- Left: Logo/Brand -->
             <div class="flex items-center gap-4">
-                <button onclick="window.location.href='class_list.html'" class="text-gray-600 hover:text-gray-900">
+                <button onclick="window.location.href='group_list.html'" class="text-gray-600 hover:text-gray-900">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -416,16 +435,16 @@
             <h2 class="text-lg font-semibold text-gray-900" id="dateRange">December 2025</h2>
             <div class="flex items-center gap-4 mt-2">
                 <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 bg-blue-100 border-l-4 border-blue-500 rounded"></div>
-                    <span class="text-sm text-gray-700">Jobs</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 bg-green-100 border-l-4 border-green-500 rounded"></div>
+                    <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
                     <span class="text-sm text-gray-700">Class Sessions</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
-                    <span class="text-sm text-gray-700">Classes</span>
+                    <div class="w-4 h-4 bg-amber-100 border-l-4 border-amber-500 rounded"></div>
+                    <span class="text-sm text-gray-700">Group Sessions</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-emerald-100 border-l-4 border-emerald-500 rounded"></div>
+                    <span class="text-sm text-gray-700">One-to-One</span>
                 </div>
                 <div class="ml-auto text-sm text-gray-600">
                     <span id="eventCount">0</span> events
@@ -537,16 +556,22 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Event Types</label>
                 <div class="space-y-2">
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="filterJobs" checked onchange="applyFilters()"
-                            class="w-4 h-4 text-blue-600 border-gray-300 rounded">
-                        <div class="w-4 h-4 bg-blue-100 border-l-4 border-blue-500 rounded"></div>
-                        <span class="text-sm text-gray-700">Jobs</span>
+                        <input type="checkbox" id="filterClassSessions" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-purple-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
+                        <span class="text-sm text-gray-700">Class Sessions</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="filterSessions" checked onchange="applyFilters()"
-                            class="w-4 h-4 text-green-600 border-gray-300 rounded">
-                        <div class="w-4 h-4 bg-green-100 border-l-4 border-green-500 rounded"></div>
-                        <span class="text-sm text-gray-700">Class Sessions</span>
+                        <input type="checkbox" id="filterGroupSessions" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-amber-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-amber-100 border-l-4 border-amber-500 rounded"></div>
+                        <span class="text-sm text-gray-700">Group Sessions</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterOneToOne" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-emerald-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-emerald-100 border-l-4 border-emerald-500 rounded"></div>
+                        <span class="text-sm text-gray-700">One-to-One</span>
                     </label>
                 </div>
             </div>
