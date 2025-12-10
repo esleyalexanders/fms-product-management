@@ -7251,79 +7251,8 @@
 
 
         function updateGlobalActivityLog() {
+            console.log('Antigravity fix loaded', new Date().toISOString());
             return;
-
-
-
-
-
-
-
-            // container.innerHTML = recentActivities.map(activity => {
-            const activityDate = new Date(activity.timestamp);
-            const today = new Date();
-            const daysAgo = Math.floor((today - activityDate) / (1000 * 60 * 60 * 24));
-            const timeDisplay = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo < 7 ? `${daysAgo} days ago` : activityDate.toLocaleDateString();
-
-            const icon = activityIcons[activity.type] || '📝';
-            const bgColor = activityColors[activity.type] || 'bg-gray-50 border-gray-200';
-
-            // Payment status badge
-            let paymentStatusBadge = '';
-            if (activity.type === 'payment' || activity.type === 'status_change') {
-                const statusColor = activity.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' :
-                    activity.paymentStatus === 'Partially Paid' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700';
-                paymentStatusBadge = `<span class="px-1.5 py-0.5 ${statusColor} rounded text-xs font-medium ml-2">${activity.paymentStatus}</span>`;
-            }
-
-            return `
-                    <div class="${bgColor} border rounded-lg p-3 hover:shadow-sm transition-shadow">
-                        <div class="flex items-start gap-2">
-                            <span class="text-lg flex-shrink-0">${icon}</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2">
-                                    <div class="flex-1 min-w-0">
-                                        <div class="text-sm font-medium text-gray-900">${activity.description}</div>
-                                        <div class="text-xs text-gray-600 mt-1 flex items-center gap-1 flex-wrap">
-                                            <span class="font-medium">${activity.invoiceId}</span>
-                                            ${activity.details && activity.details.amount ? `<span>• $${activity.details.amount.toFixed(2)}</span>` : ''}
-                                            ${paymentStatusBadge}
-                                        </div>
-                                        ${activity.details && Object.keys(activity.details).length > 0 ? `
-                                            <div class="mt-1 text-xs text-gray-600 space-y-0.5">
-                                                ${activity.type === 'payment' && activity.details.amount ? `
-                                                    <div>Amount: $${activity.details.amount.toFixed(2)} | Payer: ${activity.details.payer || 'N/A'}</div>
-                                                    ${activity.details.method ? `<div>Method: ${activity.details.method}</div>` : ''}
-                                                ` : ''}
-                                                ${activity.type === 'status_change' ? `
-                                                    <div>Changed from <span class="font-medium">${activity.details.oldStatus}</span> to <span class="font-medium">${activity.details.newStatus}</span></div>
-                                                ` : ''}
-                                                ${activity.type === 'payer_assigned' ? `
-                                                    <div>${activity.details.payerCount} payer(s) assigned</div>
-                                                ` : ''}
-                                                ${activity.type === 'created' ? `
-                                                    <div>Type: ${activity.details.type} | Amount: $${activity.details.amount.toFixed(2)}</div>
-                                                ` : ''}
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                                <div class="text-xs text-gray-500 mt-1">${timeDisplay} at ${activityDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-        }).join('');
-
-        // Show count if there are more activities
-        if (allActivities.length > 30) {
-            container.innerHTML += `
-                    <div class="text-xs text-gray-500 text-center py-2">
-                        Showing 30 of ${allActivities.length} activities
-                    </div>
-                `;
-        }
         }
 
         function togglePayerDetails(invoiceId) {
