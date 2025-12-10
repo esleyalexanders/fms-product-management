@@ -907,28 +907,7 @@
 
                         </div>
 
-                        <!-- Activity Log Section -->
-                        <div class="bg-white rounded-lg shadow-sm p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-semibold text-gray-900">Activity Log</h2>
-                                <button onclick="toggleGlobalActivityLog()"
-                                    class="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                                    <span id="globalActivityLogToggleText">Collapse</span>
-                                    <svg id="globalActivityLogIcon"
-                                        class="w-4 h-4 transform transition-transform rotate-180" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div id="globalActivityLogContent"
-                                class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
-                                <div id="activityLogItems" class="text-xs text-gray-500 text-center py-4">
-                                    Loading activities...
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- Right Column - Invoice Summary -->
@@ -1170,6 +1149,48 @@
         </div>
     </div>
 
+    <!-- Payment History Modal -->
+    <div id="paymentHistoryModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-900">Payment History</h3>
+                <button onclick="closePaymentHistoryModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-xs text-gray-500 border-b border-gray-200">
+                            <th class="py-2 font-medium">Date</th>
+                            <th class="py-2 font-medium">Invoice</th>
+                            <th class="py-2 font-medium">Payer</th>
+                            <th class="py-2 font-medium">Method</th>
+                            <th class="py-2 font-medium text-right">Amount</th>
+                            <th class="py-2 font-medium text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentHistoryTableBody" class="text-sm text-gray-700 divide-y divide-gray-100">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+                <div id="noPaymentHistoryMsg" class="hidden text-center text-gray-500 py-8">
+                    No payments recorded yet.
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-200 bg-gray-50 rounded-b-lg flex justify-end">
+                <button onclick="closePaymentHistoryModal()"
+                    class="px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"> </div>
 
@@ -1190,7 +1211,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-gray-900">Assign Payers to Invoice</h3>
+                            <h3 class="text-2xl font-bold text-gray-900">Manage Payment Requests</h3>
                             <p class="text-sm text-gray-500 mt-1" id="assignPayersInvoiceId">INV-2024-001</p>
                         </div>
                     </div>
@@ -1593,10 +1614,10 @@
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <div>
-                            <h4 class="text-sm font-semibold text-blue-900 mb-1">Payer Assignment</h4>
+                            <h4 class="text-sm font-semibold text-blue-900 mb-1">Payment Requests</h4>
                             <p class="text-xs text-blue-800">
-                                Invoices will be created without payer assignment. You can assign payers to invoices
-                                after creation using the "Assign Payers" button on each invoice card.
+                                Invoices will be created without payment requests. You can manage payment requests
+                                after creation using the "Manage Payment Requests" button on each invoice card.
                             </p>
                         </div>
                     </div>
@@ -1613,9 +1634,9 @@
         // Existing quote data (would normally come from server/API)
         const existingQuote = {
             id: 'Q-2024-001',
-            status: 'draft', // draft, sent, approved, rejected, expired, invoiced
+            status: 'approved', // Changed from 'draft' for testing purposes // draft, sent, approved, rejected, expired, invoiced
             createdDate: '2024-10-20',
-            validUntil: '2024-11-03',
+            validUntil: '2026-12-31',
             customerNotes: 'Thank you for your interest in our tutoring services.',
             internalNotes: 'Customer prefers morning sessions.'
         };
@@ -1676,6 +1697,7 @@
                 canDelete: false,
                 actions: [
                     { id: 'renew', label: 'Renew Quote', color: 'blue', icon: 'refresh', primary: true },
+                    { id: 'extend', label: 'Extend Validity', color: 'green', icon: 'check' },
                     { id: 'clone', label: 'Clone Quote', color: 'blue', icon: 'copy' },
                     { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
                     { id: 'archive', label: 'Archive', color: 'gray', icon: 'archive' }
@@ -1688,7 +1710,26 @@
                 canDelete: false,
                 actions: [
                     { id: 'viewInvoices', label: 'View Invoices', color: 'purple', icon: 'invoice', primary: true },
-                    { id: 'createInvoice', label: 'Create Invoice', color: 'purple', icon: 'plus' },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' }
+                ]
+            },
+            partially_paid: {
+                label: '💸 Partially Paid',
+                color: 'bg-blue-100 text-blue-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'viewInvoices', label: 'View Invoices', color: 'purple', icon: 'invoice', primary: true },
+                    { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' }
+                ]
+            },
+            paid: {
+                label: '✅ Paid',
+                color: 'bg-green-100 text-green-700',
+                canEdit: false,
+                canDelete: false,
+                actions: [
+                    { id: 'viewInvoices', label: 'View Invoices', color: 'purple', icon: 'invoice', primary: true },
                     { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' }
                 ]
             }
@@ -2056,6 +2097,23 @@
                 input.disabled = true;
                 input.classList.add('bg-gray-100', 'cursor-not-allowed');
             });
+
+            // NEW: Add locking banner if invoices exist
+            if (hasGeneratedInvoices()) {
+                const configBanner = document.getElementById('paymentConfigBanner');
+                if (configBanner) {
+                    configBanner.classList.remove('hidden');
+                    configBanner.innerHTML = `
+                        <div class="flex items-start gap-3">
+                            <span class="text-xl">🔒</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Payment Configuration Locked</h3>
+                                <p class="text-sm text-gray-700">Invoices have already been generated for this quote. Payment settings cannot be modified to prevent inconsistencies.</p>
+                            </div>
+                        </div>
+                     `;
+                }
+            }
         }
 
         // Handle status action clicks
@@ -2093,6 +2151,9 @@
                     break;
                 case 'renew':
                     renewQuote();
+                    break;
+                case 'extend':
+                    extendValidity();
                     break;
                 case 'viewInvoices':
                     switchTab('invoices');
@@ -2151,6 +2212,33 @@
                 alert('Quote marked as Rejected.');
                 renderStatusActions();
                 // In real implementation: update server
+            }
+        }
+
+        // Helper to check if invoices exist (for locking Payment Config)
+        function hasGeneratedInvoices() {
+            return quoteInvoices && quoteInvoices.filter(inv => inv.status !== 'cancelled').length > 0;
+        }
+
+        function extendValidity() {
+            if (confirm('Extend quote validity by 30 days?')) {
+                const today = new Date();
+                const newDate = new Date(today.setDate(today.getDate() + 30));
+                existingQuote.validUntil = newDate.toISOString().split('T')[0];
+
+                // If status was expired, reset to approved to unlock tabs
+                if (existingQuote.status === 'expired') {
+                    existingQuote.status = 'approved';
+                    state.quoteStatus = 'approved';
+                }
+
+                // Update UI input
+                const dateInput = document.getElementById('validUntilDate');
+                if (dateInput) dateInput.value = existingQuote.validUntil;
+
+                console.log('Quote validity extended:', existingQuote.id);
+                showToast('Quote validity extended by 30 days!', 'success');
+                renderStatusActions();
             }
         }
 
@@ -3744,8 +3832,40 @@
             updateSummary();
         });
 
-        // Create Invoice from Quote
-        function createInvoiceFromQuote() {
+        function checkInvoicePaymentStatus(invoice) {
+            // Logic: Invoice is paid ONLY if all individual payment requests are satisfied
+            // If manual generic payment (no assigned payers), fallback to total amount check
+
+            const newPaidAmount = getConfirmedPaymentsTotal(invoice);
+
+            if (!invoice.assignedPayers || invoice.assignedPayers.length === 0) {
+                // Fallback for single payer / legacy
+                if (newPaidAmount >= invoice.amount - 0.01) {
+                    invoice.status = 'paid';
+                } else if (newPaidAmount > 0) {
+                    invoice.status = 'partially_paid';
+                }
+            } else {
+                // Strict check: Are all assigned payers status = 'paid'?
+                const allPaid = invoice.assignedPayers.every(p => {
+                    // Check logic: paidAmount >= assignedAmount
+                    const pAmount = p.assignedAmount || 0;
+                    const pPaid = p.paidAmount || 0;
+                    return pPaid >= pAmount - 0.01;
+                });
+
+                if (allPaid && newPaidAmount >= invoice.amount - 0.01) {
+                    invoice.status = 'paid';
+                } else if (newPaidAmount > 0) {
+                    invoice.status = 'partially_paid';
+                } else {
+                    invoice.status = 'sent'; // or invoiced
+                }
+            }
+        }
+
+        // Generate invoice preview based on model
+        function generateInvoicePreview() {
             // Get current quote ID (in real app, get from URL or data)
             const quoteId = document.getElementById('quoteIdBadge').textContent;
 
@@ -3829,7 +3949,7 @@
                 updateInvoiceSummary();
                 // Initialize activity log (always update, not just when visible)
                 setTimeout(() => {
-                    updateGlobalActivityLog();
+
                 }, 200);
             }
 
@@ -4429,7 +4549,7 @@
             setTimeout(() => {
                 const activityLogContent = document.getElementById('globalActivityLogContent');
                 if (activityLogContent && !activityLogContent.classList.contains('hidden')) {
-                    updateGlobalActivityLog();
+
                 }
             }, 100);
 
@@ -4691,7 +4811,7 @@
                                         onclick="openAssignPayersModal('${invoice.id}')"
                                         class="text-sm text-blue-600 hover:text-blue-700 font-medium"
                                     >
-                                        Assign Payers
+                                        Manage Payment Requests
                                     </button>
                                 </div>
                             </div>
@@ -4703,16 +4823,8 @@
                         ${calculatedStatus !== 'cancelled' ? `
                             <div class="pt-3 border-t border-gray-200 space-y-2">
                                 <!-- Primary Actions Row -->
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button 
-                                        onclick="openRecordPaymentModal('${invoice.id}')"
-                                        class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                        </svg>
-                                        Record Payment
-                                    </button>
+                                <div class="grid grid-cols-1 gap-2">
+
                                     <button 
                                         onclick="viewInvoice('${invoice.id}')"
                                         class="px-4 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
@@ -4747,7 +4859,7 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                                 </svg>
-                                                Manage Payers
+                                                Manage Payment Requests
                                             </button>
                                         ` : calculatedStatus !== 'paid' ? `
                                             <div></div>
@@ -4951,7 +5063,7 @@
             setTimeout(() => {
                 const activityLogContent = document.getElementById('globalActivityLogContent');
                 if (activityLogContent && !activityLogContent.classList.contains('hidden')) {
-                    updateGlobalActivityLog();
+
                 }
             }, 100);
         }
@@ -6352,7 +6464,7 @@
             // Refresh UI
             loadInvoices();
             updateInvoiceSummary();
-            updateGlobalActivityLog();
+
             // Payer payment status is now displayed within each invoice card
             closeAssignPayersModal();
 
@@ -6887,10 +6999,11 @@
             }
 
             // Confirm payment
-            const confirmMsg = `Record payment of $${paymentAmount.toFixed(2)} from ${payerData.name} for invoice ${invoice.id}?`;
-            if (!confirm(confirmMsg)) {
-                return;
-            }
+            // Confirm payment - removed as button is explicit
+            // const confirmMsg = `Record payment of $${paymentAmount.toFixed(2)} from ${payerData.name} for invoice ${invoice.id}?`;
+            // if (!confirm(confirmMsg)) {
+            //    return;
+            // }
 
             // Initialize payment history if it doesn't exist
             if (!invoice.paymentHistory) {
@@ -6926,12 +7039,23 @@
             const newPaidAmount = getConfirmedPaymentsTotal(invoice);
             invoice.paidAmount = newPaidAmount;
 
-            // Update invoice status based on payment
-            if (newPaidAmount >= invoice.amount - 0.01) {
-                invoice.status = 'paid';
-            } else if (newPaidAmount > 0) {
-                invoice.status = 'partially_paid';
+            // Update assigned payer status if applicable
+            if (payerId && invoice.assignedPayers) {
+                const assignedPayer = invoice.assignedPayers.find(p => p.payerId === payerId);
+                if (assignedPayer) {
+                    assignedPayer.paidAmount = (assignedPayer.paidAmount || 0) + paymentAmount;
+                    assignedPayer.outstandingAmount = Math.max(0, (assignedPayer.assignedAmount || 0) - assignedPayer.paidAmount);
+
+                    if (assignedPayer.outstandingAmount < 0.01) {
+                        assignedPayer.paymentStatus = 'paid';
+                    } else if (assignedPayer.paidAmount > 0) {
+                        assignedPayer.paymentStatus = 'partially_paid';
+                    }
+                }
             }
+
+            // Update invoice status using strict "All Paid" logic
+            checkInvoicePaymentStatus(invoice);
 
             // Log payment activity
             logInvoiceActivity(invoice.id, 'payment',
@@ -6964,7 +7088,7 @@
             // Refresh UI
             loadInvoices();
             updateInvoiceSummary();
-            updateGlobalActivityLog();
+
             closeRecordPaymentModal();
 
             // Success message with toast
@@ -7026,7 +7150,7 @@
             // Refresh UI
             loadInvoices();
             updateInvoiceSummary();
-            updateGlobalActivityLog();
+
 
             // Calculate remaining amount after cancellation
             const remainingAmount = getRemainingToInvoice();
@@ -7054,6 +7178,67 @@
             // In real implementation, send reminder emails
         }
 
+        function viewPaymentHistory() {
+            const tbody = document.getElementById('paymentHistoryTableBody');
+            const noMsg = document.getElementById('noPaymentHistoryMsg');
+            const modal = document.getElementById('paymentHistoryModal');
+
+            if (!tbody || !modal) return;
+
+            tbody.innerHTML = '';
+
+            // Aggregate all payments
+            let allPayments = [];
+            quoteInvoices.forEach(inv => {
+                if (inv.paymentHistory && inv.paymentHistory.length > 0) {
+                    inv.paymentHistory.forEach(p => {
+                        allPayments.push({
+                            ...p,
+                            invoiceId: inv.id
+                        });
+                    });
+                }
+            });
+
+            // Sort by date desc
+            allPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (allPayments.length === 0) {
+                noMsg.classList.remove('hidden');
+            } else {
+                noMsg.classList.add('hidden');
+                allPayments.forEach(p => {
+                    const row = document.createElement('tr');
+                    const payerName = p.payer ? p.payer.name : 'Unknown';
+                    const payerEmail = p.payer && p.payer.email ? p.payer.email : '';
+
+                    row.innerHTML = `
+                        <td class="py-3 px-2">${new Date(p.date).toLocaleDateString()}</td>
+                        <td class="py-3 px-2 font-medium text-blue-600">${p.invoiceId}</td>
+                        <td class="py-3 px-2">
+                            <div class="font-medium">${payerName}</div>
+                            ${payerEmail ? `<div class="text-xs text-gray-500">${payerEmail}</div>` : ''}
+                        </td>
+                        <td class="py-3 px-2">${p.method}</td>
+                        <td class="py-3 px-2 text-right font-medium">$${parseFloat(p.amount).toFixed(2)}</td>
+                        <td class="py-3 px-2 text-center">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                ${p.status || 'Completed'}
+                            </span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closePaymentHistoryModal() {
+            const modal = document.getElementById('paymentHistoryModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
         function toggleActivityLog(invoiceId) {
             const content = document.getElementById(`activityLogContent-${invoiceId}`);
             const icon = document.getElementById(`activityLogIcon-${invoiceId}`);
@@ -7063,112 +7248,36 @@
             }
         }
 
-        function toggleGlobalActivityLog() {
-            const content = document.getElementById('globalActivityLogContent');
-            const icon = document.getElementById('globalActivityLogIcon');
-            const toggleText = document.getElementById('globalActivityLogToggleText');
-            if (content && icon) {
-                const isHidden = content.classList.contains('hidden');
-                content.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-                if (toggleText) {
-                    toggleText.textContent = isHidden ? 'Collapse' : 'Expand';
-                }
-                // Update activity log when opening
-                if (!isHidden) {
-                    updateGlobalActivityLog();
-                }
-            }
-        }
+
 
         function updateGlobalActivityLog() {
-            const container = document.getElementById('activityLogItems');
-            if (!container) return;
+            return;
 
-            // Collect all activities from all invoices
-            const allActivities = [];
-            quoteInvoices.forEach(invoice => {
-                if (invoice.activityLog && invoice.activityLog.length > 0) {
-                    // Get current payment status for this invoice
-                    const currentPaid = getConfirmedPaymentsTotal(invoice);
-                    const outstanding = invoice.amount - currentPaid;
-                    let paymentStatus = 'Unpaid';
-                    if (currentPaid >= invoice.amount - 0.01) {
-                        paymentStatus = 'Paid';
-                    } else if (currentPaid > 0) {
-                        paymentStatus = 'Partially Paid';
-                    }
 
-                    invoice.activityLog.forEach(activity => {
-                        allActivities.push({
-                            ...activity,
-                            invoiceId: invoice.id,
-                            invoiceAmount: invoice.amount,
-                            invoiceStatus: invoice.status,
-                            currentPaid: currentPaid,
-                            outstanding: outstanding,
-                            paymentStatus: paymentStatus
-                        });
-                    });
-                }
-            });
 
-            // Sort by timestamp (most recent first)
-            allActivities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-            // Take only the 30 most recent activities
-            const recentActivities = allActivities.slice(0, 30);
 
-            if (recentActivities.length === 0) {
-                container.innerHTML = `
-                    <div class="text-xs text-gray-500 text-center py-4">
-                        No activities yet. Activities will appear here as you manage invoices.
-                    </div>
-                `;
-                return;
+
+
+            // container.innerHTML = recentActivities.map(activity => {
+            const activityDate = new Date(activity.timestamp);
+            const today = new Date();
+            const daysAgo = Math.floor((today - activityDate) / (1000 * 60 * 60 * 24));
+            const timeDisplay = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo < 7 ? `${daysAgo} days ago` : activityDate.toLocaleDateString();
+
+            const icon = activityIcons[activity.type] || '📝';
+            const bgColor = activityColors[activity.type] || 'bg-gray-50 border-gray-200';
+
+            // Payment status badge
+            let paymentStatusBadge = '';
+            if (activity.type === 'payment' || activity.type === 'status_change') {
+                const statusColor = activity.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' :
+                    activity.paymentStatus === 'Partially Paid' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-red-100 text-red-700';
+                paymentStatusBadge = `<span class="px-1.5 py-0.5 ${statusColor} rounded text-xs font-medium ml-2">${activity.paymentStatus}</span>`;
             }
 
-            const activityIcons = {
-                'created': '📄',
-                'payment': '💰',
-                'status_change': '🔄',
-                'payer_assigned': '👥',
-                'payer_removed': '➖',
-                'cancelled': '❌',
-                'sent': '📧',
-                'viewed': '👁️'
-            };
-
-            const activityColors = {
-                'created': 'bg-blue-50 border-blue-200',
-                'payment': 'bg-green-50 border-green-200',
-                'status_change': 'bg-purple-50 border-purple-200',
-                'payer_assigned': 'bg-indigo-50 border-indigo-200',
-                'payer_removed': 'bg-orange-50 border-orange-200',
-                'cancelled': 'bg-red-50 border-red-200',
-                'sent': 'bg-cyan-50 border-cyan-200',
-                'viewed': 'bg-gray-50 border-gray-200'
-            };
-
-            container.innerHTML = recentActivities.map(activity => {
-                const activityDate = new Date(activity.timestamp);
-                const today = new Date();
-                const daysAgo = Math.floor((today - activityDate) / (1000 * 60 * 60 * 24));
-                const timeDisplay = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo < 7 ? `${daysAgo} days ago` : activityDate.toLocaleDateString();
-
-                const icon = activityIcons[activity.type] || '📝';
-                const bgColor = activityColors[activity.type] || 'bg-gray-50 border-gray-200';
-
-                // Payment status badge
-                let paymentStatusBadge = '';
-                if (activity.type === 'payment' || activity.type === 'status_change') {
-                    const statusColor = activity.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' :
-                        activity.paymentStatus === 'Partially Paid' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700';
-                    paymentStatusBadge = `<span class="px-1.5 py-0.5 ${statusColor} rounded text-xs font-medium ml-2">${activity.paymentStatus}</span>`;
-                }
-
-                return `
+            return `
                     <div class="${bgColor} border rounded-lg p-3 hover:shadow-sm transition-shadow">
                         <div class="flex items-start gap-2">
                             <span class="text-lg flex-shrink-0">${icon}</span>
@@ -7205,16 +7314,16 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+        }).join('');
 
-            // Show count if there are more activities
-            if (allActivities.length > 30) {
-                container.innerHTML += `
+        // Show count if there are more activities
+        if (allActivities.length > 30) {
+            container.innerHTML += `
                     <div class="text-xs text-gray-500 text-center py-2">
                         Showing 30 of ${allActivities.length} activities
                     </div>
                 `;
-            }
+        }
         }
 
         function togglePayerDetails(invoiceId) {
@@ -7961,7 +8070,7 @@
 
         function createAllInvoicesFromPreview() {
             if (!previewInvoices || previewInvoices.length === 0) {
-                alert('There are no invoices to create. Generate a preview first.');
+                showToast('There are no invoices to create. Generate a preview first.', 'error');
                 return;
             }
 
@@ -7969,20 +8078,10 @@
             const invoiceCount = previewInvoices.length;
             const paymentModel = document.querySelector('input[name="paymentModel"]:checked')?.value || 'full';
 
-            let confirmationMessage = `You are about to create ${invoiceCount} invoice(s) totaling $${totalAmount.toFixed(2)}.\n\n`;
-            confirmationMessage += `Payment Model: ${paymentModel.charAt(0).toUpperCase() + paymentModel.slice(1)}\n\n`;
-            confirmationMessage += `Selected Invoice Details:\n`;
-
-            previewInvoices.forEach((inv, index) => {
-                const payerInfo = inv.payerName ? ` (${inv.payerName})` : '';
-                confirmationMessage += `${index + 1}. ${inv.type}${payerInfo}: $${inv.amount.toFixed(2)}\n`;
-            });
-
-            confirmationMessage += `\n\nDo you want to proceed with creating these invoices?`;
-
-            if (!confirm(confirmationMessage)) {
-                return;
-            }
+            // Confirmation dialog removed - The "Confirm & Publish" button is explicit enough
+            // if (!confirm(confirmationMessage)) {
+            //    return;
+            // }
 
             // Generate invoice IDs and create invoices
             const today = new Date();
@@ -8161,13 +8260,14 @@
             previewInvoices = [];
 
             // Update global activity log and invoice display
-            updateGlobalActivityLog();
+
             loadInvoices();
             updateInvoiceSummary();
 
             // Show success message
-            let successMessage = `✅ Successfully created ${newInvoices.length} invoice(s)!\n\nTotal Amount: $${totalAmount.toFixed(2)}\n\nYou can now view and manage these invoices in the Invoices tab.`;
-            alert(successMessage);
+            // Show success message
+            let successMessage = `✅ Successfully created ${newInvoices.length} invoice(s)! Total Amount: $${totalAmount.toFixed(2)}`;
+            showToast(successMessage, 'success', 5000);
 
             // Close modal after creation
             hideInvoicePreview();

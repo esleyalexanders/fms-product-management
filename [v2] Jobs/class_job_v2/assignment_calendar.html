@@ -168,6 +168,17 @@
             cursor: pointer;
         }
 
+        .day-event.event-preview {
+            background-color: #f3f4f6 !important;
+            /* Gray-100 */
+            border-left-color: #9ca3af !important;
+            /* Gray-400 */
+            border-left-style: dashed !important;
+            color: #4b5563 !important;
+            /* Gray-600 */
+            cursor: not-allowed !important;
+        }
+
         /* Current Time Indicator */
         .current-time-line {
             position: absolute;
@@ -200,20 +211,20 @@
         }
 
         /* Modal Animations */
-        @keyframes slideInRight {
+        @keyframes fadeIn {
             from {
-                transform: translateX(100%);
                 opacity: 0;
+                transform: scale(0.95);
             }
 
             to {
-                transform: translateX(0);
                 opacity: 1;
+                transform: scale(1);
             }
         }
 
-        .modal-slide {
-            animation: slideInRight 0.2s ease-out;
+        .modal-fade {
+            animation: fadeIn 0.2s ease-out;
         }
 
         /* Drag Over Indicator */
@@ -232,6 +243,54 @@
             padding: 12px;
             min-width: 200px;
             max-width: 300px;
+        }
+
+        /* Event Tooltip */
+        #eventTooltip {
+            animation: tooltipFadeIn 0.15s ease-out;
+        }
+
+        @keyframes tooltipFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Preview events (future sessions not yet created) */
+        .calendar-event.event-preview,
+        .week-event.event-preview {
+            opacity: 0.7;
+            border-left-style: dashed !important;
+            border-left-width: 3px !important;
+            background-color: #f3f4f6 !important;
+            /* Gray-100 */
+            border-left-color: #9ca3af !important;
+            /* Gray-400 */
+            color: #4b5563 !important;
+            /* Gray-600 */
+            cursor: not-allowed !important;
+            position: relative;
+        }
+
+        .calendar-event.event-preview::before,
+        .week-event.event-preview::before {
+            content: '⏳';
+            margin-right: 4px;
+            font-size: 10px;
+            filter: grayscale(100%);
+            /* Make emoji gray if possible or just rely on text color */
+        }
+
+        .event-preview:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background-color: #e5e7eb !important;
+            /* Gray-200 on hover */
         }
     </style>
 </head>
@@ -252,9 +311,10 @@
                 <h1 class="text-xl font-semibold text-gray-900">Assignment Calendar</h1>
             </div>
 
-            <!-- Center: Search -->
-            <div class="flex-1 max-w-md mx-8">
-                <div class="relative search-bar">
+            <!-- Center: Search and Staff Filter -->
+            <div class="flex-1 max-w-2xl mx-8 flex gap-4">
+                <!-- Event Search -->
+                <div class="flex-1 relative search-bar">
                     <input type="text" id="searchInput" placeholder="Search events..."
                         class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
@@ -262,6 +322,30 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
+                </div>
+
+                <!-- Staff Filter -->
+                <div class="relative min-w-64">
+                    <div class="relative">
+                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="staffSearchInput" placeholder="Filter by staff..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <!-- Selected Staff Tags -->
+                    <div id="selectedStaffTags" class="flex flex-wrap gap-1 mt-2 min-h-6">
+                        <!-- Selected staff tags will appear here -->
+                    </div>
+
+                    <!-- Autocomplete Dropdown -->
+                    <div id="staffAutocompleteDropdown"
+                        class="hidden absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto custom-scrollbar">
+                        <!-- Autocomplete results will appear here -->
+                    </div>
                 </div>
             </div>
 
@@ -411,20 +495,24 @@
         <!-- Popover content will be rendered here -->
     </div>
 
+    <!-- Event Tooltip (Hover) -->
+    <div id="eventTooltip" class="hidden fixed z-50 bg-gray-900 text-white text-xs rounded-lg shadow-xl p-3 max-w-xs pointer-events-none">
+        <!-- Tooltip content will be rendered here -->
+    </div>
+
     <!-- Create/Edit Event Modal -->
-    <div id="eventModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-end">
-        <div class="bg-white w-full max-w-md h-full overflow-y-auto modal-slide custom-scrollbar">
-            <div
-                class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-                <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Create Event</h3>
-                <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600">
+    <div id="eventModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-lg shadow-xl modal-fade flex flex-col">
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+                <h3 class="text-xl font-semibold text-gray-900" id="modalTitle">Create Event</h3>
+                <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
                 </button>
             </div>
-            <div class="p-6" id="modalContent">
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1" id="modalContent">
                 <!-- Modal content will be rendered here -->
             </div>
         </div>
@@ -460,12 +548,6 @@
                         <div class="w-4 h-4 bg-green-100 border-l-4 border-green-500 rounded"></div>
                         <span class="text-sm text-gray-700">Class Sessions</span>
                     </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="filterClasses" checked onchange="applyFilters()"
-                            class="w-4 h-4 text-purple-600 border-gray-300 rounded">
-                        <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
-                        <span class="text-sm text-gray-700">Classes</span>
-                    </label>
                 </div>
             </div>
             <div>
@@ -486,6 +568,158 @@
                             class="w-4 h-4 text-gray-600 border-gray-300 rounded">
                         <span class="text-sm text-gray-700">Completed</span>
                     </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricebook Selection Modal for Class Creation -->
+    <div id="classPricebookModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Select Price Book Item</h3>
+                <button onclick="closeClassPricebookModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1">
+                <div class="mb-4">
+                    <input type="text" id="classPricebookSearch" placeholder="Search pricebook items..." oninput="filterClassPricebookItems()"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div id="classPricebookItemsList" class="space-y-2">
+                    <!-- Pricebook items will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Book Customer Modal -->
+    <div id="sessionBookCustomerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
+        onclick="if(event.target === this) closeSessionBookCustomerModal()">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full h-[90vh] flex flex-col"
+            onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 flex-shrink-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Enroll Attendee</h3>
+                        <p class="text-sm text-gray-500 mt-1">Search customer, view available slots, and enroll individual attendees</p>
+                    </div>
+                    <button onclick="closeSessionBookCustomerModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                <!-- Customer Search -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                    <div class="relative">
+                        <input type="text" id="sessionCustomerSearchInput"
+                            placeholder="Type to search customers with quotes..."
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            autocomplete="off" oninput="searchSessionCustomersForBooking(this.value)" />
+                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <div id="sessionCustomerAutocomplete"
+                            class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                            <!-- Customer search results will appear here -->
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1" id="sessionCustomerSearchHint">
+                        <span class="text-amber-600">⚠️</span> Please ensure a pricebook item is linked to this class to search for customers
+                    </p>
+                </div>
+
+                <!-- Slot Booking Form (shown when customer selected) -->
+                <div id="sessionSlotBookingForm" class="hidden">
+                    <!-- Customer & Inventory Header -->
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-emerald-600 font-semibold mb-1">Selected Customer</p>
+                                <h4 class="text-lg font-semibold text-gray-900" id="sessionSlotBookCustomerName">-</h4>
+                                <p class="text-sm text-gray-600" id="sessionSlotBookCustomerEmail">-</p>
+                            </div>
+                            <button onclick="clearSessionSlotBooking()" class="text-gray-400 hover:text-red-500 transition-colors" title="Clear selection">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Slot Inventory Summary -->
+                        <div class="grid grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-emerald-100">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-emerald-700" id="sessionInventoryTotal">0</p>
+                                <p class="text-xs text-gray-500">Total Purchased</p>
+                            </div>
+                            <div class="text-center border-x border-emerald-100">
+                                <p class="text-2xl font-bold text-blue-600" id="sessionInventoryBooked">0</p>
+                                <p class="text-xs text-gray-500">Booked</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-gray-900" id="sessionInventoryAvailable">0</p>
+                                <p class="text-xs text-gray-500">Available</p>
+                            </div>
+                        </div>
+
+                        <!-- Quote Selection -->
+                        <div class="mt-3">
+                            <label class="text-xs text-gray-500 block mb-1">Quote</label>
+                            <div id="sessionSlotBookQuoteDisplay" class="p-2 border border-emerald-200 rounded bg-white text-sm">
+                                <!-- Quote info will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Payment Status Warning -->
+                        <div id="sessionPaymentWarning" class="hidden mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                            <div class="flex items-center gap-2 text-xs text-amber-800">
+                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <span id="sessionPaymentWarningText">This quote is not fully paid.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Slot Entry -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Add Attendee</h4>
+
+                        <!-- Attendee Form -->
+                        <div class="border border-gray-200 rounded-lg p-3 bg-white">
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs font-medium text-gray-600 mb-1 block">Attendee Name <span class="text-red-500">*</span></label>
+                                    <input type="text" id="sessionAttendeeName" placeholder="Enter attendee name"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        oninput="updateSessionAttendeeState()" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-gray-600 mb-1 block">Notes <span class="text-gray-400">(optional)</span></label>
+                                    <input type="text" id="sessionAttendeeNotes" placeholder="Special notes for this attendee"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Book Button -->
+                    <button onclick="confirmSessionSlotBooking()" id="sessionConfirmBookingBtn" disabled
+                        class="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span id="sessionConfirmBookingBtnText">Book Slot</span>
+                    </button>
                 </div>
             </div>
         </div>

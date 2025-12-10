@@ -161,12 +161,8 @@ function renderClassDetails() {
         document.getElementById('endDate').value = schedule.endDate || '';
     }
 
-    // Default Staff - Populate staff selection
-    if (currentClass.defaultStaff && currentClass.defaultStaff.length > 0) {
-        // This will be handled by staff selection functions
-        // For now, just update the selected staff display
-        updateSelectedStaffDisplay(currentClass.defaultStaff);
-    }
+    // Default Staff - Handled by unified assignment logic in loadStaffList
+
 
     // Capacity - Populate input field
     document.getElementById('maxCapacity').value = currentClass.maxCapacity || '';
@@ -230,34 +226,7 @@ function updatePricebookDisplay(pricebookItem) {
     `;
 }
 
-function updateSelectedStaffDisplay(staffList) {
-    const selectedList = document.getElementById('selectedStaffList');
-    const staffCount = document.getElementById('selectedStaffCount');
 
-    if (!staffList || staffList.length === 0) {
-        selectedList.innerHTML = '<p class="text-sm text-gray-400">No staff selected</p>';
-        staffCount.textContent = '0';
-        return;
-    }
-
-    staffCount.textContent = staffList.length;
-    selectedList.innerHTML = staffList.map(staff => {
-        const initials = staff.name.split(' ').map(n => n[0]).join('');
-        return `
-            <div class="flex items-center gap-2 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
-                    <span class="text-xs font-semibold text-white">${initials}</span>
-                </div>
-                <span class="text-sm font-medium text-gray-900">${staff.name}</span>
-                <button onclick="removeStaff('${staff.id}')" class="ml-2 text-gray-400 hover:text-red-600">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        `;
-    }).join('');
-}
 
 function formatDate(dateString) {
     if (!dateString) return '-';
@@ -331,6 +300,8 @@ function switchTab(tabName, event) {
             loadSessions();
         } else if (tabName === 'enrollment') {
             loadEnrollmentData();
+        } else if (tabName === 'staff') {
+            loadStaffList();
         }
     }, 150);
 }
@@ -1144,11 +1115,8 @@ function updateConfirmBookingButton() {
 
     const sessionCount = allSessions.length;
 
-    if (attendeeName) {
-        btnText.textContent = `Book 1 Slot for ${sessionCount} Session${sessionCount !== 1 ? 's' : ''}`;
-    } else {
-        btnText.textContent = `Book 0 Slots`;
-    }
+    // Simple button text
+    btnText.textContent = 'Book Slot';
 
     // Enable button only if we have an attendee name and sessions
     if (attendeeName && sessionCount > 0) {
@@ -2057,4 +2025,442 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+
+// ==================== Staff Management ====================
+
+
+// Sample staff data (in real app, fetch from API/localStorage)
+const sampleStaff = [
+    { id: 'STAFF-001', name: 'Daniel Davis', email: 'daniel.davis@example.com', role: 'Instructor', department: 'Math' },
+    { id: 'STAFF-002', name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'Instructor', department: 'Science' },
+    { id: 'STAFF-003', name: 'Michael Chen', email: 'michael.chen@example.com', role: 'Instructor', department: 'Math' },
+    { id: 'STAFF-004', name: 'Emily Rodriguez', email: 'emily.r@example.com', role: 'Instructor', department: 'Yoga' },
+    { id: 'STAFF-005', name: 'James Wilson', email: 'james.w@example.com', role: 'Instructor', department: 'Guitar' },
+    { id: 'STAFF-006', name: 'Lisa Anderson', email: 'lisa.a@example.com', role: 'Instructor', department: 'Science' },
+    { id: 'STAFF-007', name: 'Robert Taylor', email: 'robert.t@example.com', role: 'Instructor', department: 'Math' },
+    { id: 'STAFF-008', name: 'Jennifer White', email: 'jennifer.w@example.com', role: 'Instructor', department: 'Yoga' },
+    { id: 'STAFF-009', name: 'David Kim', email: 'david.k@example.com', role: 'Instructor', department: 'Computer Science' },
+    { id: 'STAFF-010', name: 'Amanda Martinez', email: 'amanda.m@example.com', role: 'Instructor', department: 'English' }
+];
+
+// Selected staff state
+// Available teams for assignment
+const availableTeams = [
+    {
+        id: 'team-1',
+        name: 'Math & Science Team',
+        type: 'team',
+        avatar: 'MST',
+        color: 'indigo',
+        skills: ['Math', 'Science', 'Physics', 'Chemistry'],
+        members: [
+            { id: 'STAFF-001', name: 'Daniel Davis', role: 'Instructor', avatar: 'DD' },
+            { id: 'STAFF-002', name: 'Sarah Johnson', role: 'Instructor', avatar: 'SJ' }
+        ]
+    },
+    {
+        id: 'team-2',
+        name: 'Yoga & Wellness Team',
+        type: 'team',
+        avatar: 'YWT',
+        color: 'pink',
+        skills: ['Yoga', 'Wellness', 'Meditation'],
+        members: [
+            { id: 'STAFF-004', name: 'Emily Rodriguez', role: 'Instructor', avatar: 'ER' },
+            { id: 'STAFF-008', name: 'Jennifer White', role: 'Instructor', avatar: 'JW' }
+        ]
+    }
+];
+
+// Convert sampleStaff to match unified assignment format
+function getAssignableEntities() {
+    const individuals = sampleStaff.map(staff => {
+        const initials = staff.name.split(' ').map(n => n[0]).join('');
+        return {
+            ...staff,
+            type: 'individual',
+            rate: 0,
+            displayName: `${staff.name} (User)`,
+            avatar: initials,
+            color: getColorForStaff(staff.id),
+            skills: [staff.department],
+            role: staff.role
+        };
+    });
+
+    const teams = availableTeams.map(team => ({
+        ...team,
+        rate: 0,
+        displayName: `${team.name} (Team)`
+    }));
+
+    return [...individuals, ...teams];
+}
+
+function getColorForStaff(staffId) {
+    const colors = ['blue', 'purple', 'green', 'orange', 'red', 'pink', 'indigo', 'gray'];
+    const index = parseInt(staffId.replace('STAFF-', '')) % colors.length;
+    return colors[index];
+}
+
+// Selected assignments tracking (unified system)
+let selectedAssignments = [];
+let unifiedAssignmentInitialized = false;
+
+// Load staff list when tab is opened
+function loadStaffList() {
+    if (!unifiedAssignmentInitialized) {
+        initializeUnifiedAssignment();
+        unifiedAssignmentInitialized = true;
+    }
+
+    // Initialize selected assignments from current class data
+    selectedAssignments = [];
+    if (currentClass && currentClass.defaultStaff) {
+        const allEntities = getAssignableEntities();
+
+        currentClass.defaultStaff.forEach(s => {
+            const entity = allEntities.find(e => e.id === s.id);
+            if (entity) {
+                selectedAssignments.push(entity);
+            }
+        });
+    }
+
+    renderSelectedAssignments();
+    loadRecommendedAssignments();
+    updateStaffSummary();
+}
+
+// Render the staff list with checkboxes
+function initializeUnifiedAssignment() {
+    const searchInput = document.getElementById('assignmentSearchInput');
+    const autocompleteDiv = document.getElementById('assignmentAutocomplete');
+    const refreshBtn = document.getElementById('refreshAssignmentRecommendations');
+
+    if (searchInput) {
+        // Remove existing listeners to avoid duplicates (clone node trick)
+        const newSearchInput = searchInput.cloneNode(true);
+        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+        newSearchInput.addEventListener('input', handleAssignmentSearch);
+
+        // Close autocomplete when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!newSearchInput.contains(e.target) && autocompleteDiv && !autocompleteDiv.contains(e.target)) {
+                autocompleteDiv.classList.add('hidden');
+            }
+        });
+    }
+
+    if (refreshBtn) {
+        const newRefreshBtn = refreshBtn.cloneNode(true);
+        refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
+        newRefreshBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            loadRecommendedAssignments();
+        });
+    }
+}
+
+function handleAssignmentSearch(e) {
+    const query = e.target.value.toLowerCase().trim();
+    const autocomplete = document.getElementById('assignmentAutocomplete');
+
+    if (!query) {
+        autocomplete.classList.add('hidden');
+        return;
+    }
+
+    const entities = getAssignableEntities();
+    const filtered = entities.filter(entity =>
+        entity.name.toLowerCase().includes(query) ||
+        entity.role?.toLowerCase().includes(query) ||
+        entity.skills?.some(skill => skill.toLowerCase().includes(query)) ||
+        entity.displayName.toLowerCase().includes(query) ||
+        entity.department?.toLowerCase().includes(query)
+    );
+
+    if (filtered.length === 0) {
+        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No matches found</div>';
+        autocomplete.classList.remove('hidden');
+        return;
+    }
+
+    autocomplete.innerHTML = filtered.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+
+        return `
+            <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left">
+                <div class="w-10 h-10 ${colorClass} rounded-full flex items-center justify-center font-semibold text-sm">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                    ${entity.skills ? `<p class="text-xs text-gray-500">${entity.skills.join(', ')}</p>` : ''}
+                </div>
+            </button>
+        `;
+    }).join('');
+
+    autocomplete.classList.remove('hidden');
+}
+
+function selectAssignment(entityId, entityType) {
+    const entities = getAssignableEntities();
+    const entity = entities.find(e => e.id === entityId);
+
+    if (!entity) return;
+
+    // Check if already selected
+    if (selectedAssignments.find(s => s.id === entityId)) {
+        return;
+    }
+
+    selectedAssignments.push(entity);
+    renderSelectedAssignments();
+    loadRecommendedAssignments();
+    updateStaffSummary();
+
+    // Clear search
+    const searchInput = document.getElementById('assignmentSearchInput');
+    const autocomplete = document.getElementById('assignmentAutocomplete');
+    if (searchInput) searchInput.value = '';
+    if (autocomplete) autocomplete.classList.add('hidden');
+}
+
+function removeAssignment(entityId) {
+    selectedAssignments = selectedAssignments.filter(s => s.id !== entityId);
+    renderSelectedAssignments();
+    loadRecommendedAssignments();
+    updateStaffSummary();
+}
+
+function updateAssignmentRate(entityId, newRate) {
+    const assignment = selectedAssignments.find(s => s.id === entityId);
+    if (assignment) {
+        assignment.rate = parseFloat(newRate) || 0;
+        updateStaffSummary();
+    }
+}
+
+function renderSelectedAssignments() {
+    const container = document.getElementById('selectedAssignmentsList');
+    const countEl = document.getElementById('selectedAssignmentsCount');
+
+    if (!container || !countEl) return;
+
+    countEl.textContent = selectedAssignments.length;
+
+    if (selectedAssignments.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">No assignments selected yet</p>';
+        return;
+    }
+
+    container.innerHTML = selectedAssignments.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+
+        let html = `
+            <div class="flex items-center gap-3 p-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                </div>
+                <div class="flex items-center gap-1 mr-2 bg-white px-2 py-1 rounded border border-gray-200">
+                    <span class="text-xs text-gray-500 font-medium">$</span>
+                    <input 
+                        type="number" 
+                        min="0" 
+                        step="0.01"
+                        value="${entity.rate || 0}"
+                        onchange="updateAssignmentRate('${entity.id}', this.value)"
+                        onclick="event.stopPropagation()"
+                        class="w-16 text-xs border-0 border-b border-gray-300 focus:border-emerald-500 focus:ring-0 px-0 py-0.5 text-right bg-transparent"
+                        placeholder="0.00"
+                    />
+                    <span class="text-xs text-gray-500">/hr</span>
+                </div>
+                <button onclick="removeAssignment('${entity.id}')" class="p-1 hover:bg-red-100 rounded text-gray-400 hover:text-red-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+        // Add team members display if it's a team
+        if (entity.type === 'team' && entity.members) {
+            html += `
+                <div class="ml-11 mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p class="text-xs font-medium text-gray-700 mb-2">Team Members:</p>
+                    <div class="space-y-1">
+                        ${entity.members.map(member => `
+                            <div class="flex items-center gap-2 text-xs">
+                                <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center font-semibold text-gray-600">
+                                    ${member.avatar}
+                                </div>
+                                <span class="text-gray-700">${member.name}</span>
+                                <span class="text-gray-500">• ${member.role}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        return html;
+    }).join('');
+}
+
+function loadRecommendedAssignments() {
+    const container = document.getElementById('recommendedAssignmentsList');
+    if (!container) return;
+
+    const entities = getAssignableEntities();
+    // Get entities not already selected (only individuals for classes)
+    const recommended = entities
+        .filter(e => e.type === 'individual' && !selectedAssignments.find(sel => sel.id === e.id))
+        .slice(0, 3);
+
+    if (recommended.length === 0) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">All available assignments selected</p>';
+        return;
+    }
+
+    container.innerHTML = recommended.map(entity => {
+        const colorMap = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'green': 'bg-green-100 text-green-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'red': 'bg-red-100 text-red-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600'
+        };
+        const colorClass = colorMap[entity.color] || colorMap['blue'];
+
+        return `
+            <button onclick="selectAssignment('${entity.id}', '${entity.type}')" class="w-full flex items-center gap-3 p-2 border border-gray-200 rounded-lg hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-left">
+                <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center font-semibold text-xs">
+                    ${entity.avatar}
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-900 text-sm">${entity.displayName}</p>
+                    <p class="text-xs text-gray-600">${entity.role || 'Team'}</p>
+                </div>
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+            </button>
+        `;
+    }).join('');
+}
+
+// Update staff summary in the right column
+function updateStaffSummary() {
+    const countEl = document.getElementById('summaryStaffCount');
+    const listEl = document.getElementById('summaryStaffList');
+
+    if (countEl) {
+        countEl.textContent = `${selectedAssignments.length} selected`;
+    }
+
+    if (listEl) {
+        if (selectedAssignments.length === 0) {
+            listEl.innerHTML = '<p class="text-sm text-gray-400">No staff selected</p>';
+        } else {
+            listEl.innerHTML = selectedAssignments.map(staff => {
+                const colorMap = {
+                    'blue': 'bg-blue-100 text-blue-800',
+                    'purple': 'bg-purple-100 text-purple-800',
+                    'green': 'bg-green-100 text-green-800',
+                    'orange': 'bg-orange-100 text-orange-800',
+                    'red': 'bg-red-100 text-red-800',
+                    'pink': 'bg-pink-100 text-pink-800',
+                    'indigo': 'bg-indigo-100 text-indigo-800',
+                    'gray': 'bg-gray-100 text-gray-800'
+                };
+                const colorClass = colorMap[staff.color] || colorMap['blue'];
+                // For summary, we use a simpler display
+                const initials = staff.avatar || '??';
+
+                return `
+                    <div class="flex items-center gap-2 p-2 border border-gray-200 rounded-lg">
+                        <div class="w-8 h-8 ${colorClass} rounded-full flex items-center justify-center">
+                            <span class="text-xs font-semibold">${initials}</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-900">${staff.displayName}</p>
+                            <p class="text-xs text-gray-500">${staff.role || 'Team'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+}
+
+// Save staff assignment changes
+function saveStaffAssignment() {
+    if (!currentClass) {
+        showNotification('No class loaded', 'error');
+        return;
+    }
+
+    if (selectedAssignments.length === 0) {
+        showNotification('Please select at least one staff member or team', 'error');
+        return;
+    }
+
+    try {
+        const classes = JSON.parse(localStorage.getItem('classes_v2') || '[]');
+        const index = classes.findIndex(c => c.id === currentClass.id);
+
+        if (index > -1) {
+            // Map to minimal object to save space/maintain consistency
+            classes[index].defaultStaff = selectedAssignments.map(s => ({
+                id: s.id,
+                name: s.name,
+                type: s.type || 'individual',
+                rate: parseFloat(s.rate) || 0,
+                displayName: s.displayName
+            }));
+            classes[index].updatedAt = new Date().toISOString();
+
+            localStorage.setItem('classes_v2', JSON.stringify(classes));
+
+            // Update current class reference
+            currentClass = classes[index];
+
+            showNotification('Staff assignment updated successfully!', 'success');
+        }
+    } catch (error) {
+        console.error('Error saving staff assignment:', error);
+        showNotification('Error saving staff assignment', 'error');
+    }
+}
 
