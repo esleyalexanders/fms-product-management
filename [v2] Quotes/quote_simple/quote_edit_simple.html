@@ -458,6 +458,9 @@
 
             <!-- Payment Configuration Tab Content -->
             <div id="paymentConfigContent" class="tab-content hidden">
+                <!-- Payment Configuration Lock Banner (shown when invoices exist) -->
+                <div id="paymentConfigBanner" class="hidden mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg"></div>
+                
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
                     <!-- Left Column - Payment Configuration -->
@@ -2069,6 +2072,12 @@
                 input.disabled = false;
                 input.classList.remove('bg-gray-100', 'cursor-not-allowed');
             });
+
+            // Hide payment configuration banner when editing is enabled
+            const configBanner = document.getElementById('paymentConfigBanner');
+            if (configBanner) {
+                configBanner.classList.add('hidden');
+            }
         }
 
         // Disable editing for read-only statuses
@@ -2091,15 +2100,16 @@
             const removeButtons = document.querySelectorAll('[onclick^="removeQuoteItem"]');
             removeButtons.forEach(btn => btn.style.display = 'none');
 
-            // Disable Payment Configuration tab inputs
-            const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
-            paymentInputs.forEach(input => {
-                input.disabled = true;
-                input.classList.add('bg-gray-100', 'cursor-not-allowed');
-            });
-
-            // NEW: Add locking banner if invoices exist
+            // Only disable Payment Configuration tab inputs if invoices have been generated
+            // For approved quotes without invoices, payment configuration should remain editable
             if (hasGeneratedInvoices()) {
+                const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
+                paymentInputs.forEach(input => {
+                    input.disabled = true;
+                    input.classList.add('bg-gray-100', 'cursor-not-allowed');
+                });
+
+                // Add locking banner when invoices exist
                 const configBanner = document.getElementById('paymentConfigBanner');
                 if (configBanner) {
                     configBanner.classList.remove('hidden');
@@ -2112,6 +2122,19 @@
                             </div>
                         </div>
                      `;
+                }
+            } else {
+                // Ensure payment configuration is enabled if no invoices exist
+                const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
+                paymentInputs.forEach(input => {
+                    input.disabled = false;
+                    input.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                });
+
+                // Hide banner if no invoices exist
+                const configBanner = document.getElementById('paymentConfigBanner');
+                if (configBanner) {
+                    configBanner.classList.add('hidden');
                 }
             }
         }
