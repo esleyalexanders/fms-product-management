@@ -63,7 +63,9 @@ The Manage Team feature allows Franchisees and Single Store owners to efficientl
   - Employee ID
   - Start Date
   - Employment Type (Full-time, Part-time, Contractor)
-  - Hourly Rate/Salary
+  - Pay Rate (Hourly) - **Required field**
+    - Manager: Can view and edit
+    - Staff: Can view only (read-only)
   - Tax Information
 
 - **System Access**
@@ -161,6 +163,9 @@ The Manage Team feature allows Franchisees and Single Store owners to efficientl
 2. Staff can only view their own profile
 3. Franchisee admins can manage staff across locations
 4. Store managers limited to their location
+5. Pay Rate permissions:
+   - Manager: Can view and edit pay rates
+   - Staff: Can view their own pay rate only (read-only)
 
 ### Business Logic
 1. Deactivated staff cannot be assigned to new jobs

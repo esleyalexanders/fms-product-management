@@ -342,7 +342,7 @@ function createSessionCard(session) {
                     </button>
                     ${session.status === 'scheduled' ? `
                         <button 
-                            onclick="event.stopPropagation(); window.location.href='class_detail.html?id=${session.classId}'"
+                            onclick="event.stopPropagation(); window.location.href='group_detail.html?id=${session.classId}'"
                             class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                             View Class
@@ -389,6 +389,7 @@ function clearFilters() {
     
     filterAndSortSessions();
 }
+
 
 
 

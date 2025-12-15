@@ -20,9 +20,9 @@ function loadClassData() {
     if (!classId) {
         // Hide content and show error message
         hidePageContent();
-        showPageError('Class ID is required. Redirecting to class list...');
+        showPageError('Group ID is required. Redirecting to group list...');
         setTimeout(() => {
-            window.location.href = 'class_list.html';
+            window.location.href = 'group_list.html';
         }, 2000);
         return;
     }
@@ -44,9 +44,9 @@ function loadClassData() {
 
         if (!currentClass) {
             hidePageContent();
-            showPageError('Class not found. Redirecting to class list...');
+            showPageError('Group not found. Redirecting to group list...');
             setTimeout(() => {
-                window.location.href = 'class_list.html';
+                window.location.href = 'group_list.html';
             }, 2000);
             return;
         }
@@ -105,7 +105,7 @@ function showPageError(message) {
             <h2 class="text-xl font-semibold text-gray-900 mb-2">Error</h2>
             <p class="text-gray-600 mb-4">${message}</p>
             <button 
-                onclick="window.location.href='class_list.html'"
+                onclick="window.location.href='group_list.html'"
                 class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
             >
                 Go to Class List
@@ -126,6 +126,23 @@ function renderClassDetails() {
     document.getElementById('description').value = currentClass.description || '';
     document.getElementById('skillLevel').value = currentClass.skillLevel || '';
     document.getElementById('status').value = currentClass.status || 'active';
+    
+    // Type field
+    const typeField = document.getElementById('type');
+    if (typeField) {
+        typeField.value = currentClass.type || 'Class';
+        // Add event listener for type changes
+        typeField.addEventListener('change', handleTypeChange);
+        // Initial render of type-specific details
+        handleTypeChange();
+    }
+    
+    // Add event listener to type field for real-time updates
+    if (typeField) {
+        typeField.addEventListener('change', function() {
+            handleTypeChange();
+        });
+    }
 
     // Price Book Item - Update container to show selected item
     if (currentClass.pricebookItem) {
@@ -166,9 +183,149 @@ function renderClassDetails() {
 
     // Capacity - Populate input field
     document.getElementById('maxCapacity').value = currentClass.maxCapacity || '';
+    if (document.getElementById('minCapacity')) {
+        document.getElementById('minCapacity').value = currentClass.minCapacity || '';
+    }
+
+    // Type-specific fields
+    renderTypeSpecificFields();
 
     // Update summary
     updateSummary();
+}
+
+// Handle type change to show/hide type-specific sections
+function handleTypeChange() {
+    const type = document.getElementById('type').value;
+    
+    // Hide all type-specific detail cards
+    document.getElementById('classTypeDetails')?.classList.add('hidden');
+    document.getElementById('groupTypeDetails')?.classList.add('hidden');
+    document.getElementById('oneToOneTypeDetails')?.classList.add('hidden');
+    
+    // Hide all type-specific field sections
+    document.getElementById('classSpecificFields')?.classList.add('hidden');
+    document.getElementById('oneToOneSpecificFields')?.classList.add('hidden');
+    
+    // Show/hide capacity fields based on type
+    const capacityGroupClass = document.getElementById('capacityGroupClass');
+    const capacityOneToOne = document.getElementById('capacityOneToOne');
+    
+    if (type === 'One-to-One') {
+        if (capacityGroupClass) capacityGroupClass.classList.add('hidden');
+        if (capacityOneToOne) capacityOneToOne.classList.remove('hidden');
+        // Set max capacity to 1 for One-to-One
+        if (document.getElementById('maxCapacity')) {
+            document.getElementById('maxCapacity').value = '1';
+            document.getElementById('maxCapacity').readOnly = true;
+        }
+    } else {
+        if (capacityGroupClass) capacityGroupClass.classList.remove('hidden');
+        if (capacityOneToOne) capacityOneToOne.classList.add('hidden');
+        if (document.getElementById('maxCapacity')) {
+            document.getElementById('maxCapacity').readOnly = false;
+        }
+    }
+    
+    // Show appropriate type-specific detail card
+    if (type === 'Class') {
+        document.getElementById('classTypeDetails')?.classList.remove('hidden');
+        document.getElementById('classSpecificFields')?.classList.remove('hidden');
+        populateClassTypeDetails();
+    } else if (type === 'Group') {
+        document.getElementById('groupTypeDetails')?.classList.remove('hidden');
+        populateGroupTypeDetails();
+    } else if (type === 'One-to-One') {
+        document.getElementById('oneToOneTypeDetails')?.classList.remove('hidden');
+        document.getElementById('oneToOneSpecificFields')?.classList.remove('hidden');
+        populateOneToOneTypeDetails();
+    }
+}
+
+// Populate Class type specific details
+function populateClassTypeDetails() {
+    if (!currentClass) return;
+    
+    // Curriculum
+    const curriculumEl = document.getElementById('curriculum');
+    if (curriculumEl) {
+        curriculumEl.value = currentClass.curriculum || '';
+    }
+    document.getElementById('classCurriculum').textContent = currentClass.curriculum || 'Not specified';
+    
+    // Cohort dates
+    const cohortStartDateEl = document.getElementById('cohortStartDate');
+    const cohortEndDateEl = document.getElementById('cohortEndDate');
+    if (cohortStartDateEl && currentClass.cohortStartDate) {
+        cohortStartDateEl.value = currentClass.cohortStartDate;
+    }
+    if (cohortEndDateEl && currentClass.cohortEndDate) {
+        cohortEndDateEl.value = currentClass.cohortEndDate;
+    }
+    document.getElementById('classStartDate').textContent = formatDate(currentClass.cohortStartDate);
+    document.getElementById('classEndDate').textContent = formatDate(currentClass.cohortEndDate);
+    
+    // Cohort size
+    const cohortSizeEl = document.getElementById('cohortSize');
+    if (cohortSizeEl) {
+        cohortSizeEl.value = currentClass.cohortSize || '';
+    }
+    document.getElementById('classCohortSize').textContent = currentClass.cohortSize ? `${currentClass.cohortSize} students` : 'Not specified';
+}
+
+// Populate Group type specific details
+function populateGroupTypeDetails() {
+    if (!currentClass) return;
+    
+    const maxCapacity = currentClass.maxCapacity || '-';
+    const minCapacity = currentClass.minCapacity || '2';
+    
+    document.getElementById('groupStudentRatio').textContent = `${minCapacity}+:1`;
+    document.getElementById('groupMinStudents').textContent = minCapacity;
+    document.getElementById('groupMaxStudents').textContent = maxCapacity;
+}
+
+// Populate One-to-One type specific details
+function populateOneToOneTypeDetails() {
+    if (!currentClass) return;
+    
+    const focusAreaEl = document.getElementById('focusArea');
+    const personalizationLevelEl = document.getElementById('personalizationLevel');
+    
+    if (focusAreaEl && currentClass.focusArea) {
+        focusAreaEl.value = currentClass.focusArea;
+    }
+    if (personalizationLevelEl && currentClass.personalizationLevel) {
+        personalizationLevelEl.value = currentClass.personalizationLevel;
+    }
+    
+    // Map focus area to display text
+    const focusAreaMap = {
+        'remediation': 'Remediation',
+        'test-prep': 'Test Preparation',
+        'advanced-mastery': 'Advanced Subject Mastery',
+        'homework-help': 'Homework Help',
+        'skill-building': 'Skill Building'
+    };
+    const focusText = focusAreaMap[currentClass.focusArea] || currentClass.focusArea || 'Not specified';
+    document.getElementById('oneToOneFocus').textContent = focusText;
+}
+
+// Render type-specific fields based on current type
+function renderTypeSpecificFields() {
+    if (!currentClass) return;
+    
+    const type = currentClass.type || 'Class';
+    handleTypeChange();
+    
+    // Populate type-specific data
+    if (type === 'Class') {
+        populateClassTypeDetails();
+    } else if (type === 'Group') {
+        populateGroupTypeDetails();
+    } else if (type === 'One-to-One') {
+        populateOneToOneTypeDetails();
+    }
 }
 
 function updateStatusBadge() {
@@ -2461,6 +2618,97 @@ function saveStaffAssignment() {
     } catch (error) {
         console.error('Error saving staff assignment:', error);
         showNotification('Error saving staff assignment', 'error');
+    }
+}
+
+// Handle Save - Save all class/group details including type-specific fields
+function handleSave() {
+    try {
+        if (!currentClass) {
+            showNotification('No class data loaded', 'error');
+            return;
+        }
+
+        // Collect basic information
+        const className = document.getElementById('className').value.trim();
+        if (!className) {
+            showNotification('Class name is required', 'error');
+            return;
+        }
+
+        const type = document.getElementById('type').value;
+        if (!type) {
+            showNotification('Type is required', 'error');
+            return;
+        }
+
+        // Collect all form data
+        const updatedClass = {
+            ...currentClass,
+            name: className,
+            type: type,
+            description: document.getElementById('description').value.trim(),
+            skillLevel: document.getElementById('skillLevel').value || null,
+            status: document.getElementById('status').value,
+            maxCapacity: parseInt(document.getElementById('maxCapacity').value) || 1,
+            minCapacity: document.getElementById('minCapacity') ? parseInt(document.getElementById('minCapacity').value) || null : null,
+            updatedAt: new Date().toISOString()
+        };
+
+        // Collect type-specific fields
+        if (type === 'Class') {
+            updatedClass.curriculum = document.getElementById('curriculum')?.value.trim() || null;
+            updatedClass.cohortStartDate = document.getElementById('cohortStartDate')?.value || null;
+            updatedClass.cohortEndDate = document.getElementById('cohortEndDate')?.value || null;
+            updatedClass.cohortSize = document.getElementById('cohortSize') ? parseInt(document.getElementById('cohortSize').value) || null : null;
+        } else if (type === 'One-to-One') {
+            updatedClass.focusArea = document.getElementById('focusArea')?.value || null;
+            updatedClass.personalizationLevel = document.getElementById('personalizationLevel')?.value || 'high';
+            // Force capacity to 1 for One-to-One
+            updatedClass.maxCapacity = 1;
+        }
+
+        // Collect schedule data
+        const frequency = document.getElementById('frequency').value;
+        const selectedDays = [];
+        document.querySelectorAll('.day-selector.selected').forEach(btn => {
+            selectedDays.push(btn.getAttribute('data-day'));
+        });
+
+        updatedClass.schedule = {
+            frequency: frequency,
+            daysOfWeek: selectedDays,
+            startTime: document.getElementById('startTime').value,
+            endTime: document.getElementById('endTime').value,
+            duration: parseInt(document.getElementById('duration').value) || null,
+            startDate: document.getElementById('startDate').value || null,
+            endDate: document.getElementById('endDate').value || null,
+            customInterval: document.getElementById('customInterval')?.value ? parseInt(document.getElementById('customInterval').value) : null,
+            customIntervalUnit: document.getElementById('customIntervalUnit')?.value || null
+        };
+
+        // Save to localStorage
+        const classes = JSON.parse(localStorage.getItem('classes_v2') || '[]');
+        const index = classes.findIndex(c => c.id === currentClass.id);
+
+        if (index > -1) {
+            classes[index] = updatedClass;
+            localStorage.setItem('classes_v2', JSON.stringify(classes));
+            
+            // Update current class reference
+            currentClass = updatedClass;
+            
+            // Re-render to reflect changes
+            renderClassDetails();
+            updateSummary();
+            
+            showNotification('Changes saved successfully!', 'success');
+        } else {
+            showNotification('Class not found in database', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving class:', error);
+        showNotification('Error saving changes', 'error');
     }
 }
 

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Session - FMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+
+        /* Type badge styles */
+        .type-badge-class {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid #c4b5fd;
+        }
+
+        .type-badge-group {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fcd34d;
+        }
+
+        .type-badge-one-to-one {
+            background-color: #cffafe;
+            color: #0891b2;
+            border: 1px solid #67e8f9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Learning Services</span></a>
+                <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="schedule_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-check"></i><span>Schedule Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar"></i><span>My Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff
+                        Timesheets</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
+
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h1 class="text-2xl font-bold text-gray-900">Create Session</h1>
+                                <p class="text-sm text-gray-500 mt-1">Create a new session for a Learning Service</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="goBack()"
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    </svg>
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+                        <!-- Left Column - Form -->
+                        <div class="lg:col-span-2 space-y-4">
+
+                            <!-- Learning Service Selection -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Learning Service Selection <span
+                                        class="text-red-500">*</span></h2>
+
+                                <div class="space-y-4">
+                                    <!-- Type Filter (Optional) -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Type
+                                            (Optional)</label>
+                                        <div class="flex gap-2">
+                                            <button type="button" onclick="filterByType('')"
+                                                class="filter-type-btn px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 active"
+                                                data-type="">
+                                                All
+                                            </button>
+                                            <button type="button" onclick="filterByType('Class')"
+                                                class="filter-type-btn px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                                                data-type="Class">
+                                                📚 Class
+                                            </button>
+                                            <button type="button" onclick="filterByType('Group')"
+                                                class="filter-type-btn px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                                                data-type="Group">
+                                                👥 Group
+                                            </button>
+                                            <button type="button" onclick="filterByType('One-to-One')"
+                                                class="filter-type-btn px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                                                data-type="One-to-One">
+                                                👤 One-to-One
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Learning Service Search -->
+                                    <div>
+                                        <label for="learningServiceSearch"
+                                            class="block text-sm font-medium text-gray-700 mb-1">Search Learning
+                                            Service <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <input type="text" id="learningServiceSearch"
+                                                placeholder="Type to search learning services..." autocomplete="off"
+                                                oninput="searchLearningServices(this.value)"
+                                                class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                            <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                            </svg>
+                                            <div id="learningServiceAutocomplete"
+                                                class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-80 overflow-y-auto custom-scrollbar">
+                                                <!-- Search results will appear here -->
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-1">Search by name, type, or description</p>
+                                    </div>
+
+                                    <!-- Selected Service Info -->
+                                    <div id="selectedServiceInfo"
+                                        class="hidden p-4 bg-indigo-50 border border-indigo-200 rounded-lg mt-4">
+                                        <div class="flex items-start justify-between">
+                                            <div class="flex items-start gap-3 flex-1">
+                                                <div id="serviceTypeBadge"
+                                                    class="px-2 py-1 text-xs font-medium rounded-full flex-shrink-0">
+                                                    <!-- Type badge -->
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h3 class="font-semibold text-gray-900" id="serviceName">-</h3>
+                                                    <p class="text-sm text-gray-600 mt-1" id="serviceDescription">-</p>
+                                                    <div class="grid grid-cols-2 gap-2 mt-2 text-xs">
+                                                        <div>
+                                                            <span class="text-gray-500">Schedule:</span>
+                                                            <span class="text-gray-900 ml-1"
+                                                                id="serviceSchedule">-</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500">Capacity:</span>
+                                                            <span class="text-gray-900 ml-1"
+                                                                id="serviceCapacity">-</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500">Default Staff:</span>
+                                                            <span class="text-gray-900 ml-1" id="serviceStaff">-</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-gray-500">Price Book:</span>
+                                                            <span class="text-gray-900 ml-1"
+                                                                id="servicePricebook">-</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button onclick="clearServiceSelection()"
+                                                class="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 ml-2"
+                                                title="Clear selection">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Session Details -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Session Details</h2>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="sessionDate"
+                                            class="block text-sm font-medium text-gray-700 mb-1">Date <span
+                                                class="text-red-500">*</span></label>
+                                        <input type="date" id="sessionDate" required onchange="updateSummary()"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                        <p class="text-xs text-gray-500 mt-1">Date cannot be in the past</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label for="startTime"
+                                                class="block text-sm font-medium text-gray-700 mb-1">Start Time <span
+                                                    class="text-red-500">*</span></label>
+                                            <input type="time" id="startTime" required
+                                                onchange="calculateDuration(); updateSummary()"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                        </div>
+
+                                        <div>
+                                            <label for="endTime"
+                                                class="block text-sm font-medium text-gray-700 mb-1">End Time <span
+                                                    class="text-red-500">*</span></label>
+                                            <input type="time" id="endTime" required
+                                                onchange="calculateDuration(); updateSummary()"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="duration"
+                                            class="block text-sm font-medium text-gray-700 mb-1">Duration
+                                            (minutes)</label>
+                                        <input type="number" id="duration" min="1" readonly
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm" />
+                                    </div>
+
+                                    <div>
+                                        <label for="sessionStatus"
+                                            class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                        <select id="sessionStatus" onchange="updateSummary()"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="scheduled" selected>Scheduled</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="completed">Completed</option>
+                                            <option value="cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Capacity Settings -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Capacity Settings</h2>
+
+                                <div class="space-y-4">
+                                    <div id="capacityDisplay">
+                                        <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                                            <div class="flex items-start gap-3">
+                                                <svg class="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                    </path>
+                                                </svg>
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium text-gray-900 mb-1">Session Capacity
+                                                    </p>
+                                                    <p class="text-sm text-gray-700" id="sessionCapacityDisplay">-</p>
+                                                    <p class="text-xs text-gray-500 mt-2">
+                                                        Capacity is inherited from the Learning Service and cannot be
+                                                        changed at the session level.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="capacityOneToOne" class="hidden">
+                                        <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                            <p class="text-sm text-cyan-800">
+                                                <strong>One-to-One Session:</strong> Capacity is fixed at 1 student per
+                                                session (1:1 ratio).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Staff/Team Assignment -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <h2 class="text-lg font-semibold text-gray-900">Staff/Team Assignment</h2>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <!-- Use Default Assignments -->
+                                    <div class="flex items-center gap-2">
+                                        <input type="checkbox" id="useDefaultStaff" checked
+                                            onchange="handleDefaultStaffToggle()"
+                                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+                                        <label for="useDefaultStaff" class="text-sm font-medium text-gray-700">Use
+                                            default staff from Learning Service</label>
+                                    </div>
+
+                                    <!-- Default Staff Display -->
+                                    <div id="defaultStaffSection"
+                                        class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                        <p class="text-sm font-medium text-emerald-800 mb-2">Default Staff/Teams</p>
+                                        <div id="defaultStaffList" class="flex flex-wrap gap-2">
+                                            <!-- Default staff will be shown here -->
+                                        </div>
+                                        <p class="text-xs text-emerald-700 mt-2">These staff members are assigned by
+                                            default. Uncheck above to override.</p>
+                                    </div>
+
+                                    <!-- Override Staff Assignment -->
+                                    <div id="overrideStaffSection" class="hidden">
+                                        <!-- Unified Assignment Search -->
+                                        <div class="mb-3">
+                                            <div class="relative">
+                                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                                <input type="text" id="assignmentSearchInput"
+                                                    placeholder="Search staff or teams by name, skills, or role..."
+                                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                    autocomplete="off" />
+                                                <div id="assignmentAutocomplete"
+                                                    class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                                                    <!-- Unified search results -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Assignments List -->
+                                        <div id="selectedAssignmentsContainer" class="mb-3">
+                                            <p class="text-xs font-semibold text-gray-700 mb-2">Selected Assignments
+                                                (<span id="selectedAssignmentsCount">0</span>)</p>
+                                            <div id="selectedAssignmentsList" class="space-y-2">
+                                                <!-- Selected assignments will appear here -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Recommended Assignments Section -->
+                                        <div id="recommendedAssignmentsSection" class="mb-3">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <p class="text-xs font-medium text-gray-700">Recommended Assignments</p>
+                                                <button id="refreshAssignmentRecommendations"
+                                                    class="text-xs text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                        </path>
+                                                    </svg>
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                            <div id="recommendedAssignmentsList" class="space-y-2">
+                                                <!-- Recommended assignments will be populated here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+
+                                <div>
+                                    <label for="sessionNotes"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Session Notes
+                                        (Optional)</label>
+                                    <textarea id="sessionNotes" rows="3"
+                                        placeholder="Add any special notes for this session..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Summary & Actions -->
+                        <div class="space-y-4">
+                            <!-- Session Summary -->
+                            <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Session Summary</h2>
+
+                                <div class="space-y-3 mb-4">
+                                    <div class="p-3 bg-indigo-50 rounded-lg">
+                                        <div class="text-xs text-indigo-600 mb-1">Learning Service</div>
+                                        <div class="text-sm font-bold text-indigo-700" id="summaryServiceName">-</div>
+                                    </div>
+
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Date</span>
+                                            <span class="font-medium text-gray-900" id="summaryDate">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Time</span>
+                                            <span class="font-medium text-gray-900" id="summaryTime">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Duration</span>
+                                            <span class="font-medium text-gray-900" id="summaryDuration">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Status</span>
+                                            <span class="font-medium text-gray-900" id="summaryStatus">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Capacity</span>
+                                            <span class="font-medium text-gray-900" id="summaryCapacity">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Staff</span>
+                                            <span class="font-medium text-gray-900" id="summaryStaff">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="border-t border-gray-200 pt-4 space-y-2">
+                                    <button type="button" onclick="handleSave()"
+                                        class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Create Session
+                                    </button>
+                                    <button type="button" onclick="goBack()"
+                                        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="session_create_script.js"></script>
+</body>
+
+</html>

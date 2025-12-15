@@ -44,7 +44,7 @@ function loadSessionData() {
     if (!sessionIdFromUrl) {
         showNotification('Session ID is required', 'error');
         setTimeout(() => {
-            window.location.href = 'class_list.html';
+            window.location.href = 'group_list.html';
         }, 2000);
         return;
     }
@@ -57,7 +57,7 @@ function loadSessionData() {
         if (!currentSession) {
             showNotification('Session not found', 'error');
             setTimeout(() => {
-                window.location.href = 'class_list.html';
+                window.location.href = 'group_list.html';
             }, 2000);
             return;
         }
@@ -99,7 +99,7 @@ function renderSessionDetails() {
     document.getElementById('sessionDateTime').textContent = `${date} at ${time}`;
     
     document.getElementById('classNameLink').textContent = currentClass.name;
-    document.getElementById('classNameLink').href = `class_detail.html?id=${currentClass.id}`;
+    document.getElementById('classNameLink').href = `group_detail.html?id=${currentClass.id}`;
     
     // Status badge
     updateStatusBadge();
@@ -741,15 +741,15 @@ function cancelSession() {
 
 function goBack() {
     if (currentClass) {
-        window.location.href = `class_detail.html?id=${currentClass.id}`;
+        window.location.href = `group_detail.html?id=${currentClass.id}`;
     } else {
-        window.location.href = 'class_list.html';
+        window.location.href = 'group_list.html';
     }
 }
 
 function viewClassDetail() {
     if (currentClass) {
-        window.location.href = `class_detail.html?id=${currentClass.id}`;
+        window.location.href = `group_detail.html?id=${currentClass.id}`;
     }
 }
 

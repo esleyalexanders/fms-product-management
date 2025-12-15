@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Service Details - FMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+
+        /* Type badge styles */
+        .type-badge-class {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid #c4b5fd;
+        }
+
+        .type-badge-group {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fcd34d;
+        }
+
+        .type-badge-one-to-one {
+            background-color: #cffafe;
+            color: #0891b2;
+            border: 1px solid #67e8f9;
+        }
+
+        /* Sticky header in edit mode */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        /* Tab styles */
+        .tab-button {
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+
+        .tab-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Day selector */
+        .day-selector {
+            transition: all 0.2s ease;
+        }
+
+        .day-selector.selected {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+
+        /* View/Edit mode transitions */
+        .view-mode-field {
+            transition: all 0.2s ease;
+        }
+
+        .edit-mode .view-mode-field {
+            display: none;
+        }
+
+        .edit-only {
+            display: none;
+        }
+
+        .edit-mode .edit-only {
+            display: block;
+        }
+
+        .edit-mode .view-only {
+            display: none;
+        }
+
+        /* Unsaved changes indicator */
+        .unsaved-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-graduation-cap"></i><span>Learning
+                        Services</span></a>
+                <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="schedule_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-check"></i><span>Schedule Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar"></i><span>My Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content custom-scrollbar" id="mainContent">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
+
+                    <!-- Sticky Header -->
+                    <div id="stickyHeader" class="bg-white rounded-lg shadow-sm p-4 mb-4 sticky-header">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <button onclick="goBack()"
+                                    class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                    title="Back to List">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    </svg>
+                                </button>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h1 class="text-xl font-bold text-gray-900" id="serviceNameHeader">Learning
+                                            Service Details</h1>
+                                        <span id="serviceIdBadge"
+                                            class="px-2 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-600">LS-001</span>
+                                        <span id="typeBadge"
+                                            class="px-2 py-0.5 text-xs font-medium rounded-full type-badge-class">📚
+                                            Class</span>
+                                        <span id="statusBadge"
+                                            class="px-2 py-0.5 text-xs font-medium rounded bg-emerald-100 text-emerald-700">Active</span>
+                                        <!-- Unsaved changes indicator -->
+                                        <span id="unsavedIndicator"
+                                            class="hidden px-2 py-0.5 text-xs font-medium rounded bg-amber-100 text-amber-700 unsaved-indicator">
+                                            ● Unsaved changes
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-500" id="serviceSubtitle">View and manage learning
+                                        service details</p>
+                                </div>
+                            </div>
+
+                            <!-- View Mode Actions -->
+                            <div id="viewModeActions" class="flex gap-2">
+                                <button onclick="enterEditMode()"
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button onclick="generateSessions()"
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    Generate Sessions
+                                </button>
+                                <button onclick="showMoreActions()"
+                                    class="p-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                                    title="More Actions">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Edit Mode Actions -->
+                            <div id="editModeActions" class="hidden flex gap-2">
+                                <button onclick="cancelEdit()"
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                                    Cancel
+                                </button>
+                                <button onclick="saveChanges()"
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Navigation -->
+                    <div class="bg-white rounded-lg shadow-sm mb-4">
+                        <div class="border-b border-gray-200">
+                            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                                <button id="overviewTab"
+                                    class="tab-button active py-4 px-1 border-b-2 border-indigo-500 font-medium text-sm text-indigo-600"
+                                    onclick="switchTab('overview')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                            </path>
+                                        </svg>
+                                        Overview
+                                    </span>
+                                </button>
+                                <button id="staffTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('staff')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                        Staff Assignment
+                                    </span>
+                                </button>
+                                <button id="enrollmentTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('enrollment')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                            </path>
+                                        </svg>
+                                        Enrollment
+                                        <span
+                                            class="px-1.5 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">12</span>
+                                    </span>
+                                </button>
+                                <button id="sessionsTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('sessions')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        Sessions
+                                        <span
+                                            class="px-1.5 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">24</span>
+                                    </span>
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- ==================== TAB 1: OVERVIEW ==================== -->
+                    <div id="overviewContent" class="tab-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <!-- Left Column - Main Content -->
+                            <div class="lg:col-span-2 space-y-4">
+
+                                <!-- Type-Specific Card (Read-only display) -->
+                                <div id="typeSpecificCard">
+                                    <!-- Class Type -->
+                                    <div id="classTypeCard"
+                                        class="hidden bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-sm p-4 border border-purple-200">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-xl">📚</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-purple-900 mb-1">Class Type</h3>
+                                                <p class="text-sm text-purple-700 mb-3">Structured course with defined
+                                                    curriculum and fixed cohort dates.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Curriculum:</span>
+                                                        <span class="text-purple-900 ml-1" id="viewCurriculum">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Cohort Start:</span>
+                                                        <span class="text-purple-900 ml-1" id="viewCohortStart">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Cohort End:</span>
+                                                        <span class="text-purple-900 ml-1" id="viewCohortEnd">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Cohort Size:</span>
+                                                        <span class="text-purple-900 ml-1" id="viewCohortSize">-</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Group Type -->
+                                    <div id="groupTypeCard"
+                                        class="hidden bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg shadow-sm p-4 border border-amber-200">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-xl">👥</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-amber-900 mb-1">Group Type</h3>
+                                                <p class="text-sm text-amber-700 mb-3">Multiple students learning
+                                                    together with flexible scheduling.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Min Capacity:</span>
+                                                        <span class="text-amber-900 ml-1" id="viewMinCapacity">2</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Max Capacity:</span>
+                                                        <span class="text-amber-900 ml-1"
+                                                            id="viewMaxCapacityGroup">-</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- One-to-One Type -->
+                                    <div id="oneToOneTypeCard"
+                                        class="hidden bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg shadow-sm p-4 border border-cyan-200">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-xl">👤</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-cyan-900 mb-1">One-to-One Type
+                                                </h3>
+                                                <p class="text-sm text-cyan-700 mb-3">Personalized instruction with 1:1
+                                                    student-tutor ratio.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Focus Area:</span>
+                                                        <span class="text-cyan-900 ml-1" id="viewFocusArea">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Personalization:</span>
+                                                        <span class="text-cyan-900 ml-1"
+                                                            id="viewPersonalization">High</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Basic Information Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h2 class="text-lg font-semibold text-gray-900">Basic Information</h2>
+                                    </div>
+
+                                    <!-- View Mode -->
+                                    <div id="basicInfoView" class="view-only space-y-3">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Name</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewName">-</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Type</p>
+                                                <p class="text-sm font-medium text-gray-900 flex items-center gap-1"
+                                                    id="viewType">
+                                                    <span>-</span>
+                                                    <span class="text-gray-400">🔒</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <p class="text-xs text-gray-500 mb-1">Description</p>
+                                                <p class="text-sm text-gray-700" id="viewDescription">-</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Skill Level</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewSkillLevel">-</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Status</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewStatus">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Edit Mode -->
+                                    <div id="basicInfoEdit" class="edit-only hidden space-y-4">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Name <span
+                                                        class="text-red-500">*</span></label>
+                                                <input type="text" id="editName"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Type <span
+                                                        class="text-gray-400">🔒</span></label>
+                                                <input type="text" id="editType" disabled
+                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed" />
+                                                <p class="text-xs text-gray-400 mt-1">Cannot be changed after creation
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                            <textarea id="editDescription" rows="3"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Skill
+                                                    Level</label>
+                                                <select id="editSkillLevel"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                    <option value="">Select skill level</option>
+                                                    <option value="Beginner">Beginner</option>
+                                                    <option value="Intermediate">Intermediate</option>
+                                                    <option value="Advanced">Advanced</option>
+                                                    <option value="All levels">All levels</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                                <select id="editStatus"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                    <option value="active">Active</option>
+                                                    <option value="paused">Paused</option>
+                                                    <option value="archived">Archived</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Schedule Configuration Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h2 class="text-lg font-semibold text-gray-900">Schedule Configuration</h2>
+                                        <div id="scheduleWarning"
+                                            class="hidden text-xs text-amber-600 flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                                </path>
+                                            </svg>
+                                            Changes may affect existing sessions
+                                        </div>
+                                    </div>
+
+                                    <!-- View Mode -->
+                                    <div id="scheduleView" class="view-only space-y-3">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Frequency</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewFrequency">Weekly
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Days</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewDays">Mon, Wed, Fri
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Time</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewTime">15:00 - 16:30
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Duration</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewDuration">90
+                                                    minutes</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Edit Mode -->
+                                    <div id="scheduleEdit" class="edit-only hidden space-y-4">
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                                            <select id="editFrequency"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="weekly">Weekly</option>
+                                                <option value="daily">Daily</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="custom">Custom</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">Days of
+                                                Week</label>
+                                            <div class="flex flex-wrap gap-2">
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Monday">Mon</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Tuesday">Tue</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Wednesday">Wed</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Thursday">Thu</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Friday">Fri</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Saturday">Sat</button>
+                                                <button type="button"
+                                                    class="day-selector px-3 py-1.5 border border-gray-300 rounded-lg text-sm"
+                                                    data-day="Sunday">Sun</button>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Start
+                                                    Time</label>
+                                                <input type="time" id="editStartTime"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">End
+                                                    Time</label>
+                                                <input type="time" id="editEndTime"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Duration
+                                                    (min)</label>
+                                                <input type="number" id="editDuration" readonly
+                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Type-Specific Edit Fields -->
+                                <div id="typeSpecificEditFields" class="edit-only hidden">
+                                    <!-- Will be populated based on type -->
+                                </div>
+
+                                <!-- Capacity Settings Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Capacity Settings</h2>
+
+                                    <!-- View Mode -->
+                                    <div id="capacityView" class="view-only">
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Max Capacity</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewMaxCapacity">20
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Current Enrollment</p>
+                                                <p class="text-sm font-medium text-gray-900" id="viewEnrollment">12/20
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Edit Mode -->
+                                    <div id="capacityEdit" class="edit-only hidden">
+                                        <div id="capacityEditStandard">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Max
+                                                        Capacity <span class="text-red-500">*</span></label>
+                                                    <input type="number" id="editMaxCapacity" min="1"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                </div>
+                                                <div id="minCapacityField">
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Min
+                                                        Capacity</label>
+                                                    <input type="number" id="editMinCapacity" min="1"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="capacityEditOneToOne" class="hidden">
+                                            <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                                <p class="text-sm text-cyan-800">
+                                                    <strong>One-to-One:</strong> Capacity is fixed at 1 student per
+                                                    session.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Price Book Item Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Price Book Item</h2>
+
+                                    <div id="pricebookItemDisplay" class="p-3 bg-indigo-50 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-xs text-indigo-600 mb-1">Linked Price Book Item</p>
+                                                <p class="font-semibold text-indigo-900" id="viewPricebookItem">Yoga -
+                                                    Aerobic</p>
+                                                <p class="text-sm text-indigo-700" id="viewPricebookPrice">$20.00 /
+                                                    slot</p>
+                                            </div>
+                                            <a href="../../admin/pricebook.html"
+                                                class="text-indigo-600 hover:text-indigo-800 text-sm">
+                                                View in Pricebook →
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column - Summary -->
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Summary</h2>
+
+                                    <div class="space-y-3 mb-4">
+                                        <div class="p-3 bg-indigo-50 rounded-lg">
+                                            <div class="text-xs text-indigo-600 mb-1">Price Book Item</div>
+                                            <div class="text-sm font-bold text-indigo-900" id="summaryPricebook">-</div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-2 text-sm">
+                                            <div class="p-2 bg-gray-50 rounded">
+                                                <p class="text-xs text-gray-500">Sessions</p>
+                                                <p class="font-semibold text-gray-900" id="summarySessions">24</p>
+                                            </div>
+                                            <div class="p-2 bg-gray-50 rounded">
+                                                <p class="text-xs text-gray-500">Avg Fill</p>
+                                                <p class="font-semibold text-emerald-600" id="summaryFill">85%</p>
+                                            </div>
+                                            <div class="p-2 bg-gray-50 rounded">
+                                                <p class="text-xs text-gray-500">Total Enrolled</p>
+                                                <p class="font-semibold text-gray-900" id="summaryEnrolled">12</p>
+                                            </div>
+                                            <div class="p-2 bg-gray-50 rounded">
+                                                <p class="text-xs text-gray-500">Staff</p>
+                                                <p class="font-semibold text-gray-900" id="summaryStaff">2</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Actions -->
+                                    <div class="border-t border-gray-200 pt-4 space-y-2">
+                                        <button onclick="generateSessions()"
+                                            class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium text-sm">
+                                            Generate Sessions
+                                        </button>
+                                        <button onclick="switchTab('sessions')"
+                                            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                                            View All Sessions
+                                        </button>
+                                        <button onclick="archiveService()"
+                                            class="w-full px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors text-sm">
+                                            Archive Service
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ==================== TAB 2: STAFF ASSIGNMENT ==================== -->
+                    <div id="staffContent" class="tab-content hidden">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <div class="lg:col-span-2 space-y-4">
+                                <!-- Staff Assignment Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <h2 class="text-lg font-semibold text-gray-900">Default Staff Assignment</h2>
+                                    </div>
+
+                                    <!-- View Mode - Staff List -->
+                                    <div id="staffListView" class="view-only">
+                                        <div id="assignedStaffList" class="space-y-2">
+                                            <!-- Staff items will be rendered here -->
+                                            <div
+                                                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                                        <span class="text-indigo-600 font-medium">JS</span>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-medium text-gray-900">John Smith</p>
+                                                        <p class="text-xs text-gray-500">Senior Tutor • Math</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-sm font-medium text-gray-900">$50.00/hr</p>
+                                                    <p class="text-xs text-gray-500">Assigned Rate</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Edit Mode - Staff Search & Add -->
+                                    <div id="staffListEdit" class="edit-only hidden">
+                                        <div class="mb-4">
+                                            <div class="relative">
+                                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                                <input type="text" id="staffSearchInput"
+                                                    placeholder="Search staff or teams by name, skills, or role..."
+                                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                <div id="staffAutocomplete"
+                                                    class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="editableStaffList" class="space-y-2 mb-4">
+                                            <!-- Editable staff items -->
+                                        </div>
+
+                                        <!-- Recommended Assignments -->
+                                        <div class="border-t border-gray-200 pt-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <p class="text-sm font-medium text-gray-700">Recommended</p>
+                                                <button class="text-xs text-indigo-600 hover:text-indigo-800">
+                                                    Refresh
+                                                </button>
+                                            </div>
+                                            <div id="recommendedStaff" class="space-y-2">
+                                                <!-- Recommended staff -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column - Staff Summary -->
+                            <div class="space-y-4">
+                                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-20">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Staff Summary</h2>
+
+                                    <div class="p-3 bg-orange-50 rounded-lg mb-4">
+                                        <div class="text-xs text-orange-600 mb-1">Total Assigned</div>
+                                        <div class="text-lg font-bold text-orange-900" id="totalStaffCount">2 staff
+                                        </div>
+                                    </div>
+
+                                    <div id="staffSummaryList" class="space-y-2 text-sm">
+                                        <!-- Staff summary list -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ==================== TAB 3: ENROLLMENT ==================== -->
+                    <div id="enrollmentContent" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <!-- Enrollment Stats -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="text-xs text-gray-500 mb-1">Total Enrolled</div>
+                                    <div class="text-2xl font-bold text-gray-900" id="statTotalBookings">0</div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="text-xs text-gray-500 mb-1">Confirmed</div>
+                                    <div class="text-2xl font-bold text-emerald-600" id="statConfirmed">0</div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="text-xs text-gray-500 mb-1">Available Slots</div>
+                                    <div class="text-2xl font-bold text-blue-600" id="statAvailable">0</div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="text-xs text-gray-500 mb-1">Fill Rate</div>
+                                    <div class="text-2xl font-bold text-indigo-600" id="statAvgEnrollment">0%</div>
+                                </div>
+                            </div>
+
+                            <!-- Info Banner -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <div class="text-sm text-blue-800">
+                                        <p class="font-medium">Default Session Enrollment</p>
+                                        <p class="text-blue-700">Attendees enrolled here are automatically added to all
+                                            sessions. Individual session attendance can be modified from the Sessions
+                                            tab.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enrolled Attendees -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900">Enrolled Attendees</h2>
+                                        <p class="text-sm text-gray-500" id="enrolledCount">0 attendees enrolled</p>
+                                    </div>
+                                    <!-- Add Attendee Button (hidden for One-to-One) -->
+                                    <button id="addAttendeeBtn" onclick="openBookCustomerModal()"
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Add Attendee
+                                    </button>
+                                </div>
+
+                                <!-- Search (hidden for One-to-One) -->
+                                <div id="enrollmentSearch" class="mb-4">
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <input type="text" id="searchEnrolled"
+                                            placeholder="Search by name, email, or customer..."
+                                            oninput="filterEnrolledAttendees(this.value)"
+                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    </div>
+                                </div>
+
+                                <!-- One-to-One Direct Enrollment Form (shown when no attendee) -->
+                                <div id="oneToOneEnrollmentForm" class="hidden mb-4">
+                                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Enroll Attendee</h3>
+
+                                        <!-- Customer Search for One-to-One -->
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">Search
+                                                Customer</label>
+                                            <div class="relative">
+                                                <input type="text" id="oneToOneCustomerSearch"
+                                                    placeholder="Type to search customers..."
+                                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                    autocomplete="off"
+                                                    oninput="searchCustomersForOneToOne(this.value)" />
+                                                <svg class="absolute left-3 top-3 text-gray-400 w-4 h-4" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                                <div id="oneToOneCustomerAutocomplete"
+                                                    class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+                                                    <!-- Customer search results -->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Customer Info -->
+                                        <div id="oneToOneSelectedCustomer"
+                                            class="hidden mb-3 p-3 bg-white rounded border border-indigo-200">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-900"
+                                                        id="oneToOneCustomerName">-</p>
+                                                    <p class="text-xs text-gray-500" id="oneToOneCustomerEmail">-</p>
+                                                    <p class="text-xs text-gray-500 mt-1">Quote: <span class="font-mono"
+                                                            id="oneToOneQuoteId">-</span></p>
+                                                </div>
+                                                <button onclick="clearOneToOneSelection()"
+                                                    class="text-gray-400 hover:text-red-500">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Attendee Name -->
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">Attendee Name
+                                                <span class="text-red-500">*</span></label>
+                                            <input type="text" id="oneToOneAttendeeName"
+                                                placeholder="Enter attendee name"
+                                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                oninput="updateOneToOneButtonState()" />
+                                        </div>
+
+                                        <!-- Notes -->
+                                        <div class="mb-3">
+                                            <label class="block text-xs font-medium text-gray-700 mb-1">Notes <span
+                                                    class="text-gray-400">(optional)</span></label>
+                                            <input type="text" id="oneToOneAttendeeNotes" placeholder="Special notes"
+                                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                        </div>
+
+                                        <!-- Enroll Button -->
+                                        <button onclick="confirmOneToOneEnrollment()" id="oneToOneEnrollBtn" disabled
+                                            class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium disabled:bg-gray-300 disabled:cursor-not-allowed">
+                                            Enroll Attendee
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Enrolled List -->
+                                <div id="enrolledList" class="space-y-2">
+                                    <!-- Attendees will be rendered here by JavaScript -->
+                                </div>
+
+                                <!-- Empty State (for Group type only) -->
+                                <div id="emptyEnrollment" class="text-center py-12 text-gray-500">
+                                    <svg class="mx-auto mb-3 text-gray-300 w-12 h-12" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    <p class="text-sm font-medium">No attendees enrolled yet</p>
+                                    <p class="text-xs mb-4">Click "Add Attendee" to enroll customers</p>
+                                    <button id="addFirstAttendeeBtn" onclick="openBookCustomerModal()"
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium inline-flex items-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Add First Attendee
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ==================== TAB 4: SESSIONS ==================== -->
+                    <div id="sessionsContent" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <!-- Sessions Header -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900">Sessions</h2>
+                                        <p class="text-sm text-gray-500">All scheduled sessions for this learning
+                                            service</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="window.location.href='session_create.html'"
+                                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 text-sm font-medium">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Create Session
+                                        </button>
+                                        <button onclick="generateSessions()"
+                                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 text-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                                </path>
+                                            </svg>
+                                            Generate Sessions
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sessions Filters -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex-1">
+                                        <input type="text" id="searchSessions" placeholder="Search sessions..."
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-sm text-gray-600">Date:</label>
+                                        <input type="date" id="filterDateFrom"
+                                            class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                        <span class="text-gray-400">to</span>
+                                        <input type="date" id="filterDateTo"
+                                            class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                    </div>
+                                    <select id="filterStatus"
+                                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">All Status</option>
+                                        <option value="scheduled">Scheduled</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Sessions List -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div id="sessionsList" class="space-y-2">
+                                    <!-- Sample session -->
+                                    <div
+                                        class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors">
+                                        <div class="flex items-center gap-4">
+                                            <div class="text-center min-w-16">
+                                                <p class="text-lg font-bold text-gray-900">15</p>
+                                                <p class="text-xs text-gray-500">Dec 2024</p>
+                                            </div>
+                                            <div class="border-l border-gray-300 pl-4">
+                                                <p class="font-medium text-gray-900">Monday, 3:00 PM - 4:30 PM</p>
+                                                <p class="text-sm text-gray-500">Staff: John Smith • Duration: 90 min
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="text-right">
+                                                <p class="text-sm font-medium text-gray-900">15/20</p>
+                                                <p class="text-xs text-gray-500">Enrolled</p>
+                                            </div>
+                                            <span
+                                                class="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">Scheduled</span>
+                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Empty Sessions State -->
+                                <div id="emptySessions" class="hidden text-center py-12 text-gray-500">
+                                    <svg class="mx-auto mb-3 text-gray-300 w-12 h-12" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <p class="text-sm font-medium">No sessions yet</p>
+                                    <p class="text-xs">Generate sessions or create them manually</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit Mode Block Warning (shown when trying to access view-only tabs in edit mode) -->
+                    <div id="editModeBlockWarning"
+                        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                        <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4">
+                            <div class="text-center">
+                                <div
+                                    class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Save Changes First</h3>
+                                <p class="text-sm text-gray-600 mb-4">Please save or cancel your changes before
+                                    switching to this tab.</p>
+                                <button onclick="closeEditModeWarning()"
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                                    Got it
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Book Customer Modal -->
+                    <div id="bookCustomerModal"
+                        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                        onclick="if(event.target === this) closeBookCustomerModal()">
+                        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] flex flex-col"
+                            onclick="event.stopPropagation()">
+                            <!-- Modal Header -->
+                            <div
+                                class="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Enroll Attendee</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Search customer, view available slots, and
+                                        enroll attendees into all sessions</p>
+                                </div>
+                                <button onclick="closeBookCustomerModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Customer Search (outside scrollable area for dropdown to work) -->
+                            <div class="px-6 pt-6 pb-2 flex-shrink-0">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                                <div class="relative">
+                                    <input type="text" id="customerSearchInput"
+                                        placeholder="Type to search customers with quotes..."
+                                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        autocomplete="off" oninput="searchCustomersForBooking(this.value)" />
+                                    <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <div id="customerAutocomplete"
+                                        class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-80 overflow-y-auto custom-scrollbar">
+                                        <!-- Customer search results will appear here -->
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
+                                    Search for customers who have purchased slots for the linked price book item
+                                </p>
+                            </div>
+
+                            <div class="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar" style="min-height: 200px;">
+
+                                <!-- Slot Booking Form (shown when customer selected) -->
+                                <div id="slotBookingForm" class="hidden">
+                                    <!-- Customer & Inventory Header -->
+                                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
+                                        <div class="flex items-start justify-between mb-4">
+                                            <div>
+                                                <p
+                                                    class="text-xs uppercase tracking-wide text-indigo-600 font-semibold mb-1">
+                                                    Selected Customer</p>
+                                                <h4 class="text-lg font-semibold text-gray-900"
+                                                    id="slotBookCustomerName">-</h4>
+                                                <p class="text-sm text-gray-600" id="slotBookCustomerEmail">-</p>
+                                            </div>
+                                            <button onclick="clearSlotBooking()"
+                                                class="text-gray-400 hover:text-red-500 transition-colors"
+                                                title="Clear selection">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <!-- Slot Inventory Summary -->
+                                        <div
+                                            class="grid grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-indigo-100">
+                                            <div class="text-center">
+                                                <p class="text-2xl font-bold text-indigo-700" id="inventoryTotal">0</p>
+                                                <p class="text-xs text-gray-500">Total Purchased</p>
+                                            </div>
+                                            <div class="text-center border-x border-indigo-100">
+                                                <p class="text-2xl font-bold text-blue-600" id="inventoryBooked">0</p>
+                                                <p class="text-xs text-gray-500">Booked</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <p class="text-2xl font-bold text-gray-900" id="inventoryAvailable">0
+                                                </p>
+                                                <p class="text-xs text-gray-500">Available</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Quote Selection -->
+                                        <div class="mt-3">
+                                            <label class="text-xs text-gray-500 block mb-1">Quote</label>
+                                            <div id="slotBookQuoteDisplay"
+                                                class="p-2 border border-indigo-200 rounded bg-white text-sm">
+                                                <!-- Quote info will be populated here -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Status Warning -->
+                                        <div id="paymentWarning"
+                                            class="hidden mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                                            <div class="flex items-center gap-2 text-xs text-amber-800">
+                                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                                    </path>
+                                                </svg>
+                                                <span id="paymentWarningText">This quote is not fully paid.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Enrollment Note -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                                        <div class="flex items-start gap-2">
+                                            <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                </path>
+                                            </svg>
+                                            <div class="text-sm text-blue-800">
+                                                <p class="font-medium">Default Enrollment</p>
+                                                <p class="text-blue-700">Attendee will be automatically enrolled in all
+                                                    future sessions. You can remove them from individual sessions
+                                                    later.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Attendee Form -->
+                                    <div class="mb-4">
+                                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Add Attendee</h4>
+                                        <div class="border border-gray-200 rounded-lg p-3 bg-white space-y-3">
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-600 mb-1 block">Attendee
+                                                    Name <span class="text-red-500">*</span></label>
+                                                <input type="text" id="attendeeName" placeholder="Enter attendee name"
+                                                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                    oninput="updateBookingButtonState()" />
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-medium text-gray-600 mb-1 block">Notes <span
+                                                        class="text-gray-400">(optional)</span></label>
+                                                <input type="text" id="attendeeNotes"
+                                                    placeholder="Special notes for this attendee"
+                                                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Book Button -->
+                                    <button onclick="confirmEnrollment()" id="confirmBookingBtn" disabled
+                                        class="w-full px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>Enroll Attendee</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Attendee Modal -->
+                    <div id="transferAttendeeModal"
+                        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                        onclick="if(event.target === this) closeTransferModal()">
+                        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full" onclick="event.stopPropagation()">
+                            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">Transfer Attendee</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Move this attendee to a different learning
+                                        service</p>
+                                </div>
+                                <button onclick="closeTransferModal()" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="p-6">
+                                <!-- Current Attendee Info -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                                    <h4 class="text-sm font-semibold text-gray-900 mb-2">Attendee to Transfer</h4>
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                                            <span class="text-indigo-600 font-medium"
+                                                id="transferAttendeeInitials">-</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" id="transferAttendeeName">-</p>
+                                            <p class="text-xs text-gray-500" id="transferAttendeeCustomer">Customer: -
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Transfer Type Selection -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Transfer Type <span
+                                            class="text-red-500">*</span></label>
+                                    <div class="flex gap-2">
+                                        <button type="button" id="transferTypeService"
+                                            onclick="setTransferType('service')"
+                                            class="flex-1 px-4 py-2 border-2 border-indigo-500 bg-indigo-50 text-indigo-700 rounded-lg font-medium text-sm">
+                                            To Learning Service
+                                        </button>
+                                        <button type="button" id="transferTypeSession"
+                                            onclick="setTransferType('session')"
+                                            class="flex-1 px-4 py-2 border-2 border-gray-300 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
+                                            To Session (Temporary)
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Target Learning Service Selection -->
+                                <div id="transferServiceSection" class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Transfer to Learning
+                                        Service <span class="text-red-500">*</span></label>
+                                    <select id="transferTargetService"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">Select a learning service...</option>
+                                        <!-- Will be populated dynamically -->
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Only learning services linked to the same
+                                        price book item are shown</p>
+                                </div>
+
+                                <!-- Target Session Selection -->
+                                <div id="transferSessionSection" class="mb-4 hidden">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Transfer to Session
+                                        <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <input type="text" id="transferSessionSearchLS"
+                                            placeholder="Search sessions by date, learning service, or time..."
+                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            autocomplete="off" oninput="searchSessionsForTransferLS(this.value)" />
+                                        <svg class="absolute left-3 top-2.5 text-gray-400 w-5 h-5" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <div id="transferSessionAutocompleteLS"
+                                            class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+                                            <!-- Session search results -->
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Search for the target session. Attendee will
+                                        be marked as temporary.</p>
+
+                                    <!-- Selected Session Display -->
+                                    <div id="transferSelectedSessionLS"
+                                        class="hidden mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <p class="text-sm font-semibold text-gray-900"
+                                                    id="transferSessionNameLS">-</p>
+                                                <p class="text-xs text-gray-600" id="transferSessionDateLS">-</p>
+                                                <p class="text-xs text-gray-600" id="transferSessionTimeLS">-</p>
+                                            </div>
+                                            <button onclick="clearTransferSessionSelectionLS()"
+                                                class="text-gray-400 hover:text-red-500">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Transfer Reason -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Reason <span
+                                            class="text-gray-400">(optional)</span></label>
+                                    <textarea id="transferReason" rows="2"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        placeholder="Why is this attendee being transferred?"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 border-t border-gray-200 flex gap-3">
+                                <button onclick="closeTransferModal()"
+                                    class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    Cancel
+                                </button>
+                                <button onclick="confirmTransfer()" id="confirmTransferBtn"
+                                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    Transfer Attendee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Remove Attendee Confirmation Modal -->
+                    <div id="removeAttendeeModal"
+                        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                        onclick="if(event.target === this) closeRemoveModal()">
+                        <div class="bg-white rounded-lg shadow-xl max-w-md w-full" onclick="event.stopPropagation()">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Remove Attendee</h3>
+                            </div>
+
+                            <div class="p-6">
+                                <div class="flex items-start gap-3 mb-4">
+                                    <div
+                                        class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-900">Are you sure you want to remove <strong
+                                                id="removeAttendeeName">this attendee</strong>?</p>
+                                        <p class="text-sm text-gray-500 mt-1">This will remove them from all future
+                                            sessions. The slot will be returned to the customer's available slots.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 border-t border-gray-200 flex gap-3">
+                                <button onclick="closeRemoveModal()"
+                                    class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    Cancel
+                                </button>
+                                <button onclick="confirmRemove()"
+                                    class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                                    Remove Attendee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="learning_service_detail_script.js"></script>
+</body>
+
+</html>

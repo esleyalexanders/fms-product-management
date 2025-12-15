@@ -34,7 +34,7 @@ function loadClassData() {
     if (!classIdFromUrl) {
         showNotification('Class ID is required', 'error');
         setTimeout(() => {
-            window.location.href = 'class_list.html';
+            window.location.href = 'group_list.html';
         }, 2000);
         return;
     }
@@ -47,7 +47,7 @@ function loadClassData() {
         if (!currentClass) {
             showNotification('Class not found', 'error');
             setTimeout(() => {
-                window.location.href = 'class_list.html';
+                window.location.href = 'group_list.html';
             }, 2000);
             return;
         }
@@ -326,7 +326,7 @@ function handleSave() {
         
         showNotification('Session created successfully', 'success');
         setTimeout(() => {
-            window.location.href = `class_detail.html?id=${classIdFromUrl}`;
+            window.location.href = `group_detail.html?id=${classIdFromUrl}`;
         }, 1500);
     } catch (error) {
         console.error('Error saving session:', error);
@@ -412,9 +412,9 @@ function generateSessionId() {
 
 function goBack() {
     if (classIdFromUrl) {
-        window.location.href = `class_detail.html?id=${classIdFromUrl}`;
+        window.location.href = `group_detail.html?id=${classIdFromUrl}`;
     } else {
-        window.location.href = 'class_list.html';
+                window.location.href = 'group_list.html';
     }
 }
 

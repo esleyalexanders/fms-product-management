@@ -90,6 +90,57 @@ function initializePage() {
     document.getElementById('startTime').value = '14:00';
     document.getElementById('endTime').value = '15:30';
     calculateDuration();
+    
+    // Setup type change handler
+    const typeField = document.getElementById('type');
+    if (typeField) {
+        typeField.addEventListener('change', handleTypeChange);
+        // Initial render
+        handleTypeChange();
+    }
+}
+
+// Handle type change to show/hide type-specific sections
+function handleTypeChange() {
+    const type = document.getElementById('type').value;
+    
+    // Show/hide capacity fields based on type
+    const capacityGroupClass = document.getElementById('capacityGroupClass');
+    const capacityOneToOne = document.getElementById('capacityOneToOne');
+    
+    if (type === 'One-to-One') {
+        if (capacityGroupClass) capacityGroupClass.classList.add('hidden');
+        if (capacityOneToOne) capacityOneToOne.classList.remove('hidden');
+        // Set max capacity to 1 for One-to-One
+        const maxCapacityField = document.getElementById('maxCapacity');
+        if (maxCapacityField) {
+            maxCapacityField.value = '1';
+            maxCapacityField.readOnly = true;
+        }
+    } else {
+        if (capacityGroupClass) capacityGroupClass.classList.remove('hidden');
+        if (capacityOneToOne) capacityOneToOne.classList.add('hidden');
+        const maxCapacityField = document.getElementById('maxCapacity');
+        if (maxCapacityField) {
+            maxCapacityField.readOnly = false;
+        }
+    }
+    
+    // Show/hide type-specific field sections
+    const classSpecificFields = document.getElementById('classSpecificFields');
+    const oneToOneSpecificFields = document.getElementById('oneToOneSpecificFields');
+    
+    if (type === 'Class') {
+        if (classSpecificFields) classSpecificFields.classList.remove('hidden');
+        if (oneToOneSpecificFields) oneToOneSpecificFields.classList.add('hidden');
+    } else if (type === 'One-to-One') {
+        if (classSpecificFields) classSpecificFields.classList.add('hidden');
+        if (oneToOneSpecificFields) oneToOneSpecificFields.classList.remove('hidden');
+    } else {
+        // Group type
+        if (classSpecificFields) classSpecificFields.classList.add('hidden');
+        if (oneToOneSpecificFields) oneToOneSpecificFields.classList.add('hidden');
+    }
 }
 
 // ==================== Pricebook Item Selection ====================
@@ -405,6 +456,15 @@ function validateForm() {
         markFieldSuccess('className');
     }
 
+    // Validate type
+    const type = document.getElementById('type').value;
+    if (!type) {
+        markFieldError('type', 'Type is required');
+        isValid = false;
+    } else {
+        markFieldSuccess('type');
+    }
+
     // Validate pricebook item
     if (!formData.selectedPricebookItem) {
         showNotification('Please select a Price Book Item', 'error');
@@ -475,9 +535,10 @@ function handleSubmit(event) {
     const classData = {
         id: 'CLASS-' + new Date().getFullYear() + '-' + generateId(),
         name: document.getElementById('className').value.trim(),
+        type: document.getElementById('type').value,
         description: document.getElementById('description').value.trim(),
         skillLevel: document.getElementById('skillLevel').value || null,
-        status: document.getElementById('status').value,
+        status: 'active',
 
         pricebookItemId: formData.selectedPricebookItem.id,
         pricebookItem: formData.selectedPricebookItem,
@@ -502,10 +563,25 @@ function handleSubmit(event) {
         })),
 
         maxCapacity: parseInt(document.getElementById('maxCapacity').value),
+        minCapacity: document.getElementById('minCapacity') ? parseInt(document.getElementById('minCapacity').value) || null : null,
 
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
     };
+
+    // Add type-specific fields
+    const type = classData.type;
+    if (type === 'Class') {
+        classData.curriculum = document.getElementById('curriculum')?.value.trim() || null;
+        classData.cohortStartDate = document.getElementById('cohortStartDate')?.value || null;
+        classData.cohortEndDate = document.getElementById('cohortEndDate')?.value || null;
+        classData.cohortSize = document.getElementById('cohortSize') ? parseInt(document.getElementById('cohortSize').value) || null : null;
+    } else if (type === 'One-to-One') {
+        classData.focusArea = document.getElementById('focusArea')?.value || null;
+        classData.personalizationLevel = document.getElementById('personalizationLevel')?.value || 'high';
+        // Force capacity to 1 for One-to-One
+        classData.maxCapacity = 1;
+    }
 
     // Add custom interval if frequency is custom
     if (classData.schedule.frequency === 'custom') {
@@ -521,7 +597,7 @@ function handleSubmit(event) {
 
     // Redirect to class detail page after short delay
     setTimeout(() => {
-        window.location.href = `class_detail.html?id=${classData.id}`;
+        window.location.href = `group_detail.html?id=${classData.id}`;
     }, 1500);
 }
 

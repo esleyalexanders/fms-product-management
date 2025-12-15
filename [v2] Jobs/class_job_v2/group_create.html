@@ -141,9 +141,9 @@
                 <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-briefcase"></i><span>Jobs</span></a>
 
-                <div class="nav-section-label" style="margin-top: 20px;">CLASSES</div>
-                <a href="class_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-chalkboard-teacher"></i><span>Classes</span></a>
+                <div class="nav-section-label" style="margin-top: 20px;">GROUPS</div>
+                <a href="group_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Groups</span></a>
                 <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-calendar-day"></i><span>Sessions</span></a>
 
@@ -210,7 +210,7 @@
                                     </div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button onclick="window.location.href='class_list.html'"
+                                    <button onclick="window.location.href='group_list.html'"
                                         class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -240,15 +240,27 @@
                             </div>
 
                             <div class="space-y-4">
-                                <!-- Row 1: Class Name and Skill Level side by side -->
+                                <!-- Row 1: Class Name, Type, and Skill Level -->
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div class="md:col-span-2">
+                                    <div>
                                         <label for="className" class="block text-sm font-medium text-gray-700 mb-2">
                                             Class Name <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" id="className" name="className" required
                                             placeholder="e.g., Advanced Yoga Class"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Type <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="type" name="type" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                            <option value="">Select type</option>
+                                            <option value="Class" selected>Class</option>
+                                            <option value="Group">Group</option>
+                                            <option value="One-to-One">One-to-One</option>
+                                        </select>
                                     </div>
                                     <div>
                                         <label for="skillLevel" class="block text-sm font-medium text-gray-700 mb-2">
@@ -529,6 +541,8 @@
                             </div>
 
                             <div class="space-y-4">
+                                <!-- For Group and Class types -->
+                                <div id="capacityGroupClass">
                                 <div>
                                     <label for="maxCapacity" class="block text-sm font-medium text-gray-700 mb-2">
                                         Max Capacity <span class="text-red-500">*</span>
@@ -536,16 +550,124 @@
                                     <input type="number" id="maxCapacity" name="maxCapacity" required min="1" value="10"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
                                     <p class="text-xs text-gray-500 mt-1">Maximum number of students per session</p>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="minCapacity" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Min Capacity
+                                        </label>
+                                        <input type="number" id="minCapacity" name="minCapacity" min="1" value="2"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                        <p class="text-xs text-gray-500 mt-1">Minimum number of students required to run the session</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- For One-to-One type -->
+                                <div id="capacityOneToOne" class="hidden">
+                                    <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                        <p class="text-sm text-cyan-800">
+                                            <strong>One-to-One Session:</strong> Capacity is fixed at 1 student per session.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Class-Specific Fields (Only shown for Class type) -->
+                        <div id="classSpecificFields" class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card hidden">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">Class-Specific Information</h2>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="curriculum" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Curriculum/Textbook
+                                    </label>
+                                    <input type="text" id="curriculum" name="curriculum"
+                                        placeholder="e.g., AP Calculus AB, SAT Prep Official Guide"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                    <p class="text-xs text-gray-500 mt-1">The curriculum or textbook this class follows</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="cohortStartDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Cohort Start Date
+                                        </label>
+                                        <input type="date" id="cohortStartDate" name="cohortStartDate"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <label for="cohortEndDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                            Cohort End Date
+                                        </label>
+                                        <input type="date" id="cohortEndDate" name="cohortEndDate"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                    </div>
                                 </div>
 
-                                <div class="flex items-center gap-3">
+                                <div>
+                                    <label for="cohortSize" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Expected Cohort Size
+                                    </label>
+                                    <input type="number" id="cohortSize" name="cohortSize" min="1"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                    <p class="text-xs text-gray-500 mt-1">Expected number of students in this cohort</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- One-to-One Specific Fields (Only shown for One-to-One type) -->
+                        <div id="oneToOneSpecificFields" class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card hidden">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">One-to-One Specific Information</h2>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="focusArea" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Focus Area
+                                    </label>
+                                    <select id="focusArea" name="focusArea"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                        <option value="">Select focus area</option>
+                                        <option value="remediation">Remediation</option>
+                                        <option value="test-prep">Test Preparation</option>
+                                        <option value="advanced-mastery">Advanced Subject Mastery</option>
+                                        <option value="homework-help">Homework Help</option>
+                                        <option value="skill-building">Skill Building</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">Primary focus of this one-to-one session</p>
+                                </div>
+                                
+                                <div>
+                                    <label for="personalizationLevel" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Personalization Level
+                                    </label>
+                                    <select id="personalizationLevel" name="personalizationLevel"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                        <option value="high" selected>High - Fully tailored to student</option>
+                                        <option value="medium">Medium - Some customization</option>
+                                        <option value="standard">Standard - General tutoring</option>
+                                    </select>
+                                </div>
                                 </div>
                             </div>
 
                             <!-- Action Buttons -->
                             <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
                                 <div class="flex justify-end gap-3">
-                                    <button type="button" onclick="window.location.href='class_list.html'"
+                                    <button type="button" onclick="window.location.href='group_list.html'"
                                         class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                                         Cancel
                                     </button>
@@ -555,7 +677,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M5 13l4 4L19 7"></path>
                                         </svg>
-                                        Create Class
+                                        Create Group
                                     </button>
                                 </div>
                             </div>
@@ -595,7 +717,7 @@
     <!-- Notification Container -->
     <div id="notificationContainer"></div>
 
-    <script src="class_create_script.js"></script>
+    <script src="group_create_script.js"></script>
 </body>
 
 </html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Details - FMS</title>
+    <title>Group Details - FMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -81,9 +81,9 @@
                 <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-briefcase"></i><span>Jobs</span></a>
 
-                <div class="nav-section-label" style="margin-top: 20px;">CLASSES</div>
-                <a href="class_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-chalkboard-teacher"></i><span>Classes</span></a>
+                <div class="nav-section-label" style="margin-top: 20px;">GROUPS</div>
+                <a href="group_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Groups</span></a>
                 <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-calendar-day"></i><span>Sessions</span></a>
 
@@ -144,13 +144,13 @@
                                 <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
                             </div>
                             <div id="headerActions" class="flex gap-2">
-                                <button onclick="window.location.href='class_list.html'"
+                                <button onclick="window.location.href='group_list.html'"
                                     class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                     </svg>
-                                    Back to Classes
+                                    Back to Groups
                                 </button>
 
                             </div>
@@ -191,6 +191,108 @@
 
                             <!-- Left Column - Editable Forms -->
                             <div class="lg:col-span-2 space-y-4">
+
+                                <!-- Type-Specific Information Cards -->
+                                <div id="typeSpecificInfo" class="space-y-4">
+                                    <!-- Class Type Details -->
+                                    <div id="classTypeDetails" class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-sm p-4 border border-purple-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-purple-900 mb-2">Class Details</h3>
+                                                <p class="text-sm text-purple-700 mb-3">This is a structured course with defined curriculum, fixed dates, and scheduled meetings.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Curriculum:</span>
+                                                        <span class="text-purple-900 ml-2" id="classCurriculum">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Start Date:</span>
+                                                        <span class="text-purple-900 ml-2" id="classStartDate">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">End Date:</span>
+                                                        <span class="text-purple-900 ml-2" id="classEndDate">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Cohort Size:</span>
+                                                        <span class="text-purple-900 ml-2" id="classCohortSize">-</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Group Type Details -->
+                                    <div id="groupTypeDetails" class="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg shadow-sm p-4 border border-amber-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-amber-900 mb-2">Group Session Details</h3>
+                                                <p class="text-sm text-amber-700 mb-3">Multiple students learning together with one instructor. Can be part of a Class or stand-alone.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Student Ratio:</span>
+                                                        <span class="text-amber-900 ml-2" id="groupStudentRatio">2+:1</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Min Students:</span>
+                                                        <span class="text-amber-900 ml-2" id="groupMinStudents">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Max Students:</span>
+                                                        <span class="text-amber-900 ml-2" id="groupMaxStudents">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-amber-600 font-medium">Collaborative:</span>
+                                                        <span class="text-amber-900 ml-2">Yes</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- One-to-One Type Details -->
+                                    <div id="oneToOneTypeDetails" class="bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg shadow-sm p-4 border border-cyan-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-cyan-900 mb-2">One-to-One Details</h3>
+                                                <p class="text-sm text-cyan-700 mb-3">Highly personalized instruction with one tutor working exclusively with one student.</p>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Student Ratio:</span>
+                                                        <span class="text-cyan-900 ml-2">1:1</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Personalization:</span>
+                                                        <span class="text-cyan-900 ml-2">High</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Focus:</span>
+                                                        <span class="text-cyan-900 ml-2" id="oneToOneFocus">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Adaptive:</span>
+                                                        <span class="text-cyan-900 ml-2">Yes</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Basic Information (Editable) -->
                                 <div class="bg-white rounded-lg shadow-sm p-4">
@@ -284,13 +386,104 @@
                                     <h2 class="text-lg font-semibold text-gray-900 mb-4">Capacity Settings</h2>
 
                                     <div class="space-y-4">
+                                        <!-- For Group and Class types -->
+                                        <div id="capacityGroupClass">
+                                            <div>
+                                                <label for="maxCapacity"
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Max Capacity <span
+                                                        class="text-red-500">*</span></label>
+                                                <input type="number" id="maxCapacity" required min="1"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                                <p class="text-xs text-gray-500 mt-1">Maximum number of students per session</p>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label for="minCapacity"
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Min Capacity</label>
+                                                <input type="number" id="minCapacity" min="1"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                                <p class="text-xs text-gray-500 mt-1">Minimum number of students required to run the session</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- For One-to-One type -->
+                                        <div id="capacityOneToOne" class="hidden">
+                                            <div class="p-3 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                                <p class="text-sm text-cyan-800">
+                                                    <strong>One-to-One Session:</strong> Capacity is fixed at 1 student per session.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Class-Specific Fields (Only shown for Class type) -->
+                                <div id="classSpecificFields" class="bg-white rounded-lg shadow-sm p-4 hidden">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Class-Specific Information</h2>
+                                    
+                                    <div class="space-y-4">
                                         <div>
-                                            <label for="maxCapacity"
-                                                class="block text-sm font-medium text-gray-700 mb-1">Max Capacity <span
-                                                    class="text-red-500">*</span></label>
-                                            <input type="number" id="maxCapacity" required min="1"
+                                            <label for="curriculum"
+                                                class="block text-sm font-medium text-gray-700 mb-1">Curriculum/Textbook</label>
+                                            <input type="text" id="curriculum"
+                                                placeholder="e.g., AP Calculus AB, SAT Prep Official Guide"
                                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                                            <p class="text-xs text-gray-500 mt-1">Maximum number of students per session
+                                            <p class="text-xs text-gray-500 mt-1">The curriculum or textbook this class follows</p>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label for="cohortStartDate"
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Cohort Start Date</label>
+                                                <input type="date" id="cohortStartDate"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                            </div>
+                                            <div>
+                                                <label for="cohortEndDate"
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Cohort End Date</label>
+                                                <input type="date" id="cohortEndDate"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="cohortSize"
+                                                class="block text-sm font-medium text-gray-700 mb-1">Expected Cohort Size</label>
+                                            <input type="number" id="cohortSize" min="1"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                            <p class="text-xs text-gray-500 mt-1">Expected number of students in this cohort</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- One-to-One Specific Fields (Only shown for One-to-One type) -->
+                                <div id="oneToOneSpecificFields" class="bg-white rounded-lg shadow-sm p-4 hidden">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">One-to-One Specific Information</h2>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="focusArea"
+                                                class="block text-sm font-medium text-gray-700 mb-1">Focus Area</label>
+                                            <select id="focusArea"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                <option value="">Select focus area</option>
+                                                <option value="remediation">Remediation</option>
+                                                <option value="test-prep">Test Preparation</option>
+                                                <option value="advanced-mastery">Advanced Subject Mastery</option>
+                                                <option value="homework-help">Homework Help</option>
+                                                <option value="skill-building">Skill Building</option>
+                                            </select>
+                                            <p class="text-xs text-gray-500 mt-1">Primary focus of this one-to-one session</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="personalizationLevel"
+                                                class="block text-sm font-medium text-gray-700 mb-1">Personalization Level</label>
+                                            <select id="personalizationLevel"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                <option value="high" selected>High - Fully tailored to student</option>
+                                                <option value="medium">Medium - Some customization</option>
+                                                <option value="standard">Standard - General tutoring</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -992,7 +1185,7 @@
         </main>
     </div>
 
-    <script src="class_detail_script.js"></script>
+    <script src="group_detail_script.js"></script>
 </body>
 
 </html>

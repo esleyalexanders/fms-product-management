@@ -148,7 +148,7 @@ function loadClassData() {
     if (!classId) {
         showNotification('Class ID is required', 'error');
         setTimeout(() => {
-            window.location.href = 'class_list.html';
+            window.location.href = 'group_list.html';
         }, 2000);
         return;
     }
@@ -161,7 +161,7 @@ function loadClassData() {
         if (!currentClass) {
             showNotification('Class not found', 'error');
             setTimeout(() => {
-                window.location.href = 'class_list.html';
+                window.location.href = 'group_list.html';
             }, 2000);
             return;
         }
@@ -970,7 +970,7 @@ function handleSave() {
 
             // Redirect to detail page
             setTimeout(() => {
-                window.location.href = `class_detail.html?id=${currentClass.id}`;
+                window.location.href = `group_detail.html?id=${currentClass.id}`;
             }, 1500);
         }
     } catch (error) {
@@ -1039,7 +1039,7 @@ function handleArchive() {
 
                 showNotification('Class archived successfully', 'success');
                 setTimeout(() => {
-                    window.location.href = 'class_list.html';
+                    window.location.href = 'group_list.html';
                 }, 1500);
             }
         } catch (error) {
@@ -1056,7 +1056,7 @@ function getClassId() {
 function viewDetails() {
     const id = getClassId();
     if (id) {
-        window.location.href = `class_detail.html?id=${id}`;
+        window.location.href = `group_detail.html?id=${id}`;
     } else {
         showNotification('Class ID is required', 'error');
     }

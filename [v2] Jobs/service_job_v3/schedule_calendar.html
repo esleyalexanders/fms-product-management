@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Calendar - FMS</title>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+
+        /* Calendar Day Styling */
+        .calendar-day {
+            min-height: 120px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background-color: #f8f9fa;
+        }
+
+        .calendar-day.today {
+            background-color: #e8f0fe;
+            border: 2px solid #1a73e8;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+            background-color: #f9fafb;
+        }
+
+        .calendar-day-number {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .calendar-day.today .calendar-day-number {
+            color: #1a73e8;
+            font-weight: 700;
+        }
+
+        /* Session Event Styling */
+        .calendar-event {
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border-left: 3px solid;
+            transition: all 0.15s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .calendar-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Type-based event colors */
+        .event-type-class {
+            background-color: #f3e8ff;
+            border-left-color: #9333ea;
+            color: #7c3aed;
+        }
+
+        .event-type-group {
+            background-color: #fef3c7;
+            border-left-color: #f59e0b;
+            color: #d97706;
+        }
+
+        .event-type-one-to-one {
+            background-color: #cffafe;
+            border-left-color: #0891b2;
+            color: #0891b2;
+        }
+
+        /* Week View Styling */
+        .week-hour {
+            min-height: 60px;
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .week-event {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            border-left: 3px solid;
+            transition: all 0.15s ease;
+            overflow: hidden;
+        }
+
+        .week-event:hover {
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Day View Styling */
+        .day-time-slot {
+            min-height: 80px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+            padding: 8px;
+        }
+
+        .day-event {
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .day-event:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Status badges */
+        .status-scheduled {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-in_progress {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* View toggle buttons */
+        .view-toggle-btn.active {
+            background-color: #5C40E6;
+            color: white;
+        }
+
+        .view-toggle-btn:not(.active) {
+            background-color: white;
+            color: #4B5563;
+            border: 1px solid #D1D5DB;
+        }
+
+        /* Fixed Header */
+        .calendar-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Main Content (with header offset) */
+        .calendar-main {
+            margin-top: 64px;
+            height: calc(100vh - 64px);
+            overflow: hidden;
+        }
+
+        /* Preview events (future sessions not yet created) */
+        .calendar-event.event-preview,
+        .week-event.event-preview {
+            opacity: 0.7;
+            border-left-style: dashed !important;
+            border-left-width: 3px !important;
+            background-color: #f3f4f6 !important;
+            border-left-color: #9ca3af !important;
+            color: #4b5563 !important;
+            cursor: not-allowed !important;
+            position: relative;
+        }
+
+        .event-preview:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background-color: #e5e7eb !important;
+        }
+
+        /* Current Time Indicator */
+        .current-time-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ea4335;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        .current-time-line::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: -4px;
+            width: 12px;
+            height: 12px;
+            background: #ea4335;
+            border-radius: 50%;
+        }
+
+        /* Event Popover */
+        .event-popover {
+            position: fixed;
+            z-index: 1000;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 0 3px rgba(92, 64, 230, 0.1);
+        }
+
+        /* Day View Time Slots */
+        .day-hour {
+            min-height: 80px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .day-hour-event {
+            position: absolute;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid;
+            cursor: pointer;
+        }
+
+        /* Modal Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-fade {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        /* Drag Over Indicator */
+        .drag-over {
+            background-color: #e8f0fe !important;
+            border: 2px dashed #1a73e8 !important;
+        }
+
+        .week-event.dragging {
+            opacity: 0.5;
+            z-index: 100;
+        }
+
+        .week-event.resizing {
+            cursor: ns-resize;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                        <button class="edit-store-btn" title="Edit store name">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Learning Services</span></a>
+                <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="schedule_calendar.html" class="nav-item active"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-check"></i><span>Schedule
+                        Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar"></i><span>My Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff
+                        Timesheets</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+        </nav>
+
+        <!-- Fixed Header -->
+        <div class="calendar-header">
+            <div class="flex items-center justify-between h-full px-6">
+                <!-- Left: Logo/Brand -->
+                <div class="flex items-center gap-4">
+                    <button onclick="window.location.href='session_list.html'"
+                        class="text-gray-600 hover:text-gray-900">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-semibold text-gray-900">Schedule Calendar</h1>
+                </div>
+
+                <!-- Center: Search and Staff Filter -->
+                <div class="flex-1 max-w-2xl mx-8 flex gap-4">
+                    <!-- Event Search -->
+                    <div class="flex-1 relative search-bar">
+                        <input type="text" id="searchInput" placeholder="Search sessions..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-indigo-500" />
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Staff Filter -->
+                    <div class="relative min-w-64">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" id="staffSearchInput" placeholder="Filter by staff..."
+                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+
+                        <!-- Selected Staff Tags -->
+                        <div id="selectedStaffTags" class="flex flex-wrap gap-1 mt-2 min-h-6">
+                            <!-- Selected staff tags will appear here -->
+                        </div>
+
+                        <!-- Autocomplete Dropdown -->
+                        <div id="staffAutocompleteDropdown"
+                            class="hidden absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto custom-scrollbar">
+                            <!-- Autocomplete results will appear here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- View Toggle -->
+                    <div class="flex border border-gray-300 rounded-lg overflow-hidden">
+                        <button id="viewMonthBtn" onclick="switchView('month')"
+                            class="px-4 py-2 text-sm font-medium bg-indigo-600 text-white">
+                            Month
+                        </button>
+                        <button id="viewWeekBtn" onclick="switchView('week')"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Week
+                        </button>
+                        <button id="viewDayBtn" onclick="switchView('day')"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Day
+                        </button>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flex gap-1">
+                        <button onclick="navigateDate('prev')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <button onclick="navigateDate('today')"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                            Today
+                        </button>
+                        <button onclick="navigateDate('next')" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Create Button -->
+                    <button onclick="showCreateEventModal()"
+                        class="px-4 py-2 text-white rounded-lg hover:opacity-90 flex items-center gap-2 text-sm font-medium transition-colors"
+                        style="background-color: #5C40E6;">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Create
+                    </button>
+
+                    <!-- Filters -->
+                    <button onclick="toggleFilters()" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                        title="Filters">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Main Calendar Area -->
+            <div class="calendar-main">
+                <!-- Date Range Display with Legend -->
+                <div class="bg-white border-b border-gray-200 px-6 py-3">
+                    <h2 class="text-lg font-semibold text-gray-900" id="currentDateDisplay">December 2025</h2>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
+                            <span class="text-sm text-gray-700">Class Sessions</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-amber-100 border-l-4 border-amber-500 rounded"></div>
+                            <span class="text-sm text-gray-700">Group Sessions</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-cyan-100 border-l-4 border-cyan-500 rounded"></div>
+                            <span class="text-sm text-gray-700">One-to-One</span>
+                        </div>
+                        <div class="ml-auto text-sm text-gray-600">
+                            <span id="eventCount">0</span> events
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Month View -->
+                <div id="monthView" class="bg-white overflow-auto custom-scrollbar"
+                    style="height: calc(100vh - 180px);">
+                    <div class="grid grid-cols-7 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Sun</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Mon</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Tue</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Wed</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Thu</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Fri</div>
+                        <div class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50">Sat</div>
+                    </div>
+                    <div id="monthCalendarGrid" class="grid grid-cols-7">
+                        <!-- Calendar days will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Week View -->
+                <div id="weekView" class="hidden bg-white overflow-auto custom-scrollbar"
+                    style="height: calc(100vh - 180px);">
+                    <div class="grid grid-cols-8 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <div
+                            class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50 border-r border-gray-200">
+                            Time</div>
+                        <div id="weekDays" class="col-span-7 grid grid-cols-7">
+                            <!-- Week day headers will be rendered here -->
+                        </div>
+                    </div>
+                    <div id="weekCalendarGrid" class="grid grid-cols-8">
+                        <!-- Week calendar will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Day View -->
+                <div id="dayView" class="hidden bg-white overflow-auto custom-scrollbar"
+                    style="height: calc(100vh - 180px);">
+                    <div class="border-b border-gray-200 p-4 bg-gray-50 sticky top-0 z-10">
+                        <h2 class="text-lg font-semibold text-gray-900" id="dayViewDate">-</h2>
+                    </div>
+                    <div id="dayCalendar" class="grid grid-cols-2">
+                        <div class="border-r border-gray-200">
+                            <div
+                                class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                                Time</div>
+                            <div id="dayTimeSlots">
+                                <!-- Time slots will be rendered here -->
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                class="p-3 text-center text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                                Events</div>
+                            <div id="dayEvents" class="p-4 space-y-3 custom-scrollbar"
+                                style="max-height: calc(100vh - 240px); overflow-y: auto;">
+                                <!-- Day events will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Event Popover (Quick View) -->
+    <div id="eventPopover" class="hidden event-popover">
+        <!-- Popover content will be rendered here -->
+    </div>
+
+    <!-- Event Tooltip (Hover) -->
+    <div id="eventTooltip"
+        class="hidden fixed z-50 bg-gray-900 text-white text-xs rounded-lg shadow-xl p-3 max-w-xs pointer-events-none">
+        <!-- Tooltip content will be rendered here -->
+    </div>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+        onclick="if(event.target === this) closeEventModal()">
+        <div class="bg-white w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-lg shadow-xl modal-fade flex flex-col"
+            onclick="event.stopPropagation()">
+            <div
+                class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
+                <h3 class="text-xl font-semibold text-gray-900" id="modalTitle">Create Session</h3>
+                <button onclick="closeEventModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1" id="modalContent">
+                <!-- Modal content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Type Selection Modal -->
+    <div id="createTypeModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden transform transition-all modal-fade"
+            onclick="event.stopPropagation()">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-900">Create New</h3>
+                <button onclick="closeCreateTypeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Learning Service Option -->
+                    <button onclick="handleCreateTypeSelection('service')"
+                        class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all group text-left w-full">
+                        <div
+                            class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-indigo-200 transition-colors">
+                            <i class="fas fa-graduation-cap text-indigo-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-1">Learning Service</h4>
+                            <p class="text-sm text-gray-500">Create a new class, group, or 1-on-1 service definition</p>
+                        </div>
+                    </button>
+
+                    <!-- Session Option -->
+                    <button onclick="handleCreateTypeSelection('session')"
+                        class="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-emerald-500 hover:bg-emerald-50 transition-all group text-left w-full">
+                        <div
+                            class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-emerald-200 transition-colors">
+                            <i class="fas fa-calendar-day text-emerald-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-1">Session</h4>
+                            <p class="text-sm text-gray-500">Schedule a specific session for an existing service</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Panel -->
+    <div id="filtersPanel"
+        class="hidden fixed right-0 top-16 bg-white border-l border-gray-200 shadow-xl w-80 h-[calc(100vh-64px)] overflow-y-auto custom-scrollbar z-40">
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Filters</h3>
+                <button onclick="toggleFilters()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="p-4 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Event Types</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterClassSessions" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-purple-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-purple-100 border-l-4 border-purple-500 rounded"></div>
+                        <span class="text-sm text-gray-700">Class Sessions</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterGroupSessions" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-amber-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-amber-100 border-l-4 border-amber-500 rounded"></div>
+                        <span class="text-sm text-gray-700">Group Sessions</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterOneToOne" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-cyan-600 border-gray-300 rounded">
+                        <div class="w-4 h-4 bg-cyan-100 border-l-4 border-cyan-500 rounded"></div>
+                        <span class="text-sm text-gray-700">One-to-One</span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterScheduled" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-gray-600 border-gray-300 rounded">
+                        <span class="text-sm text-gray-700">Scheduled</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterInProgress" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-gray-600 border-gray-300 rounded">
+                        <span class="text-sm text-gray-700">In Progress</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterCompleted" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-gray-600 border-gray-300 rounded">
+                        <span class="text-sm text-gray-700">Completed</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="filterCancelled" checked onchange="applyFilters()"
+                            class="w-4 h-4 text-gray-600 border-gray-300 rounded">
+                        <span class="text-sm text-gray-700">Cancelled</span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Learning Service</label>
+                <select id="serviceFilter" onchange="applyFilters()"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">All Services</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Book Customer Modal -->
+    <div id="sessionBookCustomerModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
+        onclick="if(event.target === this) closeSessionBookCustomerModal()">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full h-[90vh] flex flex-col"
+            onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 flex-shrink-0">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Enroll Attendee</h3>
+                        <p class="text-sm text-gray-500 mt-1">Search customer, view available slots, and enroll
+                            individual attendees</p>
+                    </div>
+                    <button onclick="closeSessionBookCustomerModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                <!-- Customer Search -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                    <div class="relative">
+                        <input type="text" id="sessionCustomerSearchInput"
+                            placeholder="Type to search customers with quotes..."
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            autocomplete="off" oninput="searchSessionCustomersForBooking(this.value)" />
+                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <div id="sessionCustomerAutocomplete"
+                            class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                            <!-- Customer search results will appear here -->
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1" id="sessionCustomerSearchHint">
+                        <span class="text-amber-600">⚠️</span> Please ensure a pricebook item is linked to this learning
+                        service to search for customers
+                    </p>
+                </div>
+
+                <!-- Slot Booking Form (shown when customer selected) -->
+                <div id="sessionSlotBookingForm" class="hidden">
+                    <!-- Customer & Inventory Header -->
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-emerald-600 font-semibold mb-1">Selected
+                                    Customer</p>
+                                <h4 class="text-lg font-semibold text-gray-900" id="sessionSlotBookCustomerName">-</h4>
+                                <p class="text-sm text-gray-600" id="sessionSlotBookCustomerEmail">-</p>
+                            </div>
+                            <button onclick="clearSessionSlotBooking()"
+                                class="text-gray-400 hover:text-red-500 transition-colors" title="Clear selection">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Slot Inventory Summary -->
+                        <div class="grid grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-emerald-100">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-emerald-700" id="sessionInventoryTotal">0</p>
+                                <p class="text-xs text-gray-500">Total Purchased</p>
+                            </div>
+                            <div class="text-center border-x border-emerald-100">
+                                <p class="text-2xl font-bold text-blue-600" id="sessionInventoryBooked">0</p>
+                                <p class="text-xs text-gray-500">Booked</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold text-gray-900" id="sessionInventoryAvailable">0</p>
+                                <p class="text-xs text-gray-500">Available</p>
+                            </div>
+                        </div>
+
+                        <!-- Quote Selection -->
+                        <div class="mt-3">
+                            <label class="text-xs text-gray-500 block mb-1">Quote</label>
+                            <div id="sessionSlotBookQuoteDisplay"
+                                class="p-2 border border-emerald-200 rounded bg-white text-sm">
+                                <!-- Quote info will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Payment Status Warning -->
+                        <div id="sessionPaymentWarning"
+                            class="hidden mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
+                            <div class="flex items-center gap-2 text-xs text-amber-800">
+                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                    </path>
+                                </svg>
+                                <span id="sessionPaymentWarningText">This quote is not fully paid.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Slot Entry -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Add Attendee</h4>
+
+                        <!-- Attendee Form -->
+                        <div class="border border-gray-200 rounded-lg p-3 bg-white">
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs font-medium text-gray-600 mb-1 block">Attendee Name <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" id="sessionAttendeeName" placeholder="Enter attendee name"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                        oninput="updateSessionAttendeeState()" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-gray-600 mb-1 block">Notes <span
+                                            class="text-gray-400">(optional)</span></label>
+                                    <input type="text" id="sessionAttendeeNotes"
+                                        placeholder="Special notes for this attendee"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Book Button -->
+                    <button onclick="confirmSessionSlotBooking()" id="sessionConfirmBookingBtn" disabled
+                        class="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        <span id="sessionConfirmBookingBtnText">Book Slot</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Learning Service Modal -->
+    <div id="createServiceModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[70] flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl h-[90vh] flex flex-col modal-fade"
+            onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div
+                class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 flex items-center justify-between rounded-t-lg flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Create Learning Service</h3>
+                        <p class="text-indigo-100 text-sm mt-0.5">Set up a new Class, Group, or One-to-One service</p>
+                    </div>
+                </div>
+                <button onclick="closeServiceCreationModal()"
+                    class="text-white hover:text-indigo-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-50">
+                <form id="learningServiceForm" onsubmit="handleServiceSubmit(event)">
+
+                    <!-- Section 1: Type Selection -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-semibold text-gray-900">Select Type</h2>
+                            <span class="text-red-500">*</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Class Type -->
+                            <div class="type-card type-class border-2 border-gray-200 rounded-xl p-4 hover:border-purple-300"
+                                onclick="selectServiceType('Class')" data-type="Class">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">Class</h3>
+                                        <p class="text-xs text-gray-500">Structured course</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Curriculum-driven, cohort-based with fixed start and
+                                    end dates.</p>
+                            </div>
+
+                            <!-- Group Type -->
+                            <div class="type-card type-group border-2 border-gray-200 rounded-xl p-4 hover:border-amber-300"
+                                onclick="selectServiceType('Group')" data-type="Group">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">Group</h3>
+                                        <p class="text-xs text-gray-500">Multiple students</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">2+ students learning together with one instructor.</p>
+                            </div>
+
+                            <!-- One-to-One Type -->
+                            <div class="type-card type-one-to-one border-2 border-gray-200 rounded-xl p-4 hover:border-cyan-300"
+                                onclick="selectServiceType('One-to-One')" data-type="One-to-One">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900">One-to-One</h3>
+                                        <p class="text-xs text-gray-500">Private tutoring</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Personalized 1:1 instruction tailored to individual
+                                    student needs.</p>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="selectedType" name="type" required />
+                        <p id="typeError" class="text-red-500 text-sm mt-2 hidden">Please select a type</p>
+                    </div>
+
+                    <!-- Section 2: Basic Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-semibold text-gray-900">Basic Information</h2>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="serviceName"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Service Name <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" id="serviceName" name="serviceName" required
+                                        placeholder="e.g., AP Calculus Class"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                </div>
+                                <div>
+                                    <label for="skillLevel" class="block text-sm font-medium text-gray-700 mb-2">Skill
+                                        Level</label>
+                                    <select id="skillLevel" name="skillLevel"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">Select level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="All levels">All levels</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="description"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="description" name="description" rows="2"
+                                    placeholder="Describe the service..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Type-Specific Fields -->
+                    <div id="classTypeFields" class="type-section hidden">
+                        <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card border-l-4 border-purple-500">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Class Details</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="curriculum"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Curriculum <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" id="curriculum" name="curriculum"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500" />
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Cohort Start <span
+                                                class="text-red-500">*</span></label><input type="date"
+                                            id="cohortStartDate"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500" />
+                                    </div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Cohort End <span
+                                                class="text-red-500">*</span></label><input type="date"
+                                            id="cohortEndDate"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500" />
+                                    </div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-2">Cohort
+                                            Size</label><input type="number" id="cohortSize"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="groupTypeFields" class="type-section hidden">
+                        <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card border-l-4 border-amber-500">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Group Details</h2>
+                            <div>
+                                <label for="minCapacity" class="block text-sm font-medium text-gray-700 mb-2">Min
+                                    Capacity <span class="text-red-500">*</span></label>
+                                <input type="number" id="minCapacity" name="minCapacity" min="2" value="2"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-amber-500" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="oneToOneTypeFields" class="type-section hidden">
+                        <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card border-l-4 border-cyan-500">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">One-to-One Details</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-2">Focus
+                                        Area</label><input type="text" id="focusArea"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500" />
+                                </div>
+                                <div><label
+                                        class="block text-sm font-medium text-gray-700 mb-2">Personalization</label><select
+                                        id="personalizationLevel"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500">
+                                        <option value="">Select</option>
+                                        <option value="Standard">Standard</option>
+                                        <option value="High">High</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Price Book -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><svg
+                                    class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                    </path>
+                                </svg></div>
+                            <h2 class="text-xl font-semibold text-gray-900">Price Book Item</h2>
+                        </div>
+                        <div id="pricebookItemContainer">
+                            <button type="button" id="selectPricebookBtn" onclick="showPricebookModal()"
+                                class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-left flex items-center gap-3">
+                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-700">Select Price Book Item</p>
+                                </div>
+                            </button>
+                        </div>
+                        <div id="selectedPricebookDisplay"
+                            class="hidden flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div>
+                                <p id="selectedPricebookName" class="font-medium text-gray-900">-</p>
+                                <p id="selectedPricebookPrice" class="text-sm text-gray-500">$0.00</p>
+                            </div>
+                            <button type="button" onclick="clearPricebookSelection()"
+                                class="text-sm text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg">Remove</button>
+                        </div>
+                        <input type="hidden" id="pricebookItemId" name="pricebookItemId" />
+                    </div>
+
+                    <!-- Section 5: Schedule -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center"><svg
+                                    class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg></div>
+                            <h2 class="text-xl font-semibold text-gray-900">Schedule Configuration</h2>
+                        </div>
+                        <div class="space-y-4">
+                            <div><label class="block text-sm font-medium text-gray-700 mb-2">Frequency</label><select
+                                    id="frequency" onchange="handleFrequencyChange()"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                    <option value="weekly" selected>Weekly</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="custom">Custom</option>
+                                </select></div>
+                            <div id="daysOfWeekSection"><label
+                                    class="block text-sm font-medium text-gray-700 mb-2">Days</label>
+                                <div class="flex flex-wrap gap-2"><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Monday">Mon</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Tuesday">Tue</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Wednesday">Wed</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Thursday">Thu</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Friday">Fri</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg"
+                                        data-day="Saturday">Sat</button><button type="button"
+                                        class="day-selector px-4 py-2 border rounded-lg" data-day="Sunday">Sun</button>
+                                </div>
+                            </div>
+                            <div id="customIntervalSection" class="hidden grid grid-cols-2 gap-4">
+                                <div><label>Interval</label><input type="number" id="customInterval" value="2"
+                                        class="w-full px-3 py-2 border rounded-lg"></div>
+                                <div><label>Unit</label><select id="customIntervalUnit"
+                                        class="w-full px-3 py-2 border rounded-lg">
+                                        <option value="days">Days</option>
+                                        <option value="weeks" selected>Weeks</option>
+                                        <option value="months">Months</option>
+                                    </select></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label>Start Time <span class="text-red-500">*</span></label><input type="time"
+                                        id="startTime" required class="w-full px-3 py-2 border rounded-lg"></div>
+                                <div><label>End Time <span class="text-red-500">*</span></label><input type="time"
+                                        id="endTime" required onchange="calculateDuration()"
+                                        class="w-full px-3 py-2 border rounded-lg"></div>
+                            </div>
+                            <div><label>Duration (min)</label><input type="number" id="duration" readonly
+                                    class="w-full px-3 py-2 border rounded-lg bg-gray-50"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label>Schedule Start</label><input type="date" id="scheduleStartDate"
+                                        class="w-full px-3 py-2 border rounded-lg"></div>
+                                <div><label>Schedule End</label><input type="date" id="scheduleEndDate"
+                                        class="w-full px-3 py-2 border rounded-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Staff Assignment -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"><svg
+                                    class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg></div>
+                            <h2 class="text-xl font-semibold text-gray-900">Default Staff Assignment</h2>
+                        </div>
+                        <div class="mb-3 relative">
+                            <input type="text" id="assignmentSearchInput" placeholder="Search staff..."
+                                class="w-full px-3 py-2 border rounded-lg">
+                            <div id="assignmentAutocomplete"
+                                class="hidden absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            </div>
+                        </div>
+                        <div id="selectedAssignmentsList" class="space-y-2 mb-3"></div>
+                        <p id="noAssignmentsSelected" class="text-sm text-gray-500 italic">No staff selected.</p>
+                        <p id="selectedAssignmentsCount" class="hidden">0</p>
+                        <p id="staffError" class="hidden"></p>
+                        <div id="recommendedAssignmentsList" class="space-y-2 mt-3"></div>
+                    </div>
+
+                    <!-- Section 7: Capacity -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center"><svg
+                                    class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg></div>
+                            <h2 class="text-xl font-semibold text-gray-900">Capacity Settings</h2>
+                        </div>
+                        <div id="maxCapacityField"><label>Max Capacity <span class="text-red-500">*</span></label><input
+                                type="number" id="maxCapacity" value="10" class="w-full px-3 py-2 border rounded-lg">
+                        </div>
+                        <div id="oneToOneCapacityMessage" class="hidden">
+                            <div class="px-3 py-2 bg-cyan-50 border border-cyan-200 rounded-lg text-sm text-cyan-800">
+                                Fixed at 1 (One-to-One)</div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4 flex justify-between">
+                        <button type="button" onclick="closeServiceCreationModal()"
+                            class="px-6 py-2 border rounded-lg hover:bg-gray-50">Cancel</button>
+                        <button type="submit"
+                            class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Create Learning
+                            Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricebook Modal -->
+    <div id="pricebookModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[80] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col"
+            onclick="event.stopPropagation()">
+            <div class="px-6 py-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Select Price Book Item</h3>
+                <button onclick="closePricebookModal()" class="text-gray-400 hover:text-gray-600"><svg class="w-6 h-6"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg></button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <input type="text" id="pricebookSearch" placeholder="Search..."
+                    class="w-full px-4 py-2 border rounded-lg mb-4">
+                <div id="pricebookList" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="schedule_calendar_script.js"></script>
+</body>
+
+</html>

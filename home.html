@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,18 +12,74 @@
     <link rel="stylesheet" href="home-styles.css">
     <style>
         /* Design card small styles */
-        .design-form { padding:8px 0 }
-        .logo-upload-wrap { display:flex; gap:12px; align-items:center }
-        .logo-preview { width:72px; height:72px; border:1px dashed #e6e9ee; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff }
-        .logo-preview img{ max-width:100%; max-height:100% }
-        .color-pickers { display:flex; gap:12px; align-items:center; flex-wrap:wrap }
-        .color-pickers .picker { display:flex; flex-direction:column; gap:6px }
-        .design-actions { display:flex; gap:8px; align-items:center }
-        .design-action-row { display:flex; gap:12px; align-items:center; margin-top:12px }
-        .design-note { color:#6b7280; font-size:13px; margin-top:8px }
-        input[type="color"] { width:48px; height:32px; border:none; padding:0; }
+        .design-form {
+            padding: 8px 0
+        }
+
+        .logo-upload-wrap {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .logo-preview {
+            width: 72px;
+            height: 72px;
+            border: 1px dashed #e6e9ee;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #fff
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%
+        }
+
+        .color-pickers {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .color-pickers .picker {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .design-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .design-action-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px
+        }
+
+        .design-note {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 8px
+        }
+
+        input[type="color"] {
+            width: 48px;
+            height: 32px;
+            border: none;
+            padding: 0;
+        }
     </style>
 </head>
+
 <body>
     <!-- System Update Banner -->
     <div class="limited-offer-banner">
@@ -51,41 +108,63 @@
 
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="home.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
-                <a href="[v2] Jobs/job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">CLASSES</div>
-                <a href="[v2] Jobs/class_job_v2/class_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-chalkboard-teacher"></i><span>Classes</span></a>
-                <a href="[v2] Jobs/class_job_v2/session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-day"></i><span>Sessions</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
-                <a href="[v2] Jobs/class_job_v2/assignment_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-check"></i><span>Assignment Calendar</span></a>
-                <a href="[v2] Jobs/class_job_v2/my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar"></i><span>My Calendar</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
-                <a href="manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-                <a href="Timesheet_manager/staff-timesheets.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff Timesheets</span></a>
+                <a href="home.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
 
-            <div class="sidebar-footer">
-                <a href="manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="[v2] Jobs/job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SERVICES</div>
+                <a href="[v2] Jobs/service_job_v3/learning_service_list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Learning Services</span></a>
+                <a href="[v2] Jobs/service_job_v3/session_list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="[v2] Jobs/service_job_v3/schedule_calendar.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-check"></i><span>Schedule
+                        Calendar</span></a>
+                <a href="[v2] Jobs/service_job_v3/my_calendar.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-calendar"></i><span>My
+                        Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="Timesheet_manager/staff-timesheets.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff
+                        Timesheets</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
 
         <!-- Main Content Area -->
@@ -113,7 +192,8 @@
                         <i class="fas fa-cog"></i>
                     </button>
                     <div class="user-avatar">
-                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff" alt="User Avatar">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff"
+                            alt="User Avatar">
                         <span class="status-indicator"></span>
                     </div>
                 </div>
@@ -121,7 +201,7 @@
 
             <!-- Content Sections -->
             <div class="content-wrapper">
-                
+
                 <!-- Welcome Section -->
                 <section class="welcome-section">
                     <div class="welcome-card">
@@ -133,7 +213,7 @@
                     </div>
                 </section>
 
-                                
+
 
                 <!-- Quick Actions Grid -->
                 <section class="quick-actions-section">
@@ -147,9 +227,11 @@
                             </div>
                             <div class="action-content">
                                 <h4>Add your first service</h4>
-                                <p>Start by adding a service to your pricebook and a few key details. Not ready? Start with a sample one.</p>
+                                <p>Start by adding a service to your pricebook and a few key details. Not ready? Start
+                                    with a sample one.</p>
                                 <div class="card-actions">
-                                    <a href="admin/pricebook-create.html" style="text-decoration: none;"><button class="btn-primary">Add service</button></a>
+                                    <a href="admin/pricebook-create.html" style="text-decoration: none;"><button
+                                            class="btn-primary">Add service</button></a>
                                     <button class="btn-secondary">Import</button>
                                 </div>
                             </div>
@@ -163,7 +245,9 @@
                                 <h4>Quote list</h4>
                                 <p>View and manage all your quotes in one place.</p>
                                 <div class="card-actions">
-                                    <a href="[v2] Quotes/quote_simple/quote_list_simple.html" style="text-decoration: none;"><button class="btn-primary">View quotes</button></a>
+                                    <a href="[v2] Quotes/quote_simple/quote_list_simple.html"
+                                        style="text-decoration: none;"><button class="btn-primary">View
+                                            quotes</button></a>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +265,8 @@
                                 <h4>Manage your team</h4>
                                 <p>Invite team members, manage roles and permissions.</p>
                                 <div class="card-actions">
-                                    <a href="manage-team/manage-team.html" style="text-decoration: none;"><button class="btn-primary">Manage team</button></a>
+                                    <a href="manage-team/manage-team.html" style="text-decoration: none;"><button
+                                            class="btn-primary">Manage team</button></a>
                                 </div>
                             </div>
                         </div>
@@ -194,7 +279,9 @@
                                 <h4>Customer list</h4>
                                 <p>View and manage all your customers.</p>
                                 <div class="card-actions">
-                                    <a href="Customer Management/customer-list.html" style="text-decoration: none;"><button class="btn-primary">View customers</button></a>
+                                    <a href="Customer Management/customer-list.html"
+                                        style="text-decoration: none;"><button class="btn-primary">View
+                                            customers</button></a>
                                 </div>
                             </div>
                         </div>
@@ -209,8 +296,9 @@
                                 <span class="progress-indicator">0 of 3 tasks complete</span>
                             </div>
                             <h3 class="service-title">Set up your service-based business</h3>
-                            <p class="service-description">Follow these tasks to efficiently manage bookings, payments, and offer a seamless experience for your customers.</p>
-                            
+                            <p class="service-description">Follow these tasks to efficiently manage bookings, payments,
+                                and offer a seamless experience for your customers.</p>
+
                             <div class="task-list">
                                 <div class="task-item">
                                     <div class="task-checkbox">
@@ -220,7 +308,8 @@
                                     <div class="task-content">
                                         <h5>First task: Add your first service</h5>
                                     </div>
-                                    <a href="add-product.html" style="text-decoration: none;"><button class="btn-task-action">Get started</button></a>
+                                    <a href="add-product.html" style="text-decoration: none;"><button
+                                            class="btn-task-action">Get started</button></a>
                                 </div>
                             </div>
                         </div>
@@ -246,13 +335,15 @@
                             <button class="tab-btn">Overdue <span class="tab-count">0</span></button>
                             <button class="tab-btn">Remaining <span class="tab-count">0</span></button>
                         </div>
-                        
+
                         <div class="empty-state">
                             <div class="empty-icon">
                                 <i class="fas fa-calendar-day"></i>
                             </div>
-                            <p class="empty-message">This is where you will get an overview of your appointments for today once they are scheduled.</p>
-                            <a href="add-product.html" style="text-decoration: none;"><button class="btn-primary">Schedule a Job</button></a>
+                            <p class="empty-message">This is where you will get an overview of your appointments for
+                                today once they are scheduled.</p>
+                            <a href="add-product.html" style="text-decoration: none;"><button
+                                    class="btn-primary">Schedule a Job</button></a>
                         </div>
                     </div>
                 </section>
@@ -283,8 +374,9 @@
     </div>
 
     <script src="home-script.js"></script>
-        <script>
-            // design settings moved to a separate page: design-settings.html
-        </script>
+    <script>
+        // design settings moved to a separate page: design-settings.html
+    </script>
 </body>
+
 </html>
