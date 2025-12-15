@@ -1460,7 +1460,61 @@ function hideEventTooltip() {
 // ==================== Create/Edit Modal ====================
 
 function showCreateEventModal(date = null, time = null) {
-    window.location.href = 'session_create.html';
+    editingEvent = null;
+    document.getElementById('modalTitle').textContent = 'Create Session';
+
+    // Load learning services for dropdown
+    const learningServices = JSON.parse(localStorage.getItem('fms_learning_services') || '[]');
+    const activeServices = learningServices.filter(ls => ls.status !== 'archived');
+
+    // Default values
+    const defaultDate = date || formatDateString(new Date());
+    const defaultTime = time || '09:00';
+
+    const modalContent = document.getElementById('modalContent');
+    modalContent.innerHTML = `
+        <form onsubmit="event.preventDefault(); createSessionFromModal();" class="space-y-4">
+            <!-- Learning Service Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Learning Service <span class="text-red-500">*</span></label>
+                <select id="createSessionLearningServiceId" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select a service...</option>
+                    ${activeServices.map(ls => `<option value="${ls.id}">${ls.name} (${ls.type})</option>`).join('')}
+                </select>
+            </div>
+
+            <!-- Date & Time -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date <span class="text-red-500">*</span></label>
+                    <input type="date" id="createSessionDate" required value="${defaultDate}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Time <span class="text-red-500">*</span></label>
+                    <input type="time" id="createSessionTime" required value="${defaultTime}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <textarea id="createSessionNotes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Optional session notes..."></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                <button type="button" onclick="closeEventModal()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                    Create Session
+                </button>
+            </div>
+        </form>
+    `;
+
+    const modal = document.getElementById('eventModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
 }
 
 function closeEventModal() {
