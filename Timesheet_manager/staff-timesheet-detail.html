@@ -144,7 +144,7 @@
             background: #f9fafb;
         }
         
-        /* Job ID */
+        /* Session ID */
         .job-id-cell {
             font-weight: 600;
             color: #6366f1;
@@ -483,6 +483,25 @@
                 <a href="staff-timesheets.html" class="nav-item timesheet-link" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-clock"></i><span>Staff Timesheets</span>
                 </a>
+                <a href="time_payroll_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-calendar-check"></i><span>Time & Payroll Calendar</span>
+                </a>
+                <a href="timesheet_inbox.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-inbox"></i><span>Timesheet Inbox</span>
+                </a>
+                <a href="pay_run_builder.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-money-check-dollar"></i><span>Pay Run Builder</span>
+                </a>
+                <div class="nav-section-label" style="margin-top:14px;">CONFIG</div>
+                <a href="pay_profiles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-sliders"></i><span>Pay Profiles</span>
+                </a>
+                <a href="staff_pay_profiles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-users-gear"></i><span>Staff pay profiles</span>
+                </a>
+                <a href="holidays.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-umbrella-beach"></i><span>Holidays</span>
+                </a>
             <div class="sidebar-footer">
                 <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-shield-alt"></i>
@@ -508,7 +527,7 @@
                     </button>
                     <div>
                         <h1 class="page-title">Timesheet Details</h1>
-                        <p class="page-subtitle">Review and approve individual job time entries</p>
+                        <p class="page-subtitle">Review and approve individual session time entries</p>
                     </div>
                 </div>
                 <div class="header-right">
@@ -566,7 +585,7 @@
                 <!-- Bulk Actions Bar -->
                 <div class="bulk-actions-bar" id="bulkActionsBar">
                     <div class="bulk-selection-info">
-                        <span id="selectedCount">0</span> job(s) selected
+                        <span id="selectedCount">0</span> session(s) selected
                     </div>
                     <div class="bulk-actions-buttons">
                         <button class="bulk-action-btn approve" onclick="bulkApprove()">
@@ -589,7 +608,7 @@
                                 <th style="width: 40px;">
                                     <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="row-checkbox">
                                 </th>
-                                <th>Job ID</th>
+                                <th>Session ID</th>
                                 <th>Date</th>
                                 <th>Start time</th>
                                 <th>End time</th>

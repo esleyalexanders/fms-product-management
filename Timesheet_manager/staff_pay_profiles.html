@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Pay Profiles - Time & Payroll</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../home-styles.css" />
+  <style>
+    .sidebar .nav-item.staffpay-link { background:#eef2ff; color:#6366f1; font-weight:600; }
+
+    .panel { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px; margin-bottom:16px; }
+
+    .btn {
+      border:none; border-radius:10px; padding:10px 14px; cursor:pointer;
+      font-weight:800; font-size:14px; display:inline-flex; align-items:center; gap:8px;
+      white-space:nowrap;
+    }
+    .btn-primary { background:#6366f1; color:#fff; }
+    .btn-secondary { background:#e5e7eb; color:#374151; }
+    .btn-ghost { background:#f9fafb; color:#374151; border:1px solid #e5e7eb; }
+
+    .grid { display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:12px; align-items:end; }
+    .field { grid-column: span 3; display:flex; flex-direction:column; gap:6px; }
+    .field.wide { grid-column: span 6; }
+
+    .field label { font-size:11px; color:#6b7280; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+    .field input, .field select {
+      border:1px solid #e5e7eb; border-radius:10px; padding:10px 10px; font-size:14px;
+    }
+
+    .table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
+    .table th { background:#1e40af; color:#fff; font-size:12px; padding:12px; text-align:left; font-weight:900; letter-spacing:.5px; border-bottom:2px solid #1e3a8a; vertical-align:bottom; }
+    .table td { border-bottom:1px solid #f3f4f6; padding:12px; font-size:13px; color:#374151; vertical-align:top; }
+    .table tr:hover td { background:#f9fafb; }
+    .table tr:last-child td { border-bottom:none; }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-variant-numeric: tabular-nums; }
+
+    .hint { color:#6b7280; font-size:12px; margin-top:6px; }
+
+    @media (max-width: 980px) {
+      .field, .field.wide { grid-column: span 12; }
+      .table { display:block; overflow:auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-store"></i>
+          <div class="logo-text-wrapper">
+            <span class="logo-text" id="storeName">My Store</span>
+            <button class="edit-store-btn" title="Edit store name"><i class="fas fa-pencil-alt"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-section-label">TIME & PAYROLL</div>
+        <a href="time_payroll_calendar.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-calendar-check"></i><span>Time & Payroll Calendar</span></a>
+        <a href="timesheet_inbox.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-inbox"></i><span>Timesheet Inbox</span></a>
+        <a href="pay_run_builder.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-money-check-dollar"></i><span>Pay Run Builder</span></a>
+
+        <div class="nav-section-label" style="margin-top:14px;">CONFIG</div>
+        <a href="pay_profiles.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-sliders"></i><span>Pay Profiles</span></a>
+        <a href="staff_pay_profiles.html" class="nav-item staffpay-link" style="text-decoration:none;color:inherit;"><i class="fas fa-users-gear"></i><span>Staff pay profiles</span></a>
+        <a href="holidays.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-umbrella-beach"></i><span>Holidays</span></a>
+
+        <div class="sidebar-footer">
+          <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration:none;color:inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
+          <div class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <h1 class="page-title">Staff pay profiles</h1>
+          <p class="page-subtitle">Assign pay profiles to staff and set rate overrides</p>
+        </div>
+        <div class="header-right">
+          <a href="pay_profiles.html?new=1" style="text-decoration:none;"><button class="btn btn-ghost" id="btnAddProfile"><i class="fas fa-plus"></i> Add payroll profile</button></a>
+          <button class="btn btn-secondary" id="btnRefresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+          <button class="btn btn-primary" id="btnSaveAll"><i class="fas fa-floppy-disk"></i> Save all</button>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="panel">
+          <div class="grid">
+            <div class="field wide">
+              <label>Search</label>
+              <input id="search" type="text" placeholder="Name / staff id..." />
+              <div class="hint">This updates <span class="mono">fms_staff.defaultPayProfileId</span> and optional overrides.</div>
+            </div>
+
+            <div class="field">
+              <label>Show</label>
+              <select id="statusFilter">
+                <option value="active" selected>Active</option>
+                <option value="all">All</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Staff</th>
+                <th>Profile</th>
+                <th>Hourly override</th>
+                <th>Session override</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../manage-team/staff_store.js"></script>
+  <script src="payroll_store.js"></script>
+  <script src="staff_pay_profiles.js"></script>
+</body>
+</html>
+

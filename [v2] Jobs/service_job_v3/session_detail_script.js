@@ -446,7 +446,7 @@ function renderAttendees() {
         const customer = sampleCustomers.find(c => c.id === booking.customerId);
         const quote = customer?.quotes.find(q => q.id === booking.quoteId);
         const isTemporary = booking.isTemporary || false;
-        
+
         const statusConfig = {
             confirmed: { text: 'Confirmed', class: 'bg-green-100 text-green-700' },
             cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
@@ -501,13 +501,13 @@ function renderAttendees() {
 
 function getPaymentStatusBadge(paymentStatus) {
     if (!paymentStatus) return '';
-    
+
     const badges = {
         'paid': '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>',
         'partial': '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>',
         'unpaid': '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>'
     };
-    
+
     return badges[paymentStatus] || '';
 }
 
@@ -515,7 +515,7 @@ function renderSidebar() {
     if (!currentLearningService) return;
 
     document.getElementById('sidebarServiceName').textContent = currentLearningService.name || '-';
-    
+
     // Type badge
     const sidebarBadge = document.getElementById('sidebarTypeBadge');
     const badges = {
@@ -708,7 +708,7 @@ function removeOverrideAssignment(id, type) {
 function renderOverrideAssignments() {
     const list = document.getElementById('overrideSelectedList');
     const count = document.getElementById('overrideSelectedCount');
-    
+
     list.innerHTML = '';
     count.textContent = overrideAssignments.length;
 
@@ -1041,7 +1041,7 @@ function searchAttendees(query) {
         const customer = sampleCustomers.find(c => c.id === booking.customerId);
         const quote = customer?.quotes.find(q => q.id === booking.quoteId);
         const isTemporary = booking.isTemporary || false;
-        
+
         const statusConfig = {
             confirmed: { text: 'Confirmed', class: 'bg-green-100 text-green-700' },
             cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
@@ -1210,8 +1210,10 @@ function formatDateForInput(date) {
 
 // ===== TRANSFER TO SESSION =====
 let attendeeToTransfer = null;
+let selectedTargetLearningService = null;
 let selectedTargetSession = null;
 let allSessions = [];
+let allLearningServices = [];
 
 function openTransferToSessionModal(bookingId) {
     attendeeToTransfer = allBookings.find(b => b.id === bookingId);
@@ -1226,30 +1228,50 @@ function openTransferToSessionModal(bookingId) {
     document.getElementById('transferSessionAttendeeCustomer').textContent = `Customer: ${customer?.name || '-'}`;
     document.getElementById('transferSessionAttendeeService').textContent = `Current Service: ${currentSession.learningServiceName || '-'}`;
 
-    // Load all sessions
+    // Load all learning services and sessions
+    loadAllLearningServices();
     loadAllSessions();
 
-    // Clear previous selection
+    // Clear previous selections
+    selectedTargetLearningService = null;
     selectedTargetSession = null;
+    document.getElementById('transferLearningServiceSearch').value = '';
     document.getElementById('transferSessionSearch').value = '';
     document.getElementById('transferSessionReason').value = '';
+    document.getElementById('transferSelectedLearningService').classList.add('hidden');
     document.getElementById('transferSelectedSession').classList.add('hidden');
+    document.getElementById('transferSessionSelectionSection').classList.add('hidden');
+    document.getElementById('transferLearningServiceAutocomplete').classList.add('hidden');
     document.getElementById('transferSessionAutocomplete').classList.add('hidden');
     document.getElementById('confirmTransferToSessionBtn').disabled = true;
 
     document.getElementById('transferToSessionModal').classList.remove('hidden');
+
+    // Show recommended learning services immediately
+    showRecommendedLearningServices();
 }
 
 function closeTransferToSessionModal() {
     document.getElementById('transferToSessionModal').classList.add('hidden');
     attendeeToTransfer = null;
+    selectedTargetLearningService = null;
     selectedTargetSession = null;
+}
+
+function loadAllLearningServices() {
+    const stored = localStorage.getItem('fms_learning_services');
+    allLearningServices = stored ? JSON.parse(stored) : [];
+
+    // If no services in storage, use sample data
+    if (allLearningServices.length === 0) {
+        allLearningServices = getSampleLearningServices();
+    }
 }
 
 function loadAllSessions() {
     const stored = localStorage.getItem('fms_sessions');
     allSessions = stored ? JSON.parse(stored) : [];
-    
+
     // If no sessions in storage, use sample data
     if (allSessions.length === 0) {
         // Get sample sessions from session_list_script.js pattern
@@ -1258,7 +1280,7 @@ function loadAllSessions() {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const nextWeek = new Date(today);
         nextWeek.setDate(nextWeek.getDate() + 7);
-        
+
         allSessions = [
             {
                 id: 'session_001',
@@ -1290,27 +1312,172 @@ function loadAllSessions() {
     }
 }
 
-function searchSessionsForTransfer(query) {
-    const autocomplete = document.getElementById('transferSessionAutocomplete');
-    if (!query || query.length < 2) {
+// Step 1: Learning Service Selection
+function showRecommendedLearningServices() {
+    // Show all available learning services as recommendations (excluding current one)
+    const recommended = allLearningServices.filter(service => {
+        return service.id !== currentSession.learningServiceId;
+    });
+
+    if (recommended.length > 0) {
+        renderLearningServiceAutocomplete(recommended);
+    }
+}
+
+function searchLearningServicesForTransfer(query) {
+    const autocomplete = document.getElementById('transferLearningServiceAutocomplete');
+
+    // If query is empty, show recommendations
+    if (!query || query.trim().length === 0) {
+        showRecommendedLearningServices();
+        return;
+    }
+
+    // Allow search with just 1 character for better UX
+    if (query.length < 1) {
         autocomplete.classList.add('hidden');
         return;
     }
 
     const lowerQuery = query.toLowerCase();
+    const matching = allLearningServices.filter(service => {
+        // Exclude current learning service
+        if (service.id === currentSession.learningServiceId) return false;
+
+        return service.name.toLowerCase().includes(lowerQuery) ||
+            service.type.toLowerCase().includes(lowerQuery);
+    });
+
+    renderLearningServiceAutocomplete(matching);
+}
+
+function renderLearningServiceAutocomplete(services) {
+    const autocomplete = document.getElementById('transferLearningServiceAutocomplete');
+    autocomplete.innerHTML = '';
+
+    if (services.length === 0) {
+        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No learning services found</div>';
+        autocomplete.classList.remove('hidden');
+        return;
+    }
+
+    services.forEach(service => {
+        const div = document.createElement('div');
+        div.className = 'p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0';
+        div.onclick = () => selectTargetLearningService(service);
+
+        const typeStyles = {
+            'Class': { icon: '📚', color: 'bg-purple-100 text-purple-700' },
+            'Group': { icon: '👥', color: 'bg-amber-100 text-amber-700' },
+            'One-to-One': { icon: '👤', color: 'bg-cyan-100 text-cyan-700' }
+        };
+        const style = typeStyles[service.type] || typeStyles['Class'];
+
+        div.innerHTML = `
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-sm">${style.icon}</span>
+                        <p class="font-medium text-gray-900">${service.name}</p>
+                        <span class="px-2 py-0.5 text-xs font-medium rounded-full ${style.color}">${service.type}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Capacity: ${service.maxCapacity || '-'}</p>
+                </div>
+            </div>
+        `;
+
+        autocomplete.appendChild(div);
+    });
+
+    autocomplete.classList.remove('hidden');
+}
+
+function selectTargetLearningService(service) {
+    selectedTargetLearningService = service;
+
+    // Update display
+    document.getElementById('transferLearningServiceName').textContent = service.name;
+    document.getElementById('transferLearningServiceType').textContent = service.type;
+    document.getElementById('transferSelectedLearningService').classList.remove('hidden');
+    document.getElementById('transferLearningServiceAutocomplete').classList.add('hidden');
+    document.getElementById('transferLearningServiceSearch').value = service.name;
+
+    // Show step 2 (session selection)
+    document.getElementById('transferSessionSelectionSection').classList.remove('hidden');
+
+    // Clear any previous session selection
+    selectedTargetSession = null;
+    document.getElementById('transferSessionSearch').value = '';
+    document.getElementById('transferSelectedSession').classList.add('hidden');
+
+    updateTransferToSessionButtonState();
+}
+
+function clearTransferLearningServiceSelection() {
+    selectedTargetLearningService = null;
+    selectedTargetSession = null;
+    document.getElementById('transferSelectedLearningService').classList.add('hidden');
+    document.getElementById('transferSessionSelectionSection').classList.add('hidden');
+    document.getElementById('transferSelectedSession').classList.add('hidden');
+    document.getElementById('transferLearningServiceSearch').value = '';
+    document.getElementById('transferSessionSearch').value = '';
+    updateTransferToSessionButtonState();
+}
+
+// Step 2: Session Selection (filtered by selected learning service)
+function searchSessionsForTransfer(query) {
+    const autocomplete = document.getElementById('transferSessionAutocomplete');
+
+    // Must have a learning service selected first
+    if (!selectedTargetLearningService) {
+        autocomplete.classList.add('hidden');
+        return;
+    }
+
+    if (!query || query.length < 1) {
+        // Show all sessions for the selected learning service
+        const sessionsForService = allSessions.filter(session => {
+            return session.learningServiceId === selectedTargetLearningService.id &&
+                session.id !== currentSession.id;
+        });
+        renderSessionAutocomplete(sessionsForService);
+        return;
+    }
+
+    const lowerQuery = query.toLowerCase();
     const matching = allSessions.filter(session => {
-        // Exclude current session
+        // Must be from selected learning service and not current session
+        if (session.learningServiceId !== selectedTargetLearningService.id) return false;
         if (session.id === currentSession.id) return false;
-        
-        // Filter by date, learning service name, or time
+
+        // Filter by date or time
         const dateStr = formatDate(session.date);
         const timeStr = `${formatTime(session.startTime)} - ${formatTime(session.endTime)}`;
         return dateStr.toLowerCase().includes(lowerQuery) ||
-               session.learningServiceName.toLowerCase().includes(lowerQuery) ||
-               timeStr.toLowerCase().includes(lowerQuery);
+            timeStr.toLowerCase().includes(lowerQuery);
     });
 
     renderSessionAutocomplete(matching);
+}
+
+function getSessionTemporalStatus(sessionDate, sessionStartTime) {
+    const now = new Date();
+    const sessionDateTime = new Date(sessionDate + 'T' + sessionStartTime);
+
+    // Calculate time difference in hours
+    const diffMs = sessionDateTime - now;
+    const diffHours = diffMs / (1000 * 60 * 60);
+
+    if (diffHours < -2) {
+        // More than 2 hours in the past
+        return { status: 'past', label: 'Past', color: 'bg-gray-100 text-gray-600', icon: '⏮️' };
+    } else if (diffHours >= -2 && diffHours <= 2) {
+        // Within 2 hours (present)
+        return { status: 'present', label: 'Now', color: 'bg-green-100 text-green-700', icon: '▶️' };
+    } else {
+        // Future
+        return { status: 'future', label: 'Future', color: 'bg-blue-100 text-blue-700', icon: '⏭️' };
+    }
 }
 
 function renderSessionAutocomplete(sessions) {
@@ -1318,33 +1485,36 @@ function renderSessionAutocomplete(sessions) {
     autocomplete.innerHTML = '';
 
     if (sessions.length === 0) {
-        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No sessions found</div>';
+        autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No sessions found for this learning service</div>';
         autocomplete.classList.remove('hidden');
         return;
     }
+
+    // Sort sessions by date and time
+    sessions.sort((a, b) => {
+        const dateA = new Date(a.date + 'T' + a.startTime);
+        const dateB = new Date(b.date + 'T' + b.startTime);
+        return dateA - dateB;
+    });
 
     sessions.forEach(session => {
         const div = document.createElement('div');
         div.className = 'p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0';
         div.onclick = () => selectTargetSession(session);
 
-        const typeStyles = {
-            'Class': { icon: '📚', color: 'text-purple-600' },
-            'Group': { icon: '👥', color: 'text-amber-600' },
-            'One-to-One': { icon: '👤', color: 'text-cyan-600' }
-        };
-        const style = typeStyles[session.learningServiceType] || typeStyles['Class'];
         const enrollment = `${session.enrolled || 0}/${session.maxCapacity || 0}`;
+        const temporal = getSessionTemporalStatus(session.date, session.startTime);
 
         div.innerHTML = `
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-sm">${style.icon}</span>
-                        <p class="font-medium text-gray-900">${session.learningServiceName}</p>
-                        <span class="px-2 py-0.5 text-xs font-medium rounded-full ${style.color} bg-opacity-10">${session.learningServiceType}</span>
+                        <p class="font-medium text-gray-900">${formatDate(session.date)}</p>
+                        <span class="px-2 py-0.5 text-xs font-medium rounded-full ${temporal.color}">
+                            ${temporal.icon} ${temporal.label}
+                        </span>
                     </div>
-                    <p class="text-xs text-gray-600">${formatDate(session.date)} • ${formatTime(session.startTime)} - ${formatTime(session.endTime)}</p>
+                    <p class="text-xs text-gray-600">${formatTime(session.startTime)} - ${formatTime(session.endTime)}</p>
                     <p class="text-xs text-gray-500 mt-1">Enrollment: ${enrollment}</p>
                 </div>
             </div>
@@ -1359,13 +1529,15 @@ function renderSessionAutocomplete(sessions) {
 function selectTargetSession(session) {
     selectedTargetSession = session;
 
-    document.getElementById('transferSessionName').textContent = session.learningServiceName;
-    document.getElementById('transferSessionDate').textContent = formatDate(session.date);
+    const temporal = getSessionTemporalStatus(session.date, session.startTime);
+
+    document.getElementById('transferSessionName').textContent = selectedTargetLearningService.name;
+    document.getElementById('transferSessionDate').textContent = `${formatDate(session.date)} (${temporal.label})`;
     document.getElementById('transferSessionTime').textContent = `${formatTime(session.startTime)} - ${formatTime(session.endTime)}`;
 
     document.getElementById('transferSelectedSession').classList.remove('hidden');
     document.getElementById('transferSessionAutocomplete').classList.add('hidden');
-    document.getElementById('transferSessionSearch').value = `${session.learningServiceName} - ${formatDate(session.date)}`;
+    document.getElementById('transferSessionSearch').value = `${formatDate(session.date)} - ${formatTime(session.startTime)}`;
 
     updateTransferToSessionButtonState();
 }
@@ -1379,7 +1551,7 @@ function clearTransferSessionSelection() {
 
 function updateTransferToSessionButtonState() {
     const btn = document.getElementById('confirmTransferToSessionBtn');
-    btn.disabled = !selectedTargetSession;
+    btn.disabled = !selectedTargetLearningService || !selectedTargetSession;
 }
 
 function confirmTransferToSession() {
@@ -1433,7 +1605,7 @@ function confirmTransferToSession() {
     }
 
     closeTransferToSessionModal();
-    alert(`Attendee transferred to ${selectedTargetSession.learningServiceName} session on ${formatDate(selectedTargetSession.date)}. They are marked as temporary.`);
+    alert(`Attendee transferred to ${selectedTargetLearningService.name} session on ${formatDate(selectedTargetSession.date)}. They are marked as temporary.`);
 }
 
 // Event listeners
@@ -1444,6 +1616,9 @@ document.addEventListener('click', function (e) {
     }
     if (!e.target.closest('#customerSearchInput') && !e.target.closest('#customerAutocomplete')) {
         document.getElementById('customerAutocomplete').classList.add('hidden');
+    }
+    if (!e.target.closest('#transferLearningServiceSearch') && !e.target.closest('#transferLearningServiceAutocomplete')) {
+        document.getElementById('transferLearningServiceAutocomplete')?.classList.add('hidden');
     }
     if (!e.target.closest('#transferSessionSearch') && !e.target.closest('#transferSessionAutocomplete')) {
         document.getElementById('transferSessionAutocomplete').classList.add('hidden');

@@ -1,108 +1,137 @@
-// Manager Staff Timesheets JavaScript - Approval Workflow
+// Manager Staff Timesheets JavaScript - Session approval workflow (service_job_v3)
 
-// Sample staff data (in production, this would come from API)
+// Sample staff data aligned with service_job_v3 schedule_calendar_script.js
 const staffData = [
-    { id: 'STAFF-001', firstName: 'John', lastName: 'Smith', role: 'Technician', status: 'active' },
-    { id: 'STAFF-002', firstName: 'Sarah', lastName: 'Johnson', role: 'Technician', status: 'active' },
-    { id: 'STAFF-003', firstName: 'Mike', lastName: 'Davis', role: 'Technician', status: 'active' },
-    { id: 'STAFF-004', firstName: 'Emily', lastName: 'Wilson', role: 'Receptionist', status: 'active' }
+    { id: 'STAFF-001', firstName: 'Daniel', lastName: 'Davis', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-002', firstName: 'Sarah', lastName: 'Johnson', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-003', firstName: 'Michael', lastName: 'Chen', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-004', firstName: 'Emily', lastName: 'Rodriguez', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-005', firstName: 'James', lastName: 'Wilson', role: 'Instructor', status: 'active' }
 ];
 
-// Sample jobs data with approval status
-// approvalStatus: 'pending', 'approved', 'declined'
-const allJobs = [
-    {
-        id: 'JOB-2024-123',
-        title: 'Lawn Mowing Service',
-        customer: 'Robert Smith',
-        status: 'completed',
-        assignedTo: 'STAFF-001',
-        completionData: {
-            timeSpent: { hours: 1, minutes: 0 },
-            completedAt: new Date(Date.now() - 86400000).toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'pending' // pending, approved, declined
-        }
-    },
-    {
-        id: 'JOB-2024-121',
-        title: 'Pressure Washing - Driveway',
-        customer: 'Sarah Mitchell',
-        status: 'completed',
-        assignedTo: 'STAFF-001',
-        completionData: {
-            timeSpent: { hours: 2, minutes: 15 },
-            completedAt: new Date(Date.now() - 172800000).toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'approved'
-        }
-    },
-    {
-        id: 'JOB-2024-122',
-        title: 'Air Conditioning Service',
-        customer: 'Tom Harris',
-        status: 'completed',
-        assignedTo: 'STAFF-002',
-        completionData: {
-            timeSpent: { hours: 1, minutes: 30 },
-            completedAt: new Date(Date.now() - 259200000).toISOString(),
-            completedBy: 'STAFF-002',
-            approvalStatus: 'approved'
-        }
-    },
-    {
-        id: 'JOB-2024-124',
-        title: 'Garden Maintenance',
-        customer: 'Michael Chen',
-        status: 'completed',
-        assignedTo: 'STAFF-001',
-        completionData: {
-            timeSpent: { hours: 2, minutes: 30 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'pending'
-        }
-    },
-    {
-        id: 'JOB-2024-125',
-        title: 'Pool Cleaning',
-        customer: 'Emma Wilson',
-        status: 'completed',
-        assignedTo: 'STAFF-002',
-        completionData: {
-            timeSpent: { hours: 1, minutes: 45 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-002',
-            approvalStatus: 'declined'
-        }
-    },
-    {
-        id: 'JOB-2024-126',
-        title: 'Emergency Plumbing Repair',
-        customer: 'David Brown',
-        status: 'completed',
-        assignedTo: 'STAFF-003',
-        completionData: {
-            timeSpent: { hours: 3, minutes: 0 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-003',
-            approvalStatus: 'pending'
-        }
-    },
-    {
-        id: 'JOB-2024-127',
-        title: 'Window Cleaning',
-        customer: 'Alice Johnson',
-        status: 'completed',
-        assignedTo: 'STAFF-001',
-        completionData: {
-            timeSpent: { hours: 2, minutes: 0 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'approved'
-        }
+function safeJsonParse(value, fallback) {
+    try {
+        return JSON.parse(value);
+    } catch {
+        return fallback;
     }
-];
+}
+
+function minutesToTimeSpent(totalMinutes) {
+    const mins = Math.max(0, parseInt(totalMinutes || 0, 10));
+    return { hours: Math.floor(mins / 60), minutes: mins % 60 };
+}
+
+function getSessionEstimatedMinutes(session) {
+    const duration = session?.duration;
+    const durationNum = typeof duration === 'string' ? parseInt(duration, 10) : duration;
+    if (Number.isFinite(durationNum) && durationNum > 0) return durationNum;
+    // If no duration, infer from start/end time when possible
+    const start = session?.startTime;
+    const end = session?.endTime;
+    if (start && end && start.includes(':') && end.includes(':')) {
+        const [sh, sm] = start.split(':').map(Number);
+        const [eh, em] = end.split(':').map(Number);
+        const mins = (eh * 60 + em) - (sh * 60 + sm);
+        return mins > 0 ? mins : 0;
+    }
+    return 0;
+}
+
+function isSessionInPast(session) {
+    if (!session?.date) return false;
+    const time = session.endTime || session.startTime || '00:00';
+    const dt = new Date(`${session.date}T${time}:00`);
+    return Number.isFinite(dt.getTime()) && dt.getTime() < Date.now();
+}
+
+function normalizeSessionAssignedStaff(session) {
+    const assigned = session?.assignedStaff;
+    if (!assigned) return [];
+
+    // Schedule calendar sometimes stores ['Daniel Davis'] and sometimes [{id,name}]
+    if (Array.isArray(assigned)) {
+        return assigned.map(s => {
+            if (typeof s === 'string') return { id: null, name: s };
+            if (s && typeof s === 'object') return { id: s.id || null, name: s.name || s.fullName || 'Unknown' };
+            return { id: null, name: 'Unknown' };
+        });
+    }
+
+    if (typeof assigned === 'string') return [{ id: null, name: assigned }];
+    return [];
+}
+
+function getStaffIdFromSession(session) {
+    // Prefer explicit staff id on assignedStaff objects
+    const staffList = normalizeSessionAssignedStaff(session);
+    const matchById = staffList.find(s => s.id && staffData.some(sd => sd.id === s.id));
+    if (matchById) return matchById.id;
+
+    // Fallback: match by staff full name
+    const matchByName = staffList.find(s => {
+        const name = (s.name || '').trim().toLowerCase();
+        return staffData.some(sd => `${sd.firstName} ${sd.lastName}`.toLowerCase() === name);
+    });
+    if (matchByName) {
+        const staff = staffData.find(sd => `${sd.firstName} ${sd.lastName}`.toLowerCase() === matchByName.name.trim().toLowerCase());
+        return staff?.id || null;
+    }
+
+    // Or session.completedBy might contain staff id
+    const completedBy = session?.completionData?.completedBy;
+    if (completedBy && staffData.some(sd => sd.id === completedBy)) return completedBy;
+
+    return null;
+}
+
+function ensureSessionCompletionData(session) {
+    const estimatedMinutes = getSessionEstimatedMinutes(session);
+    const existing = session.completionData || null;
+
+    // Keep existing completionData if present
+    if (existing && existing.timeSpent) return session;
+
+    // Default behavior:
+    // - If session is in the past, assume staff submitted time = estimated (so manager has something to approve)
+    // - If session explicitly marked completed, also do the same
+    const isCompleted = (session.status || '').toLowerCase() === 'completed';
+    const isPast = isSessionInPast(session);
+    const shouldCreateTimesheet = isCompleted || isPast;
+    const timeSpent = shouldCreateTimesheet ? minutesToTimeSpent(estimatedMinutes) : minutesToTimeSpent(0);
+
+    session.completionData = {
+        ...(existing || {}),
+        timeSpent,
+        completedAt: existing?.completedAt || (shouldCreateTimesheet ? new Date(`${session.date}T${session.endTime || session.startTime || '00:00'}:00`).toISOString() : null),
+        completedBy: existing?.completedBy || getStaffIdFromSession(session),
+        approvalStatus: existing?.approvalStatus || (shouldCreateTimesheet ? 'pending' : null),
+        managerApproveHours: existing?.managerApproveHours ?? null,
+        startTime: existing?.startTime || session.startTime || '',
+        endTime: existing?.endTime || session.endTime || ''
+    };
+    return session;
+}
+
+function loadSessions() {
+    const sessions = safeJsonParse(localStorage.getItem('fms_sessions'), []);
+    let changed = false;
+    const normalized = sessions.map(s => {
+        const before = !!(s && s.completionData && s.completionData.timeSpent);
+        const next = ensureSessionCompletionData({ ...s });
+        const after = !!(next && next.completionData && next.completionData.timeSpent);
+        if (!before && after && (next.completionData?.approvalStatus || next.completionData?.completedAt)) {
+            changed = true;
+        }
+        return next;
+    });
+    if (changed) saveSessions(normalized);
+    return normalized;
+}
+
+function saveSessions(sessions) {
+    localStorage.setItem('fms_sessions', JSON.stringify(sessions));
+}
 
 // Get start and end of current month
 function getMonthStartEnd() {
@@ -124,42 +153,39 @@ document.addEventListener('DOMContentLoaded', function() {
     loadTimesheets();
 });
 
-// Get staff completed jobs
-function getStaffCompletedJobs(staffId, startDate, endDate) {
-    return allJobs.filter(job => {
-        // Must be completed
-        if (job.status !== 'completed') return false;
-        
-        // Must have completion data with time
-        if (!job.completionData || !job.completionData.timeSpent) return false;
-        
-        // Must be assigned to this staff (or all staff if staffId is 'all')
-        if (staffId !== 'all' && job.assignedTo !== staffId) return false;
-        
-        // Must be within date range
-        if (job.completionData.completedAt) {
-            const completedDate = new Date(job.completionData.completedAt);
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999); // Include full end date
-            
-            if (completedDate < start || completedDate > end) return false;
-        }
-        
+// Get staff completed sessions
+function getStaffCompletedSessions(staffId, startDate, endDate) {
+    const allSessions = loadSessions();
+
+    return allSessions.filter(session => {
+        const status = (session.status || '').toLowerCase();
+        const isCompleted = status === 'completed' || !!session.completionData?.completedAt || !!session.completionData?.approvalStatus;
+        if (!isCompleted) return false;
+
+        const sessionStaffId = getStaffIdFromSession(session);
+        if (staffId !== 'all' && sessionStaffId !== staffId) return false;
+
+        const completedAt = session.completionData?.completedAt;
+        const sessionDate = completedAt ? new Date(completedAt) : new Date(`${session.date}T00:00:00`);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        if (sessionDate < start || sessionDate > end) return false;
+
         return true;
     });
 }
 
 // Calculate hours by approval status
-function calculateHoursByStatus(jobs) {
+function calculateHoursByStatus(sessions) {
     let pendingMinutes = 0;
     let approvedMinutes = 0;
     let declinedMinutes = 0;
     
-    jobs.forEach(job => {
-        const time = job.completionData.timeSpent;
+    sessions.forEach(session => {
+        const time = session.completionData?.timeSpent || { hours: 0, minutes: 0 };
         const minutes = (time.hours * 60) + time.minutes;
-        const approvalStatus = job.completionData.approvalStatus || 'pending';
+        const approvalStatus = session.completionData?.approvalStatus || 'pending';
         
         if (approvalStatus === 'approved') {
             approvedMinutes += minutes;
@@ -232,16 +258,16 @@ function loadTimesheets() {
     
     // Aggregate timesheet data by staff
     const timesheetData = activeStaff.map(staff => {
-        const jobs = getStaffCompletedJobs(staff.id, startDate, endDate);
-        const hoursByStatus = calculateHoursByStatus(jobs);
+        const sessions = getStaffCompletedSessions(staff.id, startDate, endDate);
+        const hoursByStatus = calculateHoursByStatus(sessions);
         
         return {
             staffId: staff.id,
             staffName: getStaffName(staff.id),
             staffRole: staff.role,
-            jobs: jobs,
+            sessions: sessions,
             hours: hoursByStatus,
-            jobCount: jobs.length
+            sessionCount: sessions.length
         };
     });
     
@@ -253,14 +279,14 @@ function loadTimesheets() {
         )
         : timesheetData;
     
-    // Filter out staff with no jobs
-    const timesheetDataWithJobs = filteredData.filter(data => data.jobCount > 0);
+    // Filter out staff with no sessions
+    const timesheetDataWithSessions = filteredData.filter(data => data.sessionCount > 0);
     
     // Update summary cards
-    updateSummaryCards(timesheetDataWithJobs);
+    updateSummaryCards(timesheetDataWithSessions);
     
     // Render table
-    renderTimesheetTable(timesheetDataWithJobs);
+    renderTimesheetTable(timesheetDataWithSessions);
 }
 
 // Update summary cards
@@ -369,40 +395,40 @@ function exportAllTimesheets() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
     
-    // Collect all jobs
-    let allJobsToExport = [];
+    // Collect all sessions
+    let allSessionsToExport = [];
     staffData.forEach(staff => {
-        const jobs = getStaffCompletedJobs(staff.id, startDate, endDate);
-        jobs.forEach(job => {
-            allJobsToExport.push({
-                ...job,
-                staffName: getStaffName(job.assignedTo)
+        const sessions = getStaffCompletedSessions(staff.id, startDate, endDate);
+        sessions.forEach(session => {
+            allSessionsToExport.push({
+                ...session,
+                staffName: getStaffName(staff.id)
             });
         });
     });
     
-    exportToCSV('all', 'All Staff', allJobsToExport, startDate, endDate);
+    exportToCSV('all', 'All Staff', allSessionsToExport, startDate, endDate);
 }
 
 // Export to CSV
-function exportToCSV(staffId, staffName, jobs, startDate, endDate) {
+function exportToCSV(staffId, staffName, sessions, startDate, endDate) {
     // Create CSV content
     let csv = 'Staff Timesheet Export\n';
     csv += `Staff: ${staffName}\n`;
     csv += `Period: ${startDate} to ${endDate}\n`;
     csv += `Generated: ${new Date().toLocaleString()}\n\n`;
     
-    csv += 'Job ID,Title,Customer,Date Completed,Time Spent (Hours),Approval Status\n';
+    csv += 'Session ID,Learning Service,Date,Start Time,End Time,Time Spent (Hours),Approval Status\n';
     
-    jobs.forEach(job => {
-        const time = job.completionData.timeSpent;
+    sessions.forEach(session => {
+        const time = session.completionData?.timeSpent || { hours: 0, minutes: 0 };
         const totalHours = (time.hours + time.minutes / 60).toFixed(2);
-        const completedDate = job.completionData.completedAt 
-            ? new Date(job.completionData.completedAt).toLocaleDateString()
-            : 'N/A';
-        const approvalStatus = job.completionData.approvalStatus || 'pending';
+        const completedDate = session.completionData?.completedAt
+            ? new Date(session.completionData.completedAt).toLocaleDateString()
+            : (session.date || 'N/A');
+        const approvalStatus = session.completionData?.approvalStatus || 'pending';
         
-        csv += `"${job.id}","${job.title}","${job.customer}","${completedDate}",${totalHours},"${approvalStatus}"\n`;
+        csv += `"${session.id}","${session.learningServiceName || ''}","${completedDate}","${session.startTime || session.completionData?.startTime || ''}","${session.endTime || session.completionData?.endTime || ''}",${totalHours},"${approvalStatus}"\n`;
     });
     
     // Create download

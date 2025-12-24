@@ -1,442 +1,126 @@
-// Timesheet Details JavaScript - Individual Job Entries with Approval
+// Timesheet Details JavaScript - Individual Session Entries with Approval (service_job_v3)
 
-// Sample staff data
+// Sample staff data aligned with service_job_v3 schedule_calendar_script.js
 const staffData = [
-    { id: 'STAFF-001', firstName: 'John', lastName: 'Smith', role: 'Technician', status: 'active' },
-    { id: 'STAFF-002', firstName: 'Sarah', lastName: 'Johnson', role: 'Technician', status: 'active' },
-    { id: 'STAFF-003', firstName: 'Mike', lastName: 'Davis', role: 'Technician', status: 'active' },
-    { id: 'STAFF-004', firstName: 'Emily', lastName: 'Wilson', role: 'Receptionist', status: 'active' },
-    { id: 'STAFF-005', firstName: 'Alice', lastName: 'Brown', role: 'Technician', status: 'active' }
+    { id: 'STAFF-001', firstName: 'Daniel', lastName: 'Davis', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-002', firstName: 'Sarah', lastName: 'Johnson', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-003', firstName: 'Michael', lastName: 'Chen', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-004', firstName: 'Emily', lastName: 'Rodriguez', role: 'Instructor', status: 'active' },
+    { id: 'STAFF-005', firstName: 'James', lastName: 'Wilson', role: 'Instructor', status: 'active' }
 ];
 
-// Sample jobs data with completion details
-const allJobs = [
-    // Alice's Jobs (STAFF-005)
-    {
-        id: 'AD231',
-        title: 'Garden Maintenance',
-        customer: 'Michael Chen',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '1:00 PM',
-        duration: '2 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 3, minutes: 0 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '13:00',
-            endTime: '16:00'
-        }
-    },
-    {
-        id: 'JOB-2024-123',
-        title: 'Lawn Mowing Service',
-        customer: 'Robert Smith',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '9:00 AM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 0 },
-            completedAt: new Date(Date.now() - 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '09:00',
-            endTime: '10:00'
-        }
-    },
-    {
-        id: 'JOB-2024-124',
-        title: 'Pool Cleaning',
-        customer: 'Emma Wilson',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '10:00 AM',
-        duration: '1.5 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 45 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'approved',
-            managerApproveHours: 1.75,
-            startTime: '10:00',
-            endTime: '11:45'
-        }
-    },
-    {
-        id: 'JOB-2024-125',
-        title: 'Window Cleaning',
-        customer: 'David Brown',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '2:00 PM',
-        duration: '2 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 30 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'declined',
-            managerApproveHours: 0,
-            startTime: '14:00',
-            endTime: '16:30'
-        }
-    },
-    {
-        id: 'JOB-2024-127',
-        title: 'Fence Repair',
-        customer: 'Jennifer Lee',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '8:00 AM',
-        duration: '3 hrs',
-        dueDate: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 45 },
-            completedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'approved',
-            managerApproveHours: 2.75,
-            startTime: '08:00',
-            endTime: '10:45'
-        }
-    },
-    {
-        id: 'JOB-2024-128',
-        title: 'Carpet Steam Cleaning',
-        customer: 'James Wilson',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '11:00 AM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 15 },
-            completedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '11:00',
-            endTime: '13:15'
-        }
-    },
-    {
-        id: 'JOB-2024-129',
-        title: 'Gutter Cleaning',
-        customer: 'Patricia Taylor',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '3:00 PM',
-        duration: '1.5 hrs',
-        dueDate: new Date(Date.now() - 4 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 30 },
-            completedAt: new Date(Date.now() - 4 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'approved',
-            managerApproveHours: 1.5,
-            startTime: '15:00',
-            endTime: '16:30'
-        }
-    },
-    {
-        id: 'JOB-2024-130',
-        title: 'Pressure Washing - Driveway',
-        customer: 'Sarah Mitchell',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '9:30 AM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 0 },
-            completedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'declined',
-            managerApproveHours: 0,
-            startTime: '09:30',
-            endTime: '11:30'
-        }
-    },
-    {
-        id: 'JOB-2024-131',
-        title: 'Air Conditioning Service',
-        customer: 'Tom Harris',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '2:30 PM',
-        duration: '1 hr',
-        dueDate: new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 15 },
-            completedAt: new Date(Date.now() - 6 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'approved',
-            managerApproveHours: 1.25,
-            startTime: '14:30',
-            endTime: '15:45'
-        }
-    },
-    {
-        id: 'JOB-2024-132',
-        title: 'Office Cleaning',
-        customer: 'XYZ Business',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '6:00 PM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 30 },
-            completedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '18:00',
-            endTime: '20:30'
-        }
-    },
-    {
-        id: 'JOB-2024-133',
-        title: 'Home Deep Cleaning',
-        customer: 'Lisa Anderson',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '8:00 AM',
-        duration: '3 hrs',
-        dueDate: new Date(Date.now() - 8 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 3, minutes: 30 },
-            completedAt: new Date(Date.now() - 8 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'approved',
-            managerApproveHours: 3.5,
-            startTime: '08:00',
-            endTime: '11:30'
-        }
-    },
-    {
-        id: 'JOB-2024-134',
-        title: 'Window Cleaning - Commercial',
-        customer: 'ABC Corporation',
-        status: 'completed',
-        assignedTo: 'STAFF-005', // Alice
-        time: '1:00 PM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 9 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 45 },
-            completedAt: new Date(Date.now() - 9 * 86400000).toISOString(),
-            completedBy: 'STAFF-005',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '13:00',
-            endTime: '14:45'
-        }
-    },
-    
-    // John's Jobs (STAFF-001)
-    {
-        id: 'JOB-2024-126',
-        title: 'Pressure Washing',
-        customer: 'Sarah Mitchell',
-        status: 'completed',
-        assignedTo: 'STAFF-001', // John
-        time: '8:00 AM',
-        duration: '2 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 15 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '08:00',
-            endTime: '10:15'
-        }
-    },
-    {
-        id: 'JOB-2024-135',
-        title: 'Emergency Plumbing Repair',
-        customer: 'David Brown',
-        status: 'completed',
-        assignedTo: 'STAFF-001', // John
-        time: '10:00 AM',
-        duration: '1 hr',
-        dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 30 },
-            completedAt: new Date(Date.now() - 86400000).toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'approved',
-            managerApproveHours: 1.5,
-            startTime: '10:00',
-            endTime: '11:30'
-        }
-    },
-    {
-        id: 'JOB-2024-136',
-        title: 'HVAC Maintenance',
-        customer: 'Robert Johnson',
-        status: 'completed',
-        assignedTo: 'STAFF-001', // John
-        time: '2:00 PM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 0 },
-            completedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'approved',
-            managerApproveHours: 2.0,
-            startTime: '14:00',
-            endTime: '16:00'
-        }
-    },
-    {
-        id: 'JOB-2024-137',
-        title: 'Electrical Repair',
-        customer: 'Mary Williams',
-        status: 'completed',
-        assignedTo: 'STAFF-001', // John
-        time: '9:00 AM',
-        duration: '1.5 hrs',
-        dueDate: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 45 },
-            completedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-            completedBy: 'STAFF-001',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '09:00',
-            endTime: '10:45'
-        }
-    },
-    
-    // Sarah's Jobs (STAFF-002)
-    {
-        id: 'JOB-2024-138',
-        title: 'Landscaping Service',
-        customer: 'Peter Anderson',
-        status: 'completed',
-        assignedTo: 'STAFF-002', // Sarah
-        time: '7:00 AM',
-        duration: '3 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 3, minutes: 15 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-002',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '07:00',
-            endTime: '10:15'
-        }
-    },
-    {
-        id: 'JOB-2024-139',
-        title: 'Tree Trimming',
-        customer: 'Linda Martinez',
-        status: 'completed',
-        assignedTo: 'STAFF-002', // Sarah
-        time: '11:00 AM',
-        duration: '2 hrs',
-        dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 2, minutes: 30 },
-            completedAt: new Date(Date.now() - 86400000).toISOString(),
-            completedBy: 'STAFF-002',
-            approvalStatus: 'approved',
-            managerApproveHours: 2.5,
-            startTime: '11:00',
-            endTime: '13:30'
-        }
-    },
-    {
-        id: 'JOB-2024-140',
-        title: 'Sprinkler System Repair',
-        customer: 'Kevin White',
-        status: 'completed',
-        assignedTo: 'STAFF-002', // Sarah
-        time: '3:00 PM',
-        duration: '1.5 hrs',
-        dueDate: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 20 },
-            completedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-            completedBy: 'STAFF-002',
-            approvalStatus: 'declined',
-            managerApproveHours: 0,
-            startTime: '15:00',
-            endTime: '16:20'
-        }
-    },
-    
-    // Mike's Jobs (STAFF-003)
-    {
-        id: 'JOB-2024-141',
-        title: 'Roof Inspection',
-        customer: 'Nancy Davis',
-        status: 'completed',
-        assignedTo: 'STAFF-003', // Mike
-        time: '9:00 AM',
-        duration: '2 hrs',
-        dueDate: new Date().toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 1, minutes: 45 },
-            completedAt: new Date().toISOString(),
-            completedBy: 'STAFF-003',
-            approvalStatus: 'pending',
-            managerApproveHours: null,
-            startTime: '09:00',
-            endTime: '10:45'
-        }
-    },
-    {
-        id: 'JOB-2024-142',
-        title: 'Deck Staining',
-        customer: 'Chris Thompson',
-        status: 'completed',
-        assignedTo: 'STAFF-003', // Mike
-        time: '10:00 AM',
-        duration: '3 hrs',
-        dueDate: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 3, minutes: 30 },
-            completedAt: new Date(Date.now() - 86400000).toISOString(),
-            completedBy: 'STAFF-003',
-            approvalStatus: 'approved',
-            managerApproveHours: 3.5,
-            startTime: '10:00',
-            endTime: '13:30'
-        }
-    },
-    {
-        id: 'JOB-2024-143',
-        title: 'Paint Touch-up',
-        customer: 'Amanda Garcia',
-        status: 'completed',
-        assignedTo: 'STAFF-003', // Mike
-        time: '1:00 PM',
-        duration: '1 hr',
-        dueDate: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-        completionData: {
-            timeSpent: { hours: 0, minutes: 50 },
-            completedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
-            completedBy: 'STAFF-003',
-            approvalStatus: 'approved',
-            managerApproveHours: 0.83,
-            startTime: '13:00',
-            endTime: '13:50'
-        }
+function safeJsonParse(value, fallback) {
+    try {
+        return JSON.parse(value);
+    } catch {
+        return fallback;
     }
-];
+}
+
+function minutesToTimeSpent(totalMinutes) {
+    const mins = Math.max(0, parseInt(totalMinutes || 0, 10));
+    return { hours: Math.floor(mins / 60), minutes: mins % 60 };
+}
+
+function getSessionEstimatedMinutes(session) {
+    const duration = session?.duration;
+    const durationNum = typeof duration === 'string' ? parseInt(duration, 10) : duration;
+    if (Number.isFinite(durationNum) && durationNum > 0) return durationNum;
+    const start = session?.startTime;
+    const end = session?.endTime;
+    if (start && end && start.includes(':') && end.includes(':')) {
+        const [sh, sm] = start.split(':').map(Number);
+        const [eh, em] = end.split(':').map(Number);
+        const mins = (eh * 60 + em) - (sh * 60 + sm);
+        return mins > 0 ? mins : 0;
+    }
+    return 0;
+}
+
+function isSessionInPast(session) {
+    if (!session?.date) return false;
+    const time = session.endTime || session.startTime || '00:00';
+    const dt = new Date(`${session.date}T${time}:00`);
+    return Number.isFinite(dt.getTime()) && dt.getTime() < Date.now();
+}
+
+function normalizeSessionAssignedStaff(session) {
+    const assigned = session?.assignedStaff;
+    if (!assigned) return [];
+
+    if (Array.isArray(assigned)) {
+        return assigned.map(s => {
+            if (typeof s === 'string') return { id: null, name: s };
+            if (s && typeof s === 'object') return { id: s.id || null, name: s.name || s.fullName || 'Unknown' };
+            return { id: null, name: 'Unknown' };
+        });
+    }
+    if (typeof assigned === 'string') return [{ id: null, name: assigned }];
+    return [];
+}
+
+function getStaffIdFromSession(session) {
+    const staffList = normalizeSessionAssignedStaff(session);
+    const matchById = staffList.find(s => s.id && staffData.some(sd => sd.id === s.id));
+    if (matchById) return matchById.id;
+
+    const matchByName = staffList.find(s => {
+        const name = (s.name || '').trim().toLowerCase();
+        return staffData.some(sd => `${sd.firstName} ${sd.lastName}`.toLowerCase() === name);
+    });
+    if (matchByName) {
+        const staff = staffData.find(sd => `${sd.firstName} ${sd.lastName}`.toLowerCase() === matchByName.name.trim().toLowerCase());
+        return staff?.id || null;
+    }
+
+    const completedBy = session?.completionData?.completedBy;
+    if (completedBy && staffData.some(sd => sd.id === completedBy)) return completedBy;
+
+    return null;
+}
+
+function ensureSessionCompletionData(session) {
+    const estimatedMinutes = getSessionEstimatedMinutes(session);
+    const existing = session.completionData || null;
+    if (existing && existing.timeSpent) return session;
+
+    const isCompleted = (session.status || '').toLowerCase() === 'completed';
+    const isPast = isSessionInPast(session);
+    const shouldCreateTimesheet = isCompleted || isPast;
+    const timeSpent = shouldCreateTimesheet ? minutesToTimeSpent(estimatedMinutes) : minutesToTimeSpent(0);
+
+    session.completionData = {
+        ...(existing || {}),
+        timeSpent,
+        completedAt: existing?.completedAt || (shouldCreateTimesheet ? new Date(`${session.date}T${session.endTime || session.startTime || '00:00'}:00`).toISOString() : null),
+        completedBy: existing?.completedBy || getStaffIdFromSession(session),
+        approvalStatus: existing?.approvalStatus || (shouldCreateTimesheet ? 'pending' : null),
+        managerApproveHours: existing?.managerApproveHours ?? null,
+        startTime: existing?.startTime || session.startTime || '',
+        endTime: existing?.endTime || session.endTime || ''
+    };
+    return session;
+}
+
+function loadSessions() {
+    const sessions = safeJsonParse(localStorage.getItem('fms_sessions'), []);
+    let changed = false;
+    const normalized = sessions.map(s => {
+        const before = !!(s && s.completionData && s.completionData.timeSpent);
+        const next = ensureSessionCompletionData({ ...s });
+        const after = !!(next && next.completionData && next.completionData.timeSpent);
+        if (!before && after && (next.completionData?.approvalStatus || next.completionData?.completedAt)) {
+            changed = true;
+        }
+        return next;
+    });
+    if (changed) saveSessions(normalized);
+    return normalized;
+}
+
+function saveSessions(sessions) {
+    localStorage.setItem('fms_sessions', JSON.stringify(sessions));
+}
 
 // Get start and end of current month
 function getMonthStartEnd() {
@@ -499,34 +183,30 @@ function populateStaffSelector() {
 }
 
 
-// Get staff completed jobs
-function getStaffCompletedJobs(staffId, startDate, endDate, statusFilter) {
-    return allJobs.filter(job => {
-        // Must be completed
-        if (job.status !== 'completed') return false;
-        
-        // Must have completion data with time
-        if (!job.completionData || !job.completionData.timeSpent) return false;
-        
-        // Must be assigned to this staff
-        if (staffId && job.assignedTo !== staffId) return false;
-        
-        // Must be within date range
-        if (job.completionData.completedAt) {
-            const completedDate = new Date(job.completionData.completedAt);
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            end.setHours(23, 59, 59, 999);
-            
-            if (completedDate < start || completedDate > end) return false;
-        }
-        
-        // Filter by approval status
+// Get staff completed sessions
+function getStaffCompletedSessions(staffId, startDate, endDate, statusFilter) {
+    const sessions = loadSessions();
+
+    return sessions.filter(session => {
+        const status = (session.status || '').toLowerCase();
+        const isCompleted = status === 'completed' || !!session.completionData?.completedAt || !!session.completionData?.approvalStatus;
+        if (!isCompleted) return false;
+
+        const sessionStaffId = getStaffIdFromSession(session);
+        if (staffId && sessionStaffId !== staffId) return false;
+
+        const completedAt = session.completionData?.completedAt;
+        const sessionDate = completedAt ? new Date(completedAt) : new Date(`${session.date}T00:00:00`);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        if (sessionDate < start || sessionDate > end) return false;
+
         if (statusFilter && statusFilter !== 'all') {
-            const approvalStatus = job.completionData.approvalStatus || 'pending';
+            const approvalStatus = session.completionData?.approvalStatus || 'pending';
             if (approvalStatus !== statusFilter) return false;
         }
-        
+
         return true;
     });
 }
@@ -580,13 +260,18 @@ function calculateEndTime(startTime, hours, minutes) {
     return formatTime(endHours, endMinutes);
 }
 
-// Get estimated hours from job duration string
+// Get estimated hours from job duration string (legacy helper)
 function getEstimatedHours(duration) {
     if (!duration) return 0;
     
     // Parse "2 hrs" or "1.5 hrs" or "2h"
     const match = duration.match(/(\d+\.?\d*)/);
     return match ? parseFloat(match[1]) : 0;
+}
+
+function getEstimatedHoursFromSession(session) {
+    const minutes = getSessionEstimatedMinutes(session);
+    return minutes / 60;
 }
 
 // Format hours display
@@ -618,31 +303,31 @@ function loadTimesheetDetails() {
         return;
     }
     
-    // Get jobs
-    let jobs = getStaffCompletedJobs(staffId, startDate, endDate, statusFilter);
+    // Get sessions
+    let sessions = getStaffCompletedSessions(staffId, startDate, endDate, statusFilter);
     
     // Filter by search text
     if (filterText) {
-        jobs = jobs.filter(job => 
-            job.id.toLowerCase().includes(filterText) ||
-            job.title.toLowerCase().includes(filterText) ||
-            job.customer.toLowerCase().includes(filterText)
+        sessions = sessions.filter(session => 
+            (session.id || '').toLowerCase().includes(filterText) ||
+            (session.learningServiceName || '').toLowerCase().includes(filterText) ||
+            (session.title || '').toLowerCase().includes(filterText)
         );
     }
     
     // Render table
-    renderTimesheetDetailTable(jobs);
+    renderTimesheetDetailTable(sessions);
 }
 
 // Render timesheet detail table
-function renderTimesheetDetailTable(jobs) {
+function renderTimesheetDetailTable(sessions) {
     const tbody = document.getElementById('timesheetDetailTableBody');
     const emptyState = document.getElementById('emptyState');
     
     // Clear table
     tbody.innerHTML = '';
     
-    if (jobs.length === 0) {
+    if (sessions.length === 0) {
         document.getElementById('timesheetDetailTable').style.display = 'none';
         emptyState.style.display = 'block';
         return;
@@ -651,32 +336,31 @@ function renderTimesheetDetailTable(jobs) {
     document.getElementById('timesheetDetailTable').style.display = 'table';
     emptyState.style.display = 'none';
     
-    // Sort by date (newest first)
-    jobs.sort((a, b) => {
-        const dateA = new Date(a.completionData.completedAt);
-        const dateB = new Date(b.completionData.completedAt);
+    // Sort by completion date (newest first)
+    sessions.sort((a, b) => {
+        const dateA = new Date(a.completionData?.completedAt || `${a.date}T00:00:00`);
+        const dateB = new Date(b.completionData?.completedAt || `${b.date}T00:00:00`);
         return dateB - dateA;
     });
     
     // Render rows
-    jobs.forEach((job, index) => {
+    sessions.forEach((session) => {
         const row = document.createElement('tr');
-        row.dataset.jobId = job.id;
+        row.dataset.sessionId = session.id;
         
-        const completionData = job.completionData;
-        const timeSpent = completionData.timeSpent;
+        const completionData = session.completionData || {};
+        const timeSpent = completionData.timeSpent || { hours: 0, minutes: 0 };
         const actualHours = formatHours(timeSpent.hours, timeSpent.minutes);
-        const estimatedHours = getEstimatedHours(job.duration);
+        const estimatedHours = getEstimatedHoursFromSession(session);
         
         // Get start/end times
-        const parsedStartTime = parseTime(job.time);
-        const startTime = completionData.startTime || (parsedStartTime ? formatTime(parsedStartTime.hours, parsedStartTime.minutes) : '');
-        const endTime = completionData.endTime || (startTime ? calculateEndTime(startTime, timeSpent.hours, timeSpent.minutes) : '');
+        const startTime = completionData.startTime || session.startTime || '';
+        const endTime = completionData.endTime || session.endTime || (startTime ? calculateEndTime(startTime, timeSpent.hours, timeSpent.minutes) : '');
         
         // Get date
-        const completedDate = completionData.completedAt 
+        const completedDate = completionData.completedAt
             ? new Date(completionData.completedAt).toISOString().split('T')[0]
-            : job.dueDate;
+            : (session.date || '');
         
         // Manager approve hours (default to actual hours)
         const managerApproveHours = completionData.managerApproveHours !== null 
@@ -695,10 +379,11 @@ function renderTimesheetDetailTable(jobs) {
         
         row.innerHTML = `
             <td>
-                <input type="checkbox" class="row-checkbox" data-job-id="${job.id}" onchange="updateBulkActions()">
+                <input type="checkbox" class="row-checkbox" data-session-id="${session.id}" onchange="updateBulkActions()">
             </td>
             <td>
-                <span class="job-id-cell">${job.id}</span>
+                <span class="job-id-cell">${session.id}</span>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">${session.learningServiceName || session.title || ''}</div>
             </td>
             <td>
                 <span class="time-cell">${completedDate || ''}</span>
@@ -726,8 +411,8 @@ function renderTimesheetDetailTable(jobs) {
                         min="0" 
                         class="approve-input" 
                         value="${managerApproveHours.toFixed(2)}"
-                        data-job-id="${job.id}"
-                        onchange="updateManagerApprove('${job.id}', this.value)"
+                        data-session-id="${session.id}"
+                        onchange="updateManagerApprove('${session.id}', this.value)"
                         ${approvalStatus === 'approved' || approvalStatus === 'declined' ? 'readonly' : ''}
                     >
                     <span class="approve-note">Default = Actual hours</span>
@@ -738,10 +423,10 @@ function renderTimesheetDetailTable(jobs) {
                     <span class="status-badge ${statusClass}">${statusText}</span>
                     ${approvalStatus === 'pending' ? `
                         <div class="status-actions">
-                            <button class="status-action-btn approve" onclick="approveJob('${job.id}')">
+                            <button class="status-action-btn approve" onclick="approveSession('${session.id}')">
                                 <i class="fas fa-check"></i> Approved
                             </button>
-                            <button class="status-action-btn decline" onclick="declineJob('${job.id}')">
+                            <button class="status-action-btn decline" onclick="declineSession('${session.id}')">
                                 <i class="fas fa-times"></i> Decline
                             </button>
                         </div>
@@ -750,10 +435,10 @@ function renderTimesheetDetailTable(jobs) {
             </td>
             <td>
                 <div class="actions-cell">
-                    <button class="action-icon-btn" onclick="viewJobDetails('${job.id}')" title="View Job">
+                    <button class="action-icon-btn" onclick="viewSessionDetails('${session.id}')" title="View Session">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="action-icon-btn" onclick="editJobTime('${job.id}')" title="Edit Time" ${approvalStatus === 'approved' ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                    <button class="action-icon-btn" onclick="editSessionTime('${session.id}')" title="Edit Time" ${approvalStatus === 'approved' ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
                         <i class="fas fa-edit"></i>
                     </button>
                 </div>
@@ -768,119 +453,137 @@ function renderTimesheetDetailTable(jobs) {
 }
 
 // Update manager approve hours
-function updateManagerApprove(jobId, hours) {
-    const job = allJobs.find(j => j.id === jobId);
-    if (!job || !job.completionData) return;
+function updateManagerApprove(sessionId, hours) {
+    const sessions = loadSessions();
+    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+    if (sessionIndex === -1) return;
     
     const hoursValue = parseFloat(hours) || 0;
-    job.completionData.managerApproveHours = hoursValue;
+    sessions[sessionIndex].completionData = sessions[sessionIndex].completionData || {};
+    sessions[sessionIndex].completionData.managerApproveHours = hoursValue;
+    saveSessions(sessions);
     
     showNotification(`Manager approve hours updated to ${hoursValue.toFixed(2)}`, 'success');
 }
 
-// Approve job
-function approveJob(jobId) {
-    const job = allJobs.find(j => j.id === jobId);
-    if (!job || !job.completionData) return;
+// Approve session
+function approveSession(sessionId) {
+    const sessions = loadSessions();
+    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+    if (sessionIndex === -1) return;
+    const session = sessions[sessionIndex];
+    session.completionData = session.completionData || {};
     
-    const managerApproveHours = job.completionData.managerApproveHours !== null
-        ? job.completionData.managerApproveHours
-        : parseFloat(formatHours(job.completionData.timeSpent.hours, job.completionData.timeSpent.minutes));
+    const managerApproveHours = session.completionData.managerApproveHours !== null
+        ? session.completionData.managerApproveHours
+        : parseFloat(formatHours(session.completionData.timeSpent?.hours || 0, session.completionData.timeSpent?.minutes || 0));
     
-    job.completionData.approvalStatus = 'approved';
-    job.completionData.managerApproveHours = managerApproveHours;
-    job.completionData.approvedAt = new Date().toISOString();
-    job.completionData.approvedBy = 'MANAGER-001'; // Current manager
+    session.completionData.approvalStatus = 'approved';
+    session.completionData.managerApproveHours = managerApproveHours;
+    session.completionData.approvedAt = new Date().toISOString();
+    session.completionData.approvedBy = 'MANAGER-001';
+    sessions[sessionIndex] = session;
+    saveSessions(sessions);
     
     loadTimesheetDetails();
-    showNotification(`Job ${jobId} approved`, 'success');
+    showNotification(`Session ${sessionId} approved`, 'success');
 }
 
-// Decline job
-function declineJob(jobId) {
-    const job = allJobs.find(j => j.id === jobId);
-    if (!job || !job.completionData) return;
+// Decline session
+function declineSession(sessionId) {
+    const sessions = loadSessions();
+    const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+    if (sessionIndex === -1) return;
+    const session = sessions[sessionIndex];
+    session.completionData = session.completionData || {};
     
-    if (!confirm(`Are you sure you want to decline job ${jobId}?`)) {
+    if (!confirm(`Are you sure you want to decline session ${sessionId}?`)) {
         return;
     }
     
-    job.completionData.approvalStatus = 'declined';
-    job.completionData.managerApproveHours = 0;
-    job.completionData.declinedAt = new Date().toISOString();
-    job.completionData.declinedBy = 'MANAGER-001'; // Current manager
+    session.completionData.approvalStatus = 'declined';
+    session.completionData.managerApproveHours = 0;
+    session.completionData.declinedAt = new Date().toISOString();
+    session.completionData.declinedBy = 'MANAGER-001';
+    sessions[sessionIndex] = session;
+    saveSessions(sessions);
     
     loadTimesheetDetails();
-    showNotification(`Job ${jobId} declined`, 'success');
+    showNotification(`Session ${sessionId} declined`, 'success');
 }
 
 // Bulk approve
 function bulkApprove() {
-    const selectedJobs = getSelectedJobs();
-    if (selectedJobs.length === 0) {
-        showNotification('Please select at least one job', 'error');
+    const selectedSessions = getSelectedSessions();
+    if (selectedSessions.length === 0) {
+        showNotification('Please select at least one session', 'error');
         return;
     }
     
-    if (!confirm(`Approve ${selectedJobs.length} job(s)?`)) {
+    if (!confirm(`Approve ${selectedSessions.length} session(s)?`)) {
         return;
     }
-    
-    selectedJobs.forEach(jobId => {
-        const job = allJobs.find(j => j.id === jobId);
-        if (job && job.completionData && job.completionData.approvalStatus === 'pending') {
-            const managerApproveHours = job.completionData.managerApproveHours !== null
-                ? job.completionData.managerApproveHours
-                : parseFloat(formatHours(job.completionData.timeSpent.hours, job.completionData.timeSpent.minutes));
-            
-            job.completionData.approvalStatus = 'approved';
-            job.completionData.managerApproveHours = managerApproveHours;
-            job.completionData.approvedAt = new Date().toISOString();
-            job.completionData.approvedBy = 'MANAGER-001';
-        }
+
+    const sessions = loadSessions();
+    selectedSessions.forEach(sessionId => {
+        const idx = sessions.findIndex(s => s.id === sessionId);
+        if (idx === -1) return;
+        sessions[idx].completionData = sessions[idx].completionData || {};
+        if ((sessions[idx].completionData.approvalStatus || 'pending') !== 'pending') return;
+        const managerApproveHours = sessions[idx].completionData.managerApproveHours !== null
+            ? sessions[idx].completionData.managerApproveHours
+            : parseFloat(formatHours(sessions[idx].completionData.timeSpent?.hours || 0, sessions[idx].completionData.timeSpent?.minutes || 0));
+        sessions[idx].completionData.approvalStatus = 'approved';
+        sessions[idx].completionData.managerApproveHours = managerApproveHours;
+        sessions[idx].completionData.approvedAt = new Date().toISOString();
+        sessions[idx].completionData.approvedBy = 'MANAGER-001';
     });
+    saveSessions(sessions);
     
     clearSelection();
     loadTimesheetDetails();
-    showNotification(`${selectedJobs.length} job(s) approved`, 'success');
+    showNotification(`${selectedSessions.length} session(s) approved`, 'success');
 }
 
 // Bulk decline
 function bulkDecline() {
-    const selectedJobs = getSelectedJobs();
-    if (selectedJobs.length === 0) {
-        showNotification('Please select at least one job', 'error');
+    const selectedSessions = getSelectedSessions();
+    if (selectedSessions.length === 0) {
+        showNotification('Please select at least one session', 'error');
         return;
     }
     
-    if (!confirm(`Decline ${selectedJobs.length} job(s)?`)) {
+    if (!confirm(`Decline ${selectedSessions.length} session(s)?`)) {
         return;
     }
-    
-    selectedJobs.forEach(jobId => {
-        const job = allJobs.find(j => j.id === jobId);
-        if (job && job.completionData && job.completionData.approvalStatus === 'pending') {
-            job.completionData.approvalStatus = 'declined';
-            job.completionData.managerApproveHours = 0;
-            job.completionData.declinedAt = new Date().toISOString();
-            job.completionData.declinedBy = 'MANAGER-001';
-        }
+
+    const sessions = loadSessions();
+    selectedSessions.forEach(sessionId => {
+        const idx = sessions.findIndex(s => s.id === sessionId);
+        if (idx === -1) return;
+        sessions[idx].completionData = sessions[idx].completionData || {};
+        if ((sessions[idx].completionData.approvalStatus || 'pending') !== 'pending') return;
+        sessions[idx].completionData.approvalStatus = 'declined';
+        sessions[idx].completionData.managerApproveHours = 0;
+        sessions[idx].completionData.declinedAt = new Date().toISOString();
+        sessions[idx].completionData.declinedBy = 'MANAGER-001';
     });
+    saveSessions(sessions);
     
     clearSelection();
     loadTimesheetDetails();
-    showNotification(`${selectedJobs.length} job(s) declined`, 'success');
+    showNotification(`${selectedSessions.length} session(s) declined`, 'success');
 }
 
-// Get selected jobs
-function getSelectedJobs() {
-    const checkboxes = document.querySelectorAll('.row-checkbox[data-job-id]:checked');
-    return Array.from(checkboxes).map(cb => cb.dataset.jobId);
+// Get selected sessions
+function getSelectedSessions() {
+    const checkboxes = document.querySelectorAll('.row-checkbox[data-session-id]:checked');
+    return Array.from(checkboxes).map(cb => cb.dataset.sessionId);
 }
 
 // Update bulk actions bar
 function updateBulkActions() {
-    const selectedJobs = getSelectedJobs();
+    const selectedJobs = getSelectedSessions();
     const bulkBar = document.getElementById('bulkActionsBar');
     const countSpan = document.getElementById('selectedCount');
     
@@ -895,7 +598,7 @@ function updateBulkActions() {
 // Toggle select all
 function toggleSelectAll() {
     const selectAll = document.getElementById('selectAll');
-    const checkboxes = document.querySelectorAll('.row-checkbox[data-job-id]');
+    const checkboxes = document.querySelectorAll('.row-checkbox[data-session-id]');
     
     checkboxes.forEach(cb => {
         cb.checked = selectAll.checked;
@@ -907,7 +610,7 @@ function toggleSelectAll() {
 // Clear selection
 function clearSelection() {
     const selectAll = document.getElementById('selectAll');
-    const checkboxes = document.querySelectorAll('.row-checkbox[data-job-id]');
+    const checkboxes = document.querySelectorAll('.row-checkbox[data-session-id]');
     
     selectAll.checked = false;
     checkboxes.forEach(cb => {
@@ -927,31 +630,46 @@ function applyFilters() {
     loadTimesheetDetails();
 }
 
-// View job details
-function viewJobDetails(jobId) {
-    // Navigate to job detail page
-    window.location.href = `../Staff/job_detail.html?jobId=${jobId}`;
+// View session details
+function viewSessionDetails(sessionId) {
+    // Navigate to service_job_v3 session detail page
+    window.location.href = `../[v2] Jobs/service_job_v3/session_detail.html?id=${sessionId}`;
 }
 
-// Edit job time
-function editJobTime(jobId) {
-    const job = allJobs.find(j => j.id === jobId);
-    if (!job) return;
+// Edit session time
+function editSessionTime(sessionId) {
+    const sessions = loadSessions();
+    const idx = sessions.findIndex(s => s.id === sessionId);
+    if (idx === -1) return;
+    const session = sessions[idx];
+    session.completionData = session.completionData || {};
     
     // In production, this would open a modal to edit time
-    const newHours = prompt(`Edit actual hours for ${jobId}:\n\nCurrent: ${formatHours(job.completionData.timeSpent.hours, job.completionData.timeSpent.minutes)} hours`, 
-        formatHours(job.completionData.timeSpent.hours, job.completionData.timeSpent.minutes));
+    const current = formatHours(session.completionData.timeSpent?.hours || 0, session.completionData.timeSpent?.minutes || 0);
+    const newHours = prompt(`Edit actual hours for ${sessionId}:\n\nCurrent: ${current} hours`, current);
     
     if (newHours && !isNaN(newHours)) {
         const hours = parseFloat(newHours);
         const wholeHours = Math.floor(hours);
         const minutes = Math.round((hours - wholeHours) * 60);
         
-        job.completionData.timeSpent = { hours: wholeHours, minutes: minutes };
-        job.completionData.managerApproveHours = null; // Reset to default
+        session.completionData.timeSpent = { hours: wholeHours, minutes: minutes };
+        session.completionData.managerApproveHours = null; // Reset to default
+        // If session doesn't have completedAt, set it now for reporting
+        if (!session.completionData.completedAt) {
+            session.completionData.completedAt = new Date().toISOString();
+        }
+        if (!session.completionData.completedBy) {
+            session.completionData.completedBy = getStaffIdFromSession(session);
+        }
+        if (!session.completionData.approvalStatus) {
+            session.completionData.approvalStatus = 'pending';
+        }
+        sessions[idx] = session;
+        saveSessions(sessions);
         
         loadTimesheetDetails();
-        showNotification(`Time updated for ${jobId}`, 'success');
+        showNotification(`Time updated for ${sessionId}`, 'success');
     }
 }
 
@@ -966,7 +684,7 @@ function exportTimesheetDetails() {
         return;
     }
     
-    const jobs = getStaffCompletedJobs(staffId, startDate, endDate, 'all');
+    const sessions = getStaffCompletedSessions(staffId, startDate, endDate, 'all');
     const staffName = getStaffName(staffId);
     
     // Create CSV
@@ -975,24 +693,24 @@ function exportTimesheetDetails() {
     csv += `Period: ${startDate} to ${endDate}\n`;
     csv += `Generated: ${new Date().toLocaleString()}\n\n`;
     
-    csv += 'Job ID,Date,Start Time,End Time,Estimated Hours,Actual Hours,Manager Approve Hours,Status\n';
+    csv += 'Session ID,Learning Service,Date,Start Time,End Time,Estimated Hours,Actual Hours,Manager Approve Hours,Status\n';
     
-    jobs.forEach(job => {
-        const completionData = job.completionData;
-        const timeSpent = completionData.timeSpent;
+    sessions.forEach(session => {
+        const completionData = session.completionData || {};
+        const timeSpent = completionData.timeSpent || { hours: 0, minutes: 0 };
         const actualHours = formatHours(timeSpent.hours, timeSpent.minutes);
-        const estimatedHours = getEstimatedHours(job.duration);
+        const estimatedHours = getEstimatedHoursFromSession(session);
         const managerApproveHours = completionData.managerApproveHours !== null 
             ? completionData.managerApproveHours 
             : parseFloat(actualHours);
         const approvalStatus = completionData.approvalStatus || 'pending';
         const completedDate = completionData.completedAt 
             ? new Date(completionData.completedAt).toISOString().split('T')[0]
-            : job.dueDate;
-        const startTime = completionData.startTime || '';
-        const endTime = completionData.endTime || '';
+            : (session.date || '');
+        const startTime = completionData.startTime || session.startTime || '';
+        const endTime = completionData.endTime || session.endTime || '';
         
-        csv += `"${job.id}","${completedDate}","${startTime}","${endTime}",${estimatedHours.toFixed(2)},${actualHours},${managerApproveHours.toFixed(2)},"${approvalStatus}"\n`;
+        csv += `"${session.id}","${session.learningServiceName || ''}","${completedDate}","${startTime}","${endTime}",${estimatedHours.toFixed(2)},${actualHours},${managerApproveHours.toFixed(2)},"${approvalStatus}"\n`;
     });
     
     // Download
