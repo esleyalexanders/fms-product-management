@@ -579,6 +579,20 @@ function validateServiceForm() {
         isValid = false;
     }
 
+    // Validate pricebook item (REQUIRED)
+    if (!ServiceCreation.selectedPricebookItem) {
+        errors.push('Price Book Item is required - please select a pricebook item to link to this service');
+        isValid = false;
+        // Highlight the pricebook section
+        const pricebookBtn = document.getElementById('selectPricebookBtn');
+        if (pricebookBtn) {
+            pricebookBtn.classList.add('border-red-500', 'bg-red-50');
+            setTimeout(() => {
+                pricebookBtn.classList.remove('border-red-500', 'bg-red-50');
+            }, 3000);
+        }
+    }
+
     // Validate type-specific required fields
     if (ServiceCreation.selectedType === 'Class') {
         const curriculum = document.getElementById('curriculum').value.trim();

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // ===== DATA LOADING =====
 function loadSessions() {
     const stored = localStorage.getItem('fms_sessions');
-    
+
     if (stored) {
         allSessions = JSON.parse(stored);
     } else {
@@ -28,7 +28,7 @@ function loadSessions() {
         allSessions = getSampleSessions();
         localStorage.setItem('fms_sessions', JSON.stringify(allSessions));
     }
-    
+
     filteredSessions = [...allSessions];
 }
 
@@ -40,7 +40,7 @@ function getSampleSessions() {
     nextWeek.setDate(nextWeek.getDate() + 7);
     const lastWeek = new Date(today);
     lastWeek.setDate(lastWeek.getDate() - 7);
-    
+
     return [
         // AP Calculus AB Sessions (Class type)
         {
@@ -122,7 +122,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-01T10:00:00Z'
         },
-        
+
         // SAT Math Prep Group Sessions
         {
             id: 'session_005',
@@ -162,7 +162,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-02T11:00:00Z'
         },
-        
+
         // Private Math Tutoring Sessions (One-to-One)
         {
             id: 'session_007',
@@ -221,7 +221,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-03T09:00:00Z'
         },
-        
+
         // Chemistry 101 Sessions
         {
             id: 'session_010',
@@ -242,7 +242,7 @@ function getSampleSessions() {
             notes: 'Lab session',
             createdAt: '2024-12-04T10:00:00Z'
         },
-        
+
         // ACT Prep - Private Sessions
         {
             id: 'session_011',
@@ -282,7 +282,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-05T14:00:00Z'
         },
-        
+
         // Spanish Conversation Group
         {
             id: 'session_013',
@@ -303,7 +303,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-06T08:00:00Z'
         },
-        
+
         // Reading Comprehension Tutoring
         {
             id: 'session_014',
@@ -324,7 +324,7 @@ function getSampleSessions() {
             notes: 'Cancelled due to student illness',
             createdAt: '2024-12-07T10:00:00Z'
         },
-        
+
         // Algebra II Mastery
         {
             id: 'session_015',
@@ -345,7 +345,7 @@ function getSampleSessions() {
             notes: '',
             createdAt: '2024-12-08T09:00:00Z'
         },
-        
+
         // Additional Sessions - More variety
         {
             id: 'session_016',
@@ -839,7 +839,7 @@ function setDefaultDateRange() {
     const today = new Date();
     const nextMonth = new Date(today);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    
+
     document.getElementById('startDate').value = formatDateForInput(today);
     document.getElementById('endDate').value = formatDateForInput(nextMonth);
 }
@@ -873,13 +873,15 @@ function renderSessions() {
 }
 
 function createSessionCard(session) {
-    const typeStyles = getTypeStyles(session.learningServiceType);
+    // Ensure learningServiceType is defined (safety check for old data)
+    const serviceType = session.learningServiceType || 'Class';
+    const typeStyles = getTypeStyles(serviceType);
     const statusBadge = getStatusBadge(session.status);
     const dateTime = formatDateTime(session.date, session.startTime, session.endTime);
     const staffNames = session.staff?.map(s => s.name).join(', ') || 'No staff assigned';
     const enrollmentRate = session.maxCapacity > 0 ? Math.round((session.enrolled / session.maxCapacity) * 100) : 0;
-    const enrollmentText = session.learningServiceType === 'One-to-One' 
-        ? `${session.enrolled}/1` 
+    const enrollmentText = serviceType === 'One-to-One'
+        ? `${session.enrolled}/1`
         : `${session.enrolled}/${session.maxCapacity}`;
     const enrollmentColor = enrollmentRate >= 80 ? 'text-emerald-600' : enrollmentRate >= 50 ? 'text-amber-600' : 'text-gray-600';
 
@@ -898,7 +900,7 @@ function createSessionCard(session) {
                 <div class="col-span-12 sm:col-span-4 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="px-2 py-0.5 text-xs font-medium rounded-full ${typeStyles.badgeClass}">
-                            ${typeStyles.icon} ${session.learningServiceType}
+                            ${typeStyles.icon} ${serviceType}
                         </span>
                         ${statusBadge}
                     </div>
@@ -920,8 +922,8 @@ function createSessionCard(session) {
                 <div class="col-span-12 sm:col-span-2 text-center">
                     <p class="text-lg font-semibold ${enrollmentColor}">${enrollmentText}</p>
                     <p class="text-xs text-gray-500">${enrollmentRate}% filled</p>
-                    ${session.learningServiceType === 'Group' && session.minCapacity ? 
-                        `<p class="text-xs text-amber-600 mt-1">Min: ${session.minCapacity}</p>` : ''}
+                    ${serviceType === 'Group' && session.minCapacity ?
+            `<p class="text-xs text-amber-600 mt-1">Min: ${session.minCapacity}</p>` : ''}
                 </div>
 
                 <!-- Column 5: Actions (2 cols) -->
@@ -952,7 +954,7 @@ function handleSearch(query) {
     query = query.trim().toLowerCase();
     filteredSessions = allSessions.filter(session => {
         return session.learningServiceName.toLowerCase().includes(query) ||
-               session.learningServiceType.toLowerCase().includes(query);
+            session.learningServiceType.toLowerCase().includes(query);
     });
 
     applyFilters();
@@ -962,19 +964,19 @@ function handleSearch(query) {
 
 function filterByType(type) {
     currentTypeFilter = type;
-    
+
     // Update button states
     document.querySelectorAll('.filter-type-btn').forEach(btn => {
         btn.classList.remove('active', 'bg-indigo-100', 'border-indigo-300', 'text-indigo-700');
         btn.classList.add('hover:bg-gray-50');
     });
-    
+
     const activeBtn = document.getElementById(`filter${type === '' ? 'All' : type.replace('-', '')}`);
     if (activeBtn) {
         activeBtn.classList.add('active', 'bg-indigo-100', 'border-indigo-300', 'text-indigo-700');
         activeBtn.classList.remove('hover:bg-gray-50');
     }
-    
+
     applyFilters();
     renderSessions();
     updateStats();
@@ -988,18 +990,18 @@ function handleFilterChange() {
 
 function applyFilters() {
     let filtered = [...allSessions];
-    
+
     // Type filter
     if (currentTypeFilter) {
         filtered = filtered.filter(s => s.learningServiceType === currentTypeFilter);
     }
-    
+
     // Status filter
     const statusFilter = document.getElementById('statusFilter').value;
     if (statusFilter) {
         filtered = filtered.filter(s => s.status === statusFilter);
     }
-    
+
     // Date range filter
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
@@ -1009,16 +1011,16 @@ function applyFilters() {
     if (endDate) {
         filtered = filtered.filter(s => s.date <= endDate);
     }
-    
+
     // Search filter (if active)
     const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
     if (searchQuery) {
-        filtered = filtered.filter(s => 
+        filtered = filtered.filter(s =>
             s.learningServiceName.toLowerCase().includes(searchQuery) ||
             s.learningServiceType.toLowerCase().includes(searchQuery)
         );
     }
-    
+
     filteredSessions = filtered;
 }
 
@@ -1034,25 +1036,25 @@ function clearFilters() {
 function updateStats() {
     const now = new Date();
     const today = formatDateForInput(now);
-    
+
     const total = filteredSessions.length;
     const upcoming = filteredSessions.filter(s => {
         const sessionDate = new Date(s.date);
         return sessionDate >= now && s.status !== 'cancelled' && s.status !== 'completed';
     }).length;
     const todayCount = filteredSessions.filter(s => s.date === today && s.status !== 'cancelled').length;
-    
+
     // Calculate average enrollment
     const sessionsWithCapacity = filteredSessions.filter(s => s.maxCapacity > 0);
     const avgEnrollment = sessionsWithCapacity.length > 0
         ? Math.round(sessionsWithCapacity.reduce((sum, s) => sum + (s.enrolled / s.maxCapacity * 100), 0) / sessionsWithCapacity.length)
         : 0;
-    
+
     // Count by type
     const classCount = filteredSessions.filter(s => s.learningServiceType === 'Class').length;
     const groupCount = filteredSessions.filter(s => s.learningServiceType === 'Group').length;
     const oneToOneCount = filteredSessions.filter(s => s.learningServiceType === 'One-to-One').length;
-    
+
     document.getElementById('totalSessions').textContent = total;
     document.getElementById('upcomingSessions').textContent = upcoming;
     document.getElementById('todaySessions').textContent = todayCount;
@@ -1082,7 +1084,14 @@ function getTypeStyles(type) {
             icon: '👤'
         }
     };
-    return styles[type] || styles['Class'];
+
+    // Return default style if type is not found or is undefined
+    return styles[type] || {
+        badgeClass: 'type-badge-class',
+        borderClass: 'border-l-4 border-gray-500',
+        bgClass: 'bg-gray-50/50',
+        icon: '📋'
+    };
 }
 
 function getStatusBadge(status) {
