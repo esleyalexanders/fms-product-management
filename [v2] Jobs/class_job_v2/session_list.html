@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,24 +17,30 @@
             width: 6px;
             height: 6px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
         body {
             overflow: hidden;
         }
+
         .app-container {
             height: 100vh;
             overflow: hidden;
         }
+
         .main-content {
             overflow-y: auto;
             height: 100vh;
@@ -41,6 +48,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Main Container -->
     <div class="app-container">
@@ -60,211 +68,245 @@
 
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
-                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">GROUPS</div>
-                <a href="group_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-chalkboard-teacher"></i><span>Groups</span></a>
-                <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-day"></i><span>Sessions</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
-                <a href="../job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                <a href="assignment_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-check"></i><span>Assignment Calendar</span></a>
-                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar"></i><span>My Calendar</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
-                <a href="../../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff Timesheets</span></a>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
 
-            <div class="sidebar-footer">
-                <a href="../../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">GROUPS</div>
+                <a href="group_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chalkboard-teacher"></i><span>Groups</span></a>
+                <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="../job_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="assignment_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-check"></i><span>Assignment Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar"></i><span>My Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff
+                        Timesheets</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
 
         <!-- Main Content Area -->
         <main class="main-content">
             <div class="p-4">
                 <div class="max-w-7xl mx-auto">
-            
-            <!-- Header -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <div class="flex items-center gap-3 mb-1">
-                            <h1 class="text-2xl font-bold text-gray-900">Sessions</h1>
-                        </div>
-                        <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
-                    </div>
-                    <div id="headerActions" class="flex gap-2">
-                        <button 
-                            onclick="window.location.href='group_list.html'"
-                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                            Back to Groups
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Total Sessions</p>
-                            <p class="text-2xl font-bold text-gray-900" id="totalSessions">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Upcoming</p>
-                            <p class="text-2xl font-bold text-emerald-600" id="upcomingSessions">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h1 class="text-2xl font-bold text-gray-900">Sessions</h1>
+                                </div>
+                                <p class="text-gray-600 font-medium">Sunshine Tutoring - Melbourne East</p>
+                            </div>
+                            <div id="headerActions" class="flex gap-2">
+                                <button onclick="window.location.href='group_list.html'"
+                                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    Back to Groups
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Completed</p>
-                            <p class="text-2xl font-bold text-gray-600" id="completedSessions">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600">Cancelled</p>
-                            <p class="text-2xl font-bold text-red-600" id="cancelledSessions">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Filters & Search -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex flex-wrap gap-3">
-                    <div class="flex-1 min-w-64 relative">
-                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input 
-                            type="text" 
-                            id="searchInput" 
-                            placeholder="Search by class name, date, or session ID..." 
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                        />
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Total Sessions</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalSessions">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Upcoming</p>
+                                    <p class="text-2xl font-bold text-emerald-600" id="upcomingSessions">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Today</p>
+                                    <p class="text-2xl font-bold text-indigo-600" id="todaySessions">0</p>
+                                </div>
+                                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">Avg. Enrollment</p>
+                                    <p class="text-2xl font-bold text-purple-600" id="avgEnrollment">0%</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-600">By Type</p>
+                                    <p class="text-xs text-gray-500 mt-1" id="sessionsByType">-</p>
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <select 
-                        id="statusFilter" 
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                        <option value="all">All Status</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                    <select 
-                        id="classFilter" 
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                        <option value="all">All Classes</option>
-                        <!-- Options will be populated dynamically -->
-                    </select>
-                    <select 
-                        id="dateFilter" 
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                        <option value="all">All Dates</option>
-                        <option value="today">Today</option>
-                        <option value="thisWeek">This Week</option>
-                        <option value="thisMonth">This Month</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="past">Past</option>
-                    </select>
-                    <select 
-                        id="sortBy" 
-                        class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                        <option value="date_asc">Date (Earliest First)</option>
-                        <option value="date_desc">Date (Latest First)</option>
-                        <option value="class_asc">Class A-Z</option>
-                        <option value="class_desc">Class Z-A</option>
-                    </select>
-                    <button 
-                        id="clearFiltersBtn" 
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm"
-                    >
-                        Clear
-                    </button>
-                </div>
-            </div>
 
-            <!-- Sessions List -->
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900">Sessions</h2>
-                    <div class="text-sm text-gray-600" id="resultsCount">Showing 0 sessions</div>
-                </div>
+                    <!-- Filters & Search -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex flex-wrap gap-3">
+                            <div class="flex-1 min-w-64 relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input type="text" id="searchInput"
+                                    placeholder="Search by class name, date, or session ID..."
+                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm" />
+                            </div>
+                            <select id="statusFilter"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">All Status</option>
+                                <option value="scheduled">Scheduled</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="classFilter"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">All Classes</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                            <select id="dateFilter"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="all">All Dates</option>
+                                <option value="today">Today</option>
+                                <option value="thisWeek">This Week</option>
+                                <option value="thisMonth">This Month</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="past">Past</option>
+                            </select>
+                            <select id="sortBy"
+                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="date_asc">Date (Earliest First)</option>
+                                <option value="date_desc">Date (Latest First)</option>
+                                <option value="class_asc">Class A-Z</option>
+                                <option value="class_desc">Class Z-A</option>
+                            </select>
+                            <button id="clearFiltersBtn"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
 
-                <div id="emptyState" class="text-center py-12 text-gray-500">
-                    <svg class="mx-auto mb-3 text-gray-300 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p class="text-sm mb-2">No sessions found</p>
-                    <button 
-                        onclick="window.location.href='group_list.html'"
-                        class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm"
-                    >
-                        Create a Group First
-                    </button>
-                </div>
+                    <!-- Sessions List -->
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-900">Sessions</h2>
+                            <div class="text-sm text-gray-600" id="resultsCount">Showing 0 sessions</div>
+                        </div>
 
-                <div id="sessionsList" class="hidden space-y-3">
-                    <!-- Sessions will be rendered here -->
-                </div>
-            </div>
+                        <div id="emptyState" class="text-center py-12 text-gray-500">
+                            <svg class="mx-auto mb-3 text-gray-300 w-16 h-16" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <p class="text-sm mb-2">No sessions found</p>
+                            <button onclick="window.location.href='group_list.html'"
+                                class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm">
+                                Create a Group First
+                            </button>
+                        </div>
+
+                        <div id="sessionsList" class="hidden space-y-3">
+                            <!-- Sessions will be rendered here -->
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -273,7 +315,5 @@
 
     <script src="session_list_script.js"></script>
 </body>
+
 </html>
-
-
-

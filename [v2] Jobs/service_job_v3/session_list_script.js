@@ -878,12 +878,40 @@ function createSessionCard(session) {
     const typeStyles = getTypeStyles(serviceType);
     const statusBadge = getStatusBadge(session.status);
     const dateTime = formatDateTime(session.date, session.startTime, session.endTime);
-    const staffNames = session.staff?.map(s => s.name).join(', ') || 'No staff assigned';
-    const enrollmentRate = session.maxCapacity > 0 ? Math.round((session.enrolled / session.maxCapacity) * 100) : 0;
-    const enrollmentText = serviceType === 'One-to-One'
-        ? `${session.enrolled}/1`
-        : `${session.enrolled}/${session.maxCapacity}`;
-    const enrollmentColor = enrollmentRate >= 80 ? 'text-emerald-600' : enrollmentRate >= 50 ? 'text-amber-600' : 'text-gray-600';
+
+    // Fix staff display - check for both undefined and empty array
+    const staffNames = (session.staff && session.staff.length > 0)
+        ? session.staff.map(s => s.name).join(', ')
+        : 'No staff assigned';
+
+    // Enrollment display logic based on service type
+    let enrollmentText = '';
+    let enrollmentRate = null;
+    let enrollmentLabel = '';
+    let enrollmentColor = 'text-gray-600';
+
+    const enrolled = session.enrolled ?? 0;
+    const maxCapacity = session.maxCapacity ?? 0;
+
+    if (serviceType === 'Class') {
+        // Class type: No enrollment tracking, show capacity only
+        enrollmentText = `${maxCapacity}`;
+        enrollmentLabel = 'Max Capacity';
+        enrollmentRate = null;
+        enrollmentColor = 'text-indigo-600';
+    } else if (serviceType === 'Group') {
+        // Group type: Show enrollment with min/max capacity
+        enrollmentText = `${enrolled}/${maxCapacity}`;
+        enrollmentLabel = 'filled';
+        enrollmentRate = maxCapacity > 0 ? Math.round((enrolled / maxCapacity) * 100) : 0;
+        enrollmentColor = enrollmentRate >= 80 ? 'text-emerald-600' : enrollmentRate >= 50 ? 'text-amber-600' : 'text-gray-600';
+    } else if (serviceType === 'One-to-One') {
+        // One-to-One type: Show enrollment (always /1)
+        enrollmentText = `${enrolled}/1`;
+        enrollmentLabel = 'filled';
+        enrollmentRate = enrolled > 0 ? 100 : 0;
+        enrollmentColor = enrolled > 0 ? 'text-emerald-600' : 'text-gray-600';
+    }
 
     return `
         <div class="session-card rounded-lg border ${typeStyles.borderClass} ${typeStyles.bgClass} p-4 cursor-pointer"
@@ -921,7 +949,7 @@ function createSessionCard(session) {
                 <!-- Column 4: Enrollment (2 cols) -->
                 <div class="col-span-12 sm:col-span-2 text-center">
                     <p class="text-lg font-semibold ${enrollmentColor}">${enrollmentText}</p>
-                    <p class="text-xs text-gray-500">${enrollmentRate}% filled</p>
+                    <p class="text-xs text-gray-500">${enrollmentRate !== null ? enrollmentRate + '% ' : ''}${enrollmentLabel}</p>
                     ${serviceType === 'Group' && session.minCapacity ?
             `<p class="text-xs text-amber-600 mt-1">Min: ${session.minCapacity}</p>` : ''}
                 </div>

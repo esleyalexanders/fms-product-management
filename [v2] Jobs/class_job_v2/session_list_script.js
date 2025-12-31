@@ -11,7 +11,7 @@ let dateFilter = 'all';
 let sortBy = 'date_asc';
 
 // Initialize page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeData();
     loadSessions();
     loadClasses();
@@ -30,7 +30,7 @@ function initializeData() {
             // No classes, sessions can't exist
             return;
         }
-        
+
         // Check if sessions exist
         const storedSessions = localStorage.getItem('class_sessions_v2');
         if (!storedSessions || JSON.parse(storedSessions).length === 0) {
@@ -75,10 +75,10 @@ function loadClasses() {
 function populateClassFilter() {
     const classFilterSelect = document.getElementById('classFilter');
     if (!classFilterSelect) return;
-    
+
     // Clear existing options except "All Classes"
     classFilterSelect.innerHTML = '<option value="all">All Classes</option>';
-    
+
     // Add class options
     allClasses.forEach(cls => {
         const option = document.createElement('option');
@@ -89,37 +89,37 @@ function populateClassFilter() {
 }
 
 function setupEventListeners() {
-    document.getElementById('searchInput').addEventListener('input', function(e) {
+    document.getElementById('searchInput').addEventListener('input', function (e) {
         searchTerm = e.target.value.toLowerCase();
         filterAndSortSessions();
     });
-    
-    document.getElementById('statusFilter').addEventListener('change', function(e) {
+
+    document.getElementById('statusFilter').addEventListener('change', function (e) {
         statusFilter = e.target.value;
         filterAndSortSessions();
     });
-    
-    document.getElementById('classFilter').addEventListener('change', function(e) {
+
+    document.getElementById('classFilter').addEventListener('change', function (e) {
         classFilter = e.target.value;
         filterAndSortSessions();
     });
-    
-    document.getElementById('dateFilter').addEventListener('change', function(e) {
+
+    document.getElementById('dateFilter').addEventListener('change', function (e) {
         dateFilter = e.target.value;
         filterAndSortSessions();
     });
-    
-    document.getElementById('sortBy').addEventListener('change', function(e) {
+
+    document.getElementById('sortBy').addEventListener('change', function (e) {
         sortBy = e.target.value;
         filterAndSortSessions();
     });
-    
+
     document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
 }
 
 function filterAndSortSessions() {
     let filtered = [...allSessions];
-    
+
     // Search filter
     if (searchTerm) {
         filtered = filtered.filter(session => {
@@ -136,26 +136,26 @@ function filterAndSortSessions() {
             return searchable.includes(searchTerm);
         });
     }
-    
+
     // Status filter
     if (statusFilter !== 'all') {
         filtered = filtered.filter(session => session.status === statusFilter);
     }
-    
+
     // Class filter
     if (classFilter !== 'all') {
         filtered = filtered.filter(session => session.classId === classFilter);
     }
-    
+
     // Date filter
     if (dateFilter !== 'all') {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         filtered = filtered.filter(session => {
             const sessionDate = new Date(session.date);
             sessionDate.setHours(0, 0, 0, 0);
-            
+
             switch (dateFilter) {
                 case 'today':
                     return sessionDate.getTime() === today.getTime();
@@ -166,8 +166,8 @@ function filterAndSortSessions() {
                     weekEnd.setDate(weekStart.getDate() + 6);
                     return sessionDate >= weekStart && sessionDate <= weekEnd;
                 case 'thisMonth':
-                    return sessionDate.getMonth() === today.getMonth() && 
-                           sessionDate.getFullYear() === today.getFullYear();
+                    return sessionDate.getMonth() === today.getMonth() &&
+                        sessionDate.getFullYear() === today.getFullYear();
                 case 'upcoming':
                     return sessionDate >= today;
                 case 'past':
@@ -177,7 +177,7 @@ function filterAndSortSessions() {
             }
         });
     }
-    
+
     // Sort
     switch (sortBy) {
         case 'date_asc':
@@ -213,7 +213,7 @@ function filterAndSortSessions() {
             });
             break;
     }
-    
+
     filteredSessions = filtered;
     renderSessions();
     updateStats();
@@ -223,55 +223,55 @@ function renderSessions() {
     const container = document.getElementById('sessionsList');
     const emptyState = document.getElementById('emptyState');
     const resultsCount = document.getElementById('resultsCount');
-    
+
     resultsCount.textContent = `Showing ${filteredSessions.length} session${filteredSessions.length !== 1 ? 's' : ''}`;
-    
+
     if (filteredSessions.length === 0) {
         emptyState.classList.remove('hidden');
         container.classList.add('hidden');
         return;
     }
-    
+
     emptyState.classList.add('hidden');
     container.classList.remove('hidden');
-    
+
     container.innerHTML = filteredSessions.map(session => createSessionCard(session)).join('');
 }
 
 function createSessionCard(session) {
     const classData = allClasses.find(c => c.id === session.classId);
     const className = classData?.name || 'Unknown Class';
-    
+
     const statusConfig = {
         scheduled: { text: 'Scheduled', class: 'bg-blue-100 text-blue-700' },
         completed: { text: 'Completed', class: 'bg-gray-100 text-gray-700' },
         cancelled: { text: 'Cancelled', class: 'bg-red-100 text-red-700' }
     };
-    
+
     const status = statusConfig[session.status] || statusConfig.scheduled;
-    
+
     // Format date
     const sessionDate = new Date(session.date);
-    const dateStr = sessionDate.toLocaleDateString('en-US', { 
-        weekday: 'short', 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
+    const dateStr = sessionDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     });
-    
+
     // Format time
-    const timeStr = session.startTime && session.endTime 
+    const timeStr = session.startTime && session.endTime
         ? `${session.startTime} - ${session.endTime}`
         : session.startTime || '-';
-    
+
     // Get bookings count
     const bookingsCount = session.bookings?.length || 0;
     const confirmedBookings = session.bookings?.filter(b => b.status === 'confirmed').length || 0;
     const maxCapacity = session.maxCapacity || classData?.maxCapacity || 0;
-    
+
     // Get staff count
     const staffCount = session.assignedStaff?.length || session.staffOverride?.length || classData?.defaultStaff?.length || 0;
-    
+
     return `
         <div class="border border-gray-200 rounded-lg p-4 hover:border-emerald-300 hover:shadow-md transition-all cursor-pointer" onclick="window.location.href='session_detail.html?id=${session.id}'">
             <div class="flex items-start justify-between mb-3">
@@ -358,20 +358,35 @@ function updateStats() {
     const total = allSessions.length;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
+    // Upcoming sessions (future, not cancelled)
     const upcoming = allSessions.filter(s => {
         const sessionDate = new Date(s.date);
         sessionDate.setHours(0, 0, 0, 0);
         return sessionDate >= today && s.status !== 'cancelled';
     }).length;
-    
-    const completed = allSessions.filter(s => s.status === 'completed').length;
-    const cancelled = allSessions.filter(s => s.status === 'cancelled').length;
-    
+
+    // Today's sessions (not cancelled)
+    const todayCount = allSessions.filter(s => {
+        const sessionDate = new Date(s.date);
+        sessionDate.setHours(0, 0, 0, 0);
+        return sessionDate.getTime() === today.getTime() && s.status !== 'cancelled';
+    }).length;
+
+    // Average enrollment percentage
+    // For class_job_v2, classes don't track enrollment, so we'll show 0% or N/A
+    // This would be calculated differently for service_job_v3 with Groups/One-to-One
+    const avgEnrollment = 0;
+
+    // Sessions by type - for class_job_v2, all are "Class" type
+    const typeBreakdown = 'Class: ' + total;
+
+    // Update stat cards
     document.getElementById('totalSessions').textContent = total;
     document.getElementById('upcomingSessions').textContent = upcoming;
-    document.getElementById('completedSessions').textContent = completed;
-    document.getElementById('cancelledSessions').textContent = cancelled;
+    document.getElementById('todaySessions').textContent = todayCount;
+    document.getElementById('avgEnrollment').textContent = avgEnrollment + '%';
+    document.getElementById('sessionsByType').textContent = typeBreakdown;
 }
 
 function clearFilters() {
@@ -380,13 +395,13 @@ function clearFilters() {
     document.getElementById('classFilter').value = 'all';
     document.getElementById('dateFilter').value = 'all';
     document.getElementById('sortBy').value = 'date_asc';
-    
+
     searchTerm = '';
     statusFilter = 'all';
     classFilter = 'all';
     dateFilter = 'all';
     sortBy = 'date_asc';
-    
+
     filterAndSortSessions();
 }
 
