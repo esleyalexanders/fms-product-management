@@ -46,7 +46,8 @@
     }
 
     // 3. Render Logic
-    const elStaff = document.getElementById('staffSelect');
+    // 3. Render Logic
+    // const elStaff = document.getElementById('staffSelect'); // Removed, using custom UI
     const elStart = document.getElementById('startDate');
     const elEnd = document.getElementById('endDate');
     const elStatus = document.getElementById('statusFilter');
@@ -56,16 +57,123 @@
     const elBulkBar = document.getElementById('bulkActionsBar');
     const elSelectedCount = document.getElementById('selectedCount');
 
+    // Multi-select elements
+    const elStaffDisplay = document.getElementById('staffDisplay');
+    const elStaffInput = document.getElementById('staffSearchInput');
+    const elStaffDropdown = document.getElementById('staffDropdown');
+
+    let allStaff = [];
+    let selectedStaffIds = [];
+
     function populateStaffSelector() {
-        const staffList = Store.loadStaff().filter(s => (s.status || 'active') === 'active');
-        elStaff.innerHTML = '<option value="">Select staff...</option>';
-        staffList.sort((a, b) => (a.name || '').localeCompare(b.name || '')).forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.id;
-            opt.textContent = s.name || `${s.firstName || ''} ${s.lastName || 'FL'}`;
-            elStaff.appendChild(opt);
+        allStaff = Store.loadStaff().filter(s => (s.status || 'active') === 'active');
+        allStaff.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        renderDropdownOptions();
+    }
+
+    function renderDropdownOptions(filterText = '') {
+        const query = filterText.toLowerCase();
+        const filtered = allStaff.filter(s => {
+            const name = (s.name || '').toLowerCase();
+            return name.includes(query) && !selectedStaffIds.includes(s.id);
+        });
+
+        if (filtered.length === 0) {
+            elStaffDropdown.innerHTML = '<div class="dropdown-option" style="cursor:default;color:#9ca3af;">No staff found</div>';
+            return;
+        }
+
+        elStaffDropdown.innerHTML = filtered.map(s => `
+            <div class="dropdown-option" data-id="${s.id}">
+                ${s.name || `${s.firstName || ''} ${s.lastName || ''}`}
+            </div>
+        `).join('');
+
+        // Attach click listeners
+        elStaffDropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const id = opt.dataset.id;
+                if (id) addStaff(id);
+            });
         });
     }
+
+    function addStaff(id) {
+        if (!selectedStaffIds.includes(id)) {
+            selectedStaffIds.push(id);
+            renderTags();
+            elStaffInput.value = '';
+            renderDropdownOptions();
+            render(); // Refresh table
+        }
+    }
+
+    function removeStaff(id) {
+        selectedStaffIds = selectedStaffIds.filter(sid => sid !== id);
+        renderTags();
+        renderDropdownOptions();
+        render(); // Refresh table
+    }
+
+    function renderTags() {
+        // Clear existing tags (keep input)
+        const tags = elStaffDisplay.querySelectorAll('.tag');
+        tags.forEach(t => t.remove());
+
+        selectedStaffIds.forEach(id => {
+            const staff = allStaff.find(s => s.id === id);
+            if (!staff) return;
+            const name = staff.name || `${staff.firstName} ${staff.lastName}`;
+
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${name}
+                <div class="tag-remove" data-id="${id}">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            elStaffDisplay.insertBefore(tag, elStaffInput);
+        });
+
+        // Tag remove listeners
+        elStaffDisplay.querySelectorAll('.tag-remove').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent input focus event messing up
+                removeStaff(btn.dataset.id);
+            });
+        });
+
+        // Hide/Show placeholder based on selection
+        if (selectedStaffIds.length > 0) {
+            elStaffInput.placeholder = '';
+        } else {
+            elStaffInput.placeholder = 'Select staff...';
+        }
+    }
+
+    // Custom Event Listeners for Multi-Select
+    elStaffInput.addEventListener('focus', () => {
+        elStaffDropdown.classList.add('active');
+        renderDropdownOptions(elStaffInput.value);
+    });
+
+    elStaffInput.addEventListener('input', () => {
+        elStaffDropdown.classList.add('active');
+        renderDropdownOptions(elStaffInput.value);
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('staffMultiSelect');
+        if (wrapper && !wrapper.contains(e.target)) {
+            elStaffDropdown.classList.remove('active');
+        }
+    });
+
+    elStaffDisplay.addEventListener('click', () => {
+        elStaffInput.focus();
+    });
 
     function buildRow(entry, session) {
         const serviceName = session?.learningServiceName || session?.title || session?.learningServiceType || 'Session';
@@ -119,19 +227,26 @@
                     </div>
                 </td>
                 <td>
-                    <!-- Actions could go here, but focusing on bulk for MVP -->
+                    <div class="status-actions">
+                        <button class="action-icon-btn" title="Approve" onclick="approveEntry('${entry.id}')">
+                            <i class="fas fa-check" style="color: #10b981;"></i>
+                        </button>
+                        <button class="action-icon-btn" title="Decline" onclick="declineEntry('${entry.id}')">
+                            <i class="fas fa-times" style="color: #ef4444;"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
     }
 
     function render() {
-        const staffId = elStaff.value;
+        // const staffId = elStaff.value; // Old single select
         const start = elStart.value;
         const end = elEnd.value;
         const statusMode = elStatus.value; // 'all', 'pending', 'approved', 'declined'
 
-        if (!staffId) {
+        if (selectedStaffIds.length === 0) {
             elTable.style.display = 'none';
             elEmpty.style.display = 'block';
             elEmpty.innerHTML = '<p>Please select a staff member</p>';
@@ -149,7 +264,7 @@
 
         visibleSessions.forEach(s => Store.ensureTimeEntriesForSession(s, { persist: true }));
 
-        let entries = Store.loadTimeEntries().filter(e => e.staffId === staffId);
+        let entries = Store.loadTimeEntries().filter(e => selectedStaffIds.includes(e.staffId));
 
         // Filter by Date
         entries = entries.filter(e => {
@@ -260,6 +375,30 @@
         document.getElementById('selectAll').checked = false;
     };
 
+    // Individual Actions
+    window.approveEntry = function (id) {
+        const entry = Store.loadTimeEntries().find(e => e.id === id);
+        if (entry) {
+            entry.status = 'approved';
+            if (entry.managerApprovedMinutes === null || entry.managerApprovedMinutes === undefined) {
+                entry.managerApprovedMinutes = entry.workedMinutes;
+            }
+            Store.upsertTimeEntry(entry, { persist: true });
+            render();
+        }
+    }
+
+    window.declineEntry = function (id) {
+        if (!confirm('Are you sure you want to decline this entry?')) return;
+        const entry = Store.loadTimeEntries().find(e => e.id === id);
+        if (entry) {
+            entry.status = 'declined';
+            entry.managerApprovedMinutes = 0;
+            Store.upsertTimeEntry(entry, { persist: true });
+            render();
+        }
+    }
+
     window.toggleSelectAll = function () {
         const master = document.getElementById('selectAll');
         document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = master.checked);
@@ -275,13 +414,14 @@
     elStart.value = params.startDate || range.start;
     elEnd.value = params.endDate || range.end;
     if (params.staffId) {
-        elStaff.value = params.staffId;
-        // Wait for DOM to update value? No, value set is synchronous
-        render(); // render immediately if staff is set
+        // Handle pre-selection from URL
+        // elStaff.value = params.staffId; 
+        addStaff(params.staffId);
+        // render(); // addStaff calls render
     }
 
     // Event Listeners for Filters
-    elStaff.addEventListener('change', render);
+    // elStaff.addEventListener('change', render); // Removed
     elStart.addEventListener('change', render);
     elEnd.addEventListener('change', render);
     elStatus.addEventListener('change', render);

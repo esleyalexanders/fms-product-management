@@ -75,8 +75,226 @@
     return `STAFF-${pad3(max + 1)}`;
   }
 
+  function formatDateForInput(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function getSampleSessions() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const nextWeek = new Date(today);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const lastWeek = new Date(today);
+    lastWeek.setDate(lastWeek.getDate() - 7);
+
+    return [
+      {
+        id: 'session_001',
+        learningServiceId: 'ls_001',
+        learningServiceName: 'AP Calculus AB',
+        learningServiceType: 'Class',
+        date: formatDateForInput(tomorrow),
+        startTime: '15:00',
+        endTime: '16:30',
+        duration: 90,
+        status: 'scheduled',
+        maxCapacity: 20,
+        minCapacity: null,
+        enrolled: 17,
+        staff: [
+          { id: 'staff1', name: 'John Smith', role: 'Senior Tutor' },
+          { id: 'staff2', name: 'Emily Davis', role: 'Math Specialist' }
+        ],
+        notes: '',
+        createdAt: '2024-12-01T10:00:00Z'
+      },
+      {
+        id: 'session_003',
+        learningServiceId: 'ls_001',
+        learningServiceName: 'AP Calculus AB',
+        learningServiceType: 'Class',
+        date: formatDateForInput(today),
+        startTime: '15:00',
+        endTime: '16:30',
+        duration: 90,
+        status: 'in_progress',
+        maxCapacity: 20,
+        minCapacity: null,
+        enrolled: 19,
+        staff: [
+          { id: 'staff1', name: 'John Smith', role: 'Senior Tutor' },
+          { id: 'staff2', name: 'Emily Davis', role: 'Math Specialist' }
+        ],
+        notes: 'Review session for midterm',
+        createdAt: '2024-12-01T10:00:00Z'
+      },
+      {
+        id: 'session_004',
+        learningServiceId: 'ls_001',
+        learningServiceName: 'AP Calculus AB',
+        learningServiceType: 'Class',
+        date: formatDateForInput(lastWeek),
+        startTime: '15:00',
+        endTime: '16:30',
+        duration: 90,
+        status: 'completed',
+        maxCapacity: 20,
+        minCapacity: null,
+        enrolled: 20,
+        staff: [
+          { id: 'staff1', name: 'John Smith', role: 'Senior Tutor' }
+        ],
+        notes: '',
+        createdAt: '2024-12-01T10:00:00Z'
+      },
+      {
+        id: 'session_005',
+        learningServiceId: 'ls_002',
+        learningServiceName: 'SAT Math Prep Group',
+        learningServiceType: 'Group',
+        date: formatDateForInput(tomorrow),
+        startTime: '17:00',
+        endTime: '18:30',
+        duration: 90,
+        status: 'scheduled',
+        maxCapacity: 6,
+        minCapacity: 2,
+        enrolled: 4,
+        staff: [
+          { id: 'staff2', name: 'Emily Davis', role: 'Math Specialist' }
+        ],
+        notes: '',
+        createdAt: '2024-12-02T11:00:00Z'
+      },
+      {
+        id: 'session_007',
+        learningServiceId: 'ls_003',
+        learningServiceName: 'Private Math Tutoring',
+        learningServiceType: 'One-to-One',
+        date: formatDateForInput(today),
+        startTime: '14:00',
+        endTime: '15:00',
+        duration: 60,
+        status: 'in_progress',
+        maxCapacity: 1,
+        minCapacity: null,
+        enrolled: 1,
+        staff: [
+          { id: 'staff1', name: 'John Smith', role: 'Senior Tutor' }
+        ],
+        notes: 'Focus on algebra',
+        createdAt: '2024-12-03T09:00:00Z'
+      },
+      {
+        id: 'session_010',
+        learningServiceId: 'ls_004',
+        learningServiceName: 'Chemistry 101',
+        learningServiceType: 'Class',
+        date: formatDateForInput(tomorrow),
+        startTime: '10:00',
+        endTime: '11:30',
+        duration: 90,
+        status: 'scheduled',
+        maxCapacity: 15,
+        minCapacity: null,
+        enrolled: 14,
+        staff: [
+          { id: 'staff3', name: 'Michael Chen', role: 'Science Teacher' }
+        ],
+        notes: 'Lab session',
+        createdAt: '2024-12-04T10:00:00Z'
+      },
+      {
+        id: 'session_011',
+        learningServiceId: 'ls_006',
+        learningServiceName: 'ACT Prep - Private',
+        learningServiceType: 'One-to-One',
+        date: formatDateForInput(today),
+        startTime: '16:00',
+        endTime: '17:30',
+        duration: 90,
+        status: 'completed',
+        maxCapacity: 1,
+        minCapacity: null,
+        enrolled: 1,
+        staff: [
+          { id: 'staff5', name: 'David Lee', role: 'Test Prep Specialist' }
+        ],
+        notes: 'Practice test review',
+        createdAt: '2024-12-05T14:00:00Z'
+      },
+      {
+        id: 'session_013',
+        learningServiceId: 'ls_008',
+        learningServiceName: 'Spanish Conversation Group',
+        learningServiceType: 'Group',
+        date: formatDateForInput(tomorrow),
+        startTime: '18:00',
+        endTime: '19:00',
+        duration: 60,
+        status: 'scheduled',
+        maxCapacity: 5,
+        minCapacity: 2,
+        enrolled: 3,
+        staff: [
+          { id: 'staff7', name: 'Maria Garcia', role: 'Language Instructor' }
+        ],
+        notes: '',
+        createdAt: '2024-12-06T08:00:00Z'
+      },
+      {
+        id: 'session_014',
+        learningServiceId: 'ls_009',
+        learningServiceName: 'Reading Comprehension Tutoring',
+        learningServiceType: 'One-to-One',
+        date: formatDateForInput(today),
+        startTime: '15:00',
+        endTime: '16:00',
+        duration: 60,
+        status: 'cancelled',
+        maxCapacity: 1,
+        minCapacity: null,
+        enrolled: 0,
+        staff: [
+          { id: 'staff4', name: 'Sarah Wilson', role: 'English Tutor' }
+        ],
+        notes: 'Cancelled due to student illness',
+        createdAt: '2024-12-07T10:00:00Z'
+      },
+      {
+        id: 'session_015',
+        learningServiceId: 'ls_010',
+        learningServiceName: 'Algebra II Mastery',
+        learningServiceType: 'Class',
+        date: formatDateForInput(tomorrow),
+        startTime: '13:00',
+        endTime: '14:30',
+        duration: 90,
+        status: 'scheduled',
+        maxCapacity: 18,
+        minCapacity: null,
+        enrolled: 16,
+        staff: [
+          { id: 'staff1', name: 'John Smith', role: 'Senior Tutor' }
+        ],
+        notes: '',
+        createdAt: '2024-12-08T09:00:00Z'
+      }
+    ];
+  }
+
   function loadSessions() {
-    return loadArray(KEYS.sessions);
+    const sessions = loadArray(KEYS.sessions);
+    if (sessions.length > 0) return sessions;
+
+    const samples = getSampleSessions();
+    saveArray(KEYS.sessions, samples);
+    return samples;
   }
 
   function saveSessions(sessions) {
@@ -480,6 +698,7 @@
     ensureTimeEntriesForSession,
 
     // Utils
+    minutesDiff,
     normalizeName,
     splitName,
   };
