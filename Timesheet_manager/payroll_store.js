@@ -421,11 +421,11 @@
         scheduledStart,
         scheduledEnd,
 
-        actualStart: '',
-        actualEnd: '',
+        actualStart: scheduledStart,
+        actualEnd: scheduledEnd,
         breakMinutes: 0,
 
-        workedMinutes: 0,
+        workedMinutes: 0, // Will be computed immediately below
         paidMinutes: 0,
         overtimeMinutesDaily: 0,
 

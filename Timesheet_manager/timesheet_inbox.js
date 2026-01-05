@@ -239,7 +239,7 @@
         </td>
         <td>
           <div class="row-actions">
-            <button class="link-btn" data-action="open_calendar" data-session-id="${escapeHtml(entry.sessionId)}">Open calendar</button>
+            <button class="link-btn" data-action="open_calendar" data-session-id="${escapeHtml(entry.sessionId)}">View session</button>
             <button class="link-btn" data-action="approve" data-entry-id="${escapeHtml(entry.id)}">Approve</button>
             <button class="link-btn" data-action="decline" data-entry-id="${escapeHtml(entry.id)}">Decline</button>
           </div>
@@ -409,7 +409,8 @@
         const action = btn.dataset.action;
         if (action === 'open_calendar') {
           const sessionId = btn.dataset.sessionId;
-          window.location.href = `time_payroll_calendar.html?sessionId=${encodeURIComponent(sessionId)}`;
+          // Redirect to session detail since calendar view is removed for MVP
+          window.location.href = `../[v2] Jobs/service_job_v3/session_detail.html?id=${encodeURIComponent(sessionId)}`;
           return;
         }
 

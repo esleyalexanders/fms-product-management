@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
             margin-bottom: 20px;
             border: 1px solid #e5e7eb;
         }
-        
+
         .detail-header-top {
             display: flex;
             justify-content: space-between;
@@ -27,27 +28,27 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-        
+
         .detail-header-title {
             font-size: 24px;
             font-weight: 700;
             color: #111827;
             margin: 0;
         }
-        
+
         .detail-header-filters {
             display: flex;
             gap: 16px;
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .filter-input-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
-        
+
         .filter-input-group label {
             font-size: 12px;
             font-weight: 600;
@@ -55,7 +56,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .filter-input-group input,
         .filter-input-group select {
             padding: 8px 12px;
@@ -64,14 +65,14 @@
             font-size: 14px;
             min-width: 150px;
         }
-        
+
         .filter-input-group input:focus,
         .filter-input-group select:focus {
             outline: none;
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
-        
+
         .header-filter-input {
             padding: 10px 12px;
             border: 1px solid #e5e7eb;
@@ -79,26 +80,26 @@
             font-size: 14px;
             min-width: 200px;
         }
-        
+
         .detail-header-bottom {
             display: flex;
             gap: 24px;
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .staff-selector {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .staff-selector label {
             font-size: 14px;
             font-weight: 600;
             color: #374151;
         }
-        
+
         .staff-selector select {
             padding: 8px 12px;
             border: 1px solid #e5e7eb;
@@ -106,7 +107,7 @@
             font-size: 14px;
             min-width: 180px;
         }
-        
+
         /* Timesheet Details Table */
         .timesheet-detail-table {
             width: 100%;
@@ -116,7 +117,7 @@
             overflow: hidden;
             border: 1px solid #e5e7eb;
         }
-        
+
         .timesheet-detail-table th {
             background: #1e40af;
             padding: 14px 16px;
@@ -128,73 +129,73 @@
             letter-spacing: 0.5px;
             border-bottom: 2px solid #1e3a8a;
         }
-        
+
         .timesheet-detail-table td {
             padding: 16px;
             border-bottom: 1px solid #f3f4f6;
             font-size: 14px;
             color: #374151;
         }
-        
+
         .timesheet-detail-table tr:last-child td {
             border-bottom: none;
         }
-        
+
         .timesheet-detail-table tr:hover {
             background: #f9fafb;
         }
-        
+
         /* Session ID */
         .job-id-cell {
             font-weight: 600;
             color: #6366f1;
             font-family: 'Courier New', monospace;
         }
-        
+
         /* Time Display */
         .time-cell {
             font-variant-numeric: tabular-nums;
             font-family: 'Courier New', monospace;
             font-weight: 500;
         }
-        
+
         /* Hours Display */
         .hours-cell {
             font-variant-numeric: tabular-nums;
             font-family: 'Courier New', monospace;
             font-weight: 600;
         }
-        
+
         .estimated-hours {
             color: #6b7280;
         }
-        
+
         .actual-hours {
             color: #111827;
             font-weight: 700;
         }
-        
+
         .hours-difference {
             font-size: 11px;
             color: #6b7280;
             margin-top: 4px;
         }
-        
+
         .hours-difference.over {
             color: #ef4444;
         }
-        
+
         .hours-difference.under {
             color: #10b981;
         }
-        
+
         /* Manager Approve */
         .approve-cell {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        
+
         .approve-input {
             width: 80px;
             padding: 6px 8px;
@@ -203,20 +204,20 @@
             font-size: 13px;
             text-align: center;
         }
-        
+
         .approve-note {
             font-size: 11px;
             color: #6b7280;
             font-style: italic;
         }
-        
+
         /* Status Cell with Bulk Support */
         .status-cell {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        
+
         .status-badge {
             padding: 6px 12px;
             border-radius: 8px;
@@ -225,28 +226,28 @@
             text-align: center;
             display: inline-block;
         }
-        
+
         .status-badge.pending {
             background: #fef3c7;
             color: #92400e;
         }
-        
+
         .status-badge.approved {
             background: #d1fae5;
             color: #065f46;
         }
-        
+
         .status-badge.declined {
             background: #fee2e2;
             color: #991b1b;
         }
-        
+
         .status-actions {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
         }
-        
+
         .status-action-btn {
             padding: 6px 12px;
             border: none;
@@ -258,31 +259,31 @@
             flex: 1;
             min-width: 80px;
         }
-        
+
         .status-action-btn.approve {
             background: #10b981;
             color: white;
         }
-        
+
         .status-action-btn.approve:hover {
             background: #059669;
         }
-        
+
         .status-action-btn.decline {
             background: #ef4444;
             color: white;
         }
-        
+
         .status-action-btn.decline:hover {
             background: #dc2626;
         }
-        
+
         /* Actions Cell */
         .actions-cell {
             display: flex;
             gap: 8px;
         }
-        
+
         .action-icon-btn {
             width: 32px;
             height: 32px;
@@ -296,13 +297,13 @@
             transition: all 0.2s;
             color: #6b7280;
         }
-        
+
         .action-icon-btn:hover {
             background: #f3f4f6;
             border-color: #6366f1;
             color: #6366f1;
         }
-        
+
         /* Bulk Actions Bar */
         .bulk-actions-bar {
             background: white;
@@ -316,22 +317,22 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        
+
         .bulk-actions-bar.active {
             display: flex;
         }
-        
+
         .bulk-selection-info {
             font-size: 14px;
             color: #374151;
             font-weight: 500;
         }
-        
+
         .bulk-actions-buttons {
             display: flex;
             gap: 8px;
         }
-        
+
         .bulk-action-btn {
             padding: 10px 20px;
             border: none;
@@ -344,25 +345,25 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .bulk-action-btn.approve {
             background: #10b981;
             color: white;
         }
-        
+
         .bulk-action-btn.approve:hover {
             background: #059669;
         }
-        
+
         .bulk-action-btn.decline {
             background: #ef4444;
             color: white;
         }
-        
+
         .bulk-action-btn.decline:hover {
             background: #dc2626;
         }
-        
+
         /* Checkbox */
         .row-checkbox {
             width: 18px;
@@ -370,7 +371,7 @@
             cursor: pointer;
             accent-color: #6366f1;
         }
-        
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -380,63 +381,63 @@
             border-radius: 12px;
             border: 1px solid #e5e7eb;
         }
-        
+
         .empty-state i {
             font-size: 64px;
             color: #d1d5db;
             margin-bottom: 16px;
         }
-        
+
         .empty-state p {
             font-size: 16px;
             margin-bottom: 8px;
             color: #374151;
         }
-        
+
         .empty-state span {
             font-size: 14px;
             color: #9ca3af;
         }
-        
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .detail-header-top {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .detail-header-filters {
                 flex-direction: column;
                 width: 100%;
             }
-            
+
             .filter-input-group {
                 width: 100%;
             }
-            
+
             .filter-input-group input,
             .filter-input-group select {
                 width: 100%;
             }
-            
+
             .timesheet-detail-table {
                 font-size: 12px;
             }
-            
+
             .timesheet-detail-table th,
             .timesheet-detail-table td {
                 padding: 10px 8px;
             }
-            
+
             .status-actions {
                 flex-direction: column;
             }
-            
+
             .status-action-btn {
                 width: 100%;
             }
         }
-        
+
         /* Sidebar highlight */
         .sidebar .nav-item.timesheet-link {
             background: #eef2ff;
@@ -445,6 +446,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -471,58 +473,45 @@
                 <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-calendar-alt"></i><span>Schedule</span>
                 </a>
-                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;">
                     <i class="fas fa-users"></i><span>Manage team</span>
                 </a>
                 <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-book"></i><span>My pricebook</span>
                 </a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;">
                     <i class="fas fa-user-friends"></i><span>Customers</span>
                 </a>
-                <a href="staff-timesheets.html" class="nav-item timesheet-link" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-clock"></i><span>Staff Timesheets</span>
-                </a>
-                <a href="time_payroll_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-calendar-check"></i><span>Time & Payroll Calendar</span>
-                </a>
+
+                <div class="nav-section-label" style="margin-top:14px;">TIME & PAYROLL</div>
                 <a href="timesheet_inbox.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-inbox"></i><span>Timesheet Inbox</span>
                 </a>
-                <a href="pay_run_builder.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-money-check-dollar"></i><span>Pay Run Builder</span>
-                </a>
-                <div class="nav-section-label" style="margin-top:14px;">CONFIG</div>
-                <a href="pay_profiles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-sliders"></i><span>Pay Profiles</span>
-                </a>
-                <a href="staff_pay_profiles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-users-gear"></i><span>Staff pay profiles</span>
-                </a>
-                <a href="holidays.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-umbrella-beach"></i><span>Holidays</span>
-                </a>
-            <div class="sidebar-footer">
-                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <div class="sidebar-footer">
+                    <a href="../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
-        
+
         <!-- Main Content Area -->
         <main class="main-content">
             <header class="top-header">
                 <div class="header-left">
-                    <button onclick="window.location.href='staff-timesheets.html'" class="icon-btn" style="margin-right: 12px;">
+                    <button onclick="window.location.href='staff-timesheets.html'" class="icon-btn"
+                        style="margin-right: 12px;">
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <div>
@@ -539,18 +528,19 @@
                     </button>
                 </div>
             </header>
-            
+
             <div class="content-wrapper">
-                
+
                 <!-- Detail Header with Filters -->
                 <div class="detail-header">
                     <div class="detail-header-top">
                         <h2 class="detail-header-title">Timesheet details</h2>
                         <div class="detail-header-filters">
-                            <input type="text" id="filterInput" class="header-filter-input" placeholder="Filter" onkeyup="applyFilters()">
+                            <input type="text" id="filterInput" class="header-filter-input" placeholder="Filter"
+                                onkeyup="applyFilters()">
                         </div>
                     </div>
-                    
+
                     <div class="detail-header-bottom">
                         <div class="staff-selector">
                             <label>Staff:</label>
@@ -559,29 +549,29 @@
                                 <!-- Staff options will be populated dynamically -->
                             </select>
                         </div>
-                        
+
                         <div class="filter-input-group">
                             <label>From:</label>
                             <input type="date" id="startDate" onchange="applyFilters()">
                         </div>
-                        
+
                         <div class="filter-input-group">
                             <label>to:</label>
                             <input type="date" id="endDate" onchange="applyFilters()">
                         </div>
-                        
+
                         <div class="filter-input-group">
                             <label>Status:</label>
                             <select id="statusFilter" onchange="applyFilters()">
                                 <option value="all">All Status</option>
-                                <option value="pending">Waiting Approve</option>
+                                <option value="pending">Needs Action</option>
                                 <option value="approved">Approved</option>
                                 <option value="declined">Declined</option>
                             </select>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Bulk Actions Bar -->
                 <div class="bulk-actions-bar" id="bulkActionsBar">
                     <div class="bulk-selection-info">
@@ -599,14 +589,15 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Timesheet Details Table -->
                 <div style="background: white; border-radius: 12px; border: 1px solid #e5e7eb; overflow: hidden;">
                     <table class="timesheet-detail-table" id="timesheetDetailTable">
                         <thead>
                             <tr>
                                 <th style="width: 40px;">
-                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="row-checkbox">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()"
+                                        class="row-checkbox">
                                 </th>
                                 <th>Session ID</th>
                                 <th>Date</th>
@@ -623,7 +614,7 @@
                             <!-- Table rows will be populated dynamically -->
                         </tbody>
                     </table>
-                    
+
                     <!-- Empty State -->
                     <div id="emptyState" class="empty-state" style="display: none;">
                         <i class="fas fa-clock"></i>
@@ -631,12 +622,15 @@
                         <span>Try adjusting your filters or date range</span>
                     </div>
                 </div>
-                
+
             </div>
         </main>
     </div>
-    
+
+    <script src="../manage-team/staff_store.js"></script>
+    <script src="payroll_store.js"></script>
     <script src="staff-timesheet-detail.js"></script>
 </body>
-</html>
 
+</html>
+```
