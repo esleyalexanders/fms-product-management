@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Timesheets - Staff Portal</title>
+    <link rel="stylesheet" href="timesheet_manager.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        /* Specific overrides for staff view */
+        .page-title {
+            color: var(--primary-color);
+        }
+
+        .controls-bar {
+            justify-content: flex-start;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <div>
+                <h1 class="page-title">My Timesheet History</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;" id="staff-welcome">Welcome back.</p>
+            </div>
+
+            <div class="stats-grid" style="gap: 1rem; margin-bottom: 0;">
+                <div class="stat-card" style="padding: 1rem; min-width: 150px;">
+                    <span class="stat-label">This Month's Earnings</span>
+                    <span class="stat-value highlight" id="my-earnings">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls (Simplified) -->
+        <div class="controls-bar">
+            <!-- Period Selector Only -->
+            <div class="filter-group">
+                <div class="quick-period-selector" id="period-selector">
+                    <button class="period-btn" data-period="week">This Week</button>
+                    <button class="period-btn active" data-period="month">Month</button>
+                    <button class="period-btn" data-period="year">Year</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Job / Session</th>
+                        <th style="text-align: right;">Hours</th>
+                        <th style="text-align: right;">Rate</th>
+                        <th style="text-align: right;">Total</th>
+                        <th style="text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="timesheet-table-body">
+                    <!-- Rows populated by JS -->
+                </tbody>
+            </table>
+            <div id="loading-state" class="loading" style="display: none;">Loading...</div>
+            <div id="empty-state" class="loading" style="display: none;">No records found.</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="timesheet_data_service.js"></script>
+    <script>
+        // Inline script for simplicity as it shares 90% logic with manager view
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate Logged In User
+            const CURRENT_USER_ID = 'S001';
+            const user = window.timesheetService.getStaff().find(s => s.id === CURRENT_USER_ID);
+
+            if (user) {
+                document.getElementById('staff-welcome').textContent = `Welcome back, ${user.name}`;
+            }
+
+            const state = { period: 'month', startDate: '', endDate: '', staffId: CURRENT_USER_ID, status: 'all' };
+
+            // Elements
+            const tableBody = document.getElementById('timesheet-table-body');
+            const earningsEl = document.getElementById('my-earnings');
+            const periodButtons = document.querySelectorAll('.period-btn');
+
+            init();
+
+            function init() {
+                setPeriod('month');
+                setupListeners();
+                render();
+            }
+
+            function setupListeners() {
+                periodButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        periodButtons.forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        setPeriod(e.target.dataset.period);
+                        render();
+                    });
+                });
+            }
+
+            // Reuse Date Logic
+            function setPeriod(period) {
+                const now = new Date();
+                let start = new Date();
+                let end = new Date();
+                // ... same logic as manager ...
+                if (period === 'week') {
+                    const day = now.getDay() || 7;
+                    if (day !== 1) start.setHours(-24 * (day - 1));
+                    end.setDate(start.getDate() + 6);
+                } else if (period === 'month') {
+                    start = new Date(now.getFullYear(), now.getMonth(), 1);
+                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                } else if (period === 'year') {
+                    start = new Date(now.getFullYear(), 0, 1);
+                    end = new Date(now.getFullYear(), 11, 31);
+                }
+                state.startDate = start.toISOString().split('T')[0];
+                state.endDate = end.toISOString().split('T')[0];
+            }
+
+            function render() {
+                const data = window.timesheetService.filterTimesheets(state);
+
+                // Calculate Earnings
+                const total = data.reduce((sum, item) => sum + (item.actualHours * item.hourlyRate), 0);
+                earningsEl.textContent = `$${total.toFixed(2)}`;
+
+                tableBody.innerHTML = '';
+                if (data.length === 0) {
+                    document.getElementById('empty-state').style.display = 'block';
+                } else {
+                    document.getElementById('empty-state').style.display = 'none';
+                    data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        const itemTotal = item.actualHours * item.hourlyRate;
+                        tr.innerHTML = `
+                            <td>${new Date(item.date).toLocaleDateString()}</td>
+                            <td>${item.jobTitle}</td>
+                            <td style="text-align: right;">${item.actualHours}h</td>
+                            <td style="text-align: right;">$${item.hourlyRate}/h</td>
+                            <td style="text-align: right; font-weight: 600;">$${itemTotal.toFixed(2)}</td>
+                            <td style="text-align: center;"><span class="status-chip status-${item.status.toLowerCase()}">${item.status}</span></td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

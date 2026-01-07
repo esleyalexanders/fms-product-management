@@ -10,12 +10,20 @@
 
   const elStart = document.getElementById('startDate');
   const elEnd = document.getElementById('endDate');
-  const elStaff = document.getElementById('staffFilter');
+  // const elStaff = document.getElementById('staffFilter'); // Removed
   const elStatus = document.getElementById('statusFilter');
-  const elException = document.getElementById('exceptionFilter');
+
   const elService = document.getElementById('serviceFilter');
   const elSessionType = document.getElementById('sessionTypeFilter');
   const elSearch = document.getElementById('searchFilter');
+
+  // Multi-select elements
+  const elStaffDisplay = document.getElementById('staffDisplay');
+  const elStaffInput = document.getElementById('staffSearchInput');
+  const elStaffDropdown = document.getElementById('staffDropdown');
+
+  let selectedStaffIds = [];
+  let allStaff = [];
 
   const btnApply = document.getElementById('btnApply');
   const btnClear = document.getElementById('btnClear');
@@ -77,11 +85,11 @@
 
   function badge(status) {
     const s = String(status || 'draft').toLowerCase();
-    if (s === 'approved') return '<span class="badge green">approved</span>';
-    if (s === 'declined') return '<span class="badge red">declined</span>';
-    if (s === 'submitted') return '<span class="badge orange">submitted</span>';
-    if (s === 'locked') return '<span class="badge gray">locked</span>';
-    return '<span class="badge gray">draft</span>';
+    if (s === 'approved') return '<span class="badge green">Approved</span>';
+    if (s === 'declined') return '<span class="badge red">Declined</span>';
+    if (s === 'submitted') return '<span class="badge orange">Submitted</span>';
+    if (s === 'locked') return '<span class="badge gray">Locked</span>';
+    return '<span class="badge gray">Draft</span>';
   }
 
   function dateInRange(ymd, startYmd, endYmd) {
@@ -96,19 +104,128 @@
   }
 
   function buildStaffOptions() {
-    const staff = Store.loadStaff();
-    const active = staff.filter((s) => (s.status || 'active') === 'active');
-
-    elStaff.innerHTML = '<option value="">All staff</option>';
-    active
-      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')))
-      .forEach((s) => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = s.name || `${s.firstName || ''} ${s.lastName || ''}`.trim() || s.id;
-        elStaff.appendChild(opt);
-      });
+    allStaff = Store.loadStaff().filter((s) => (s.status || 'active') === 'active');
+    allStaff.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+    renderDropdownOptions();
   }
+
+  function renderDropdownOptions(filterText = '') {
+    const query = filterText.toLowerCase();
+    const filtered = allStaff.filter(s => {
+      const name = (s.name || '').toLowerCase();
+      return name.includes(query) && !selectedStaffIds.includes(s.id);
+    });
+
+    if (filtered.length === 0) {
+      elStaffDropdown.innerHTML = '<div class="dropdown-option" style="cursor:default;color:#9ca3af;">No staff found</div>';
+      return;
+    }
+
+    elStaffDropdown.innerHTML = filtered.map(s => `
+          <div class="dropdown-option" data-id="${s.id}">
+              ${s.name || `${s.firstName || ''} ${s.lastName || ''}`}
+          </div>
+      `).join('');
+
+    elStaffDropdown.querySelectorAll('.dropdown-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const id = opt.dataset.id;
+        if (id) addStaff(id);
+      });
+    });
+  }
+
+  function addStaff(id) {
+    if (!selectedStaffIds.includes(id)) {
+      selectedStaffIds.push(id);
+      renderTags();
+      elStaffInput.value = '';
+      renderDropdownOptions();
+      // render(); // Wait for apply? No, immediate
+      // Actually user has an "Apply" button in Inbox but usually expects immediate response
+      // But `timesheet_inbox` has explicit Apply/Refresh.
+      // Let's stick to explicit Apply behavior for filters, OR make this one immediate?
+      // The current code only renders on btnApply or btnRefresh for filters...
+      // Wait, actually user request said "same with staff-timesheet-detail".
+      // Detail page updates immediately.
+      // BUT Inbox page has "Apply" button for the filter group.
+      // If I update immediately, it might be weird if other fields are pending.
+      // However, the input box implies interactivity.
+      // Checking existing code: `btnApply.addEventListener('click', () => render());`
+      // So other filters wait.
+      // I will make the staff selection wait for "Apply" too, OR trigger render?
+      // Detail page triggers render immediately.
+      // Let's stick to "Apply" button workflow for Inbox to be consistent with OTHER Inbox filters.
+      // UNLESS the user explicitly wants immediate feedback.
+      // "the filter staff should be the same with [detail]".
+      // In detail, it's instant.
+      // I'll make it instant update for consistency or at least visual update.
+      // Actually, let's keep it consistent with the INBOX page pattern (Apply button) to avoid partial state.
+      // BUT update the UI (tags).
+    }
+  }
+
+  function removeStaff(id) {
+    selectedStaffIds = selectedStaffIds.filter(sid => sid !== id);
+    renderTags();
+    renderDropdownOptions();
+  }
+
+  function renderTags() {
+    const tags = elStaffDisplay.querySelectorAll('.tag');
+    tags.forEach(t => t.remove());
+
+    selectedStaffIds.forEach(id => {
+      const staff = allStaff.find(s => s.id === id);
+      if (!staff) return;
+      const name = staff.name || `${staff.firstName} ${staff.lastName}`;
+
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.innerHTML = `
+              ${name}
+              <div class="tag-remove" data-id="${id}">
+                  <i class="fas fa-times"></i>
+              </div>
+          `;
+      elStaffDisplay.insertBefore(tag, elStaffInput);
+    });
+
+    elStaffDisplay.querySelectorAll('.tag-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeStaff(btn.dataset.id);
+      });
+    });
+
+    if (selectedStaffIds.length > 0) {
+      elStaffInput.placeholder = '';
+    } else {
+      elStaffInput.placeholder = 'All staff...';
+    }
+  }
+
+  // Event Listeners for Multi-Select
+  elStaffInput.addEventListener('focus', () => {
+    elStaffDropdown.classList.add('active');
+    renderDropdownOptions(elStaffInput.value);
+  });
+
+  elStaffInput.addEventListener('input', () => {
+    elStaffDropdown.classList.add('active');
+    renderDropdownOptions(elStaffInput.value);
+  });
+
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('staffMultiSelect');
+    if (wrapper && !wrapper.contains(e.target)) {
+      elStaffDropdown.classList.remove('active');
+    }
+  });
+
+  elStaffDisplay.addEventListener('click', () => {
+    elStaffInput.focus();
+  });
 
   function ensureEntriesForVisibleSessions(startYmd, endYmd) {
     const sessions = Store.loadSessions();
@@ -190,8 +307,6 @@
   }
 
   function buildRow(entry, session, staff) {
-    const exceptions = Array.isArray(entry.exceptions) ? entry.exceptions : [];
-
     const serviceName = session?.learningServiceName || session?.title || session?.learningServiceType || '';
     const sessionType = session?.type || session?.learningServiceType || '';
 
@@ -199,8 +314,6 @@
 
     const scheduled = `${timeFromIso(entry.scheduledStart)}–${timeFromIso(entry.scheduledEnd)}`.replace(/^–|–$/g, '');
     const actual = `${timeFromIso(entry.actualStart)}–${timeFromIso(entry.actualEnd)}`.replace(/^–|–$/g, '');
-
-    const excText = exceptions.length ? exceptions.join(', ') : '';
 
     const managerApproved = entry.managerApprovedMinutes === null || entry.managerApprovedMinutes === undefined ? '' : String(entry.managerApprovedMinutes);
 
@@ -234,10 +347,6 @@
         </td>
         <td>${badge(entry.status)}</td>
         <td>
-          ${exceptions.length ? `<span class=\"badge red\">${exceptions.length} exception</span>` : '<span class="badge green">ok</span>'}
-          ${excText ? `<div class=\"small-note\">${escapeHtml(excText)}</div>` : ''}
-        </td>
-        <td>
           <div class="row-actions">
             <button class="link-btn" data-action="open_calendar" data-session-id="${escapeHtml(entry.sessionId)}">View session</button>
             <button class="link-btn" data-action="approve" data-entry-id="${escapeHtml(entry.id)}">Approve</button>
@@ -252,9 +361,9 @@
     return {
       startDate: elStart.value,
       endDate: elEnd.value,
-      staffId: elStaff.value,
+      // staffId: elStaff.value, // Removed
+      staffIds: selectedStaffIds, // New
       status: elStatus.value,
-      exception: elException.value,
       service: elService.value,
       sessionType: elSessionType.value,
       search: elSearch.value,
@@ -285,26 +394,18 @@
       if (!dateInRange(ymd, startYmd, endYmd)) return false;
 
       // staff filter
-      if (filters.staffId && String(e.staffId) !== String(filters.staffId)) return false;
+      // if (filters.staffId && String(e.staffId) !== String(filters.staffId)) return false;
+      if (filters.staffIds && filters.staffIds.length > 0) {
+        if (!filters.staffIds.includes(String(e.staffId))) return false;
+      }
 
       // status filter
       const st = String(e.status || 'draft').toLowerCase();
       if (filters.status && filters.status !== 'all') {
         if (filters.status === 'needs_action') {
-          const hasExc = Array.isArray(e.exceptions) && e.exceptions.length > 0;
-          if (!isNeedsActionStatus(st) && !hasExc) return false;
+          if (!isNeedsActionStatus(st)) return false;
         } else {
           if (st !== filters.status) return false;
-        }
-      }
-
-      // exception filter
-      const ex = Array.isArray(e.exceptions) ? e.exceptions : [];
-      if (filters.exception) {
-        if (filters.exception === 'none') {
-          if (ex.length > 0) return false;
-        } else {
-          if (!ex.includes(filters.exception)) return false;
         }
       }
 
@@ -496,9 +597,12 @@
     const { value: start } = elStart;
     const { value: end } = elEnd;
 
-    elStaff.value = '';
+    elStaffInput.value = '';
+    selectedStaffIds = []; // clear
+    renderTags(); // reset UI
+    buildStaffOptions(); // reset options
     elStatus.value = 'needs_action';
-    elException.value = '';
+
     elService.value = '';
     elSessionType.value = '';
     elSearch.value = '';

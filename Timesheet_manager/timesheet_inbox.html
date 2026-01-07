@@ -11,10 +11,111 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="../home-styles.css" />
   <style>
+    /* Sidebar highlight */
     .sidebar .nav-item.inbox-link {
       background: #eef2ff;
       color: #6366f1;
       font-weight: 600;
+    }
+
+    /* Multi-Select Styles */
+    .multi-select-container {
+      position: relative;
+      min-width: 200px;
+      /* adjusted for inbox grid */
+    }
+
+    .multi-select-display {
+      min-height: 42px;
+      /* match field input height approximately */
+      padding: 4px 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      /* match field input radius */
+      background: white;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      cursor: text;
+    }
+
+    .multi-select-display:focus-within {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .tag {
+      background: #eef2ff;
+      color: #4f46e5;
+      border: 1px solid #c7d2fe;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+    }
+
+    .tag-remove:hover {
+      background: #c7d2fe;
+    }
+
+    .multi-select-input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 60px;
+      font-size: 14px;
+      padding: 4px 0;
+      background: transparent;
+    }
+
+    .multi-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-top: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .multi-select-dropdown.active {
+      display: block;
+    }
+
+    .dropdown-option {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .dropdown-option:hover {
+      background: #f3f4f6;
+    }
+
+    .dropdown-option.selected {
+      background: #eef2ff;
+      color: #4f46e5;
     }
 
     .panel {
@@ -142,8 +243,7 @@
       padding: 4px 10px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight: 900;
-      text-transform: uppercase;
+      font-weight: 500;
       letter-spacing: .3px;
     }
 
@@ -313,9 +413,14 @@
 
             <div class="field">
               <label>Staff</label>
-              <select id="staffFilter">
-                <option value="">All staff</option>
-              </select>
+              <div class="multi-select-container" id="staffMultiSelect">
+                <div class="multi-select-display" id="staffDisplay">
+                  <input type="text" class="multi-select-input" id="staffSearchInput" placeholder="All staff..." />
+                </div>
+                <div class="multi-select-dropdown" id="staffDropdown">
+                  <!-- Options populated dynamically -->
+                </div>
+              </div>
             </div>
 
             <div class="field">
@@ -328,31 +433,17 @@
               </select>
             </div>
 
-            <div class="field">
-              <label>Exception</label>
-              <select id="exceptionFilter">
-                <option value="">Any</option>
-                <option value="none">No exceptions</option>
-                <option value="missing_start">missing_start</option>
-                <option value="missing_end">missing_end</option>
-                <option value="negative_duration">negative_duration</option>
-                <option value="invalid_time">invalid_time</option>
-                <option value="invalid_break">invalid_break</option>
-                <option value="missing_scheduled_time">missing_scheduled_time</option>
-              </select>
-            </div>
-
-            <div class="field">
+            <div class="field" style="grid-column: span 4;">
               <label>Learning service</label>
               <input type="text" id="serviceFilter" placeholder="Name contains..." />
             </div>
 
-            <div class="field">
+            <div class="field" style="grid-column: span 4;">
               <label>Session type</label>
               <input type="text" id="sessionTypeFilter" placeholder="Type contains..." />
             </div>
 
-            <div class="field">
+            <div class="field" style="grid-column: span 4;">
               <label>Search</label>
               <input type="text" id="searchFilter" placeholder="Session id / staff name..." />
             </div>
@@ -398,7 +489,6 @@
                 <th>Worked / Paid</th>
                 <th>Approved minutes</th>
                 <th>Status</th>
-                <th>Exceptions</th>
                 <th>Actions</th>
               </tr>
             </thead>

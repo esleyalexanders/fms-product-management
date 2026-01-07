@@ -145,7 +145,7 @@
             background: #f9fafb;
         }
 
-        /* Session ID */
+        /* Job ID */
         .job-id-cell {
             font-weight: 600;
             color: #6366f1;
@@ -444,102 +444,6 @@
             color: #6366f1;
             font-weight: 600;
         }
-
-        /* Multi-Select Styles */
-        .multi-select-container {
-            position: relative;
-            min-width: 250px;
-        }
-
-        .multi-select-display {
-            min-height: 38px;
-            padding: 4px 8px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            background: white;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            align-items: center;
-            cursor: text;
-        }
-
-        .multi-select-display:focus-within {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .tag {
-            background: #eef2ff;
-            color: #4f46e5;
-            border: 1px solid #c7d2fe;
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .tag-remove {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            width: 14px;
-            height: 14px;
-        }
-
-        .tag-remove:hover {
-            background: #c7d2fe;
-        }
-
-        .multi-select-input {
-            border: none;
-            outline: none;
-            flex: 1;
-            min-width: 60px;
-            font-size: 14px;
-            padding: 4px 0;
-        }
-
-        .multi-select-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            margin-top: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-
-        .multi-select-dropdown.active {
-            display: block;
-        }
-
-        .dropdown-option {
-            padding: 8px 12px;
-            font-size: 14px;
-            color: #374151;
-            cursor: pointer;
-        }
-
-        .dropdown-option:hover {
-            background: #f3f4f6;
-        }
-
-        .dropdown-option.selected {
-            background: #eef2ff;
-            color: #4f46e5;
-        }
     </style>
 </head>
 
@@ -580,10 +484,9 @@
                     style="text-decoration: none; color: inherit;">
                     <i class="fas fa-user-friends"></i><span>Customers</span>
                 </a>
-
-                <div class="nav-section-label" style="margin-top:14px;">TIME & PAYROLL</div>
-                <a href="timesheet_inbox.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-inbox"></i><span>Timesheet Inbox</span>
+                <a href="staff-timesheets.html" class="nav-item timesheet-link"
+                    style="text-decoration: none; color: inherit;">
+                    <i class="fas fa-clock"></i><span>Staff Timesheets</span>
                 </a>
                 <div class="sidebar-footer">
                     <a href="../manage-team/manage-team-roles.html" class="nav-item"
@@ -612,7 +515,7 @@
                     </button>
                     <div>
                         <h1 class="page-title">Timesheet Details</h1>
-                        <p class="page-subtitle">Review and approve individual session time entries</p>
+                        <p class="page-subtitle">Review and approve individual job time entries</p>
                     </div>
                 </div>
                 <div class="header-right">
@@ -640,15 +543,10 @@
                     <div class="detail-header-bottom">
                         <div class="staff-selector">
                             <label>Staff:</label>
-                            <div class="multi-select-container" id="staffMultiSelect">
-                                <div class="multi-select-display" id="staffDisplay">
-                                    <input type="text" class="multi-select-input" id="staffSearchInput"
-                                        placeholder="Select staff...">
-                                </div>
-                                <div class="multi-select-dropdown" id="staffDropdown">
-                                    <!-- Options populated dynamically -->
-                                </div>
-                            </div>
+                            <select id="staffSelect" onchange="loadStaffTimesheet()">
+                                <option value="">Select staff...</option>
+                                <!-- Staff options will be populated dynamically -->
+                            </select>
                         </div>
 
                         <div class="filter-input-group">
@@ -665,7 +563,7 @@
                             <label>Status:</label>
                             <select id="statusFilter" onchange="applyFilters()">
                                 <option value="all">All Status</option>
-                                <option value="pending">Needs Action</option>
+                                <option value="pending">Waiting Approve</option>
                                 <option value="approved">Approved</option>
                                 <option value="declined">Declined</option>
                             </select>
@@ -676,7 +574,7 @@
                 <!-- Bulk Actions Bar -->
                 <div class="bulk-actions-bar" id="bulkActionsBar">
                     <div class="bulk-selection-info">
-                        <span id="selectedCount">0</span> session(s) selected
+                        <span id="selectedCount">0</span> job(s) selected
                     </div>
                     <div class="bulk-actions-buttons">
                         <button class="bulk-action-btn approve" onclick="bulkApprove()">
@@ -700,7 +598,7 @@
                                     <input type="checkbox" id="selectAll" onchange="toggleSelectAll()"
                                         class="row-checkbox">
                                 </th>
-                                <th>Session ID</th>
+                                <th>Job ID</th>
                                 <th>Date</th>
                                 <th>Start time</th>
                                 <th>End time</th>
@@ -728,10 +626,7 @@
         </main>
     </div>
 
-    <script src="../manage-team/staff_store.js"></script>
-    <script src="payroll_store.js"></script>
     <script src="staff-timesheet-detail.js"></script>
 </body>
 
 </html>
-```
