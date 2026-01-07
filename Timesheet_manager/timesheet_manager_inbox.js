@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.innerHTML = `
             <div class="col-span-2 text-sm font-medium text-slate-900">${formatDate(item.date)}</div>
             
-            <div class="col-span-2 flex items-center gap-3">
+            <div class="col-span-2 flex items-center gap-3 cursor-pointer hover:bg-slate-100 -mx-2 px-2 py-1 rounded transition-colors" onclick="filterByStaff('${item.staffId}', '${item.staffName.replace(/'/g, "\\'")}')">
                 <div class="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 text-xs font-bold flex-shrink-0">
                     ${getInitials(item.staffName)}
                 </div>
@@ -468,4 +468,30 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(link);
         }
     }
+
+    // Filter by staff function - called when clicking on staff name/avatar
+    window.filterByStaff = (staffId, staffName) => {
+        // Clear all checkboxes first
+        const checkboxes = staffOptionsList.querySelectorAll('.staff-checkbox');
+        checkboxes.forEach(cb => cb.checked = false);
+
+        // Check only the selected staff
+        const targetCheckbox = staffOptionsList.querySelector(`.staff-checkbox[value="${staffId}"]`);
+        if (targetCheckbox) {
+            targetCheckbox.checked = true;
+        }
+
+        // Update state
+        selectedStaffIds = [staffId];
+        state.staffIds = [staffId];
+
+        // Update label
+        staffMultiselectLabel.textContent = staffName;
+
+        // Render filtered results
+        render();
+
+        // Scroll to top
+        document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+    };
 });
