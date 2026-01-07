@@ -45,7 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
         populateStaffOptions();
         setPeriod('month'); // Default
         setupEventListeners();
-        render();
+
+        // Check for URL parameters (from overview page)
+        const urlParams = new URLSearchParams(window.location.search);
+        const staffId = urlParams.get('staff');
+        const staffName = urlParams.get('name');
+
+        if (staffId && staffName) {
+            // Pre-select this staff member
+            setTimeout(() => {
+                filterByStaff(staffId, decodeURIComponent(staffName));
+            }, 100);
+        } else {
+            render();
+        }
     }
 
     function populateStaffOptions() {
