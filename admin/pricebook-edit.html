@@ -1,38 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Pricebook Item - Admin</title>
-  <link rel="stylesheet" href="../home-styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-        .form-container { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 24px; }
-        .form-row { display: flex; gap: 16px; margin-bottom: 20px; }
-        .form-row .form-group { flex: 1; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: #374151; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-        .form-group input:disabled { background: #f3f4f6; color: #6b7280; cursor: not-allowed; }
-        .price-section { 
-            display: flex; 
-            gap: 12px; 
-            align-items: flex-start; 
+    <link rel="stylesheet" href="../home-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
         }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group input:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .price-section {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
         .currency-wrapper {
             flex-shrink: 0;
         }
-        .currency-select { 
+
+        .currency-select {
             min-width: 80px;
-            border: 1px solid #d1d5db; 
-            border-radius: 6px; 
-            background: #fff; 
-            padding: 10px 12px; 
-            font-size: 14px; 
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            padding: 10px 12px;
+            font-size: 14px;
             font-weight: 500;
             color: #374151;
             cursor: pointer;
@@ -43,97 +92,225 @@
             background-size: 16px;
             padding-right: 32px;
         }
-        .currency-select:focus { 
-            outline: none; 
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        .price-wrapper {
-            flex: 1;
-        }
-        .price-input { 
-            width: 100%;
-            border: 1px solid #d1d5db; 
-            border-radius: 6px; 
-            padding: 10px 16px;
-            font-size: 15px;
-        }
-        .price-input:focus { 
+
+        .currency-select:focus {
             outline: none;
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
+
+        .price-wrapper {
+            flex: 1;
+        }
+
+        .price-input {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 15px;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
         .price-input::placeholder {
             color: #9ca3af;
         }
-        .form-actions { display: flex; gap: 12px; justify-content: flex-end; padding-top: 24px; border-top: 1px solid #e5e7eb; margin-top: 24px; }
-        .btn-primary, .btn-secondary { font-family: inherit; font-size: 15px; border-radius: 6px; padding: 10px 20px; border: none; cursor: pointer; }
-        .btn-primary { background: #6366f1; color: #fff; }
-        .btn-secondary { background: #e5e7eb; color: #374151; }
-        .section-title { font-size: 18px; font-weight: 600; margin: 24px 0 16px 0; color: #374151; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
-        .sidebar .nav-item.manage-team-link { background: #eef2ff; color: #6366f1; font-weight: 600; }
-        .image-upload-section { border: 2px dashed #d1d5db; border-radius: 8px; padding: 20px; text-align: center; background: #f9fafb; cursor: pointer; transition: all 0.3s; }
-        .image-upload-section:hover { border-color: #6366f1; background: #f3f4f6; }
-        .image-upload-section img { max-width: 100%; max-height: 300px; border-radius: 6px; }
-        .file-input { display: none; }
-        .info-text { font-size: 12px; color: #6b7280; margin-top: 4px; }
-        .preview-section { background: #f9fafb; padding: 16px; border-radius: 8px; margin-top: 20px; }
-        .preview-section h4 { margin: 0 0 12px 0; font-size: 16px; font-weight: 600; }
-        .required { color: #dc2626; }
-  </style>
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 24px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            font-family: inherit;
+            font-size: 15px;
+            border-radius: 6px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 16px 0;
+            color: #374151;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .sidebar .nav-item.manage-team-link {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .image-upload-section {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-upload-section:hover {
+            border-color: #6366f1;
+            background: #f3f4f6;
+        }
+
+        .image-upload-section img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 6px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .preview-section {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .preview-section h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        /* Toggle Option Styles */
+        .toggle-option {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .toggle-option:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+
+        .toggle-option.active {
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .toggle-option.active:hover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="app-container">
+    <div class="app-container">
         <!-- Sidebar -->
-  <nav class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">
-          <i class="fas fa-store"></i>
-          <div class="logo-text-wrapper">
-            <span class="logo-text" id="storeName">My Store</span>
-          </div>
-        </div>
-      </div>
-      <div class="sidebar-nav">
-        <div class="nav-section-label">MAIN</div>
-        <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-        <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-        <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-        <a href="pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-      <div class="sidebar-footer">
-        <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-          <i class="fas fa-shield-alt"></i>
-          <span>Manage roles</span>
-        </a>
-        <div class="nav-item">
-          <i class="fas fa-question-circle"></i>
-          <span>Get Set Up</span>
-        </div>
-        <div class="nav-item">
-          <i class="fas fa-cog"></i>
-          <span>Settings</span>
-        </div>
-      </div>
-    </nav>
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text" id="storeName">My Store</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-nav">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <div class="sidebar-footer">
+                    <a href="../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+        </nav>
         <!-- Main Content Area -->
-    <main class="main-content">
-      <header class="top-header">
+        <main class="main-content">
+            <header class="top-header">
                 <div class="header-left">
                     <h1 class="page-title">Edit Pricebook Item</h1>
                     <p class="page-subtitle">Update an existing service or product</p>
                 </div>
                 <div class="header-right">
-                    <a href="pricebook.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Pricebook</button></a>
+                    <a href="pricebook.html" style="text-decoration:none;"><button class="btn-secondary"><i
+                                class="fas fa-arrow-left"></i> Back to Pricebook</button></a>
                 </div>
-      </header>
+            </header>
             <div class="content-wrapper">
                 <div class="form-container">
                     <form id="pricebookForm">
                         <!-- Basic Information -->
                         <div class="section-title">Basic Information</div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="typeSelect">Type <span class="required">*</span></label>
@@ -148,23 +325,26 @@
                                 <input type="text" id="code" value="CLEAN-001" disabled>
                                 <div class="info-text">Unique identifier for this item</div>
                             </div>
-          </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="name">Name <span class="required">*</span></label>
                             <input type="text" id="name" value="Standard Home Cleaning" required>
-          </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea id="description" rows="3">A standard interior cleaning package for homes up to 2,000 sq ft. Includes vacuuming, dusting, mopping, and bathroom cleaning.</textarea>
-          </div>
+                            <textarea id="description"
+                                rows="3">A standard interior cleaning package for homes up to 2,000 sq ft. Includes vacuuming, dusting, mopping, and bathroom cleaning.</textarea>
+                        </div>
 
                         <div class="form-group">
                             <label>Item Image</label>
                             <div class="image-upload-section" id="imageUploadArea">
                                 <div id="imagePlaceholder">
-                                    <img id="previewImage" src="https://placehold.co/400x250?text=Cleaning+Service" style="display: block; width: 100%; max-height: 300px; border-radius: 6px; object-fit: cover;" alt="Preview">
+                                    <img id="previewImage" src="https://placehold.co/400x250?text=Cleaning+Service"
+                                        style="display: block; width: 100%; max-height: 300px; border-radius: 6px; object-fit: cover;"
+                                        alt="Preview">
                                 </div>
                             </div>
                             <input type="file" id="imageInput" class="file-input" accept="image/*">
@@ -174,12 +354,12 @@
                         <!-- Service-Specific Fields -->
                         <div id="serviceFields" style="display: block;">
                             <div class="section-title">Service Details</div>
-                            
+
                             <div class="form-row">
-                            <div class="form-group">
-                                <label for="duration">MOQ</label>
-                                <input type="number" id="duration" value="1" min="0" step="0.5">
-                            </div>
+                                <div class="form-group">
+                                    <label for="duration">MOQ</label>
+                                    <input type="number" id="duration" value="1" min="0" step="0.5">
+                                </div>
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
                                     <select id="unit">
@@ -194,15 +374,41 @@
 
                             <div class="form-group" id="serviceCustomUnitGroup" style="display: none;">
                                 <label for="serviceCustomUnit">Custom Unit <span class="required">*</span></label>
-                                <input type="text" id="serviceCustomUnit" placeholder="e.g., kg, liter, piece" style="text-transform: lowercase;">
+                                <input type="text" id="serviceCustomUnit" placeholder="e.g., kg, liter, piece"
+                                    style="text-transform: lowercase;">
                                 <div class="info-text">Enter a custom unit name</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Applicable Service Types</label>
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                    <div class="toggle-option active" data-value="class"
+                                        onclick="toggleServiceType(this)">
+                                        <input type="checkbox" id="serviceType_class" value="class" checked
+                                            style="display: none;">
+                                        <span>Class</span>
+                                    </div>
+                                    <div class="toggle-option active" data-value="group"
+                                        onclick="toggleServiceType(this)">
+                                        <input type="checkbox" id="serviceType_group" value="group" checked
+                                            style="display: none;">
+                                        <span>Group</span>
+                                    </div>
+                                    <div class="toggle-option active" data-value="one-off"
+                                        onclick="toggleServiceType(this)">
+                                        <input type="checkbox" id="serviceType_oneoff" value="one-off" checked
+                                            style="display: none;">
+                                        <span>One-off</span>
+                                    </div>
+                                </div>
+                                <div class="info-text">Select which learning service types can use this item</div>
                             </div>
                         </div>
 
                         <!-- Product-Specific Fields -->
                         <div id="productFields" style="display: none;">
                             <div class="section-title">Product Details</div>
-                            
+
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="productUnit">Unit</label>
@@ -221,14 +427,15 @@
 
                             <div class="form-group" id="productCustomUnitGroup" style="display: none;">
                                 <label for="productCustomUnit">Custom Unit <span class="required">*</span></label>
-                                <input type="text" id="productCustomUnit" placeholder="e.g., set, pair, case" style="text-transform: lowercase;">
+                                <input type="text" id="productCustomUnit" placeholder="e.g., set, pair, case"
+                                    style="text-transform: lowercase;">
                                 <div class="info-text">Enter a custom unit name</div>
                             </div>
                         </div>
 
                         <!-- Pricing -->
                         <div class="section-title">Pricing</div>
-                        
+
                         <div class="form-group">
                             <label for="price" id="priceLabel">Price (per hour) <span class="required">*</span></label>
                             <div class="price-section">
@@ -240,46 +447,137 @@
                                         <option value="GBP">GBP</option>
                                         <option value="NZD">NZD</option>
                                     </select>
-            </div>
+                                </div>
                                 <div class="price-wrapper">
-                                    <input type="number" id="price" class="price-input" step="0.01" value="79.00" min="0" placeholder="0.00" required>
-                </div>
-              </div>
+                                    <input type="number" id="price" class="price-input" step="0.01" value="79.00"
+                                        min="0" placeholder="0.00" required>
+                                </div>
+                            </div>
                             <div class="info-text" id="priceInfo">Price will be calculated per hour</div>
-            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="tax">Tax Category (Australia) <span class="required">*</span></label>
                             <select id="tax" required>
                                 <option value="">Select Tax Category</option>
                                 <option value="taxable_gst" selected>Taxable — GST applies (standard 10%)</option>
-                <option value="gst_free">GST-free — 0% (e.g., some health, basic food)</option>
-                <option value="input_taxed">Input-taxed — no GST charged but special reporting</option>
-              </select>
-          </div>
+                                <option value="gst_free">GST-free — 0% (e.g., some health, basic food)</option>
+                                <option value="input_taxed">Input-taxed — no GST charged but special reporting</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Supported Payment Models</label>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                <div class="toggle-option active" data-value="full_payment"
+                                    onclick="togglePaymentModel(this)">
+                                    <input type="checkbox" id="paymentModel_full" value="full_payment" checked
+                                        style="display: none;">
+                                    <span>Full Payment (Upfront)</span>
+                                </div>
+                                <div class="toggle-option active" data-value="down_payment"
+                                    onclick="togglePaymentModel(this)">
+                                    <input type="checkbox" id="paymentModel_deposit" value="down_payment" checked
+                                        style="display: none;">
+                                    <span>Down Payment (Deposit)</span>
+                                </div>
+                                <div class="toggle-option active" data-value="subscription"
+                                    onclick="togglePaymentModel(this)">
+                                    <input type="checkbox" id="paymentModel_subscription" value="subscription" checked
+                                        style="display: none;">
+                                    <span>Subscription (Recurring)</span>
+                                </div>
+                            </div>
+                            <div class="info-text">Select payment models this item can support. Subscription frequency
+                                (weekly/monthly) is configured when adding to quotes.</div>
+                        </div>
+
+                        <!-- Subscription Frequency Field (conditional) -->
+                        <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
+                            <label>Subscription Frequency Options <span class="required">*</span></label>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                <div class="toggle-option active" data-value="weekly" onclick="toggleFrequency(this)">
+                                    <input type="checkbox" id="frequency_weekly" value="weekly" checked
+                                        style="display: none;">
+                                    <span>Weekly</span>
+                                </div>
+                                <div class="toggle-option active" data-value="monthly" onclick="toggleFrequency(this)">
+                                    <input type="checkbox" id="frequency_monthly" value="monthly" checked
+                                        style="display: none;">
+                                    <span>Monthly</span>
+                                </div>
+                                <div class="toggle-option active" data-value="quarterly"
+                                    onclick="toggleFrequency(this)">
+                                    <input type="checkbox" id="frequency_quarterly" value="quarterly" checked
+                                        style="display: none;">
+                                    <span>Quarterly</span>
+                                </div>
+                                <div class="toggle-option active" data-value="annually" onclick="toggleFrequency(this)">
+                                    <input type="checkbox" id="frequency_annually" value="annually" checked
+                                        style="display: none;">
+                                    <span>Annually</span>
+                                </div>
+                            </div>
+                            <div class="info-text">Select which billing frequencies are available when this item is
+                                added to quotes with subscription payment</div>
+                        </div>
 
                         <!-- Preview Section -->
                         <div class="preview-section">
                             <h4>Preview</h4>
                             <div id="previewContent">
                                 <p style="color: #6b7280; margin: 0;">Changes will appear in the preview below</p>
-              </div>
-              </div>
+                            </div>
+                        </div>
 
                         <!-- Form Actions -->
                         <div class="form-actions">
-                            <button type="button" class="btn-secondary" onclick="window.location.href='pricebook.html'">Cancel</button>
+                            <button type="button" class="btn-secondary"
+                                onclick="window.location.href='pricebook.html'">Cancel</button>
                             <button type="button" class="btn-secondary" id="saveDraftBtn">Save as Draft</button>
                             <button type="submit" class="btn-primary">Update Item</button>
-              </div>
+                        </div>
                     </form>
+                </div>
             </div>
-      </div>
-    </main>
-  </div>
+        </main>
+    </div>
 
-  <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        // Toggle functions for multi-select options
+        function toggleServiceType(element) {
+            element.classList.toggle('active');
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = element.classList.contains('active');
+        }
+
+        function togglePaymentModel(element) {
+            element.classList.toggle('active');
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = element.classList.contains('active');
+
+            // Show/hide subscription frequency field
+            updateSubscriptionFrequencyVisibility();
+        }
+
+        function toggleFrequency(element) {
+            element.classList.toggle('active');
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = element.classList.contains('active');
+        }
+
+        function updateSubscriptionFrequencyVisibility() {
+            const subscriptionCheckbox = document.getElementById('paymentModel_subscription');
+            const frequencyGroup = document.getElementById('subscriptionFrequencyGroup');
+
+            if (subscriptionCheckbox && subscriptionCheckbox.checked) {
+                frequencyGroup.style.display = 'block';
+            } else {
+                frequencyGroup.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
             const typeSelect = document.getElementById('typeSelect');
             const serviceFields = document.getElementById('serviceFields');
             const productFields = document.getElementById('productFields');
@@ -294,11 +592,14 @@
             const descriptionInput = document.getElementById('description');
             const previewContent = document.getElementById('previewContent');
 
+            // Initialize subscription frequency visibility
+            updateSubscriptionFrequencyVisibility();
+
             // Type selection toggle
-            typeSelect.addEventListener('change', function() {
+            typeSelect.addEventListener('change', function () {
                 const priceLabel = document.getElementById('priceLabel');
                 const priceInfo = document.getElementById('priceInfo');
-                
+
                 if (typeSelect.value === 'service') {
                     serviceFields.style.display = 'block';
                     productFields.style.display = 'none';
@@ -324,7 +625,7 @@
             const serviceCustomUnitInput = document.getElementById('serviceCustomUnit');
 
             if (unitSelect) {
-                unitSelect.addEventListener('change', function() {
+                unitSelect.addEventListener('change', function () {
                     if (unitSelect.value === 'custom') {
                         serviceCustomUnitGroup.style.display = 'block';
                         serviceCustomUnitInput.required = true;
@@ -343,7 +644,7 @@
             const productCustomUnitInput = document.getElementById('productCustomUnit');
 
             if (productUnitSelect) {
-                productUnitSelect.addEventListener('change', function() {
+                productUnitSelect.addEventListener('change', function () {
                     if (productUnitSelect.value === 'custom') {
                         productCustomUnitGroup.style.display = 'block';
                         productCustomUnitInput.required = true;
@@ -357,20 +658,20 @@
             }
 
             // Image upload
-            imageUploadArea.addEventListener('click', function() {
+            imageUploadArea.addEventListener('click', function () {
                 imageInput.click();
             });
 
-            imageInput.addEventListener('change', function(e) {
+            imageInput.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
                         previewImage.src = e.target.result;
                         updatePreview();
-        };
-        reader.readAsDataURL(file);
-      }
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
 
             // Update preview
@@ -414,18 +715,19 @@
             updatePreview();
 
             // Form submission
-            document.getElementById('pricebookForm').addEventListener('submit', function(e) {
+            document.getElementById('pricebookForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 alert('Item updated successfully! (Demo)');
                 // In real implementation, send data to server
             });
 
             // Save draft
-            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+            document.getElementById('saveDraftBtn').addEventListener('click', function () {
                 alert('Draft saved! (Demo)');
                 // In real implementation, save to server
             });
-    });
-  </script>
+        });
+    </script>
 </body>
+
 </html>
