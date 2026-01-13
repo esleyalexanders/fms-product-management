@@ -1,10 +1,4 @@
-# Pricebook Enhancement - Business Requirements Document
-
----
-
-## Executive Summary
-
-Tài liệu này trình bày các yêu cầu nghiệp vụ để cải tiến module Pricebook với ba trường dữ liệu mới nhằm cải thiện quản lý dịch vụ và tính linh hoạt trong thanh toán. Các cải tiến này sẽ cho phép kiểm soát tốt hơn việc liên kết dịch vụ với các loại learning service và cung cấp nhiều tùy chọn cấu hình thanh toán linh hoạt hơn.
+# Pricebook Enhancement
 
 ---
 
@@ -13,16 +7,17 @@ Tài liệu này trình bày các yêu cầu nghiệp vụ để cải tiến mo
 ### 1.1 Current State
 
 Hệ thống Pricebook hiện tại cho phép người dùng tạo và quản lý các mục service/product với thông tin cơ bản bao gồm:
+
 - Type (Service/Product)
 - SKU/Code
 - Tên và Mô tả
 - Thông tin Giá và Thuế
 - MOQ (Minimum Order Quantity) và Đơn vị
 
-
-### 1.3 Proposed Solution
+### 1.2 Proposed Solution
 
 Thêm ba trường dữ liệu mới vào module Pricebook:
+
 1. **Applicable Service Types** (multi-select) - Các loại dịch vụ áp dụng được
 2. **Supported Payment Models** (multi-select) - Các mô hình thanh toán được hỗ trợ
 3. **Subscription Frequency Options** (multi-select, conditional) - Các tùy chọn tần suất subscription
@@ -34,6 +29,7 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 ### 2.1 Field 1: Applicable Service Types
 
 #### 2.1.1 Field Name
+
 **Tên được đề xuất:** "Applicable Service Types"
 
 **Lý do:** Tên này truyền đạt rõ ràng rằng trường này xác định loại learning service nào có thể sử dụng mục pricebook này.
@@ -51,18 +47,18 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 
 #### 2.1.3 Business Rules
 
-1. **Logic Chọn Lựa**
-   - Người dùng có thể chọn một, nhiều, hoặc tất cả các loại dịch vụ
-   - Ít nhất một tùy chọn phải được chọn nếu trường được sử dụng
-   - Nếu không có lựa chọn nào, mặc định là "Áp dụng cho tất cả các loại"
+**1. Logic Chọn Lựa**
+- Người dùng có thể chọn một, nhiều, hoặc tất cả các loại dịch vụ
+- Ít nhất một tùy chọn phải được chọn nếu trường được sử dụng
+- Nếu không có lựa chọn nào, mặc định là "Áp dụng cho tất cả các loại"
 
-2. **Quy Tắc Hiển Thị**
-   - Trường này chỉ xuất hiện khi Type = "Service"
-   - Ẩn khi Type = "Product"
+**2. Quy Tắc Hiển Thị**
+- Trường này chỉ xuất hiện khi Type = "Service"
+- Ẩn khi Type = "Product"
 
-3. **Tương Thích Ngược**
-   - Các mục pricebook hiện có nên mặc định là "Áp dụng cho tất cả các loại"
-   - Script migration nên đặt cả ba loại là đã chọn cho các mục hiện có
+**3. Tương Thích Ngược**
+- Các mục pricebook hiện có nên mặc định là "Áp dụng cho tất cả các loại"
+- Script migration nên đặt cả ba loại là đã chọn cho các mục hiện có
 
 #### 2.1.4 System Behavior Impact
 
@@ -70,8 +66,7 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 - **Vị trí:** Khi tạo/chỉnh sửa Learning Service và liên kết các mục pricebook
 - **Hành vi hiện tại:** Tất cả các mục pricebook loại service đều có sẵn để chọn
 - **Hành vi mới:** Chỉ các mục pricebook có loại dịch vụ khớp với loại learning service đang được tạo mới có sẵn
-- **Ví dụ:** 
-  - Nếu tạo learning service loại "Class", chỉ các mục pricebook có "Class" được chọn trong Applicable Service Types mới xuất hiện trong dropdown chọn mục
+- **Ví dụ:** Nếu tạo learning service loại "Class", chỉ các mục pricebook có "Class" được chọn trong Applicable Service Types mới xuất hiện trong dropdown chọn mục
 
 **Điểm Tác Động 2: Quote Line Items**
 - **Vị trí:** Khi thêm mục pricebook vào quote cho learning service
@@ -97,18 +92,18 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 
 #### 2.2.2 Business Rules
 
-1. **Logic Chọn Lựa**
-   - Người dùng có thể chọn một, nhiều, hoặc tất cả payment models
-   - Ít nhất một tùy chọn phải được chọn nếu trường được sử dụng
-   - Nếu không có lựa chọn nào, mặc định là "Tất cả payment models được hỗ trợ"
+**1. Logic Chọn Lựa**
+- Người dùng có thể chọn một, nhiều, hoặc tất cả payment models
+- Ít nhất một tùy chọn phải được chọn nếu trường được sử dụng
+- Nếu không có lựa chọn nào, mặc định là "Tất cả payment models được hỗ trợ"
 
-2. **Quy Tắc Hiển Thị**
-   - Trường này xuất hiện cho cả Service và Product types
-   - Luôn hiển thị trong section Pricing
+**2. Quy Tắc Hiển Thị**
+- Trường này xuất hiện cho cả Service và Product types
+- Luôn hiển thị trong section Pricing
 
-3. **Tương Thích Ngược**
-   - Các mục pricebook hiện có nên mặc định là "Tất cả payment models được hỗ trợ"
-   - Script migration nên đặt tất cả payment models là đã chọn cho các mục hiện có
+**3. Tương Thích Ngược**
+- Các mục pricebook hiện có nên mặc định là "Tất cả payment models được hỗ trợ"
+- Script migration nên đặt tất cả payment models là đã chọn cho các mục hiện có
 
 #### 2.2.3 Payment Model Definitions
 
@@ -118,7 +113,7 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 | **Down Payment (Deposit)** | Khách hàng thanh toán đặt cọc ngay, số dư còn lại thanh toán sau | Dịch vụ giá trị cao, xác nhận đặt chỗ, thanh toán chia nhỏ | Số tiền/phần trăm đặt cọc được cấu hình ở cấp quote |
 | **Subscription (Recurring)** | Hóa đơn tự động lặp lại theo khoảng thời gian đều đặn | Membership, dịch vụ liên tục, lớp học định kỳ | **Tần suất (weekly/monthly/quarterly/annually) được cấu hình ở cấp quote**, không phải trong pricebook |
 
-**Lưu ý Quan Trọng:** Mục pricebook chỉ chỉ ra rằng nó *hỗ trợ* subscription payment. Tần suất subscription thực tế (weekly, monthly, v.v.) được cấu hình khi thêm mục vào quote, cho phép cùng một mục pricebook được bán với các tần suất thanh toán khác nhau cho các khách hàng khác nhau.
+> **Lưu ý Quan Trọng:** Mục pricebook chỉ chỉ ra rằng nó *hỗ trợ* subscription payment. Tần suất subscription thực tế (weekly, monthly, v.v.) được cấu hình khi thêm mục vào quote, cho phép cùng một mục pricebook được bán với các tần suất thanh toán khác nhau cho các khách hàng khác nhau.
 
 #### 2.2.4 System Behavior Impact
 
@@ -164,19 +159,19 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
 
 #### 2.3.2 Business Rules
 
-1. **Logic Hiển Thị**
-   - Trường này chỉ xuất hiện khi "Subscription (Recurring)" được chọn
-   - Tự động ẩn khi "Subscription (Recurring)" bị bỏ chọn
-   - Tự động hiện lại khi "Subscription (Recurring)" được chọn lại
+**1. Logic Hiển Thị**
+- Trường này chỉ xuất hiện khi "Subscription (Recurring)" được chọn
+- Tự động ẩn khi "Subscription (Recurring)" bị bỏ chọn
+- Tự động hiện lại khi "Subscription (Recurring)" được chọn lại
 
-2. **Logic Chọn Lựa**
-   - Ít nhất một tần suất phải được chọn khi trường hiển thị
-   - Người dùng có thể chọn một, nhiều, hoặc tất cả các tần suất
-   - Nếu Subscription không được chọn, không cần xác thực trường này
+**2. Logic Chọn Lựa**
+- Ít nhất một tần suất phải được chọn khi trường hiển thị
+- Người dùng có thể chọn một, nhiều, hoặc tất cả các tần suất
+- Nếu Subscription không được chọn, không cần xác thực trường này
 
-3. **Mục Đích**
-   - Xác định các tùy chọn tần suất nào sẽ có sẵn khi mục này được thêm vào quote với subscription payment
-   - Cung cấp sự linh hoạt để hạn chế hoặc mở rộng các tùy chọn tần suất dựa trên tính chất của dịch vụ
+**3. Mục Đích**
+- Xác định các tùy chọn tần suất nào sẽ có sẵn khi mục này được thêm vào quote với subscription payment
+- Cung cấp sự linh hoạt để hạn chế hoặc mở rộng các tùy chọn tần suất dựa trên tính chất của dịch vụ
 
 #### 2.3.3 System Behavior Impact
 
@@ -188,3 +183,6 @@ Thêm ba trường dữ liệu mới vào module Pricebook:
   - Khi thêm vào quote và chọn Subscription, chỉ "Monthly" và "Annually" xuất hiện
   - "Weekly" và "Quarterly" bị ẩn
 
+---
+
+**End of Document**

@@ -168,11 +168,12 @@
         .image-upload-section {
             border: 2px dashed #d1d5db;
             border-radius: 8px;
-            padding: 20px;
+            padding: 12px;
             text-align: center;
             background: #f9fafb;
             cursor: pointer;
             transition: all 0.3s;
+            max-width: 200px;
         }
 
         .image-upload-section:hover {
@@ -182,7 +183,7 @@
 
         .image-upload-section img {
             max-width: 100%;
-            max-height: 300px;
+            max-height: 150px;
             border-radius: 6px;
         }
 
@@ -338,27 +339,91 @@
                                 rows="3">A standard interior cleaning package for homes up to 2,000 sq ft. Includes vacuuming, dusting, mopping, and bathroom cleaning.</textarea>
                         </div>
 
-                        <div class="form-group">
-                            <label>Item Image</label>
-                            <div class="image-upload-section" id="imageUploadArea">
-                                <div id="imagePlaceholder">
-                                    <img id="previewImage" src="https://placehold.co/400x250?text=Cleaning+Service"
-                                        style="display: block; width: 100%; max-height: 300px; border-radius: 6px; object-fit: cover;"
-                                        alt="Preview">
+                        <!-- Package Model Section (Services only) -->
+                        <div id="packageModelSection" style="display: block;">
+                            <div class="section-title">Package Model</div>
+
+                            <div class="form-group">
+                                <label>Package Type <span class="required">*</span></label>
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                    <div class="toggle-option" data-value="non-subscription"
+                                        onclick="selectPackageModel(this)">
+                                        <input type="radio" name="packageModel" id="packageModel_nonSubscription"
+                                            value="non-subscription" style="display: none;">
+                                        <span>Non-Subscription</span>
+                                    </div>
+                                    <div class="toggle-option active" data-value="subscription"
+                                        onclick="selectPackageModel(this)">
+                                        <input type="radio" name="packageModel" id="packageModel_subscription"
+                                            value="subscription" checked style="display: none;">
+                                        <span>Subscription</span>
+                                    </div>
                                 </div>
+                                <div class="info-text">Choose whether this service is subscription-based or one-time
+                                    purchase</div>
                             </div>
-                            <input type="file" id="imageInput" class="file-input" accept="image/*">
-                            <div class="info-text">Optional. Display image for this item</div>
                         </div>
 
                         <!-- Service-Specific Fields -->
                         <div id="serviceFields" style="display: block;">
                             <div class="section-title">Service Details</div>
 
+                            <div class="form-group">
+                                <label>Service Type <span class="required">*</span></label>
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                    <div class="toggle-option active" data-value="class"
+                                        onclick="selectServiceType(this)">
+                                        <input type="radio" name="serviceType" id="serviceType_class" value="class"
+                                            checked style="display: none;">
+                                        <span>Class</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="group" onclick="selectServiceType(this)">
+                                        <input type="radio" name="serviceType" id="serviceType_group" value="group"
+                                            style="display: none;">
+                                        <span>Group</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="one-to-one"
+                                        onclick="selectServiceType(this)">
+                                        <input type="radio" name="serviceType" id="serviceType_onetoone"
+                                            value="one-to-one" style="display: none;">
+                                        <span>One-to-One</span>
+                                    </div>
+                                </div>
+                                <div class="info-text">Select the type of service delivery</div>
+                            </div>
+
+                            <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
+                                <label>Subscription Frequency <span class="required">*</span></label>
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                    <div class="toggle-option active" data-value="weekly"
+                                        onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_weekly" value="weekly"
+                                            checked style="display: none;">
+                                        <span>Weekly</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="monthly" onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_monthly" value="monthly"
+                                            style="display: none;">
+                                        <span>Monthly</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="quarterly" onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_quarterly" value="quarterly"
+                                            style="display: none;">
+                                        <span>Quarterly</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="annually" onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_annually" value="annually"
+                                            style="display: none;">
+                                        <span>Annually</span>
+                                    </div>
+                                </div>
+                                <div class="info-text">Select billing frequency for subscription services</div>
+                            </div>
+
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="duration">MOQ</label>
-                                    <input type="number" id="duration" value="1" min="0" step="0.5">
+                                    <label for="moq" id="moqLabel">MOQ (Minimum Order Quantity)</label>
+                                    <input type="number" id="moq" value="1" min="0" step="0.5">
                                 </div>
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
@@ -378,38 +443,23 @@
                                     style="text-transform: lowercase;">
                                 <div class="info-text">Enter a custom unit name</div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Applicable Service Types</label>
-                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                    <div class="toggle-option active" data-value="class"
-                                        onclick="toggleServiceType(this)">
-                                        <input type="checkbox" id="serviceType_class" value="class" checked
-                                            style="display: none;">
-                                        <span>Class</span>
-                                    </div>
-                                    <div class="toggle-option active" data-value="group"
-                                        onclick="toggleServiceType(this)">
-                                        <input type="checkbox" id="serviceType_group" value="group" checked
-                                            style="display: none;">
-                                        <span>Group</span>
-                                    </div>
-                                    <div class="toggle-option active" data-value="one-off"
-                                        onclick="toggleServiceType(this)">
-                                        <input type="checkbox" id="serviceType_oneoff" value="one-off" checked
-                                            style="display: none;">
-                                        <span>One-off</span>
-                                    </div>
-                                </div>
-                                <div class="info-text">Select which learning service types can use this item</div>
-                            </div>
                         </div>
 
                         <!-- Product-Specific Fields -->
                         <div id="productFields" style="display: none;">
                             <div class="section-title">Product Details</div>
 
+                            <div class="info-text"
+                                style="background: #f0f9ff; padding: 12px; border-radius: 6px; border-left: 3px solid #3b82f6; margin-bottom: 16px;">
+                                <i class="fas fa-info-circle" style="color: #3b82f6;"></i> Products are always
+                                non-subscription items
+                            </div>
+
                             <div class="form-row">
+                                <div class="form-group">
+                                    <label for="productMOQ">MOQ (Minimum Order Quantity)</label>
+                                    <input type="number" id="productMOQ" placeholder="1" min="0" step="0.5">
+                                </div>
                                 <div class="form-group">
                                     <label for="productUnit">Unit</label>
                                     <select id="productUnit">
@@ -466,67 +516,34 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
-                            <label>Supported Payment Models</label>
-                            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                <div class="toggle-option active" data-value="full_payment"
-                                    onclick="togglePaymentModel(this)">
-                                    <input type="checkbox" id="paymentModel_full" value="full_payment" checked
-                                        style="display: none;">
-                                    <span>Full Payment (Upfront)</span>
-                                </div>
-                                <div class="toggle-option active" data-value="down_payment"
-                                    onclick="togglePaymentModel(this)">
-                                    <input type="checkbox" id="paymentModel_deposit" value="down_payment" checked
-                                        style="display: none;">
-                                    <span>Down Payment (Deposit)</span>
-                                </div>
-                                <div class="toggle-option active" data-value="subscription"
-                                    onclick="togglePaymentModel(this)">
-                                    <input type="checkbox" id="paymentModel_subscription" value="subscription" checked
-                                        style="display: none;">
-                                    <span>Subscription (Recurring)</span>
-                                </div>
-                            </div>
-                            <div class="info-text">Select payment models this item can support. Subscription frequency
-                                (weekly/monthly) is configured when adding to quotes.</div>
-                        </div>
-
-                        <!-- Subscription Frequency Field (conditional) -->
-                        <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
-                            <label>Subscription Frequency Options <span class="required">*</span></label>
-                            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                <div class="toggle-option active" data-value="weekly" onclick="toggleFrequency(this)">
-                                    <input type="checkbox" id="frequency_weekly" value="weekly" checked
-                                        style="display: none;">
-                                    <span>Weekly</span>
-                                </div>
-                                <div class="toggle-option active" data-value="monthly" onclick="toggleFrequency(this)">
-                                    <input type="checkbox" id="frequency_monthly" value="monthly" checked
-                                        style="display: none;">
-                                    <span>Monthly</span>
-                                </div>
-                                <div class="toggle-option active" data-value="quarterly"
-                                    onclick="toggleFrequency(this)">
-                                    <input type="checkbox" id="frequency_quarterly" value="quarterly" checked
-                                        style="display: none;">
-                                    <span>Quarterly</span>
-                                </div>
-                                <div class="toggle-option active" data-value="annually" onclick="toggleFrequency(this)">
-                                    <input type="checkbox" id="frequency_annually" value="annually" checked
-                                        style="display: none;">
-                                    <span>Annually</span>
-                                </div>
-                            </div>
-                            <div class="info-text">Select which billing frequencies are available when this item is
-                                added to quotes with subscription payment</div>
-                        </div>
-
                         <!-- Preview Section -->
                         <div class="preview-section">
                             <h4>Preview</h4>
-                            <div id="previewContent">
-                                <p style="color: #6b7280; margin: 0;">Changes will appear in the preview below</p>
+                            <div style="display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px;">
+                                <div>
+                                    <label
+                                        style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: #374151;">Item
+                                        Image</label>
+                                    <div class="image-upload-section" id="imageUploadArea">
+                                        <div id="imagePlaceholder" style="display: none;">
+                                            <i class="fas fa-image"
+                                                style="font-size: 32px; color: #9ca3af; margin-bottom: 8px;"></i>
+                                            <p style="color: #6b7280; margin: 0; font-size: 11px;">Click to upload</p>
+                                            <p style="font-size: 10px; color: #9ca3af; margin: 4px 0 0 0;">PNG, JPG</p>
+                                        </div>
+                                        <img id="previewImage" src="https://placehold.co/400x250?text=Cleaning+Service"
+                                            style="display: block; width: 100%; max-height: 150px; border-radius: 6px; object-fit: cover;"
+                                            alt="Preview">
+                                    </div>
+                                    <input type="file" id="imageInput" class="file-input" accept="image/*">
+                                    <div class="info-text">Optional</div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div id="previewContent">
+                                        <p style="color: #6b7280; margin: 0;">Changes will appear in the preview below
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -544,36 +561,83 @@
     </div>
 
     <script>
-        // Toggle functions for multi-select options
-        function toggleServiceType(element) {
-            element.classList.toggle('active');
-            const checkbox = element.querySelector('input[type="checkbox"]');
-            checkbox.checked = element.classList.contains('active');
+        // Radio button selection functions (single-select)
+        function selectPackageModel(element) {
+            // Remove active from all package model options
+            document.querySelectorAll('[name="packageModel"]').forEach(el => {
+                el.closest('.toggle-option').classList.remove('active');
+                el.checked = false;
+            });
+
+            // Set active on clicked element
+            element.classList.add('active');
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            // Update UI based on selection
+            updatePackageModelUI();
+            updatePreview();
         }
 
-        function togglePaymentModel(element) {
-            element.classList.toggle('active');
-            const checkbox = element.querySelector('input[type="checkbox"]');
-            checkbox.checked = element.classList.contains('active');
+        function selectServiceType(element) {
+            // Remove active from all service type options
+            document.querySelectorAll('[name="serviceType"]').forEach(el => {
+                el.closest('.toggle-option').classList.remove('active');
+                el.checked = false;
+            });
 
-            // Show/hide subscription frequency field
-            updateSubscriptionFrequencyVisibility();
+            // Set active on clicked element
+            element.classList.add('active');
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            updatePreview();
         }
 
-        function toggleFrequency(element) {
-            element.classList.toggle('active');
-            const checkbox = element.querySelector('input[type="checkbox"]');
-            checkbox.checked = element.classList.contains('active');
+        function selectFrequency(element) {
+            // Remove active from all frequency options
+            document.querySelectorAll('[name="frequency"]').forEach(el => {
+                el.closest('.toggle-option').classList.remove('active');
+                el.checked = false;
+            });
+
+            // Set active on clicked element
+            element.classList.add('active');
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            updatePreview();
         }
 
-        function updateSubscriptionFrequencyVisibility() {
-            const subscriptionCheckbox = document.getElementById('paymentModel_subscription');
+        function updatePackageModelUI() {
+            const subscriptionRadio = document.getElementById('packageModel_subscription');
             const frequencyGroup = document.getElementById('subscriptionFrequencyGroup');
+            const unitSelect = document.getElementById('unit');
+            const priceLabel = document.getElementById('priceLabel');
+            const priceInfo = document.getElementById('priceInfo');
 
-            if (subscriptionCheckbox && subscriptionCheckbox.checked) {
+            if (subscriptionRadio && subscriptionRadio.checked) {
+                // Subscription mode
                 frequencyGroup.style.display = 'block';
+
+                // Lock unit to "hour"
+                unitSelect.value = 'hour';
+                unitSelect.disabled = true;
+
+                priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
+                priceInfo.textContent = 'Price will be calculated per hour';
             } else {
+                // Non-subscription mode
                 frequencyGroup.style.display = 'none';
+
+                // Enable unit selection
+                unitSelect.disabled = false;
+
+                // Update price label based on selected unit
+                const unit = unitSelect.value;
+                const unitText = unit === 'custom' ? 'unit' : unit;
+                priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
+                priceInfo.textContent = `Price will be per ${unitText}`;
             }
         }
 
@@ -581,6 +645,7 @@
             const typeSelect = document.getElementById('typeSelect');
             const serviceFields = document.getElementById('serviceFields');
             const productFields = document.getElementById('productFields');
+            const packageModelSection = document.getElementById('packageModelSection');
             const imageUploadArea = document.getElementById('imageUploadArea');
             const imageInput = document.getElementById('imageInput');
             const previewImage = document.getElementById('previewImage');
@@ -592,8 +657,8 @@
             const descriptionInput = document.getElementById('description');
             const previewContent = document.getElementById('previewContent');
 
-            // Initialize subscription frequency visibility
-            updateSubscriptionFrequencyVisibility();
+            // Initialize package model UI
+            updatePackageModelUI();
 
             // Type selection toggle
             typeSelect.addEventListener('change', function () {
@@ -603,16 +668,18 @@
                 if (typeSelect.value === 'service') {
                     serviceFields.style.display = 'block';
                     productFields.style.display = 'none';
-                    priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
-                    priceInfo.textContent = 'Price will be calculated per hour';
+                    packageModelSection.style.display = 'block';
+                    updatePackageModelUI();
                 } else if (typeSelect.value === 'product') {
                     serviceFields.style.display = 'none';
                     productFields.style.display = 'block';
+                    packageModelSection.style.display = 'none';
                     priceLabel.innerHTML = 'Price (per unit) <span class="required">*</span>';
                     priceInfo.textContent = 'Price will be per unit';
                 } else {
                     serviceFields.style.display = 'none';
                     productFields.style.display = 'none';
+                    packageModelSection.style.display = 'none';
                     priceLabel.innerHTML = 'Price <span class="required">*</span>';
                     priceInfo.textContent = 'Enter the price';
                 }
@@ -634,6 +701,13 @@
                         serviceCustomUnitInput.required = false;
                         serviceCustomUnitInput.value = '';
                     }
+
+                    // Update price label for non-subscription services
+                    const subscriptionRadio = document.getElementById('packageModel_subscription');
+                    if (!subscriptionRadio || !subscriptionRadio.checked) {
+                        updatePackageModelUI();
+                    }
+
                     updatePreview();
                 });
             }
@@ -653,6 +727,15 @@
                         productCustomUnitInput.required = false;
                         productCustomUnitInput.value = '';
                     }
+
+                    // Update price label
+                    const priceLabel = document.getElementById('priceLabel');
+                    const priceInfo = document.getElementById('priceInfo');
+                    const unit = productUnitSelect.value;
+                    const unitText = unit === 'custom' ? 'unit' : unit;
+                    priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
+                    priceInfo.textContent = `Price will be per ${unitText}`;
+
                     updatePreview();
                 });
             }
@@ -683,16 +766,54 @@
                 const displayPrice = `${currency} ${price}`;
                 const description = descriptionInput.value || '[Description]';
                 const type = typeSelect.value || 'service';
+
+                // Get MOQ and unit
+                let moq, unit, moqDisplay = '';
+                if (type === 'service') {
+                    moq = document.getElementById('moq')?.value || '';
+                    const unitSelect = document.getElementById('unit');
+                    const customUnit = document.getElementById('serviceCustomUnit')?.value;
+                    unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
+
+                    // Check if subscription
+                    const subscriptionRadio = document.getElementById('packageModel_subscription');
+                    if (subscriptionRadio && subscriptionRadio.checked) {
+                        // Get selected frequency
+                        const selectedFrequency = document.querySelector('[name="frequency"]:checked');
+                        const frequency = selectedFrequency ? selectedFrequency.value : 'weekly';
+                        moqDisplay = moq ? `MOQ: ${moq} ${unit}/${frequency}` : '';
+                    } else {
+                        moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
+                    }
+                } else if (type === 'product') {
+                    moq = document.getElementById('productMOQ')?.value || '';
+                    const productUnitSelect = document.getElementById('productUnit');
+                    const customProductUnit = document.getElementById('productCustomUnit')?.value;
+                    unit = productUnitSelect?.value === 'custom' && customProductUnit ? customProductUnit : productUnitSelect?.value || 'each';
+                    moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
+                }
+
+                // Get service type if applicable
+                let serviceTypeDisplay = '';
+                if (type === 'service') {
+                    const selectedServiceType = document.querySelector('[name="serviceType"]:checked');
+                    if (selectedServiceType) {
+                        const serviceTypeValue = selectedServiceType.value;
+                        const serviceTypeText = serviceTypeValue === 'one-to-one' ? 'One-to-One' :
+                            serviceTypeValue.charAt(0).toUpperCase() + serviceTypeValue.slice(1);
+                        serviceTypeDisplay = ` • ${serviceTypeText}`;
+                    }
+                }
+
                 const unitText = type === 'service' ? '/ hour' : '/ unit';
-                const imageHtml = `<img src="${previewImage.src}" style="width:100%;border-radius:6px;margin-bottom:12px;max-height:200px;object-fit:cover;">`;
 
                 previewContent.innerHTML = `
-                    ${imageHtml}
                     <div style="padding:12px;background:#fff;border-radius:6px;">
                         <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
                             <div>
                                 <div style="font-weight:600;font-size:16px;color:#111827;">${name}</div>
-                                <div style="font-size:13px;color:#6b7280;">${code} • ${type === 'service' ? 'Service' : 'Product'}</div>
+                                <div style="font-size:13px;color:#6b7280;">${code} • ${type === 'service' ? 'Service' : 'Product'}${serviceTypeDisplay}</div>
+                                ${moqDisplay ? `<div style="font-size:12px;color:#8b5cf6;margin-top:4px;font-weight:500;">${moqDisplay}</div>` : ''}
                             </div>
                             <div style="text-align:right;">
                                 <div style="font-weight:700;color:#6366f1;font-size:20px;">${displayPrice}</div>
@@ -710,6 +831,12 @@
             priceInput.addEventListener('input', updatePreview);
             currencySelect.addEventListener('change', updatePreview);
             descriptionInput.addEventListener('input', updatePreview);
+
+            // Add listeners for MOQ inputs
+            const moqInput = document.getElementById('moq');
+            const productMOQInput = document.getElementById('productMOQ');
+            if (moqInput) moqInput.addEventListener('input', updatePreview);
+            if (productMOQInput) productMOQInput.addEventListener('input', updatePreview);
 
             // Initial preview on load
             updatePreview();
