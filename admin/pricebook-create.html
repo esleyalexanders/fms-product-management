@@ -611,7 +611,7 @@
         }
 
         function updatePackageModelUI() {
-            const subscriptionRadio = document.getElementById('paymentModel_subscription');
+            const subscriptionRadio = document.getElementById('packageModel_subscription');
             const frequencyGroup = document.getElementById('subscriptionFrequencyGroup');
             const unitSelect = document.getElementById('unit');
             const priceLabel = document.getElementById('priceLabel');
@@ -642,6 +642,84 @@
             }
         }
 
+        // Global updatePreview function (needs to be accessible from event handlers)
+        function updatePreview() {
+            const nameInput = document.getElementById('name');
+            const codeInput = document.getElementById('code');
+            const currencySelect = document.getElementById('currency');
+            const priceInput = document.getElementById('price');
+            const descriptionInput = document.getElementById('description');
+            const typeSelect = document.getElementById('typeSelect');
+            const previewContent = document.getElementById('previewContent');
+
+            if (!nameInput || !previewContent) return;
+
+            const name = nameInput.value || '[Item Name]';
+            const code = codeInput.value || '[SKU/Code]';
+            const currency = currencySelect.value;
+            const price = priceInput.value ? `${Number(priceInput.value).toFixed(2)}` : '0.00';
+            const displayPrice = `${currency} ${price}`;
+            const description = descriptionInput.value || '[Description]';
+            const type = typeSelect.value || 'item';
+
+            // Get MOQ and unit
+            let moq, unit, moqDisplay = '';
+            if (type === 'service') {
+                moq = document.getElementById('moq')?.value || '';
+                const unitSelect = document.getElementById('unit');
+                const customUnit = document.getElementById('serviceCustomUnit')?.value;
+                unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
+
+                // Check if subscription
+                const subscriptionRadio = document.getElementById('packageModel_subscription');
+                if (subscriptionRadio && subscriptionRadio.checked) {
+                    // Get selected frequency
+                    const selectedFrequency = document.querySelector('[name="frequency"]:checked');
+                    const frequency = selectedFrequency ? selectedFrequency.value : 'weekly';
+                    moqDisplay = moq ? `MOQ: ${moq} ${unit}/${frequency}` : '';
+                } else {
+                    moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
+                }
+            } else if (type === 'product') {
+                moq = document.getElementById('productMOQ')?.value || '';
+                const productUnitSelect = document.getElementById('productUnit');
+                const customProductUnit = document.getElementById('productCustomUnit')?.value;
+                unit = productUnitSelect?.value === 'custom' && customProductUnit ? customProductUnit : productUnitSelect?.value || 'each';
+                moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
+            }
+
+            // Get service type if applicable
+            let serviceTypeDisplay = '';
+            if (type === 'service') {
+                const selectedServiceType = document.querySelector('[name="serviceType"]:checked');
+                if (selectedServiceType) {
+                    const serviceTypeValue = selectedServiceType.value;
+                    const serviceTypeText = serviceTypeValue === 'one-to-one' ? 'One-to-One' :
+                        serviceTypeValue.charAt(0).toUpperCase() + serviceTypeValue.slice(1);
+                    serviceTypeDisplay = ` • ${serviceTypeText}`;
+                }
+            }
+
+            const unitText = type === 'service' ? '/ hour' : type === 'product' ? '/ unit' : '';
+
+            previewContent.innerHTML = `
+                <div style="padding:12px;background:#fff;border-radius:6px;">
+                    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+                        <div>
+                            <div style="font-weight:600;font-size:16px;color:#111827;">${name}</div>
+                            <div style="font-size:13px;color:#6b7280;">${code}${type ? ' • ' + (type === 'service' ? 'Service' : type === 'product' ? 'Product' : '') : ''}${serviceTypeDisplay}</div>
+                            ${moqDisplay ? `<div style="font-size:12px;color:#8b5cf6;margin-top:4px;font-weight:500;">${moqDisplay}</div>` : ''}
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700;color:#6366f1;font-size:20px;">${displayPrice}</div>
+                            <div style="font-size:11px;color:#9ca3af;">${unitText}</div>
+                        </div>
+                    </div>
+                    <div style="color:#6b7280;font-size:14px;line-height:1.5;">${description}</div>
+                </div>
+            `;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const typeSelect = document.getElementById('typeSelect');
             const serviceFields = document.getElementById('serviceFields');
@@ -651,12 +729,12 @@
             const imageInput = document.getElementById('imageInput');
             const previewImage = document.getElementById('previewImage');
             const imagePlaceholder = document.getElementById('imagePlaceholder');
-            const codeInput = document.getElementById('code');
-            const nameInput = document.getElementById('name');
-            const priceInput = document.getElementById('price');
-            const currencySelect = document.getElementById('currency');
-            const descriptionInput = document.getElementById('description');
-            const previewContent = document.getElementById('previewContent');
+            // const codeInput = document.getElementById('code'); // Removed, now in updatePreview
+            // const nameInput = document.getElementById('name'); // Removed, now in updatePreview
+            // const priceInput = document.getElementById('price'); // Removed, now in updatePreview
+            // const currencySelect = document.getElementById('currency'); // Removed, now in updatePreview
+            // const descriptionInput = document.getElementById('description'); // Removed, now in updatePreview
+            // const previewContent = document.getElementById('previewContent'); // Removed, now in updatePreview
 
             // Initialize package model UI
             updatePackageModelUI();
@@ -761,79 +839,15 @@
             });
 
             // Update preview
-            function updatePreview() {
-                const name = nameInput.value || '[Item Name]';
-                const code = codeInput.value || '[SKU/Code]';
-                const currency = currencySelect.value;
-                const price = priceInput.value ? `${Number(priceInput.value).toFixed(2)}` : '0.00';
-                const displayPrice = `${currency} ${price}`;
-                const description = descriptionInput.value || '[Description]';
-                const type = typeSelect.value || 'item';
-
-                // Get MOQ and unit
-                let moq, unit, moqDisplay = '';
-                if (type === 'service') {
-                    moq = document.getElementById('moq')?.value || '';
-                    const unitSelect = document.getElementById('unit');
-                    const customUnit = document.getElementById('serviceCustomUnit')?.value;
-                    unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
-
-                    // Check if subscription
-                    const subscriptionRadio = document.getElementById('packageModel_subscription');
-                    if (subscriptionRadio && subscriptionRadio.checked) {
-                        // Get selected frequency
-                        const selectedFrequency = document.querySelector('[name="frequency"]:checked');
-                        const frequency = selectedFrequency ? selectedFrequency.value : 'weekly';
-                        moqDisplay = moq ? `MOQ: ${moq} ${unit}/${frequency}` : '';
-                    } else {
-                        moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
-                    }
-                } else if (type === 'product') {
-                    moq = document.getElementById('productMOQ')?.value || '';
-                    const productUnitSelect = document.getElementById('productUnit');
-                    const customProductUnit = document.getElementById('productCustomUnit')?.value;
-                    unit = productUnitSelect?.value === 'custom' && customProductUnit ? customProductUnit : productUnitSelect?.value || 'each';
-                    moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
-                }
-
-                // Get service type if applicable
-                let serviceTypeDisplay = '';
-                if (type === 'service') {
-                    const selectedServiceType = document.querySelector('[name="serviceType"]:checked');
-                    if (selectedServiceType) {
-                        const serviceTypeValue = selectedServiceType.value;
-                        const serviceTypeText = serviceTypeValue === 'one-to-one' ? 'One-to-One' :
-                            serviceTypeValue.charAt(0).toUpperCase() + serviceTypeValue.slice(1);
-                        serviceTypeDisplay = ` • ${serviceTypeText}`;
-                    }
-                }
-
-                const unitText = type === 'service' ? '/ hour' : type === 'product' ? '/ unit' : '';
-
-                previewContent.innerHTML = `
-                    <div style="padding:12px;background:#fff;border-radius:6px;">
-                        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-                            <div>
-                                <div style="font-weight:600;font-size:16px;color:#111827;">${name}</div>
-                                <div style="font-size:13px;color:#6b7280;">${code}${type ? ' • ' + (type === 'service' ? 'Service' : type === 'product' ? 'Product' : '') : ''}${serviceTypeDisplay}</div>
-                                ${moqDisplay ? `<div style="font-size:12px;color:#8b5cf6;margin-top:4px;font-weight:500;">${moqDisplay}</div>` : ''}
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-weight:700;color:#6366f1;font-size:20px;">${displayPrice}</div>
-                                <div style="font-size:11px;color:#9ca3af;">${unitText}</div>
-                            </div>
-                        </div>
-                        <div style="color:#6b7280;font-size:14px;line-height:1.5;">${description}</div>
-                    </div>
-                `;
-            }
+            // This function is now global, so we don't need to define it here.
+            // We just need to ensure the event listeners below correctly call the global one.
 
             // Add event listeners for preview updates
-            nameInput.addEventListener('input', updatePreview);
-            codeInput.addEventListener('input', updatePreview);
-            priceInput.addEventListener('input', updatePreview);
-            currencySelect.addEventListener('change', updatePreview);
-            descriptionInput.addEventListener('input', updatePreview);
+            document.getElementById('name').addEventListener('input', updatePreview);
+            document.getElementById('code').addEventListener('input', updatePreview);
+            document.getElementById('price').addEventListener('input', updatePreview);
+            document.getElementById('currency').addEventListener('change', updatePreview);
+            document.getElementById('description').addEventListener('input', updatePreview);
 
             // Add listeners for MOQ inputs
             const moqInput = document.getElementById('moq');

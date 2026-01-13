@@ -10,7 +10,7 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
     <link rel="apple-touch-icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
-    <title>Edit Quote - FMS</title>
+    <title>Edit Quote - Learning Service Search (EXPERIMENT) - FMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -64,6 +64,22 @@
                             Back to Quotes
                         </button>
                         <!-- Dynamic action buttons will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experimental Banner -->
+            <div class="bg-orange-100 border-l-4 border-orange-500 p-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                        </path>
+                    </svg>
+                    <div>
+                        <p class="font-bold text-orange-800">EXPERIMENTAL VERSION - Solution 1 Demo</p>
+                        <p class="text-sm text-orange-700">This page demonstrates searching for Learning Services
+                            instead of Pricebook Items</p>
                     </div>
                 </div>
             </div>
@@ -345,8 +361,8 @@
                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                     </svg>
                                     <input type="text" id="catalogSearchInput"
-                                        placeholder="Type to search and add services or products..."
-                                        class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        placeholder="🔬 EXPERIMENT: Search Learning Services (Class, Group, One-to-One)..."
+                                        class="w-full pl-10 pr-10 py-2 border border-orange-300 bg-orange-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
                                         autocomplete="off" />
                                     <button id="clearCatalogSearchBtn"
                                         class="hidden absolute right-3 top-3 text-gray-400 hover:text-gray-600">
@@ -1638,7 +1654,7 @@
         // Existing quote data (would normally come from server/API)
         const existingQuote = {
             id: 'Q-2024-001',
-            status: 'approved', // Changed from 'draft' for testing purposes // draft, sent, approved, rejected, expired, invoiced
+            status: 'draft', // draft, sent, approved, rejected, expired, invoiced
             createdDate: '2024-10-20',
             validUntil: '2026-12-31',
             customerNotes: 'Thank you for your interest in our tutoring services.',
@@ -1678,8 +1694,7 @@
                 canEdit: false,
                 canDelete: false,
                 actions: [
-                    { id: 'convertToSessions', label: 'Convert to Sessions', color: 'green', icon: 'plus', primary: true },
-                    { id: 'createInvoice', label: 'Create Invoice', color: 'purple', icon: 'invoice' },
+                    { id: 'createInvoice', label: 'Create Invoice', color: 'purple', icon: 'invoice', primary: true },
                     { id: 'download', label: 'Download PDF', color: 'gray', icon: 'download' },
                     { id: 'clone', label: 'Clone Quote', color: 'blue', icon: 'copy' }
                 ]
@@ -1859,34 +1874,408 @@
             { id: 21, name: 'Uma Patel', email: 'uma.patel@email.com', phone: '0414 333 333', address: '21 Union St, Windsor VIC 3181', previousQuotes: 0 },
             { id: 22, name: 'Victor Vasquez', email: 'victor.v@email.com', phone: '0414 444 444', address: '22 Victoria St, Richmond VIC 3121', previousQuotes: 4 },
             { id: 23, name: 'Wendy White', email: 'wendy.w@email.com', phone: '0414 555 555', address: '23 Wellington St, St Kilda VIC 3182', previousQuotes: 2 },
-            { id: 24, name: 'Xavier Xu', email: 'xavier.x@email.com', phone: '0414 666 666', address: '24 Xavier St, Kew VIC 3101', previousQuotes: 6 },
-            { id: 25, name: 'Yasmin Young', email: 'yasmin.y@email.com', phone: '0414 777 777', address: '25 York St, South Melbourne VIC 3205', previousQuotes: 1 },
             { id: 26, name: 'Zachary Zhang', email: 'zach.zhang@email.com', phone: '0414 888 888', address: '26 Zoe St, Brunswick VIC 3056', previousQuotes: 3 }
         ];
 
-        const tutoringServices = [
-            // Services with GST (10% tax)
-            { id: 't1', name: 'One-on-One Tutoring - Math', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't2', name: 'One-on-One Tutoring - English', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't3', name: 'Small Group (2-4 students)', tag: 'Group', type: 'service', price: 50, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't4', name: 'Assessment & Report', tag: 'Assessment', type: 'service', price: 120, pricingType: 'fixed', unit: 'each', taxCategory: 'taxable_gst' },
-
-            // Services GST-Free (0% tax)
-            { id: 't5', name: 'Educational Counseling Service', tag: 'Support', type: 'service', price: 80, pricingType: 'per_hour', unit: 'hour', taxCategory: 'gst_free' },
-            { id: 't6', name: 'Learning Disability Assessment', tag: 'Assessment', type: 'service', price: 150, pricingType: 'fixed', unit: 'each', taxCategory: 'gst_free' },
-
-            // Services Input-Taxed (0% tax)
-            { id: 't7', name: 'Tutoring Consultation Fee', tag: 'Consultation', type: 'service', price: 60, pricingType: 'fixed', unit: 'each', taxCategory: 'input_taxed' },
-
-            // Products with GST (10% tax)
-            { id: 'p1', name: 'Study Materials Package', tag: 'Materials', type: 'product', price: 45, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
-            { id: 'p2', name: 'Textbook Bundle', tag: 'Materials', type: 'product', price: 120, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
-            { id: 'p3', name: 'Practice Test Series', tag: 'Materials', type: 'product', price: 35, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
-
-            // Products GST-Free (0% tax)
-            { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
-            { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
+        // ============================================================================
+        // LEARNING SERVICES DATA (Solution 1: Search Learning Services Instead of Pricebook)
+        // ============================================================================
+        const learningServices = [
+            {
+                id: 'ls_001',
+                name: 'AP Calculus AB',
+                type: 'Class',
+                description: 'Advanced Placement Calculus course covering limits, derivatives, and integrals',
+                price: 75,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Monday', 'Wednesday', 'Friday'],
+                    time: '15:00 - 16:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'John Smith', role: 'Senior Tutor' }
+                ],
+                maxCapacity: 20,
+                currentEnrollment: 17,
+                availableSlots: 3,
+                avgEnrollment: 85,
+                sessionsCount: 45,
+                status: 'active'
+            },
+            {
+                id: 'ls_002',
+                name: 'SAT Math Prep Group',
+                type: 'Group',
+                description: 'Small group SAT Math preparation with focus on problem-solving strategies',
+                price: 50,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Tuesday', 'Thursday'],
+                    time: '17:00 - 18:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'Emily Davis', role: 'Math Specialist' }
+                ],
+                maxCapacity: 6,
+                currentEnrollment: 4,
+                availableSlots: 2,
+                avgEnrollment: 72,
+                sessionsCount: 24,
+                status: 'active'
+            },
+            {
+                id: 'ls_003',
+                name: 'Private Math Tutoring',
+                type: 'One-to-One',
+                description: 'Personalized one-on-one math tutoring tailored to student needs',
+                price: 75,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    time: '14:00 - 15:00',
+                    duration: 60
+                },
+                staff: [
+                    { name: 'John Smith', role: 'Senior Tutor' }
+                ],
+                maxCapacity: 1,
+                currentEnrollment: 1,
+                availableSlots: 0,
+                avgEnrollment: 100,
+                sessionsCount: 120,
+                status: 'active'
+            },
+            {
+                id: 'ls_004',
+                name: 'Chemistry 101',
+                type: 'Class',
+                description: 'Introduction to Chemistry for high school students',
+                price: 60,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Monday', 'Wednesday'],
+                    time: '10:00 - 11:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'Michael Chen', role: 'Science Teacher' }
+                ],
+                maxCapacity: 15,
+                currentEnrollment: 14,
+                availableSlots: 1,
+                avgEnrollment: 90,
+                sessionsCount: 32,
+                status: 'active'
+            },
+            {
+                id: 'ls_005',
+                name: 'Essay Writing Workshop',
+                type: 'Group',
+                description: 'Collaborative workshop for improving essay writing skills',
+                price: 45,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Saturday'],
+                    time: '10:00 - 12:00',
+                    duration: 120
+                },
+                staff: [
+                    { name: 'Sarah Wilson', role: 'English Tutor' }
+                ],
+                maxCapacity: 8,
+                currentEnrollment: 5,
+                availableSlots: 3,
+                avgEnrollment: 65,
+                sessionsCount: 12,
+                status: 'active'
+            },
+            {
+                id: 'ls_006',
+                name: 'ACT Prep - Private',
+                type: 'One-to-One',
+                description: 'Intensive one-on-one ACT preparation with focus on weak areas',
+                price: 65,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Tuesday', 'Thursday', 'Saturday'],
+                    time: '16:00 - 17:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'David Brown', role: 'Test Prep Coach' }
+                ],
+                maxCapacity: 1,
+                currentEnrollment: 1,
+                availableSlots: 0,
+                avgEnrollment: 100,
+                sessionsCount: 48,
+                status: 'active'
+            },
+            {
+                id: 'ls_007',
+                name: 'Spanish for Beginners',
+                type: 'Class',
+                description: 'Introductory Spanish language course for beginners',
+                price: 55,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Tuesday', 'Thursday'],
+                    time: '14:00 - 15:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'Maria Rodriguez', role: 'Language Teacher' }
+                ],
+                maxCapacity: 12,
+                currentEnrollment: 10,
+                availableSlots: 2,
+                avgEnrollment: 83,
+                sessionsCount: 36,
+                status: 'active'
+            },
+            {
+                id: 'ls_008',
+                name: 'Physics Tutoring - Group',
+                type: 'Group',
+                description: 'Small group physics tutoring for high school students',
+                price: 48,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Wednesday', 'Friday'],
+                    time: '16:00 - 17:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'Dr. James Wilson', role: 'Physics Specialist' }
+                ],
+                maxCapacity: 5,
+                currentEnrollment: 5,
+                availableSlots: 0,
+                avgEnrollment: 100,
+                sessionsCount: 28,
+                status: 'active'
+            },
+            {
+                id: 'ls_009',
+                name: 'Reading Comprehension - One-on-One',
+                type: 'One-to-One',
+                description: 'Personalized reading comprehension and literacy support',
+                price: 70,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Monday', 'Wednesday', 'Friday'],
+                    time: '13:00 - 14:00',
+                    duration: 60
+                },
+                staff: [
+                    { name: 'Lisa Anderson', role: 'Reading Specialist' }
+                ],
+                maxCapacity: 1,
+                currentEnrollment: 0,
+                availableSlots: 1,
+                avgEnrollment: 75,
+                sessionsCount: 60,
+                status: 'active'
+            },
+            {
+                id: 'ls_010',
+                name: 'AP Biology',
+                type: 'Class',
+                description: 'Advanced Placement Biology course with lab components',
+                price: 80,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Monday', 'Wednesday', 'Friday'],
+                    time: '09:00 - 10:30',
+                    duration: 90
+                },
+                staff: [
+                    { name: 'Dr. Sarah Chen', role: 'Biology Teacher' }
+                ],
+                maxCapacity: 18,
+                currentEnrollment: 16,
+                availableSlots: 2,
+                avgEnrollment: 89,
+                sessionsCount: 50,
+                status: 'active'
+            },
+            {
+                id: 'ls_011',
+                name: 'Music Theory Basics',
+                type: 'Group',
+                description: 'Introduction to music theory and notation',
+                price: 42,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Saturday'],
+                    time: '14:00 - 16:00',
+                    duration: 120
+                },
+                staff: [
+                    { name: 'Robert Martinez', role: 'Music Instructor' }
+                ],
+                maxCapacity: 10,
+                currentEnrollment: 7,
+                availableSlots: 3,
+                avgEnrollment: 70,
+                sessionsCount: 16,
+                status: 'active'
+            },
+            {
+                id: 'ls_012',
+                name: 'College Essay Coaching',
+                type: 'One-to-One',
+                description: 'One-on-one coaching for college application essays',
+                price: 85,
+                pricingType: 'per_hour',
+                unit: 'hour',
+                schedule: {
+                    days: ['Tuesday', 'Thursday', 'Saturday'],
+                    time: '15:00 - 16:00',
+                    duration: 60
+                },
+                staff: [
+                    { name: 'Jennifer Lee', role: 'College Counselor' }
+                ],
+                maxCapacity: 1,
+                currentEnrollment: 1,
+                availableSlots: 0,
+                avgEnrollment: 95,
+                sessionsCount: 40,
+                status: 'active'
+            }
         ];
+
+        // Use Learning Services instead of pricebook items for this experimental version
+        const tutoringServices = learningServices;
+
+        // ============================================================================
+        // LEARNING SERVICE AUTOCOMPLETE CUSTOMIZATION
+        // ============================================================================
+        // Override the default autocomplete to show Learning Service details
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('catalogSearchInput');
+            const autocompleteDiv = document.getElementById('catalogAutocomplete');
+
+            if (searchInput && autocompleteDiv) {
+                searchInput.addEventListener('input', function (e) {
+                    const query = e.target.value.toLowerCase().trim();
+
+                    if (query.length < 2) {
+                        autocompleteDiv.classList.add('hidden');
+                        return;
+                    }
+
+                    // Filter Learning Services
+                    const matches = learningServices.filter(service =>
+                        service.name.toLowerCase().includes(query) ||
+                        service.description.toLowerCase().includes(query) ||
+                        service.type.toLowerCase().includes(query)
+                    ).slice(0, 5); // Limit to 5 results
+
+                    if (matches.length === 0) {
+                        autocompleteDiv.classList.add('hidden');
+                        return;
+                    }
+
+                    // Render Learning Service results with schedule, staff, and enrollment
+                    autocompleteDiv.innerHTML = matches.map(service => {
+                        const daysText = service.schedule.days.join(', ');
+                        const staffText = service.staff.map(s => s.name).join(', ');
+                        const enrollmentColor = service.availableSlots > 0 ? 'text-green-600' : 'text-red-600';
+                        const typeColor = service.type === 'Class' ? 'bg-purple-100 text-purple-700' :
+                            service.type === 'Group' ? 'bg-amber-100 text-amber-700' :
+                                'bg-cyan-100 text-cyan-700';
+
+                        return `
+                            <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                                 onclick="selectLearningService('${service.id}')">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full ${typeColor}">
+                                                ${service.type}
+                                            </span>
+                                            <h4 class="font-semibold text-gray-900 text-sm truncate">${service.name}</h4>
+                                        </div>
+                                        <p class="text-xs text-gray-600 mb-2 line-clamp-1">${service.description}</p>
+                                        
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <div class="flex items-center gap-1 text-gray-600">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                <span class="truncate">${daysText}</span>
+                                            </div>
+                                            <div class="flex items-center gap-1 text-gray-600">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                                <span class="truncate">${staffText}</span>
+                                            </div>
+                                            <div class="flex items-center gap-1 text-gray-600">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                </svg>
+                                                <span>${service.schedule.time}</span>
+                                            </div>
+                                            <div class="flex items-center gap-1 ${enrollmentColor} font-medium">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                </svg>
+                                                <span>${service.availableSlots} slots available</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right flex-shrink-0">
+                                        <div class="text-lg font-bold text-gray-900">$${service.price}</div>
+                                        <div class="text-xs text-gray-500">per ${service.unit}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    autocompleteDiv.classList.remove('hidden');
+                });
+
+                // Close autocomplete when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!searchInput.contains(e.target) && !autocompleteDiv.contains(e.target)) {
+                        autocompleteDiv.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        // Function to select a Learning Service from autocomplete
+        function selectLearningService(serviceId) {
+            const service = learningServices.find(s => s.id === serviceId);
+            if (!service) return;
+
+            // Clear search
+            const searchInput = document.getElementById('catalogSearchInput');
+            const autocompleteDiv = document.getElementById('catalogAutocomplete');
+            if (searchInput) searchInput.value = '';
+            if (autocompleteDiv) autocompleteDiv.classList.add('hidden');
+
+            // Add to quote items (reuse existing addItemToQuote logic if it exists)
+            // For now, show an alert
+            alert(`Selected Learning Service:\n\n${service.name}\nType: ${service.type}\nSchedule: ${service.schedule.days.join(', ')} ${service.schedule.time}\nStaff: ${service.staff.map(s => s.name).join(', ')}\nPrice: $${service.price}/${service.unit}\nAvailable Slots: ${service.availableSlots}`);
+        }
 
         // ============================================================================
         // STATUS MANAGEMENT FUNCTIONS
@@ -2070,7 +2459,12 @@
 
             // Enable Payment Configuration tab inputs
             const paymentInputs = document.querySelectorAll('#paymentConfigContent input, #paymentConfigContent textarea, #paymentConfigContent select');
-            // Show payment configuration banner when editing is disabled
+            paymentInputs.forEach(input => {
+                input.disabled = false;
+                input.classList.remove('bg-gray-100', 'cursor-not-allowed');
+            });
+
+            // Hide payment configuration banner when editing is enabled
             const configBanner = document.getElementById('paymentConfigBanner');
             if (configBanner) {
                 configBanner.classList.add('hidden');
@@ -2178,9 +2572,6 @@
                 case 'viewInvoices':
                     switchTab('invoices');
                     break;
-                case 'convertToSessions':
-                    showConvertToSessionsModal();
-                    break;
                 default:
                     console.log('Action not implemented:', actionId);
             }
@@ -2263,84 +2654,6 @@
                 showToast('Quote validity extended by 30 days!', 'success');
                 renderStatusActions();
             }
-        }
-
-        // ============================================================================
-        // CONVERT TO SESSIONS FUNCTIONALITY (Solution 2)
-        // ============================================================================
-        function showConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-
-                // Populate modal with quote items that will be converted
-                const itemsList = document.getElementById('convertItemsList');
-                if (itemsList) {
-                    itemsList.innerHTML = state.quoteItems.map(item => `
-                        <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-900">${item.name}</div>
-                                <div class="text-sm text-gray-600 mt-1">
-                                    <span class="inline-flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        ${item.quantity} ${item.unit}(s) purchased
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="font-semibold text-gray-900">$${(item.customPrice * item.quantity).toFixed(2)}</div>
-                                <div class="text-xs text-green-600 font-medium mt-1">→ Will create ${item.quantity} session(s)</div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update summary
-                const totalItems = state.quoteItems.length;
-                const totalSessions = state.quoteItems.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById('conversionSummaryText').textContent =
-                    `${totalItems} Learning Service(s) • ${totalSessions} Session(s)`;
-            }
-        }
-
-        function closeConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
-
-        function executeConvertToSessions() {
-            const totalItems = state.quoteItems.length;
-            const totalSessions = state.quoteItems.reduce((sum, item) => sum + item.quantity, 0);
-
-            closeConvertToSessionsModal();
-
-            // Show success message
-            showToast(`✅ Conversion Successful! Created ${totalItems} Learning Service(s) and ${totalSessions} Session(s)`, 'success');
-
-            // Simulate conversion process with detailed alert
-            setTimeout(() => {
-                alert(`🎓 Quote Converted to Learning Services!\n\n` +
-                    `✅ ${totalItems} Learning Service(s) created\n` +
-                    `✅ ${totalSessions} Session(s) generated\n` +
-                    `✅ Sessions linked to customer: ${state.selectedCustomer.name}\n` +
-                    `✅ Quote status updated to "Converted"\n\n` +
-                    `Next Steps:\n` +
-                    `• View sessions in Learning Services module\n` +
-                    `• Schedule session dates and times\n` +
-                    `• Assign staff to sessions\n` +
-                    `• Customer can now book available slots`);
-            }, 500);
-        }
-
-        
-        // Helper function to find service by ID
-        function findServiceById(itemId, serviceId) {
-            const services = learningServicesDatabase[itemId] || [];
-            return services.find(s => s.id === serviceId);
         }
 
         // Store the generated PDF globally for download
@@ -9139,331 +9452,6 @@
             </div>
         </div>
     </div>
-<!-- Convert to Sessions Modal (Solution 2) - Enhanced with Learning Service Selection -->
-    <div id="convertToSessionsModal"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-            <!-- Modal Header -->
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-900">Enroll in Learning Services</h3>
-                            <p class="text-sm text-gray-600 mt-1">Select sessions to enroll customer</p>
-                        </div>
-                    </div>
-                    <button onclick="closeConvertToSessionsModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <!-- Info Banner -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div>
-                            <h4 class="text-sm font-semibold text-blue-900 mb-1">How it works</h4>
-                            <p class="text-xs text-blue-800">For each purchased item, we'll show you all available
-                                Learning Services. Select which sessions to enroll the customer in based on their
-                                purchased quantity.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quote Items with Linked Learning Services -->
-                <div id="convertItemsList" class="space-y-6">
-                    <!-- Will be populated by JavaScript -->
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="p-6 border-t border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-600">
-                        <span id="enrollmentSummary">Select sessions to enroll</span>
-                    </div>
-                    <div class="flex gap-3">
-                        <button onclick="closeConvertToSessionsModal()"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">Cancel</button>
-                        <button onclick="executeEnrollment()"
-                            class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center gap-2 shadow-md hover:shadow-lg transition-all">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Enroll Customer
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Sample Learning Services database - links pricebook items to Learning Services
-        const learningServicesDatabase = {
-            't1': [ // One-on-One Tutoring - Math
-                {
-                    id: 'ls_001',
-                    name: 'Private Math Tutoring - Algebra',
-                    type: 'One-to-One',
-                    schedule: { days: ['Monday', 'Wednesday'], time: '14:00 - 15:00' },
-                    staff: [{ name: 'John Smith', role: 'Senior Tutor' }],
-                    availableSlots: 3,
-                    maxCapacity: 1,
-                    sessionsCount: 24
-                },
-                {
-                    id: 'ls_002',
-                    name: 'Private Math Tutoring - Calculus',
-                    type: 'One-to-One',
-                    schedule: { days: ['Tuesday', 'Thursday'], time: '15:00 - 16:00' },
-                    staff: [{ name: 'Emily Davis', role: 'Math Specialist' }],
-                    availableSlots: 2,
-                    maxCapacity: 1,
-                    sessionsCount: 20
-                },
-                {
-                    id: 'ls_003',
-                    name: 'Math Homework Help Group',
-                    type: 'Group',
-                    schedule: { days: ['Friday'], time: '16:00 - 17:00' },
-                    staff: [{ name: 'Sarah Wilson', role: 'Math Tutor' }],
-                    availableSlots: 5,
-                    maxCapacity: 6,
-                    sessionsCount: 16
-                }
-            ],
-            't4': [ // Assessment & Report
-                {
-                    id: 'ls_004',
-                    name: 'Comprehensive Math Assessment',
-                    type: 'One-to-One',
-                    schedule: { days: ['Saturday'], time: '10:00 - 12:00' },
-                    staff: [{ name: 'Dr. Sarah Chen', role: 'Assessment Specialist' }],
-                    availableSlots: 5,
-                    maxCapacity: 1,
-                    sessionsCount: 12
-                },
-                {
-                    id: 'ls_005',
-                    name: 'Academic Progress Evaluation',
-                    type: 'One-to-One',
-                    schedule: { days: ['Saturday'], time: '14:00 - 16:00' },
-                    staff: [{ name: 'Dr. Michael Brown', role: 'Educational Psychologist' }],
-                    availableSlots: 0,
-                    maxCapacity: 1,
-                    sessionsCount: 8
-                }
-            ]
-        };
-
-        // Track selected enrollments
-        let selectedEnrollments = {};
-
-        function showConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (!modal) return;
-
-            modal.classList.remove('hidden');
-            selectedEnrollments = {};
-
-            // Populate with quote items and their linked Learning Services
-            const itemsList = document.getElementById('convertItemsList');
-            if (itemsList && state.quoteItems) {
-                itemsList.innerHTML = state.quoteItems.map(item => {
-                    const linkedServices = learningServicesDatabase[item.id] || [];
-
-                    return `
-                <div class="bg-white border-2 border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-all">
-                    <!-- Quote Item Header -->
-                    <div class="flex items-start justify-between mb-4 pb-4 border-b border-gray-200">
-                        <div class="flex-1">
-                            <h4 class="font-semibold text-gray-900 text-lg">${item.name}</h4>
-                            <div class="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    ${item.quantity} ${item.unit}(s) purchased
-                                </span>
-                                <span class="font-semibold text-gray-900">$${(item.customPrice * item.quantity).toFixed(2)}</span>
-                            </div>
-                        </div>
-                        <div class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                            ${item.quantity} session(s) to enroll
-                        </div>
-                    </div>
-                    
-                    <!-- Linked Learning Services -->
-                    <div>
-                        <h5 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                            </svg>
-                            Available Learning Services (${linkedServices.length})
-                        </h5>
-                        ${linkedServices.length > 0 ? `
-                            <div class="space-y-3">
-                                ${linkedServices.map(service => `
-                                    <div class="bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all cursor-pointer"
-                                         onclick="toggleServiceSelection('${item.id}', '${service.id}', ${item.quantity}, ${service.availableSlots})">
-                                        <div class="flex items-start justify-between">
-                                            <div class="flex-1">
-                                                <div class="flex items-center gap-2 mb-3">
-                                                    <input type="radio" name="service_group_${item.id}" id="service_${item.id}_${service.id}" 
-                                                           class="w-5 h-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                                                           
-                                                           onchange="event.stopPropagation()">
-                                                    <span class="px-2 py-0.5 text-xs font-medium rounded-full ${service.type === 'Class' ? 'bg-purple-100 text-purple-700' :
-                            service.type === 'Group' ? 'bg-amber-100 text-amber-700' :
-                                'bg-cyan-100 text-cyan-700'
-                        }">${service.type}</span>
-                                                    <span class="font-semibold text-gray-900">${service.name}</span>
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-3 text-sm ml-7">
-                                                    <div class="flex items-center gap-2 text-gray-600">
-                                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                        </svg>
-                                                        <span>${service.schedule.days.join(', ')}</span>
-                                                    </div>
-                                                    <div class="flex items-center gap-2 text-gray-600">
-                                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                        </svg>
-                                                        <span>${service.schedule.time}</span>
-                                                    </div>
-                                                    <div class="flex items-center gap-2 text-gray-600">
-                                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                                        </svg>
-                                                        <span>${service.staff[0].name}</span>
-                                                    </div>
-                                                    <div class="flex items-center gap-2 ${service.availableSlots > 0 ? 'text-green-600' : 'text-red-600'} font-semibold">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                                        </svg>
-                                                        <span>${service.availableSlots > 0 ? `${service.availableSlots} slots available` : 'Fully booked'}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : `
-                            <div class="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                                <svg class="w-16 h-16 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                                </svg>
-                                <p class="text-sm font-medium">No Learning Services linked yet</p>
-                                <p class="text-xs mt-1">Create Learning Services for this pricebook item first</p>
-                            </div>
-                        `}
-                    </div>
-                </div>
-            `;
-                }).join('');
-            }
-
-            updateEnrollmentSummary();
-        }
-
-        function toggleServiceSelection(itemId, serviceId, quantity, availableSlots) {
-            // Show warning if fully booked
-            if (availableSlots === 0) {
-                const proceed = confirm('?? Warning: This Learning Service is fully booked!\n\nEnrolling this customer will create a waitlist or require overbooking.\n\nDo you want to proceed?');
-                if (!proceed) return;
-            }
-            
-            const checkbox = document.getElementById(`service_${itemId}_${serviceId}`);
-            if (checkbox.checked) return; checkbox.checked = true;
-
-            const enrollmentKey = `${itemId}_${serviceId}`;
-            const index = selectedEnrollments[itemId] ? 0 : -1;
-
-            if (checkbox.checked && index === -1) {
-                selectedEnrollments[itemId] = { key: enrollmentKey, itemId, serviceId, quantity };
-            } else if (!checkbox.checked && index !== -1) {
-                delete selectedEnrollments[itemId];
-            }
-
-            updateEnrollmentSummary();
-        }
-
-        function updateEnrollmentSummary() {
-            const summary = document.getElementById('enrollmentSummary');
-            if (summary) {
-                const totalSessions = Object.values(selectedEnrollments).reduce((sum, e) => sum + e.quantity, 0);
-                summary.textContent = Object.keys(selectedEnrollments).length > 0
-                    ? `✓ ${Object.keys(selectedEnrollments).length} service(s) selected • ${totalSessions} session(s) to enroll`
-                    : 'Select sessions to enroll';
-            }
-        }
-
-        function closeConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                selectedEnrollments = {};
-            }
-        }
-
-        function executeEnrollment() {
-            if (Object.keys(selectedEnrollments).length === 0) {
-                alert('⚠️ Please select at least one Learning Service to enroll the customer.');
-                return;
-            }
-
-            const totalSessions = Object.values(selectedEnrollments).reduce((sum, e) => sum + e.quantity, 0);
-            
-            // Check for fully booked services
-            const fullyBookedServices = [];
-            Object.values(selectedEnrollments).forEach(enrollment => {
-                const service = findServiceById(enrollment.itemId, enrollment.serviceId);
-                if (service && service.availableSlots === 0) {
-                    fullyBookedServices.push(service.name);
-                }
-            });
-            
-            const customerName = state.selectedCustomer ? state.selectedCustomer.name : 'Customer';
-
-            closeConvertToSessionsModal();
-
-            setTimeout(() => {
-                alert(`✅ Enrollment Successful!\n\n` +
-                    `${customerName} enrolled in ${Object.keys(selectedEnrollments).length} Learning Service(s)\n` +
-                    `Total sessions: ${totalSessions}\n\n` +
-                    `What happens next:\n` +
-                    `• Customer can view enrolled sessions in their portal\n` +
-                    `• Sessions are ready for scheduling\n` +
-                    `• Confirmation email sent to customer\n` +
-                    `• Staff notified of new enrollments`);
-
-                // Update quote status
-                showToast('Customer successfully enrolled in selected Learning Services', 'success');
-            }, 300);
-        }
-    </script>
 </body>
 
 </html>
