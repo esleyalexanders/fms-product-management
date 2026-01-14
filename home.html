@@ -247,9 +247,10 @@
                                 </div>
                                 <span class="text-xs text-blue-600 font-medium">View All →</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-900">13</p>
+                            <p class="text-2xl font-bold text-gray-900" data-stat="active-quotes-count">13</p>
                             <p class="text-sm text-gray-600">Active Quotes</p>
-                            <div class="mt-2 text-xs text-gray-500">$21.6K total value</div>
+                            <div class="mt-2 text-xs text-gray-500" data-stat="active-quotes-value">$21.6K total value
+                            </div>
                         </div>
 
                         <!-- Pending Invoices -->
@@ -261,9 +262,10 @@
                                 </div>
                                 <span class="text-xs text-amber-600 font-medium">View All →</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-900">8</p>
+                            <p class="text-2xl font-bold text-gray-900" data-stat="pending-invoices-count">8</p>
                             <p class="text-sm text-gray-600">Pending Invoices</p>
-                            <div class="mt-2 text-xs text-gray-500">$5.5K outstanding</div>
+                            <div class="mt-2 text-xs text-gray-500" data-stat="pending-invoices-value">$5.5K outstanding
+                            </div>
                         </div>
 
                         <!-- Today's Schedule -->
@@ -275,9 +277,9 @@
                                 </div>
                                 <span class="text-xs text-purple-600 font-medium">View All →</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-900">8</p>
+                            <p class="text-2xl font-bold text-gray-900" data-stat="sessions-today-count">8</p>
                             <p class="text-sm text-gray-600">Sessions Today</p>
-                            <div class="mt-2 text-xs text-gray-500">3 upcoming</div>
+                            <div class="mt-2 text-xs text-gray-500" data-stat="sessions-today-upcoming">3 upcoming</div>
                         </div>
 
                         <!-- This Week -->
@@ -289,7 +291,7 @@
                                 </div>
                                 <span class="text-xs text-green-600 font-medium">View All →</span>
                             </div>
-                            <p class="text-2xl font-bold text-gray-900">42</p>
+                            <p class="text-2xl font-bold text-gray-900" data-stat="sessions-week-count">42</p>
                             <p class="text-sm text-gray-600">Sessions This Week</p>
                             <div class="mt-2 text-xs text-gray-500">Mon-Sun schedule</div>
                         </div>
@@ -647,6 +649,7 @@
     </div>
 
     <script src="home-script.js"></script>
+    <script src="home-dashboard-stats.js"></script>
     <script>
         // Banner close functionality
         document.querySelector('.banner-close-btn')?.addEventListener('click', function () {
