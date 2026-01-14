@@ -10,72 +10,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Design card small styles */
-        .design-form {
-            padding: 8px 0
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
 
-        .logo-upload-wrap {
-            display: flex;
-            gap: 12px;
-            align-items: center
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
         }
 
-        .logo-preview {
-            width: 72px;
-            height: 72px;
-            border: 1px dashed #e6e9ee;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #fff
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
         }
 
-        .logo-preview img {
-            max-width: 100%;
-            max-height: 100%
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
 
-        .color-pickers {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap
-        }
-
-        .color-pickers .picker {
-            display: flex;
-            flex-direction: column;
-            gap: 6px
-        }
-
-        .design-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        .design-action-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-top: 12px
-        }
-
-        .design-note {
-            color: #6b7280;
-            font-size: 13px;
-            margin-top: 8px
-        }
-
-        input[type="color"] {
-            width: 48px;
-            height: 32px;
-            border: none;
+        body {
+            margin: 0;
             padding: 0;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            overflow-y: auto;
+            flex: 1;
+            max-height: 100vh;
+        }
+
+        /* Stat card hover effect */
+        .stat-card {
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Quick action card hover */
+        .quick-action-card {
+            transition: all 0.2s ease;
+            border: 1px solid #e5e7eb;
+        }
+
+        .quick-action-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Activity item hover */
+        .activity-item {
+            transition: background 0.15s ease;
+        }
+
+        .activity-item:hover {
+            background: #f9fafb;
+        }
+
+        /* Custom checkbox styling */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.25rem;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: #3b82f6;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 0.35rem;
+            top: 0.15rem;
+            width: 0.35rem;
+            height: 0.65rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
         }
     </style>
 </head>
@@ -85,7 +121,7 @@
     <div class="limited-offer-banner">
         <div class="banner-content">
             <i class="fas fa-info-circle"></i>
-            <span class="banner-text">An update from system</span>
+            <span class="banner-text">Welcome to your Franchise Management System</span>
         </div>
         <button class="banner-close-btn"><i class="fas fa-times"></i></button>
     </div>
@@ -175,214 +211,459 @@
         </nav>
 
         <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <h1 class="page-title">Good afternoon, John</h1>
-                    <p class="page-subtitle">Tuesday, October 3</p>
-                </div>
-                <div class="header-right">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search" class="search-input">
-                        <kbd class="keyboard-shortcut">Ctrl K</kbd>
-                    </div>
-                    <button class="icon-btn notifications-btn">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </button>
-                    <button class="icon-btn help-btn">
-                        <i class="fas fa-question-circle"></i>
-                    </button>
-                    <button class="icon-btn settings-btn">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <div class="user-avatar">
-                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=6366f1&color=fff"
-                            alt="User Avatar">
-                        <span class="status-indicator"></span>
-                    </div>
-                </div>
-            </header>
+        <main class="main-content custom-scrollbar">
+            <div class="p-6">
+                <div class="max-w-7xl mx-auto">
 
-            <!-- Content Sections -->
-            <div class="content-wrapper">
-
-                <!-- Welcome Section -->
-                <section class="welcome-section">
-                    <div class="welcome-card">
-                        <h2 class="section-title">
-                            <i class="fas fa-rocket"></i>
-                            Welcome to Franchise Management System
-                        </h2>
-                        <p class="welcome-subtitle">Let's get you up and running</p>
-                    </div>
-                </section>
-
-
-
-                <!-- Quick Actions Grid -->
-                <section class="quick-actions-section">
-                    <div class="section-header">
-                        <h3 class="section-title-small">Quick Actions</h3>
-                    </div>
-                    <div class="actions-grid">
-                        <div class="action-card">
-                            <div class="action-icon product">
-                                <i class="fas fa-box"></i>
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">Good afternoon, John</h1>
+                                <p class="text-gray-600">Tuesday, October 3, 2024</p>
                             </div>
-                            <div class="action-content">
-                                <h4>Add your first service</h4>
-                                <p>Start by adding a service to your pricebook and a few key details. Not ready? Start
-                                    with a sample one.</p>
-                                <div class="card-actions">
-                                    <a href="admin/pricebook-create.html" style="text-decoration: none;"><button
-                                            class="btn-primary">Add service</button></a>
-                                    <button class="btn-secondary">Import</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="action-card">
-                            <div class="action-icon design">
-                                <i class="fas fa-file-contract"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Quote list</h4>
-                                <p>View and manage all your quotes in one place.</p>
-                                <div class="card-actions">
-                                    <a href="[v2] Quotes/quote_simple/quote_list_simple.html"
-                                        style="text-decoration: none;"><button class="btn-primary">View
-                                            quotes</button></a>
-                                </div>
+                            <div class="flex gap-3">
+                                <button
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">3</span>
+                                </button>
+                                <button
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-cog"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Payment, Shipping & Domain Section -->
-                <section class="setup-options-section">
-                    <div class="setup-grid">
-                        <div class="action-card">
-                            <div class="action-icon team">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Manage your team</h4>
-                                <p>Invite team members, manage roles and permissions.</p>
-                                <div class="card-actions">
-                                    <a href="manage-team/manage-team.html" style="text-decoration: none;"><button
-                                            class="btn-primary">Manage team</button></a>
+                    <!-- KPI Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <!-- Active Quotes -->
+                        <div class="bg-white rounded-lg shadow-sm p-5 stat-card cursor-pointer"
+                            onclick="window.location.href='[v2] Quotes/quote_simple/quote_list_simple.html'">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-contract text-blue-600 text-xl"></i>
                                 </div>
+                                <span class="text-xs text-blue-600 font-medium">View All →</span>
                             </div>
+                            <p class="text-2xl font-bold text-gray-900">13</p>
+                            <p class="text-sm text-gray-600">Active Quotes</p>
+                            <div class="mt-2 text-xs text-gray-500">$21.6K total value</div>
                         </div>
 
-                        <div class="action-card">
-                            <div class="action-icon customer">
-                                <i class="fas fa-user-friends"></i>
-                            </div>
-                            <div class="action-content">
-                                <h4>Customer list</h4>
-                                <p>View and manage all your customers.</p>
-                                <div class="card-actions">
-                                    <a href="Customer Management/customer-list.html"
-                                        style="text-decoration: none;"><button class="btn-primary">View
-                                            customers</button></a>
+                        <!-- Pending Invoices -->
+                        <div class="bg-white rounded-lg shadow-sm p-5 stat-card cursor-pointer"
+                            onclick="window.location.href='[v2] Quotes/quote_simple/invoice_list_simple.html'">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-invoice-dollar text-amber-600 text-xl"></i>
                                 </div>
+                                <span class="text-xs text-amber-600 font-medium">View All →</span>
                             </div>
+                            <p class="text-2xl font-bold text-gray-900">8</p>
+                            <p class="text-sm text-gray-600">Pending Invoices</p>
+                            <div class="mt-2 text-xs text-gray-500">$5.5K outstanding</div>
+                        </div>
+
+                        <!-- Today's Schedule -->
+                        <div class="bg-white rounded-lg shadow-sm p-5 stat-card cursor-pointer"
+                            onclick="window.location.href='[v2] Jobs/service_job_v3/schedule_calendar.html'">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-purple-600 font-medium">View All →</span>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-900">8</p>
+                            <p class="text-sm text-gray-600">Sessions Today</p>
+                            <div class="mt-2 text-xs text-gray-500">3 upcoming</div>
+                        </div>
+
+                        <!-- This Week -->
+                        <div class="bg-white rounded-lg shadow-sm p-5 stat-card cursor-pointer"
+                            onclick="window.location.href='[v2] Jobs/service_job_v3/my_calendar.html'">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-calendar-week text-green-600 text-xl"></i>
+                                </div>
+                                <span class="text-xs text-green-600 font-medium">View All →</span>
+                            </div>
+                            <p class="text-2xl font-bold text-gray-900">42</p>
+                            <p class="text-sm text-gray-600">Sessions This Week</p>
+                            <div class="mt-2 text-xs text-gray-500">Mon-Sun schedule</div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Service-Based Business Setup -->
-                <section class="service-setup-section">
-                    <div class="service-card">
-                        <div class="service-content">
-                            <div class="service-badge">
-                                <span class="progress-indicator">0 of 3 tasks complete</span>
-                            </div>
-                            <h3 class="service-title">Set up your service-based business</h3>
-                            <p class="service-description">Follow these tasks to efficiently manage bookings, payments,
-                                and offer a seamless experience for your customers.</p>
-
-                            <div class="task-list">
-                                <div class="task-item">
-                                    <div class="task-checkbox">
-                                        <input type="checkbox" id="task1">
-                                        <label for="task1"></label>
+                    <!-- Quick Actions -->
+                    <div class="mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Create Quote -->
+                            <a href="[v2] Quotes/quote_simple/quote_create_simple.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-file-contract text-blue-600 text-xl"></i>
                                     </div>
-                                    <div class="task-content">
-                                        <h5>First task: Add your first service</h5>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">Create Quote</h3>
+                                        <p class="text-sm text-gray-600">Generate a new quote for customers</p>
                                     </div>
-                                    <a href="add-product.html" style="text-decoration: none;"><button
-                                            class="btn-task-action">Get started</button></a>
+                                </div>
+                            </a>
+
+                            <!-- Create Invoice -->
+                            <a href="[v2] Quotes/quote_simple/invoice_create_simple.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-file-invoice text-amber-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">Create Invoice</h3>
+                                        <p class="text-sm text-gray-600">Generate invoice from quote or manually</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Schedule Session -->
+                            <a href="[v2] Jobs/service_job_v3/session_create.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-calendar-plus text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">Schedule Session</h3>
+                                        <p class="text-sm text-gray-600">Add a new session to the calendar</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- View All Quotes -->
+                            <a href="[v2] Quotes/quote_simple/quote_list_simple.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-list-alt text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">View All Quotes</h3>
+                                        <p class="text-sm text-gray-600">Manage and track all quotes</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- View All Invoices -->
+                            <a href="[v2] Quotes/quote_simple/invoice_list_simple.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-receipt text-amber-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">View All Invoices</h3>
+                                        <p class="text-sm text-gray-600">Track payments and invoices</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- View Schedule Calendar -->
+                            <a href="[v2] Jobs/service_job_v3/schedule_calendar.html"
+                                class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 mb-1">View Schedule Calendar</h3>
+                                        <p class="text-sm text-gray-600">See all scheduled sessions</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Pending Quotes & Invoices -->
+                        <div class="bg-white rounded-lg shadow-sm p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900">Pending Quotes & Invoices</h2>
+                                <a href="[v2] Quotes/quote_simple/quote_list_simple.html"
+                                    class="text-sm text-blue-600 hover:text-blue-700">View all</a>
+                            </div>
+                            <div class="space-y-3">
+                                <!-- Quote Item -->
+                                <div class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-blue-300"
+                                    onclick="window.location.href='[v2] Quotes/quote_simple/quote_edit_simple.html'">
+                                    <div class="flex items-start gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-file-contract text-blue-600"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-gray-900">Quote #Q-2024-045</p>
+                                            <p class="text-sm text-gray-600">John Doe • Math Tutoring Package</p>
+                                            <p class="text-xs text-gray-500 mt-1">$1,200 • Sent 2 days ago</p>
+                                        </div>
+                                        <span
+                                            class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Sent</span>
+                                    </div>
+                                </div>
+
+                                <!-- Invoice Item -->
+                                <div class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-amber-300"
+                                    onclick="window.location.href='[v2] Quotes/quote_simple/invoice_detail_simple.html'">
+                                    <div class="flex items-start gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-file-invoice-dollar text-amber-600"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-gray-900">Invoice #INV-2024-089</p>
+                                            <p class="text-sm text-gray-600">Sarah Williams • English Classes</p>
+                                            <p class="text-xs text-gray-500 mt-1">$850 • Due in 3 days</p>
+                                        </div>
+                                        <span
+                                            class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">Unpaid</span>
+                                    </div>
+                                </div>
+
+                                <!-- Quote Item -->
+                                <div
+                                    class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-blue-300">
+                                    <div class="flex items-start gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-file-contract text-blue-600"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-gray-900">Quote #Q-2024-046</p>
+                                            <p class="text-sm text-gray-600">Mike Johnson • Physics Tutoring</p>
+                                            <p class="text-xs text-gray-500 mt-1">$2,400 • Sent 1 day ago</p>
+                                        </div>
+                                        <span
+                                            class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Sent</span>
+                                    </div>
+                                </div>
+
+                                <!-- Invoice Item -->
+                                <div
+                                    class="activity-item p-3 rounded-lg border border-red-200 cursor-pointer hover:border-red-300">
+                                    <div class="flex items-start gap-3">
+                                        <div
+                                            class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-gray-900">Invoice #INV-2024-082</p>
+                                            <p class="text-sm text-gray-600">Emma Thompson • Group Classes</p>
+                                            <p class="text-xs text-gray-500 mt-1">$1,500 • Overdue by 5 days</p>
+                                        </div>
+                                        <span
+                                            class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">Overdue</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="service-illustration">
-                            <div class="illustration-box">
-                                <i class="fas fa-calendar-check"></i>
-                                <i class="fas fa-comments"></i>
+
+                        <!-- Upcoming Schedule -->
+                        <div class="bg-white rounded-lg shadow-sm p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold text-gray-900">Upcoming Schedule</h2>
+                                <a href="[v2] Jobs/service_job_v3/schedule_calendar.html"
+                                    class="text-sm text-purple-600 hover:text-purple-700">View calendar</a>
+                            </div>
+                            <div class="space-y-3">
+                                <!-- Today -->
+                                <div class="mb-3">
+                                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Today - Tuesday, Oct 3
+                                    </p>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
+                                            <div class="flex items-start gap-3">
+                                                <div
+                                                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-book-reader text-purple-600"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-medium text-gray-900 truncate">Math Tutoring - Grade
+                                                        5</p>
+                                                    <p class="text-sm text-gray-600">Sarah Williams • 2:00 PM - 3:00 PM
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
+                                            <div class="flex items-start gap-3">
+                                                <div
+                                                    class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-users text-blue-600"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-medium text-gray-900 truncate">English Class -
+                                                        Intermediate</p>
+                                                    <p class="text-sm text-gray-600">Group Session • 4:00 PM - 5:30 PM
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tomorrow -->
+                                <div>
+                                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Tomorrow - Wednesday,
+                                        Oct 4</p>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
+                                            <div class="flex items-start gap-3">
+                                                <div
+                                                    class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-calculator text-amber-600"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-medium text-gray-900 truncate">Physics - Advanced</p>
+                                                    <p class="text-sm text-gray-600">Mike Johnson • 10:00 AM - 11:00 AM
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
+                                            <div class="flex items-start gap-3">
+                                                <div
+                                                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-language text-green-600"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-medium text-gray-900 truncate">Spanish Conversation
+                                                    </p>
+                                                    <p class="text-sm text-gray-600">Emma Thompson • 3:00 PM - 4:00 PM
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Today's Appointments Section -->
-                <section class="appointments-section">
-                    <div class="appointments-header">
-                        <h3 class="section-title-small">Today's appointments</h3>
-                    </div>
-                    <div class="appointments-card">
-                        <div class="appointment-tabs">
-                            <button class="tab-btn active">Total <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Active <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Completed <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Overdue <span class="tab-count">0</span></button>
-                            <button class="tab-btn">Remaining <span class="tab-count">0</span></button>
-                        </div>
-
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-calendar-day"></i>
+                    <!-- Getting Started Section -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-100">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div
+                                class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-rocket text-white text-xl"></i>
                             </div>
-                            <p class="empty-message">This is where you will get an overview of your appointments for
-                                today once they are scheduled.</p>
-                            <a href="add-product.html" style="text-decoration: none;"><button
-                                    class="btn-primary">Schedule a Job</button></a>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Set up your service-based business
+                                </h3>
+                                <p class="text-gray-600 mb-4">Complete these tasks to get your franchise management
+                                    system fully operational</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- Task 1: Add Service to Pricebook -->
+                            <div
+                                class="bg-white rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-blue-600 font-semibold">1</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900 mb-1">Add your first service to the
+                                            pricebook</h4>
+                                        <p class="text-sm text-gray-600">Create a service in your pricebook to start
+                                            offering to customers</p>
+                                    </div>
+                                    <a href="admin/pricebook-create.html"
+                                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
+                                        Add to Pricebook →
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Task 2: Create Learning Service -->
+                            <div
+                                class="bg-white rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-blue-600 font-semibold">2</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900 mb-1">Create a learning service</h4>
+                                        <p class="text-sm text-gray-600">Set up a Class, Group, or One-to-One tutoring
+                                            service</p>
+                                    </div>
+                                    <a href="[v2] Jobs/service_job_v3/learning_service_create.html"
+                                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
+                                        Create Service →
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Task 3: Invite Team Members -->
+                            <div
+                                class="bg-white rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="text-blue-600 font-semibold">3</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900 mb-1">Invite team members and assign
+                                            roles</h4>
+                                        <p class="text-sm text-gray-600">Add staff members to your team and set their
+                                            permissions</p>
+                                    </div>
+                                    <a href="manage-team/manage-team.html"
+                                        class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
+                                        Manage Team →
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- All Caught Up -->
-                <section class="caught-up-section">
-                    <div class="caught-up-card">
-                        <i class="fas fa-check-circle"></i>
-                        <span>All caught up</span>
-                    </div>
-                </section>
-
-                <!-- Helpful Resources Section -->
-                <section class="resources-section">
-                    <h3 class="section-title-small">Is this helpful so far?</h3>
-                    <div class="feedback-buttons">
-                        <button class="feedback-btn">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                        <button class="feedback-btn">
-                            <i class="fas fa-thumbs-down"></i>
-                        </button>
-                    </div>
-                </section>
-
+                </div>
             </div>
         </main>
     </div>
 
     <script src="home-script.js"></script>
     <script>
-        // design settings moved to a separate page: design-settings.html
+        // Banner close functionality
+        document.querySelector('.banner-close-btn')?.addEventListener('click', function () {
+            document.querySelector('.limited-offer-banner').style.display = 'none';
+        });
+
+        // Task checkbox persistence
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            const savedState = localStorage.getItem(checkbox.id);
+            if (savedState === 'true') {
+                checkbox.checked = true;
+            }
+
+            checkbox.addEventListener('change', function () {
+                localStorage.setItem(this.id, this.checked);
+            });
+        });
     </script>
 </body>
 

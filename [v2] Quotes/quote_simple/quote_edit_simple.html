@@ -1775,6 +1775,9 @@
                     pricingType: 'per_hour',
                     unit: 'hour',
                     taxCategory: 'taxable_gst',
+                    packageType: 'subscription',
+                    serviceType: 'one-to-one',
+                    subscriptionFrequency: 'weekly',
                     quantity: 2,
                     priceModified: false,
                     priceModificationComment: '',
@@ -1797,6 +1800,8 @@
                     pricingType: 'fixed',
                     unit: 'each',
                     taxCategory: 'taxable_gst',
+                    packageType: 'non-subscription',
+                    serviceType: 'one-to-one',
                     quantity: 1,
                     priceModified: false,
                     priceModificationComment: '',
@@ -1866,26 +1871,26 @@
 
         const tutoringServices = [
             // Services with GST (10% tax)
-            { id: 't1', name: 'One-on-One Tutoring - Math', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't2', name: 'One-on-One Tutoring - English', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't3', name: 'Small Group (2-4 students)', tag: 'Group', type: 'service', price: 50, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst' },
-            { id: 't4', name: 'Assessment & Report', tag: 'Assessment', type: 'service', price: 120, pricingType: 'fixed', unit: 'each', taxCategory: 'taxable_gst' },
+            { id: 't1', name: 'One-on-One Tutoring - Math', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst', packageType: 'subscription', serviceType: 'one-to-one', subscriptionFrequency: 'weekly' },
+            { id: 't2', name: 'One-on-One Tutoring - English', tag: 'Tutoring', type: 'service', price: 75, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst', packageType: 'subscription', serviceType: 'one-to-one', subscriptionFrequency: 'weekly' },
+            { id: 't3', name: 'Small Group (2-4 students)', tag: 'Group', type: 'service', price: 50, pricingType: 'per_hour', unit: 'hour', taxCategory: 'taxable_gst', packageType: 'subscription', serviceType: 'group', subscriptionFrequency: 'monthly' },
+            { id: 't4', name: 'Assessment & Report', tag: 'Assessment', type: 'service', price: 120, pricingType: 'fixed', unit: 'each', taxCategory: 'taxable_gst', packageType: 'non-subscription', serviceType: 'one-to-one' },
 
             // Services GST-Free (0% tax)
-            { id: 't5', name: 'Educational Counseling Service', tag: 'Support', type: 'service', price: 80, pricingType: 'per_hour', unit: 'hour', taxCategory: 'gst_free' },
-            { id: 't6', name: 'Learning Disability Assessment', tag: 'Assessment', type: 'service', price: 150, pricingType: 'fixed', unit: 'each', taxCategory: 'gst_free' },
+            { id: 't5', name: 'Educational Counseling Service', tag: 'Support', type: 'service', price: 80, pricingType: 'per_hour', unit: 'hour', taxCategory: 'gst_free', packageType: 'non-subscription', serviceType: 'one-to-one' },
+            { id: 't6', name: 'Learning Disability Assessment', tag: 'Assessment', type: 'service', price: 150, pricingType: 'fixed', unit: 'each', taxCategory: 'gst_free', packageType: 'non-subscription', serviceType: 'one-to-one' },
 
             // Services Input-Taxed (0% tax)
-            { id: 't7', name: 'Tutoring Consultation Fee', tag: 'Consultation', type: 'service', price: 60, pricingType: 'fixed', unit: 'each', taxCategory: 'input_taxed' },
+            { id: 't7', name: 'Tutoring Consultation Fee', tag: 'Consultation', type: 'service', price: 60, pricingType: 'fixed', unit: 'each', taxCategory: 'input_taxed', packageType: 'non-subscription', serviceType: 'class' },
 
             // Products with GST (10% tax)
-            { id: 'p1', name: 'Study Materials Package', tag: 'Materials', type: 'product', price: 45, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
-            { id: 'p2', name: 'Textbook Bundle', tag: 'Materials', type: 'product', price: 120, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
-            { id: 'p3', name: 'Practice Test Series', tag: 'Materials', type: 'product', price: 35, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst' },
+            { id: 'p1', name: 'Study Materials Package', tag: 'Materials', type: 'product', price: 45, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst', packageType: 'non-subscription' },
+            { id: 'p2', name: 'Textbook Bundle', tag: 'Materials', type: 'product', price: 120, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst', packageType: 'non-subscription' },
+            { id: 'p3', name: 'Practice Test Series', tag: 'Materials', type: 'product', price: 35, pricingType: 'per_unit', unit: 'each', taxCategory: 'taxable_gst', packageType: 'non-subscription' },
 
             // Products GST-Free (0% tax)
-            { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
-            { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free' },
+            { id: 'p4', name: 'Educational Books', tag: 'Materials', type: 'product', price: 25, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free', packageType: 'non-subscription' },
+            { id: 'p5', name: 'Basic Learning Materials', tag: 'Materials', type: 'product', price: 15, pricingType: 'per_unit', unit: 'each', taxCategory: 'gst_free', packageType: 'non-subscription' },
         ];
 
         // ============================================================================
@@ -2336,7 +2341,7 @@
             }, 500);
         }
 
-        
+
         // Helper function to find service by ID
         function findServiceById(itemId, serviceId) {
             const services = learningServicesDatabase[itemId] || [];
@@ -2930,7 +2935,39 @@
                 return;
             }
 
-            autocomplete.innerHTML = services.map(service => `
+            autocomplete.innerHTML = services.map(service => {
+                // Format Package Type
+                const packageTypeLabel = service.packageType === 'subscription' ? 'Subscription' : 'Non-Subscription';
+                const packageTypeBadge = service.packageType === 'subscription'
+                    ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-700 font-medium">📦 Subscription</span>'
+                    : '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">📦 Non-Subscription</span>';
+
+                // Format Service Type (only for services)
+                let serviceTypeBadge = '';
+                if (service.type === 'service' && service.serviceType) {
+                    const serviceTypeLabels = {
+                        'class': '👥 Class',
+                        'group': '👥 Group',
+                        'one-to-one': '👤 One-to-One'
+                    };
+                    const serviceTypeText = serviceTypeLabels[service.serviceType] || service.serviceType;
+                    serviceTypeBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 font-medium">${serviceTypeText}</span>`;
+                }
+
+                // Format Subscription Frequency (only for subscription items)
+                let subscriptionFrequencyBadge = '';
+                if (service.packageType === 'subscription' && service.subscriptionFrequency) {
+                    const frequencyLabels = {
+                        'weekly': '📅 Weekly',
+                        'monthly': '📅 Monthly',
+                        'quarterly': '📅 Quarterly',
+                        'annually': '📅 Annually'
+                    };
+                    const frequencyText = frequencyLabels[service.subscriptionFrequency] || service.subscriptionFrequency;
+                    subscriptionFrequencyBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-100 text-green-700 font-medium">${frequencyText}</span>`;
+                }
+
+                return `
                 <div 
                     class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                     onclick="addQuoteItem('${service.id}')"
@@ -2942,7 +2979,12 @@
                                 <span class="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">${service.tag}</span>
                             </div>
                             <p class="font-medium text-gray-900 text-sm">${service.name}</p>
-                            <p class="text-xs text-gray-500 mt-0.5">${service.id}</p>
+                            <div class="flex items-center gap-2 mt-1.5">
+                                ${packageTypeBadge}
+                                ${serviceTypeBadge}
+                                ${subscriptionFrequencyBadge}
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">${service.id}</p>
                         </div>
                         <div class="text-right ml-3">
                             <div class="flex items-center gap-1 text-gray-700">
@@ -2953,7 +2995,8 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             autocomplete.classList.remove('hidden');
         }
@@ -2983,6 +3026,39 @@
                     taxBadge = taxLabels[item.taxCategory] || '';
                 }
 
+                // Show Package Type
+                let packageTypeBadge = '';
+                if (item.packageType) {
+                    packageTypeBadge = item.packageType === 'subscription'
+                        ? '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-purple-100 text-purple-700 font-medium">📦 Subscription</span>'
+                        : '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-700 font-medium">📦 Non-Subscription</span>';
+                }
+
+                // Show Service Type (only for services)
+                let serviceTypeBadge = '';
+                if (item.type === 'service' && item.serviceType) {
+                    const serviceTypeLabels = {
+                        'class': '👥 Class',
+                        'group': '👥 Group',
+                        'one-to-one': '👤 One-to-One'
+                    };
+                    const serviceTypeText = serviceTypeLabels[item.serviceType] || item.serviceType;
+                    serviceTypeBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-700 font-medium">${serviceTypeText}</span>`;
+                }
+
+                // Show Subscription Frequency (only for subscription items)
+                let subscriptionFrequencyBadge = '';
+                if (item.packageType === 'subscription' && item.subscriptionFrequency) {
+                    const frequencyLabels = {
+                        'weekly': '📅 Weekly',
+                        'monthly': '📅 Monthly',
+                        'quarterly': '📅 Quarterly',
+                        'annually': '📅 Annually'
+                    };
+                    const frequencyText = frequencyLabels[item.subscriptionFrequency] || item.subscriptionFrequency;
+                    subscriptionFrequencyBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-green-100 text-green-700 font-medium">${frequencyText}</span>`;
+                }
+
                 const lineTotal = item.quantity * item.customPrice;
                 const discountAmount = item.discountType === 'percentage'
                     ? lineTotal * (item.discount / 100)
@@ -2997,9 +3073,12 @@
                             <div class="flex items-center gap-2 mb-1">
                                 <h3 class="font-semibold text-gray-900">${item.name}</h3>
                             </div>
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 ${getTypeIndicator(item.type)}
                                 ${taxBadge}
+                                ${packageTypeBadge}
+                                ${serviceTypeBadge}
+                                ${subscriptionFrequencyBadge}
                             </div>
                             ${item.priceModificationComment ? `
                                 <div class="mt-2 text-xs text-yellow-700 bg-yellow-50 px-2 py-1 rounded">
@@ -9139,7 +9218,7 @@
             </div>
         </div>
     </div>
-<!-- Convert to Sessions Modal (Solution 2) - Enhanced with Learning Service Selection -->
+    <!-- Convert to Sessions Modal (Solution 2) - Enhanced with Learning Service Selection -->
     <div id="convertToSessionsModal"
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
@@ -9394,7 +9473,7 @@
                 const proceed = confirm('?? Warning: This Learning Service is fully booked!\n\nEnrolling this customer will create a waitlist or require overbooking.\n\nDo you want to proceed?');
                 if (!proceed) return;
             }
-            
+
             const checkbox = document.getElementById(`service_${itemId}_${serviceId}`);
             if (checkbox.checked) return; checkbox.checked = true;
 
@@ -9435,7 +9514,7 @@
             }
 
             const totalSessions = Object.values(selectedEnrollments).reduce((sum, e) => sum + e.quantity, 0);
-            
+
             // Check for fully booked services
             const fullyBookedServices = [];
             Object.values(selectedEnrollments).forEach(enrollment => {
@@ -9444,7 +9523,7 @@
                     fullyBookedServices.push(service.name);
                 }
             });
-            
+
             const customerName = state.selectedCustomer ? state.selectedCustomer.name : 'Customer';
 
             closeConvertToSessionsModal();
