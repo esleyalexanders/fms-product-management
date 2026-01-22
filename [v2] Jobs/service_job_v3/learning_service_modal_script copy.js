@@ -71,38 +71,15 @@ function openServiceCreationModal() {
 
         // Show modal
         modal.classList.remove('hidden');
-
-        // Trigger drawer animation
-        const drawerPanel = modal.querySelector('.drawer-panel');
-        if (drawerPanel) {
-            // Small delay to ensure the element is rendered before animation
-            setTimeout(() => {
-                drawerPanel.classList.add('drawer-open');
-            }, 10);
-        }
     }
 }
-
 
 function closeServiceCreationModal() {
     const modal = document.getElementById('createServiceModal');
     if (modal) {
-        const drawerPanel = modal.querySelector('.drawer-panel');
-        if (drawerPanel) {
-            // Remove the open class to trigger slide-out animation
-            drawerPanel.classList.remove('drawer-open');
-
-            // Hide modal after animation completes (300ms matches CSS transition)
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        } else {
-            // Fallback if drawer panel not found
-            modal.classList.add('hidden');
-        }
+        modal.classList.add('hidden');
     }
 }
-
 
 // ===== TYPE SELECTION =====
 function selectServiceType(type) {
