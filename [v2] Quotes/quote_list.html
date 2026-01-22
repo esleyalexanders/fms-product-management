@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,14 +13,17 @@
             width: 6px;
             height: 6px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 10px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
@@ -37,12 +41,12 @@
             border: none;
             border-bottom: 2px solid transparent;
         }
-        
+
         .tab-button:hover {
             color: #374151;
             background: #f9fafb;
         }
-        
+
         .tab-button.active {
             color: #2563eb;
             border-bottom-color: #2563eb;
@@ -474,24 +478,25 @@
             .main-content {
                 margin-left: 0;
             }
+
             .table-header {
                 display: none;
             }
-            
+
             .quote-card {
                 padding: 1rem;
             }
-            
+
             .quote-card .grid {
                 display: flex;
                 flex-direction: column;
                 gap: 0.75rem;
             }
-            
-            .quote-card .grid > div {
+
+            .quote-card .grid>div {
                 width: 100%;
             }
-            
+
             .financial-panel {
                 padding: 1rem;
             }
@@ -503,8 +508,9 @@
         }
     </style>
 </head>
+
 <body class="min-h-screen bg-gray-50">
-    
+
     <div class="app-container">
         <!-- Sidebar -->
         <nav class="sidebar">
@@ -529,19 +535,22 @@
                 <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-calendar-alt"></i><span>Schedule</span>
                 </a>
-                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;">
                     <i class="fas fa-users"></i><span>Manage team</span>
                 </a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;">
                     <i class="fas fa-book"></i><span>My pricebook</span>
                 </a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;">
                     <i class="fas fa-user-friends"></i><span>Customers</span>
                 </a>
             </div>
 
             <div class="sidebar-footer">
-                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                <a href="../manage-team/manage-team-roles.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;">
                     <i class="fas fa-shield-alt"></i>
                     <span>Manage roles</span>
                 </a>
@@ -560,620 +569,643 @@
         <main class="main-content">
             <div class="p-4">
                 <div class="max-w-7xl mx-auto">
-            
-            <!-- Header -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-3">
-                            <h1 class="text-3xl font-bold text-gray-900">Quotes Management</h1>
-                        </div>
-                        <div class="flex items-center gap-2 text-gray-700">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                            <span class="font-medium">Sunshine Tutoring - Melbourne East</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button 
-                            id="exportBtn"
-                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            Export
-                        </button>
-                        <button 
-                            id="createQuoteBtn"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-                            onclick="window.location.href='quote_create.html'"
-                        >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Create New Quote
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <!-- Active Quotes -->
-                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Active Quotes</p>
-                            <p class="text-2xl font-bold text-gray-900" id="activeQuotes">13</p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-green-600 font-medium" id="activeQuotesTrend">↑ 3 from last</p>
-                </div>
-
-                <!-- Total Value -->
-                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Total Value</p>
-                            <p class="text-2xl font-bold text-gray-900" id="totalValue">$21.6K</p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-green-600 font-medium" id="totalValueTrend">↑ 15% vs last</p>
-                </div>
-
-                <!-- Outstanding -->
-                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">Outstanding</p>
-                            <p class="text-2xl font-bold text-gray-900" id="outstandingAmount">$5.5K</p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-red-600 font-medium" id="unpaidCount">3 unpaid</p>
-                </div>
-
-                <!-- This Month -->
-                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">This Month</p>
-                            <p class="text-2xl font-bold text-gray-900" id="monthlyValue">$0.0K</p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-600 font-medium" id="monthlyQuotes">+0 quotes</p>
-                </div>
-            </div>
-
-            <!-- Financial Summary Panel (Collapsible) -->
-            <div class="financial-panel" id="financialPanel">
-                <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinancialPanel()">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        <div>
-                            <h3 class="text-base font-semibold">Financial Summary</h3>
-                            <p class="text-xs opacity-90">Track invoicing and payment progress</p>
-                        </div>
-                    </div>
-                    <button class="text-white hover:bg-white/20 rounded-lg p-2 transition">
-                        <svg class="w-5 h-5" id="financialPanelIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="collapsible-content" id="financialPanelContent">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                        <!-- Invoiced Progress -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Invoiced</span>
-                                <span class="text-xl font-bold" id="invoicedPercent">63%</span>
-                            </div>
-                            <div class="progress-bar mb-2">
-                                <div class="progress-fill" id="invoicedBar" style="width: 63%"></div>
-                            </div>
-                            <p class="text-xs opacity-80" id="invoicedAmount">$13600 of $21604</p>
-                        </div>
-
-                        <!-- Paid Progress -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Paid</span>
-                                <span class="text-xl font-bold" id="paidPercent">38%</span>
-                            </div>
-                            <div class="progress-bar mb-2">
-                                <div class="progress-fill" id="paidBar" style="width: 38%"></div>
-                            </div>
-                            <p class="text-xs opacity-80" id="paidAmount">$8155 of $21604</p>
-                        </div>
-
-                        <!-- Outstanding -->
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-sm font-medium">Outstanding</span>
-                                <span class="text-xl font-bold" id="outstandingTotal">$5505</span>
-                            </div>
-                            <div class="mt-6">
-                                <button class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <h1 class="text-3xl font-bold text-gray-900">Quotes Management</h1>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-700">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                        </path>
                                     </svg>
-                                    View Details
+                                    <span class="font-medium">Sunshine Tutoring - Melbourne East</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="exportBtn"
+                                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                    Export
+                                </button>
+                                <button id="createQuoteBtn"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+                                    onclick="window.location.href='quote_create.html'">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Create New Quote
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Status Tabs -->
-            <div class="bg-white rounded-lg shadow-sm mb-4 border border-gray-200">
-                <div class="flex overflow-x-auto custom-scrollbar">
-                    <button class="tab-button active" data-status="all" onclick="filterByStatus('all')">
-                        All
-                        <span class="tab-badge" id="countAll">0</span>
-                    </button>
-                    <button class="tab-button" data-status="draft" onclick="filterByStatus('draft')">
-                        📝 Draft
-                        <span class="tab-badge" id="countDraft">0</span>
-                    </button>
-                    <button class="tab-button" data-status="sent" onclick="filterByStatus('sent')">
-                        📤 Sent
-                        <span class="tab-badge" id="countSent">0</span>
-                    </button>
-                    <button class="tab-button" data-status="accepted" onclick="filterByStatus('accepted')">
-                        ✅ Accepted
-                        <span class="tab-badge" id="countAccepted">0</span>
-                    </button>
-                    <button class="tab-button" data-status="declined" onclick="filterByStatus('declined')">
-                        ❌ Declined
-                        <span class="tab-badge" id="countDeclined">0</span>
-                    </button>
-                    <button class="tab-button" data-status="converted" onclick="filterByStatus('converted')">
-                        💰 Converted
-                        <span class="tab-badge" id="countConverted">0</span>
-                    </button>
-                </div>
-            </div>
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <!-- Active Quotes -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Active Quotes</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="activeQuotes">13</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-green-600 font-medium" id="activeQuotesTrend">↑ 3 from last</p>
+                        </div>
 
-            <!-- Search & Filters -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
-                <div class="flex flex-wrap gap-3 items-center">
-                    <!-- Search -->
-                    <div class="flex-1 min-w-64 relative">
-                        <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Search by customer, email, or quote ID..."
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                        />
+                        <!-- Total Value -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Total Value</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalValue">$21.6K</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-green-600 font-medium" id="totalValueTrend">↑ 15% vs last</p>
+                        </div>
+
+                        <!-- Outstanding -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Outstanding</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="outstandingAmount">$5.5K</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-red-600 font-medium" id="unpaidCount">3 unpaid</p>
+                        </div>
+
+                        <!-- This Month -->
+                        <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">This Month</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="monthlyValue">$0.0K</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 font-medium" id="monthlyQuotes">+0 quotes</p>
+                        </div>
                     </div>
 
-                    <!-- Advanced Filters Toggle -->
-                    <button 
-                        id="toggleFiltersBtn"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
-                        onclick="toggleFilters()"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-                        </svg>
-                        Advanced Filters
-                        <svg class="w-3 h-3" id="filterIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-
-                    <!-- Sort -->
-                    <select 
-                        id="sortBy"
-                        class="px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="amount_high">Amount: High to Low</option>
-                        <option value="amount_low">Amount: Low to High</option>
-                        <option value="customer">Customer A-Z</option>
-                    </select>
-                </div>
-
-                <!-- Advanced Filters Panel -->
-                <div class="collapsible-content mt-4" id="moreFilters">
-                    <div class="pt-4 border-t border-gray-200">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
-                            <!-- Payment Status Filter -->
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Payment Status</label>
-                                <select 
-                                    id="paymentStatusFilter"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">All Payments</option>
-                                    <option value="not_invoiced">⚪ Not Invoiced</option>
-                                    <option value="partially_invoiced">🔵 Partial Invoice</option>
-                                    <option value="invoiced_unpaid">🟠 Unpaid</option>
-                                    <option value="partially_paid">🟡 Partially Paid</option>
-                                    <option value="fully_paid">🟢 Fully Paid</option>
-                                </select>
+                    <!-- Financial Summary Panel (Collapsible) -->
+                    <div class="financial-panel" id="financialPanel">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinancialPanel()">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                    </path>
+                                </svg>
+                                <div>
+                                    <h3 class="text-base font-semibold">Financial Summary</h3>
+                                    <p class="text-xs opacity-90">Track invoicing and payment progress</p>
+                                </div>
                             </div>
+                            <button class="text-white hover:bg-white/20 rounded-lg p-2 transition">
+                                <svg class="w-5 h-5" id="financialPanelIcon" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
 
-                            <!-- Created By Filter -->
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Created By</label>
-                                <div class="relative">
-                                    <input 
-                                        type="text"
-                                        id="createdByInput"
-                                        placeholder="Type to search team members..."
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        autocomplete="off"
-                                    />
-                                    <div id="createdByAutocomplete" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                                        <!-- Autocomplete results -->
+                        <div class="collapsible-content" id="financialPanelContent">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                                <!-- Invoiced Progress -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-sm font-medium">Invoiced</span>
+                                        <span class="text-xl font-bold" id="invoicedPercent">63%</span>
+                                    </div>
+                                    <div class="progress-bar mb-2">
+                                        <div class="progress-fill" id="invoicedBar" style="width: 63%"></div>
+                                    </div>
+                                    <p class="text-xs opacity-80" id="invoicedAmount">$13600 of $21604</p>
+                                </div>
+
+                                <!-- Paid Progress -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-sm font-medium">Paid</span>
+                                        <span class="text-xl font-bold" id="paidPercent">38%</span>
+                                    </div>
+                                    <div class="progress-bar mb-2">
+                                        <div class="progress-fill" id="paidBar" style="width: 38%"></div>
+                                    </div>
+                                    <p class="text-xs opacity-80" id="paidAmount">$8155 of $21604</p>
+                                </div>
+
+                                <!-- Outstanding -->
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-sm font-medium">Outstanding</span>
+                                        <span class="text-xl font-bold" id="outstandingTotal">$5505</span>
+                                    </div>
+                                    <div class="mt-6">
+                                        <button
+                                            class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                                </path>
+                                            </svg>
+                                            View Details
+                                        </button>
                                     </div>
                                 </div>
-                                <div id="createdByTags" class="flex flex-wrap gap-1 mt-2">
-                                    <!-- Selected team members will appear here as tags -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Tabs -->
+                    <div class="bg-white rounded-lg shadow-sm mb-4 border border-gray-200">
+                        <div class="flex overflow-x-auto custom-scrollbar">
+                            <button class="tab-button active" data-status="all" onclick="filterByStatus('all')">
+                                All
+                                <span class="tab-badge" id="countAll">0</span>
+                            </button>
+                            <button class="tab-button" data-status="draft" onclick="filterByStatus('draft')">
+                                📝 Draft
+                                <span class="tab-badge" id="countDraft">0</span>
+                            </button>
+                            <button class="tab-button" data-status="sent" onclick="filterByStatus('sent')">
+                                📤 Sent
+                                <span class="tab-badge" id="countSent">0</span>
+                            </button>
+                            <button class="tab-button" data-status="accepted" onclick="filterByStatus('accepted')">
+                                ✅ Accepted
+                                <span class="tab-badge" id="countAccepted">0</span>
+                            </button>
+                            <button class="tab-button" data-status="declined" onclick="filterByStatus('declined')">
+                                ❌ Declined
+                                <span class="tab-badge" id="countDeclined">0</span>
+                            </button>
+                            <button class="tab-button" data-status="converted" onclick="filterByStatus('converted')">
+                                💰 Converted
+                                <span class="tab-badge" id="countConverted">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filters -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+                        <div class="flex flex-wrap gap-3 items-center">
+                            <!-- Search -->
+                            <div class="flex-1 min-w-64 relative">
+                                <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <input type="text" id="searchInput"
+                                    placeholder="Search by customer, email, or quote ID..."
+                                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+                            </div>
+
+                            <!-- Advanced Filters Toggle -->
+                            <button id="toggleFiltersBtn"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
+                                onclick="toggleFilters()">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                                    </path>
+                                </svg>
+                                Advanced Filters
+                                <svg class="w-3 h-3" id="filterIcon" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+
+                            <!-- Sort -->
+                            <select id="sortBy"
+                                class="px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="amount_high">Amount: High to Low</option>
+                                <option value="amount_low">Amount: Low to High</option>
+                                <option value="customer">Customer A-Z</option>
+                            </select>
+                        </div>
+
+                        <!-- Advanced Filters Panel -->
+                        <div class="collapsible-content mt-4" id="moreFilters">
+                            <div class="pt-4 border-t border-gray-200">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                                    <!-- Payment Status Filter -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Payment
+                                            Status</label>
+                                        <select id="paymentStatusFilter"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">All Payments</option>
+                                            <option value="not_invoiced">⚪ Not Invoiced</option>
+                                            <option value="partially_invoiced">🔵 Partial Invoice</option>
+                                            <option value="invoiced_unpaid">🟠 Unpaid</option>
+                                            <option value="partially_paid">🟡 Partially Paid</option>
+                                            <option value="fully_paid">🟢 Fully Paid</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Created By Filter -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Created By</label>
+                                        <div class="relative">
+                                            <input type="text" id="createdByInput"
+                                                placeholder="Type to search team members..."
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                autocomplete="off" />
+                                            <div id="createdByAutocomplete"
+                                                class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                                                <!-- Autocomplete results -->
+                                            </div>
+                                        </div>
+                                        <div id="createdByTags" class="flex flex-wrap gap-1 mt-2">
+                                            <!-- Selected team members will appear here as tags -->
+                                        </div>
+                                    </div>
+
+                                    <!-- Date Range Filter -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Date Range</label>
+                                        <select id="dateRangeFilter"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">All Time</option>
+                                            <option value="7">Last 7 days</option>
+                                            <option value="30">Last 30 days</option>
+                                            <option value="90">Last 90 days</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Amount Range Filter -->
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-700 mb-1">Amount Range</label>
+                                        <select id="amountRangeFilter"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">All Amounts</option>
+                                            <option value="0-500">$0 - $500</option>
+                                            <option value="500-1000">$500 - $1,000</option>
+                                            <option value="1000-2000">$1,000 - $2,000</option>
+                                            <option value="2000-5000">$2,000 - $5,000</option>
+                                            <option value="5000+">$5,000+</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Filter Actions -->
+                                <div class="flex items-center justify-between">
+                                    <button id="clearFiltersBtn"
+                                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
+                                        onclick="clearFilters()">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        Clear All Filters
+                                    </button>
+                                    <button id="applyFiltersBtn"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium"
+                                        onclick="applyFilters()">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                            </path>
+                                        </svg>
+                                        Apply Filters
+                                    </button>
                                 </div>
                             </div>
-
-                            <!-- Date Range Filter -->
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Date Range</label>
-                                <select 
-                                    id="dateRangeFilter"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">All Time</option>
-                                    <option value="7">Last 7 days</option>
-                                    <option value="30">Last 30 days</option>
-                                    <option value="90">Last 90 days</option>
-                                </select>
-                            </div>
-
-                            <!-- Amount Range Filter -->
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Amount Range</label>
-                                <select 
-                                    id="amountRangeFilter"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">All Amounts</option>
-                                    <option value="0-500">$0 - $500</option>
-                                    <option value="500-1000">$500 - $1,000</option>
-                                    <option value="1000-2000">$1,000 - $2,000</option>
-                                    <option value="2000-5000">$2,000 - $5,000</option>
-                                    <option value="5000+">$5,000+</option>
-                                </select>
-                            </div>
                         </div>
+                    </div>
 
-                        <!-- Filter Actions -->
-                        <div class="flex items-center justify-between">
-                            <button 
-                                id="clearFiltersBtn"
-                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium"
-                                onclick="clearFilters()"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <!-- Filter Summary Panel -->
+                    <div id="filterSummary"
+                        class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm p-4 mb-4 border border-blue-200">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                        </path>
+                                    </svg>
+                                    <h3 class="text-sm font-semibold text-gray-900">Filter Summary</h3>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div>
+                                        <p class="text-xs text-gray-600 mb-1">Filtered Quotes</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="summaryCount">0</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-600 mb-1">Total Value</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="summaryTotal">$0</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-600 mb-1">Average Value</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="summaryAverage">$0</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-600 mb-1">Outstanding</p>
+                                        <p class="text-2xl font-bold text-gray-900" id="summaryOutstanding">$0</p>
+                                    </div>
+                                </div>
+                                <div id="activeFilters" class="flex flex-wrap gap-2 mt-3">
+                                    <!-- Active filter tags will appear here -->
+                                </div>
+                            </div>
+                            <button onclick="clearFilters()" class="text-gray-400 hover:text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
-                                Clear All Filters
-                            </button>
-                            <button 
-                                id="applyFiltersBtn"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium"
-                                onclick="applyFilters()"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                                </svg>
-                                Apply Filters
                             </button>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Filter Summary Panel -->
-            <div id="filterSummary" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg shadow-sm p-4 mb-4 border border-blue-200">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    <!-- Bulk Action Bar (Hidden by default) -->
+                    <div class="bulk-action-bar hidden" id="bulkActionBar">
+                        <input type="checkbox" id="selectAllCheckbox" class="w-5 h-5 rounded border-gray-300"
+                            onchange="toggleSelectAll()">
+                        <span class="font-semibold" id="selectedCount">0 selected</span>
+                        <div class="flex gap-2 ml-auto">
+                            <button onclick="bulkSend()" class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                Send All
+                            </button>
+                            <button onclick="bulkExport()" class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Export
+                            </button>
+                            <button onclick="bulkArchive()" class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                                    </path>
+                                </svg>
+                                Archive
+                            </button>
+                            <button class="cancel" onclick="clearSelection()" class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quote Cards List -->
+                    <div id="quotesContainer">
+                        <!-- Cards will be rendered here by JavaScript -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState"
+                        class="hidden bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
                             </svg>
-                            <h3 class="text-sm font-semibold text-gray-900">Filter Summary</h3>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div>
-                                <p class="text-xs text-gray-600 mb-1">Filtered Quotes</p>
-                                <p class="text-2xl font-bold text-gray-900" id="summaryCount">0</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-600 mb-1">Total Value</p>
-                                <p class="text-2xl font-bold text-gray-900" id="summaryTotal">$0</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-600 mb-1">Average Value</p>
-                                <p class="text-2xl font-bold text-gray-900" id="summaryAverage">$0</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-600 mb-1">Outstanding</p>
-                                <p class="text-2xl font-bold text-gray-900" id="summaryOutstanding">$0</p>
-                            </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No quotes found</h3>
+                        <p class="text-gray-600 mb-6" id="emptyStateMessage">Try adjusting your filters or create a new
+                            quote</p>
+                        <button onclick="window.location.href='quote_create.html'"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 mx-auto">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Create Your First Quote
+                        </button>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="pagination" class="hidden mt-6 flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            Showing <span id="paginationStart">1</span> to <span id="paginationEnd">10</span> of <span
+                                id="paginationTotal">0</span> quotes
                         </div>
-                        <div id="activeFilters" class="flex flex-wrap gap-2 mt-3">
-                            <!-- Active filter tags will appear here -->
+                        <div class="flex gap-2">
+                            <button id="prevBtn"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                                Previous
+                            </button>
+                            <button id="nextBtn"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                                Next
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    <button onclick="clearFilters()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Bulk Action Bar (Hidden by default) -->
-            <div class="bulk-action-bar hidden" id="bulkActionBar">
-                <input type="checkbox" id="selectAllCheckbox" class="w-5 h-5 rounded border-gray-300" onchange="toggleSelectAll()">
-                <span class="font-semibold" id="selectedCount">0 selected</span>
-                <div class="flex gap-2 ml-auto">
-                    <button onclick="bulkSend()" class="flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
-                        Send All
-                    </button>
-                    <button onclick="bulkExport()" class="flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        Export
-                    </button>
-                    <button onclick="bulkArchive()" class="flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                        </svg>
-                        Archive
-                    </button>
-                    <button class="cancel" onclick="clearSelection()" class="flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quote Cards List -->
-            <div id="quotesContainer">
-                <!-- Cards will be rendered here by JavaScript -->
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="hidden bg-white rounded-lg shadow-sm p-12 text-center border border-gray-200">
-                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">No quotes found</h3>
-                <p class="text-gray-600 mb-6" id="emptyStateMessage">Try adjusting your filters or create a new quote</p>
-                <button 
-                    onclick="window.location.href='quote_create.html'"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 mx-auto"
-                >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Create Your First Quote
-                </button>
-            </div>
-
-            <!-- Pagination -->
-            <div id="pagination" class="hidden mt-6 flex items-center justify-between">
-                <div class="text-sm text-gray-600">
-                    Showing <span id="paginationStart">1</span> to <span id="paginationEnd">10</span> of <span id="paginationTotal">0</span> quotes
-                </div>
-                <div class="flex gap-2">
-                    <button 
-                        id="prevBtn"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                        Previous
-                    </button>
-                    <button 
-                        id="nextBtn"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Next
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
 
                 </div>
             </div>
         </main>
     </div>
 
-<script>
-// State management
-const state = {
-    quotes: [],
-    filteredQuotes: [],
-    selectedQuotes: new Set(),
-    currentPage: 1,
-    itemsPerPage: 10,
-    searchTerm: '',
-    statusFilter: 'all',
-    paymentStatusFilter: '',
-    createdByFilter: [], // Changed to array for multi-select
-    dateRangeFilter: '',
-    amountRangeFilter: '',
-    sortBy: 'newest'
-};
+    <script>
+        // State management
+        const state = {
+            quotes: [],
+            filteredQuotes: [],
+            selectedQuotes: new Set(),
+            currentPage: 1,
+            itemsPerPage: 10,
+            searchTerm: '',
+            statusFilter: 'all',
+            paymentStatusFilter: '',
+            createdByFilter: [], // Changed to array for multi-select
+            dateRangeFilter: '',
+            amountRangeFilter: '',
+            sortBy: 'newest'
+        };
 
-// Team members list for autocomplete
-const teamMembers = ['John Smith', 'Sarah Williams', 'Mike Johnson'];
+        // Team members list for autocomplete
+        const teamMembers = ['John Smith', 'Sarah Williams', 'Mike Johnson'];
 
-// Sample data
-const quotes = [
-    {id: 'Q-2024-001', customerId: 2, customerName: 'Michael Chen', customerEmail: 'm.chen@email.com', customerPhone: '0423 456 789', createdBy: 'John Smith', dateCreated: '2024-10-25', validUntil: '2024-11-08', status: 'draft', total: 750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-002', customerId: 5, customerName: 'Lisa Anderson', customerEmail: 'lisa.a@email.com', customerPhone: '0456 789 012', createdBy: 'Sarah Williams', dateCreated: '2024-10-24', validUntil: '2024-11-07', status: 'draft', total: 1250.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-003', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-23', validUntil: '2024-11-06', status: 'sent', total: 412.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-004', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Mike Johnson', dateCreated: '2024-10-22', validUntil: '2024-11-05', status: 'sent', total: 850.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-005', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Sarah Williams', dateCreated: '2024-10-21', validUntil: '2024-11-04', status: 'sent', total: 920.75, paymentStatus: 'partially_invoiced', amountInvoiced: 460.38, amountPaid: 230.19},
-    {id: 'Q-2024-006', customerId: 6, customerName: 'James Taylor', customerEmail: 'james.t@email.com', customerPhone: '0467 890 123', createdBy: 'John Smith', dateCreated: '2024-10-20', validUntil: '2024-11-03', status: 'sent', total: 1580.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-007', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'Mike Johnson', dateCreated: '2024-10-19', validUntil: '2024-11-02', status: 'accepted', total: 3250.00, paymentStatus: 'partially_paid', amountInvoiced: 3250.00, amountPaid: 1625.00},
-    {id: 'Q-2024-008', customerId: 7, customerName: 'Rachel Green', customerEmail: 'rachel.g@email.com', customerPhone: '0478 901 234', createdBy: 'Sarah Williams', dateCreated: '2024-10-18', validUntil: '2024-11-01', status: 'accepted', total: 2100.00, paymentStatus: 'invoiced_unpaid', amountInvoiced: 2100.00, amountPaid: 0},
-    {id: 'Q-2024-009', customerId: 8, customerName: 'Tom Harris', customerEmail: 'tom.h@email.com', customerPhone: '0489 012 345', createdBy: 'John Smith', dateCreated: '2024-10-17', validUntil: '2024-10-31', status: 'accepted', total: 1750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-010', customerId: 9, customerName: 'Nina Patel', customerEmail: 'nina.p@email.com', customerPhone: '0490 123 456', createdBy: 'Mike Johnson', dateCreated: '2024-10-16', validUntil: '2024-10-30', status: 'declined', total: 890.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0},
-    {id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-10', validUntil: '2024-10-24', status: 'converted', total: 2800.00, paymentStatus: 'fully_paid', amountInvoiced: 2800.00, amountPaid: 2800.00},
-    {id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2024-10-08', validUntil: '2024-10-22', status: 'converted', total: 1950.00, paymentStatus: 'fully_paid', amountInvoiced: 1950.00, amountPaid: 1950.00},
-    {id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2024-10-05', validUntil: '2024-10-19', status: 'converted', total: 3100.00, paymentStatus: 'partially_paid', amountInvoiced: 3100.00, amountPaid: 1550.00}
-];
+        // Sample data
+        const quotes = [
+            { id: 'Q-2024-001', customerId: 2, customerName: 'Michael Chen', customerEmail: 'm.chen@email.com', customerPhone: '0423 456 789', createdBy: 'John Smith', dateCreated: '2024-10-25', validUntil: '2024-11-08', status: 'draft', total: 750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-002', customerId: 5, customerName: 'Lisa Anderson', customerEmail: 'lisa.a@email.com', customerPhone: '0456 789 012', createdBy: 'Sarah Williams', dateCreated: '2024-10-24', validUntil: '2024-11-07', status: 'draft', total: 1250.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-003', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-23', validUntil: '2024-11-06', status: 'sent', total: 412.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-004', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Mike Johnson', dateCreated: '2024-10-22', validUntil: '2024-11-05', status: 'sent', total: 850.50, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-005', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Sarah Williams', dateCreated: '2024-10-21', validUntil: '2024-11-04', status: 'sent', total: 920.75, paymentStatus: 'partially_invoiced', amountInvoiced: 460.38, amountPaid: 230.19 },
+            { id: 'Q-2024-006', customerId: 6, customerName: 'James Taylor', customerEmail: 'james.t@email.com', customerPhone: '0467 890 123', createdBy: 'John Smith', dateCreated: '2024-10-20', validUntil: '2024-11-03', status: 'sent', total: 1580.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-007', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'Mike Johnson', dateCreated: '2024-10-19', validUntil: '2024-11-02', status: 'accepted', total: 3250.00, paymentStatus: 'partially_paid', amountInvoiced: 3250.00, amountPaid: 1625.00 },
+            { id: 'Q-2024-008', customerId: 7, customerName: 'Rachel Green', customerEmail: 'rachel.g@email.com', customerPhone: '0478 901 234', createdBy: 'Sarah Williams', dateCreated: '2024-10-18', validUntil: '2024-11-01', status: 'accepted', total: 2100.00, paymentStatus: 'invoiced_unpaid', amountInvoiced: 2100.00, amountPaid: 0 },
+            { id: 'Q-2024-009', customerId: 8, customerName: 'Tom Harris', customerEmail: 'tom.h@email.com', customerPhone: '0489 012 345', createdBy: 'John Smith', dateCreated: '2024-10-17', validUntil: '2024-10-31', status: 'accepted', total: 1750.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-010', customerId: 9, customerName: 'Nina Patel', customerEmail: 'nina.p@email.com', customerPhone: '0490 123 456', createdBy: 'Mike Johnson', dateCreated: '2024-10-16', validUntil: '2024-10-30', status: 'declined', total: 890.00, paymentStatus: 'not_invoiced', amountInvoiced: 0, amountPaid: 0 },
+            { id: 'Q-2024-013', customerId: 1, customerName: 'Sarah Johnson', customerEmail: 'sarah.j@email.com', customerPhone: '0412 345 678', createdBy: 'John Smith', dateCreated: '2024-10-10', validUntil: '2024-10-24', status: 'converted', total: 2800.00, paymentStatus: 'fully_paid', amountInvoiced: 2800.00, amountPaid: 2800.00 },
+            { id: 'Q-2024-014', customerId: 3, customerName: 'Emma Wilson', customerEmail: 'emma.w@email.com', customerPhone: '0434 567 890', createdBy: 'Sarah Williams', dateCreated: '2024-10-08', validUntil: '2024-10-22', status: 'converted', total: 1950.00, paymentStatus: 'fully_paid', amountInvoiced: 1950.00, amountPaid: 1950.00 },
+            { id: 'Q-2024-015', customerId: 4, customerName: 'David Brown', customerEmail: 'david.b@email.com', customerPhone: '0445 678 901', createdBy: 'Mike Johnson', dateCreated: '2024-10-05', validUntil: '2024-10-19', status: 'converted', total: 3100.00, paymentStatus: 'partially_paid', amountInvoiced: 3100.00, amountPaid: 1550.00 }
+        ];
 
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
-    state.quotes = quotes;
-    updateCounts();
-    updateFinancialSummary();
-    filterAndRender();
-    setupEventListeners();
-});
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            state.quotes = quotes;
+            updateCounts();
+            updateFinancialSummary();
+            filterAndRender();
+            setupEventListeners();
+        });
 
-// Get status badge HTML
-function getStatusBadge(status) {
-    const badges = {
-        draft: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Draft</span>',
-        sent: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Sent</span>',
-        accepted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Accepted</span>',
-        declined: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Declined</span>',
-        converted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Converted</span>'
-    };
-    return badges[status] || badges.draft;
-}
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            const badges = {
+                draft: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Draft</span>',
+                sent: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Sent</span>',
+                accepted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Accepted</span>',
+                declined: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">Declined</span>',
+                converted: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Converted</span>'
+            };
+            return badges[status] || badges.draft;
+        }
 
-// Get payment status badge HTML
-function getPaymentStatusBadge(paymentStatus, amountInvoiced, amountPaid, total) {
-    const percentage = total > 0 ? Math.round((amountPaid / total) * 100) : 0;
-    const badges = {
-        not_invoiced: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">⚪ Not Invoiced</span>',
-        partially_invoiced: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700" title="$${amountInvoiced.toFixed(2)} invoiced of $${total.toFixed(2)}">🔵 Partial Invoice</span>`,
-        invoiced_unpaid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700" title="$${amountInvoiced.toFixed(2)} invoiced, $0 paid">🟠 Unpaid</span>`,
-        partially_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700" title="$${amountPaid.toFixed(2)} paid of $${total.toFixed(2)} (${percentage}%)">🟡 Partial (${percentage}%)</span>`,
-        fully_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700" title="$${amountPaid.toFixed(2)} paid">🟢 Paid</span>`
-    };
-    return badges[paymentStatus] || badges.not_invoiced;
-}
+        // Get payment status badge HTML
+        function getPaymentStatusBadge(paymentStatus, amountInvoiced, amountPaid, total) {
+            const percentage = total > 0 ? Math.round((amountPaid / total) * 100) : 0;
+            const badges = {
+                not_invoiced: '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">⚪ Not Invoiced</span>',
+                partially_invoiced: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700" title="$${amountInvoiced.toFixed(2)} invoiced of $${total.toFixed(2)}">🔵 Partial Invoice</span>`,
+                invoiced_unpaid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700" title="$${amountInvoiced.toFixed(2)} invoiced, $0 paid">🟠 Unpaid</span>`,
+                partially_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700" title="$${amountPaid.toFixed(2)} paid of $${total.toFixed(2)} (${percentage}%)">🟡 Partial (${percentage}%)</span>`,
+                fully_paid: `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700" title="$${amountPaid.toFixed(2)} paid">🟢 Paid</span>`
+            };
+            return badges[paymentStatus] || badges.not_invoiced;
+        }
 
-// Get contextual actions based on status and payment
-function getContextualActions(quote) {
-    let actions = '';
-    
-    if (quote.status === 'draft') {
-        actions = `<button class="action-btn action-btn-primary" onclick="sendQuote('${quote.id}')">
+        // Get contextual actions based on status and payment
+        function getContextualActions(quote) {
+            let actions = '';
+
+            if (quote.status === 'draft') {
+                actions = `<button class="action-btn action-btn-primary" onclick="sendQuote('${quote.id}')">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
             </svg>
             Send Quote
         </button>`;
-    } else if (quote.status === 'sent') {
-        actions = `<button class="action-btn action-btn-primary" onclick="markAsApproved('${quote.id}')">
+            } else if (quote.status === 'sent') {
+                actions = `<button class="action-btn action-btn-primary" onclick="markAsApproved('${quote.id}')">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             Mark as Approved
         </button>`;
-    } else if (quote.status === 'accepted') {
-        let primaryAction = '';
-        if (quote.paymentStatus === 'not_invoiced') {
-            primaryAction = `<button class="action-btn action-btn-primary" onclick="createInvoice('${quote.id}')">
+            } else if (quote.status === 'accepted') {
+                let primaryAction = '';
+                if (quote.paymentStatus === 'not_invoiced') {
+                    primaryAction = `<button class="action-btn action-btn-primary" onclick="createInvoice('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 Create Invoice
             </button>`;
-        } else if (quote.paymentStatus === 'invoiced_unpaid') {
-            primaryAction = `<button class="action-btn action-btn-primary" onclick="sendPaymentLink('${quote.id}')">
+                } else if (quote.paymentStatus === 'invoiced_unpaid') {
+                    primaryAction = `<button class="action-btn action-btn-primary" onclick="sendPaymentLink('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                 </svg>
                 Payment Link
             </button>`;
-        } else if (quote.paymentStatus === 'partially_paid') {
-            primaryAction = `<button class="action-btn action-btn-primary" onclick="viewPayments('${quote.id}')">
+                } else if (quote.paymentStatus === 'partially_paid') {
+                    primaryAction = `<button class="action-btn action-btn-primary" onclick="viewPayments('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 View Payments
             </button>`;
-        } else if (quote.paymentStatus === 'fully_paid') {
-            primaryAction = `<button class="action-btn action-btn-primary" onclick="viewPayments('${quote.id}')">
+                } else if (quote.paymentStatus === 'fully_paid') {
+                    primaryAction = `<button class="action-btn action-btn-primary" onclick="viewPayments('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 View Payments
             </button>`;
-        }
-        
-        // Add Convert to Job button for all accepted quotes
-        actions = primaryAction + `
+                }
+
+                // Add Convert to Job button for all accepted quotes
+                actions = primaryAction + `
             <button class="action-btn action-btn-secondary" onclick="convertToJob('${quote.id}')">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
                 Convert to Job
             </button>`;
-    } else if (quote.status === 'converted') {
-        actions = `<button class="action-btn action-btn-secondary" onclick="viewJob('${quote.id}')">
+            } else if (quote.status === 'converted') {
+                actions = `<button class="action-btn action-btn-secondary" onclick="viewJob('${quote.id}')">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
             View Job
         </button>`;
-    }
-    
-    // Add dropdown menu with contextual options
-    let menuOptions = '';
-    // Common options for all statuses
-    const commonOptions = `
+            }
+
+            // Add dropdown menu with contextual options
+            let menuOptions = '';
+            // Common options for all statuses
+            const commonOptions = `
         <button class="dropdown-item" onclick="viewQuote('${quote.id}')">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -1187,9 +1219,9 @@ function getContextualActions(quote) {
             </svg>
             Download PDF
         </button>`;
-    
-    if (quote.status === 'draft') {
-        menuOptions = commonOptions + `
+
+            if (quote.status === 'draft') {
+                menuOptions = commonOptions + `
             <button class="dropdown-item" onclick="editQuote('${quote.id}')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -1208,16 +1240,16 @@ function getContextualActions(quote) {
                 </svg>
                 Delete
             </button>`;
-    } else if (quote.status === 'sent' || quote.status === 'accepted') {
-        menuOptions = commonOptions + `
+            } else if (quote.status === 'sent' || quote.status === 'accepted') {
+                menuOptions = commonOptions + `
             <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                 </svg>
                 Clone
             </button>`;
-    } else if (quote.status === 'declined') {
-        menuOptions = commonOptions + `
+            } else if (quote.status === 'declined') {
+                menuOptions = commonOptions + `
             <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -1230,17 +1262,17 @@ function getContextualActions(quote) {
                 </svg>
                 Delete
             </button>`;
-    } else if (quote.status === 'converted') {
-        menuOptions = commonOptions + `
+            } else if (quote.status === 'converted') {
+                menuOptions = commonOptions + `
             <button class="dropdown-item" onclick="cloneQuote('${quote.id}')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                 </svg>
                 Clone
             </button>`;
-    }
-    
-    const dropdownMenu = `
+            }
+
+            const dropdownMenu = `
         <div class="dropdown-container">
             <button class="action-btn action-btn-secondary action-btn-icon-only" onclick="toggleDropdown(event, '${quote.id}')" title="More options">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1251,31 +1283,31 @@ function getContextualActions(quote) {
                 ${menuOptions}
             </div>
         </div>`;
-    
-    return { actions, dropdownMenu };
-}
 
-// Render quote cards
-function renderQuotes() {
-    const container = document.getElementById('quotesContainer');
-    const emptyState = document.getElementById('emptyState');
-    const pagination = document.getElementById('pagination');
-    
-    if (state.filteredQuotes.length === 0) {
-        container.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        pagination.classList.add('hidden');
-        return;
-    }
-    
-    emptyState.classList.add('hidden');
-    pagination.classList.remove('hidden');
-    
-    const start = (state.currentPage - 1) * state.itemsPerPage;
-    const end = start + state.itemsPerPage;
-    const pageQuotes = state.filteredQuotes.slice(start, end);
-    
-    container.innerHTML = `
+            return { actions, dropdownMenu };
+        }
+
+        // Render quote cards
+        function renderQuotes() {
+            const container = document.getElementById('quotesContainer');
+            const emptyState = document.getElementById('emptyState');
+            const pagination = document.getElementById('pagination');
+
+            if (state.filteredQuotes.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                pagination.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            pagination.classList.remove('hidden');
+
+            const start = (state.currentPage - 1) * state.itemsPerPage;
+            const end = start + state.itemsPerPage;
+            const pageQuotes = state.filteredQuotes.slice(start, end);
+
+            container.innerHTML = `
         <div class="quotes-container">
             <!-- Table Header -->
             <div class="table-header">
@@ -1349,372 +1381,384 @@ function renderQuotes() {
                         <!-- Actions -->
                         <div class="col-span-3 flex items-center justify-end gap-2" onclick="event.stopPropagation()">
                             ${(() => {
-                                const { actions, dropdownMenu } = getContextualActions(quote);
-                                if (quote.status === 'accepted') {
-                                    return `<div class="flex flex-col gap-2">${actions}</div>${dropdownMenu}`;
-                                } else {
-                                    return actions + dropdownMenu;
-                                }
-                            })()}
+                    const { actions, dropdownMenu } = getContextualActions(quote);
+                    if (quote.status === 'accepted') {
+                        return `<div class="flex flex-col gap-2">${actions}</div>${dropdownMenu}`;
+                    } else {
+                        return actions + dropdownMenu;
+                    }
+                })()}
                         </div>
                     </div>
                 </div>
             `).join('')}
         </div>
     `;
-    
-    updatePagination();
-}
 
-// Format date
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-// Filter and render
-function filterAndRender() {
-    let filtered = [...state.quotes];
-    
-    // Status filter
-    if (state.statusFilter && state.statusFilter !== 'all') {
-        filtered = filtered.filter(q => q.status === state.statusFilter);
-    }
-    
-    // Search filter
-    if (state.searchTerm) {
-        const term = state.searchTerm.toLowerCase();
-        filtered = filtered.filter(q => 
-            q.id.toLowerCase().includes(term) ||
-            q.customerName.toLowerCase().includes(term) ||
-            q.customerEmail.toLowerCase().includes(term)
-        );
-    }
-    
-    // Payment status filter
-    if (state.paymentStatusFilter) {
-        filtered = filtered.filter(q => q.paymentStatus === state.paymentStatusFilter);
-    }
-    
-    // Created by filter (multi-select)
-    if (state.createdByFilter.length > 0) {
-        filtered = filtered.filter(q => state.createdByFilter.includes(q.createdBy));
-    }
-    
-    // Date range filter
-    if (state.dateRangeFilter) {
-        const days = parseInt(state.dateRangeFilter);
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - days);
-        filtered = filtered.filter(q => new Date(q.dateCreated) >= cutoffDate);
-    }
-    
-    // Amount range filter
-    if (state.amountRangeFilter) {
-        if (state.amountRangeFilter === '5000+') {
-            filtered = filtered.filter(q => q.total >= 5000);
-        } else {
-            const [min, max] = state.amountRangeFilter.split('-').map(Number);
-            filtered = filtered.filter(q => q.total >= min && q.total < max);
+            updatePagination();
         }
-    }
-    
-    // Sort
-    filtered.sort((a, b) => {
-        switch(state.sortBy) {
-            case 'newest': return new Date(b.dateCreated) - new Date(a.dateCreated);
-            case 'oldest': return new Date(a.dateCreated) - new Date(b.dateCreated);
-            case 'amount_high': return b.total - a.total;
-            case 'amount_low': return a.total - b.total;
-            case 'customer': return a.customerName.localeCompare(b.customerName);
-            default: return 0;
+
+        // Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
-    });
-    
-    state.filteredQuotes = filtered;
-    state.currentPage = 1;
-    renderQuotes();
-}
 
-// Update counts
-function updateCounts() {
-    const counts = {
-        all: state.quotes.length,
-        draft: state.quotes.filter(q => q.status === 'draft').length,
-        sent: state.quotes.filter(q => q.status === 'sent').length,
-        accepted: state.quotes.filter(q => q.status === 'accepted').length,
-        declined: state.quotes.filter(q => q.status === 'declined').length,
-        converted: state.quotes.filter(q => q.status === 'converted').length
-    };
-    
-    document.getElementById('countAll').textContent = counts.all;
-    document.getElementById('countDraft').textContent = counts.draft;
-    document.getElementById('countSent').textContent = counts.sent;
-    document.getElementById('countAccepted').textContent = counts.accepted;
-    document.getElementById('countDeclined').textContent = counts.declined;
-    document.getElementById('countConverted').textContent = counts.converted;
-    
-    // Update KPI cards
-    const totalValue = state.quotes.reduce((sum, q) => sum + q.total, 0);
-    const outstanding = state.quotes.reduce((sum, q) => sum + (q.amountInvoiced - q.amountPaid), 0);
-    const unpaidCount = state.quotes.filter(q => q.paymentStatus === 'invoiced_unpaid' || q.paymentStatus === 'partially_paid').length;
-    
-    document.getElementById('activeQuotes').textContent = counts.all;
-    document.getElementById('totalValue').textContent = `$${(totalValue / 1000).toFixed(1)}K`;
-    document.getElementById('outstandingAmount').textContent = `$${(outstanding / 1000).toFixed(1)}K`;
-    document.getElementById('unpaidCount').textContent = `${unpaidCount} unpaid`;
-    
-    // This month (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const monthlyQuotes = state.quotes.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
-    const monthlyValue = monthlyQuotes.reduce((sum, q) => sum + q.total, 0);
-    document.getElementById('monthlyValue').textContent = `$${(monthlyValue / 1000).toFixed(1)}K`;
-    document.getElementById('monthlyQuotes').textContent = `+${monthlyQuotes.length} quotes`;
-}
+        // Filter and render
+        function filterAndRender() {
+            let filtered = [...state.quotes];
 
-// Update financial summary
-function updateFinancialSummary() {
-    const total = state.quotes.reduce((sum, q) => sum + q.total, 0);
-    const invoiced = state.quotes.reduce((sum, q) => sum + q.amountInvoiced, 0);
-    const paid = state.quotes.reduce((sum, q) => sum + q.amountPaid, 0);
-    const outstanding = invoiced - paid;
-    
-    const invoicedPercent = total > 0 ? Math.round((invoiced / total) * 100) : 0;
-    const paidPercent = total > 0 ? Math.round((paid / total) * 100) : 0;
-    
-    document.getElementById('invoicedPercent').textContent = `${invoicedPercent}%`;
-    document.getElementById('invoicedBar').style.width = `${invoicedPercent}%`;
-    document.getElementById('invoicedAmount').textContent = `$${invoiced.toFixed(0)} of $${total.toFixed(0)}`;
-    
-    document.getElementById('paidPercent').textContent = `${paidPercent}%`;
-    document.getElementById('paidBar').style.width = `${paidPercent}%`;
-    document.getElementById('paidAmount').textContent = `$${paid.toFixed(0)} of $${total.toFixed(0)}`;
-    
-    document.getElementById('outstandingTotal').textContent = `$${outstanding.toFixed(0)}`;
-}
+            // Status filter
+            if (state.statusFilter && state.statusFilter !== 'all') {
+                filtered = filtered.filter(q => q.status === state.statusFilter);
+            }
 
-// Update pagination
-function updatePagination() {
-    const total = state.filteredQuotes.length;
-    const start = (state.currentPage - 1) * state.itemsPerPage + 1;
-    const end = Math.min(start + state.itemsPerPage - 1, total);
-    
-    document.getElementById('paginationStart').textContent = start;
-    document.getElementById('paginationEnd').textContent = end;
-    document.getElementById('paginationTotal').textContent = total;
-    
-    document.getElementById('prevBtn').disabled = state.currentPage === 1;
-    document.getElementById('nextBtn').disabled = end >= total;
-}
+            // Search filter
+            if (state.searchTerm) {
+                const term = state.searchTerm.toLowerCase();
+                filtered = filtered.filter(q =>
+                    q.id.toLowerCase().includes(term) ||
+                    q.customerName.toLowerCase().includes(term) ||
+                    q.customerEmail.toLowerCase().includes(term)
+                );
+            }
 
-// Filter by status (tab click)
-function filterByStatus(status) {
-    state.statusFilter = status;
-    
-    // Update active tab
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.status === status) {
-            btn.classList.add('active');
+            // Payment status filter
+            if (state.paymentStatusFilter) {
+                filtered = filtered.filter(q => q.paymentStatus === state.paymentStatusFilter);
+            }
+
+            // Created by filter (multi-select)
+            if (state.createdByFilter.length > 0) {
+                filtered = filtered.filter(q => state.createdByFilter.includes(q.createdBy));
+            }
+
+            // Date range filter
+            if (state.dateRangeFilter) {
+                const days = parseInt(state.dateRangeFilter);
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - days);
+                filtered = filtered.filter(q => new Date(q.dateCreated) >= cutoffDate);
+            }
+
+            // Amount range filter
+            if (state.amountRangeFilter) {
+                if (state.amountRangeFilter === '5000+') {
+                    filtered = filtered.filter(q => q.total >= 5000);
+                } else {
+                    const [min, max] = state.amountRangeFilter.split('-').map(Number);
+                    filtered = filtered.filter(q => q.total >= min && q.total < max);
+                }
+            }
+
+            // Sort
+            filtered.sort((a, b) => {
+                switch (state.sortBy) {
+                    case 'newest': return new Date(b.dateCreated) - new Date(a.dateCreated);
+                    case 'oldest': return new Date(a.dateCreated) - new Date(b.dateCreated);
+                    case 'amount_high': return b.total - a.total;
+                    case 'amount_low': return a.total - b.total;
+                    case 'customer': return a.customerName.localeCompare(b.customerName);
+                    default: return 0;
+                }
+            });
+
+            state.filteredQuotes = filtered;
+            state.currentPage = 1;
+            renderQuotes();
         }
-    });
-    
-    filterAndRender();
-}
 
-// Toggle financial panel
-function toggleFinancialPanel() {
-    const content = document.getElementById('financialPanelContent');
-    const icon = document.getElementById('financialPanelIcon');
-    
-    content.classList.toggle('expanded');
-    // Rotate the SVG icon
-    if (content.classList.contains('expanded')) {
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        icon.style.transform = 'rotate(0deg)';
-    }
-}
+        // Update counts
+        function updateCounts() {
+            const counts = {
+                all: state.quotes.length,
+                draft: state.quotes.filter(q => q.status === 'draft').length,
+                sent: state.quotes.filter(q => q.status === 'sent').length,
+                accepted: state.quotes.filter(q => q.status === 'accepted').length,
+                declined: state.quotes.filter(q => q.status === 'declined').length,
+                converted: state.quotes.filter(q => q.status === 'converted').length
+            };
 
-// Toggle filters
-function toggleFilters() {
-    const filters = document.getElementById('moreFilters');
-    const icon = document.getElementById('filterIcon');
-    
-    filters.classList.toggle('expanded');
-    // Rotate the SVG icon
-    if (filters.classList.contains('expanded')) {
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        icon.style.transform = 'rotate(0deg)';
-    }
-}
+            document.getElementById('countAll').textContent = counts.all;
+            document.getElementById('countDraft').textContent = counts.draft;
+            document.getElementById('countSent').textContent = counts.sent;
+            document.getElementById('countAccepted').textContent = counts.accepted;
+            document.getElementById('countDeclined').textContent = counts.declined;
+            document.getElementById('countConverted').textContent = counts.converted;
 
-// Toggle dropdown menu
-function toggleDropdown(event, quoteId) {
-    event.stopPropagation();
-    const dropdown = document.getElementById(`dropdown-${quoteId}`);
-    const allDropdowns = document.querySelectorAll('.dropdown-menu');
-    
-    // Close all other dropdowns
-    allDropdowns.forEach(d => {
-        if (d.id !== `dropdown-${quoteId}`) {
-            d.classList.remove('show');
+            // Update KPI cards
+            const totalValue = state.quotes.reduce((sum, q) => sum + q.total, 0);
+            const outstanding = state.quotes.reduce((sum, q) => sum + (q.amountInvoiced - q.amountPaid), 0);
+            const unpaidCount = state.quotes.filter(q => q.paymentStatus === 'invoiced_unpaid' || q.paymentStatus === 'partially_paid').length;
+
+            document.getElementById('activeQuotes').textContent = counts.all;
+            document.getElementById('totalValue').textContent = `$${(totalValue / 1000).toFixed(1)}K`;
+            document.getElementById('outstandingAmount').textContent = `$${(outstanding / 1000).toFixed(1)}K`;
+            document.getElementById('unpaidCount').textContent = `${unpaidCount} unpaid`;
+
+            // This month (last 30 days)
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const monthlyQuotes = state.quotes.filter(q => new Date(q.dateCreated) >= thirtyDaysAgo);
+            const monthlyValue = monthlyQuotes.reduce((sum, q) => sum + q.total, 0);
+            document.getElementById('monthlyValue').textContent = `$${(monthlyValue / 1000).toFixed(1)}K`;
+            document.getElementById('monthlyQuotes').textContent = `+${monthlyQuotes.length} quotes`;
         }
-    });
-    
-    // Toggle current dropdown
-    dropdown.classList.toggle('show');
-}
 
-// Close dropdowns when clicking outside
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('.dropdown-container')) {
-        document.querySelectorAll('.dropdown-menu').forEach(d => {
-            d.classList.remove('show');
+        // Update financial summary
+        function updateFinancialSummary() {
+            const total = state.quotes.reduce((sum, q) => sum + q.total, 0);
+            const invoiced = state.quotes.reduce((sum, q) => sum + q.amountInvoiced, 0);
+            const paid = state.quotes.reduce((sum, q) => sum + q.amountPaid, 0);
+            const outstanding = invoiced - paid;
+
+            const invoicedPercent = total > 0 ? Math.round((invoiced / total) * 100) : 0;
+            const paidPercent = total > 0 ? Math.round((paid / total) * 100) : 0;
+
+            document.getElementById('invoicedPercent').textContent = `${invoicedPercent}%`;
+            document.getElementById('invoicedBar').style.width = `${invoicedPercent}%`;
+            document.getElementById('invoicedAmount').textContent = `$${invoiced.toFixed(0)} of $${total.toFixed(0)}`;
+
+            document.getElementById('paidPercent').textContent = `${paidPercent}%`;
+            document.getElementById('paidBar').style.width = `${paidPercent}%`;
+            document.getElementById('paidAmount').textContent = `$${paid.toFixed(0)} of $${total.toFixed(0)}`;
+
+            document.getElementById('outstandingTotal').textContent = `$${outstanding.toFixed(0)}`;
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const total = state.filteredQuotes.length;
+            const start = (state.currentPage - 1) * state.itemsPerPage + 1;
+            const end = Math.min(start + state.itemsPerPage - 1, total);
+
+            document.getElementById('paginationStart').textContent = start;
+            document.getElementById('paginationEnd').textContent = end;
+            document.getElementById('paginationTotal').textContent = total;
+
+            document.getElementById('prevBtn').disabled = state.currentPage === 1;
+            document.getElementById('nextBtn').disabled = end >= total;
+        }
+
+        // Filter by status (tab click)
+        function filterByStatus(status) {
+            state.statusFilter = status;
+
+            // Update active tab
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.status === status) {
+                    btn.classList.add('active');
+                }
+            });
+
+            filterAndRender();
+        }
+
+        // Toggle financial panel
+        function toggleFinancialPanel() {
+            const content = document.getElementById('financialPanelContent');
+            const icon = document.getElementById('financialPanelIcon');
+
+            content.classList.toggle('expanded');
+            // Rotate the SVG icon
+            if (content.classList.contains('expanded')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Toggle filters
+        function toggleFilters() {
+            const filters = document.getElementById('moreFilters');
+            const icon = document.getElementById('filterIcon');
+
+            filters.classList.toggle('expanded');
+            // Rotate the SVG icon
+            if (filters.classList.contains('expanded')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Toggle dropdown menu
+        function toggleDropdown(event, quoteId) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(`dropdown-${quoteId}`);
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+            // Close all other dropdowns
+            allDropdowns.forEach(d => {
+                if (d.id !== `dropdown-${quoteId}`) {
+                    d.classList.remove('show');
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.dropdown-container')) {
+                document.querySelectorAll('.dropdown-menu').forEach(d => {
+                    d.classList.remove('show');
+                });
+            }
         });
-    }
-});
 
-// Edit quote
-function editQuote(quoteId) {
-    console.log('Edit quote:', quoteId);
-    window.location.href = `quote_create.html?id=${quoteId}`;
-}
+        // Edit quote
+        function editQuote(quoteId) {
+            console.log('Edit quote:', quoteId);
+            window.location.href = `quote_create.html?id=${quoteId}`;
+        }
 
-// Clone quote
-function cloneQuote(quoteId) {
-    console.log('Clone quote:', quoteId);
-    if (confirm('Create a copy of this quote?')) {
-        window.location.href = `quote_create.html?clone=${quoteId}`;
-    }
-}
+        // Clone quote
+        function cloneQuote(quoteId) {
+            console.log('Clone quote:', quoteId);
+            if (confirm('Create a copy of this quote?')) {
+                window.location.href = `quote_create.html?clone=${quoteId}`;
+            }
+        }
 
-// Delete quote
-function deleteQuote(quoteId) {
-    console.log('Delete quote:', quoteId);
-    if (confirm('Are you sure you want to delete this quote? This action cannot be undone.')) {
-        // Remove from state
-        state.quotes = state.quotes.filter(q => q.id !== quoteId);
-        filterAndRender();
-        updateCounts();
-        alert('Quote deleted successfully');
-    }
-}
+        // Delete quote
+        function deleteQuote(quoteId) {
+            console.log('Delete quote:', quoteId);
+            if (confirm('Are you sure you want to delete this quote? This action cannot be undone.')) {
+                // Remove from state
+                state.quotes = state.quotes.filter(q => q.id !== quoteId);
+                filterAndRender();
+                updateCounts();
+                alert('Quote deleted successfully');
+            }
+        }
 
-// Apply filters and show summary
-function applyFilters() {
-    filterAndRender();
-    updateFilterSummary();
-}
+        // Apply filters and show summary
+        function applyFilters() {
+            filterAndRender();
+            updateFilterSummary();
+        }
 
-// Update filter summary panel
-function updateFilterSummary() {
-    const hasActiveFilters = state.searchTerm || state.statusFilter !== 'all' || 
-                            state.paymentStatusFilter || state.createdByFilter || 
-                            state.dateRangeFilter || state.amountRangeFilter;
-    
-    const summaryPanel = document.getElementById('filterSummary');
-    
-    if (!hasActiveFilters || state.filteredQuotes.length === 0) {
-        summaryPanel.classList.add('hidden');
-        return;
-    }
-    
-    summaryPanel.classList.remove('hidden');
-    
-    // Calculate summary statistics
-    const count = state.filteredQuotes.length;
-    const total = state.filteredQuotes.reduce((sum, q) => sum + q.total, 0);
-    const average = count > 0 ? total / count : 0;
-    const outstanding = state.filteredQuotes.reduce((sum, q) => {
-        return sum + (q.total - q.amountPaid);
-    }, 0);
-    
-    // Update summary values
-    document.getElementById('summaryCount').textContent = count;
-    document.getElementById('summaryTotal').textContent = '$' + total.toFixed(2);
-    document.getElementById('summaryAverage').textContent = '$' + average.toFixed(2);
-    document.getElementById('summaryOutstanding').textContent = '$' + outstanding.toFixed(2);
-    
-    // Update active filter tags
-    updateActiveFilterTags();
-}
+        // Update filter summary panel
+        function updateFilterSummary() {
+            const hasActiveFilters = state.searchTerm || state.statusFilter !== 'all' ||
+                state.paymentStatusFilter || state.createdByFilter ||
+                state.dateRangeFilter || state.amountRangeFilter;
 
-// Update active filter tags
-function updateActiveFilterTags() {
-    const container = document.getElementById('activeFilters');
-    const tags = [];
-    
-    if (state.searchTerm) {
-        tags.push({ label: `Search: "${state.searchTerm}"`, clear: () => {
-            document.getElementById('searchInput').value = '';
-            state.searchTerm = '';
-        }});
-    }
-    
-    if (state.statusFilter && state.statusFilter !== 'all') {
-        const statusLabels = {
-            draft: 'Draft',
-            sent: 'Sent',
-            accepted: 'Accepted',
-            declined: 'Declined',
-            converted: 'Converted'
-        };
-        tags.push({ label: `Status: ${statusLabels[state.statusFilter]}`, clear: () => {
-            filterByStatus('all');
-        }});
-    }
-    
-    if (state.paymentStatusFilter) {
-        const paymentLabels = {
-            not_invoiced: 'Not Invoiced',
-            partially_invoiced: 'Partial Invoice',
-            invoiced_unpaid: 'Unpaid',
-            partially_paid: 'Partially Paid',
-            fully_paid: 'Fully Paid'
-        };
-        tags.push({ label: `Payment: ${paymentLabels[state.paymentStatusFilter]}`, clear: () => {
-            document.getElementById('paymentStatusFilter').value = '';
-            state.paymentStatusFilter = '';
-        }});
-    }
-    
-    if (state.createdByFilter.length > 0) {
-        tags.push({ label: `Created by: ${state.createdByFilter.join(', ')}`, clear: () => {
-            state.createdByFilter = [];
-            renderCreatedByTags();
-        }});
-    }
-    
-    if (state.dateRangeFilter) {
-        const dateLabels = {
-            '7': 'Last 7 days',
-            '30': 'Last 30 days',
-            '90': 'Last 90 days'
-        };
-        tags.push({ label: `Date: ${dateLabels[state.dateRangeFilter]}`, clear: () => {
-            document.getElementById('dateRangeFilter').value = '';
-            state.dateRangeFilter = '';
-        }});
-    }
-    
-    if (state.amountRangeFilter) {
-        const amountLabels = {
-            '0-500': '$0 - $500',
-            '500-1000': '$500 - $1,000',
-            '1000-2000': '$1,000 - $2,000',
-            '2000-5000': '$2,000 - $5,000',
-            '5000+': '$5,000+'
-        };
-        tags.push({ label: `Amount: ${amountLabels[state.amountRangeFilter]}`, clear: () => {
-            document.getElementById('amountRangeFilter').value = '';
-            state.amountRangeFilter = '';
-        }});
-    }
-    
-    container.innerHTML = tags.map(tag => `
+            const summaryPanel = document.getElementById('filterSummary');
+
+            if (!hasActiveFilters || state.filteredQuotes.length === 0) {
+                summaryPanel.classList.add('hidden');
+                return;
+            }
+
+            summaryPanel.classList.remove('hidden');
+
+            // Calculate summary statistics
+            const count = state.filteredQuotes.length;
+            const total = state.filteredQuotes.reduce((sum, q) => sum + q.total, 0);
+            const average = count > 0 ? total / count : 0;
+            const outstanding = state.filteredQuotes.reduce((sum, q) => {
+                return sum + (q.total - q.amountPaid);
+            }, 0);
+
+            // Update summary values
+            document.getElementById('summaryCount').textContent = count;
+            document.getElementById('summaryTotal').textContent = '$' + total.toFixed(2);
+            document.getElementById('summaryAverage').textContent = '$' + average.toFixed(2);
+            document.getElementById('summaryOutstanding').textContent = '$' + outstanding.toFixed(2);
+
+            // Update active filter tags
+            updateActiveFilterTags();
+        }
+
+        // Update active filter tags
+        function updateActiveFilterTags() {
+            const container = document.getElementById('activeFilters');
+            const tags = [];
+
+            if (state.searchTerm) {
+                tags.push({
+                    label: `Search: "${state.searchTerm}"`, clear: () => {
+                        document.getElementById('searchInput').value = '';
+                        state.searchTerm = '';
+                    }
+                });
+            }
+
+            if (state.statusFilter && state.statusFilter !== 'all') {
+                const statusLabels = {
+                    draft: 'Draft',
+                    sent: 'Sent',
+                    accepted: 'Accepted',
+                    declined: 'Declined',
+                    converted: 'Converted'
+                };
+                tags.push({
+                    label: `Status: ${statusLabels[state.statusFilter]}`, clear: () => {
+                        filterByStatus('all');
+                    }
+                });
+            }
+
+            if (state.paymentStatusFilter) {
+                const paymentLabels = {
+                    not_invoiced: 'Not Invoiced',
+                    partially_invoiced: 'Partial Invoice',
+                    invoiced_unpaid: 'Unpaid',
+                    partially_paid: 'Partially Paid',
+                    fully_paid: 'Fully Paid'
+                };
+                tags.push({
+                    label: `Payment: ${paymentLabels[state.paymentStatusFilter]}`, clear: () => {
+                        document.getElementById('paymentStatusFilter').value = '';
+                        state.paymentStatusFilter = '';
+                    }
+                });
+            }
+
+            if (state.createdByFilter.length > 0) {
+                tags.push({
+                    label: `Created by: ${state.createdByFilter.join(', ')}`, clear: () => {
+                        state.createdByFilter = [];
+                        renderCreatedByTags();
+                    }
+                });
+            }
+
+            if (state.dateRangeFilter) {
+                const dateLabels = {
+                    '7': 'Last 7 days',
+                    '30': 'Last 30 days',
+                    '90': 'Last 90 days'
+                };
+                tags.push({
+                    label: `Date: ${dateLabels[state.dateRangeFilter]}`, clear: () => {
+                        document.getElementById('dateRangeFilter').value = '';
+                        state.dateRangeFilter = '';
+                    }
+                });
+            }
+
+            if (state.amountRangeFilter) {
+                const amountLabels = {
+                    '0-500': '$0 - $500',
+                    '500-1000': '$500 - $1,000',
+                    '1000-2000': '$1,000 - $2,000',
+                    '2000-5000': '$2,000 - $5,000',
+                    '5000+': '$5,000+'
+                };
+                tags.push({
+                    label: `Amount: ${amountLabels[state.amountRangeFilter]}`, clear: () => {
+                        document.getElementById('amountRangeFilter').value = '';
+                        state.amountRangeFilter = '';
+                    }
+                });
+            }
+
+            container.innerHTML = tags.map(tag => `
         <span class="inline-flex items-center gap-1 px-3 py-1 bg-white border border-blue-300 text-blue-700 rounded-full text-xs font-medium">
             ${tag.label}
             <button onclick="removeFilterTag(this)" class="hover:text-blue-900" data-clear="${tags.indexOf(tag)}">
@@ -1724,355 +1768,355 @@ function updateActiveFilterTags() {
             </button>
         </span>
     `).join('');
-    
-    // Store tags for removal
-    window.filterTags = tags;
-}
 
-// Remove individual filter tag
-function removeFilterTag(button) {
-    const index = parseInt(button.dataset.clear);
-    if (window.filterTags && window.filterTags[index]) {
-        window.filterTags[index].clear();
-        applyFilters();
-    }
-}
-
-// Clear filters
-function clearFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('paymentStatusFilter').value = '';
-    document.getElementById('createdByInput').value = '';
-    document.getElementById('dateRangeFilter').value = '';
-    document.getElementById('amountRangeFilter').value = '';
-    document.getElementById('sortBy').value = 'newest';
-    
-    state.searchTerm = '';
-    state.paymentStatusFilter = '';
-    state.createdByFilter = [];
-    state.dateRangeFilter = '';
-    state.amountRangeFilter = '';
-    state.sortBy = 'newest';
-    state.statusFilter = 'all';
-    
-    renderCreatedByTags();
-    
-    // Reset tab buttons
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.status === 'all') {
-            btn.classList.add('active');
+            // Store tags for removal
+            window.filterTags = tags;
         }
-    });
-    
-    filterAndRender();
-    document.getElementById('filterSummary').classList.add('hidden');
-}
 
-// Toggle quote selection
-function toggleQuoteSelection(quoteId) {
-    if (state.selectedQuotes.has(quoteId)) {
-        state.selectedQuotes.delete(quoteId);
-    } else {
-        state.selectedQuotes.add(quoteId);
-    }
-    updateBulkActionBar();
-    renderQuotes();
-}
-
-// Toggle select all
-function toggleSelectAll() {
-    const selectAll = document.getElementById('selectAllCheckbox').checked;
-    
-    if (selectAll) {
-        state.filteredQuotes.forEach(q => state.selectedQuotes.add(q.id));
-    } else {
-        state.selectedQuotes.clear();
-    }
-    
-    updateBulkActionBar();
-    renderQuotes();
-}
-
-// Update bulk action bar
-function updateBulkActionBar() {
-    const bar = document.getElementById('bulkActionBar');
-    const count = state.selectedQuotes.size;
-    
-    if (count > 0) {
-        bar.classList.remove('hidden');
-        document.getElementById('selectedCount').textContent = `${count} selected`;
-    } else {
-        bar.classList.add('hidden');
-    }
-}
-
-// Clear selection
-function clearSelection() {
-    state.selectedQuotes.clear();
-    document.getElementById('selectAllCheckbox').checked = false;
-    updateBulkActionBar();
-    renderQuotes();
-}
-
-// Export utility functions
-function convertToCSV(data) {
-    if (data.length === 0) return '';
-    const headers = Object.keys(data[0]);
-    const rows = data.map(row => headers.map(h => {
-        const value = row[h];
-        // Escape quotes and wrap in quotes if contains comma
-        return typeof value === 'string' && value.includes(',') ? `"${value.replace(/"/g, '""')}"` : value;
-    }).join(','));
-    return [headers.join(','), ...rows].join('\n');
-}
-
-function downloadCSV(csv, filename) {
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', filename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-}
-
-function exportQuotes() {
-    const data = state.filteredQuotes.map(q => ({
-        'Quote ID': q.id,
-        'Customer': q.customerName,
-        'Email': q.customerEmail,
-        'Phone': q.customerPhone,
-        'Created': q.dateCreated,
-        'Valid Until': q.validUntil,
-        'Status': q.status,
-        'Total': q.total,
-        'Payment Status': q.paymentStatus,
-        'Amount Invoiced': q.amountInvoiced,
-        'Amount Paid': q.amountPaid,
-        'Created By': q.createdBy
-    }));
-    
-    const csv = convertToCSV(data);
-    downloadCSV(csv, `quotes-export-${new Date().toISOString().split('T')[0]}.csv`);
-    alert(`${data.length} quote(s) exported successfully!`);
-}
-
-// Bulk actions
-function bulkSend() {
-    const selectedIds = Array.from(state.selectedQuotes);
-    const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
-    const sendableQuotes = selectedQuotes.filter(q => q.status === 'draft' || q.status === 'sent');
-    
-    if (sendableQuotes.length === 0) {
-        alert('No sendable quotes selected. Only Draft and Sent quotes can be sent.');
-        return;
-    }
-    
-    if (confirm(`Send ${sendableQuotes.length} quote(s) to customers?`)) {
-        sendableQuotes.forEach(q => {
-            const quote = state.quotes.find(sq => sq.id === q.id);
-            if (quote && quote.status === 'draft') {
-                quote.status = 'sent';
+        // Remove individual filter tag
+        function removeFilterTag(button) {
+            const index = parseInt(button.dataset.clear);
+            if (window.filterTags && window.filterTags[index]) {
+                window.filterTags[index].clear();
+                applyFilters();
             }
-        });
-        
-        clearSelection();
-        filterAndRender();
-        updateCounts();
-        alert(`${sendableQuotes.length} quote(s) sent successfully!`);
-    }
-}
-
-function bulkExport() {
-    const selectedIds = Array.from(state.selectedQuotes);
-    const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
-    
-    if (selectedQuotes.length === 0) {
-        alert('No quotes selected for export');
-        return;
-    }
-    
-    const data = selectedQuotes.map(q => ({
-        'Quote ID': q.id,
-        'Customer': q.customerName,
-        'Email': q.customerEmail,
-        'Phone': q.customerPhone,
-        'Created': q.dateCreated,
-        'Valid Until': q.validUntil,
-        'Status': q.status,
-        'Total': q.total,
-        'Payment Status': q.paymentStatus,
-        'Amount Invoiced': q.amountInvoiced,
-        'Amount Paid': q.amountPaid,
-        'Created By': q.createdBy
-    }));
-    
-    const csv = convertToCSV(data);
-    downloadCSV(csv, `quotes-export-${new Date().toISOString().split('T')[0]}.csv`);
-    alert(`${selectedQuotes.length} quote(s) exported successfully!`);
-}
-
-function bulkArchive() {
-    const selectedIds = Array.from(state.selectedQuotes);
-    const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
-    
-    if (selectedQuotes.length === 0) {
-        alert('No quotes selected for archiving');
-        return;
-    }
-    
-    const archivableQuotes = selectedQuotes.filter(q => q.status === 'declined');
-    
-    if (archivableQuotes.length === 0) {
-        alert('No archivable quotes selected. Only Declined quotes can be archived.');
-        return;
-    }
-    
-    if (confirm(`Archive ${archivableQuotes.length} quote(s)? They will be removed from the active list.`)) {
-        state.quotes = state.quotes.filter(q => !archivableQuotes.find(aq => aq.id === q.id));
-        clearSelection();
-        filterAndRender();
-        updateCounts();
-        alert(`${archivableQuotes.length} quote(s) archived successfully!`);
-    }
-}
-
-// Contextual action functions
-function sendQuote(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    if (confirm(`Send quote ${quoteId} to ${quote.customerName}?`)) {
-        quote.status = 'sent';
-        filterAndRender();
-        updateCounts();
-        alert(`Quote sent to ${quote.customerName} successfully!`);
-    }
-}
-
-function markAsApproved(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    if (confirm(`Mark quote ${quoteId} as approved?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will change the status to "Accepted".`)) {
-        quote.status = 'accepted';
-        filterAndRender();
-        updateCounts();
-        alert(`Quote ${quoteId} marked as approved!\n\nYou can now create an invoice for this quote.`);
-    }
-}
-
-function createInvoice(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    if (confirm(`Create invoice for quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}`)) {
-        // TODO: Navigate to invoice creation page
-        alert('Invoice creation page coming soon!');
-        // window.location.href = `invoice_create.html?quoteId=${quoteId}`;
-    }
-}
-
-function sendPaymentLink(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    const outstanding = quote.amountInvoiced - quote.amountPaid;
-    if (confirm(`Send payment link for quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nOutstanding: $${outstanding.toFixed(2)}`)) {
-        alert('Payment link sent successfully!\n\n(Payment gateway integration coming soon)');
-        // TODO: Generate and send payment link
-    }
-}
-
-function viewPayments(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    alert(`Payment History for ${quoteId}\n\nTotal: $${quote.total.toFixed(2)}\nInvoiced: $${quote.amountInvoiced.toFixed(2)}\nPaid: $${quote.amountPaid.toFixed(2)}\nOutstanding: $${(quote.amountInvoiced - quote.amountPaid).toFixed(2)}\n\n(Detailed payment history page coming soon)`);
-    // TODO: Navigate to payment history page
-    // window.location.href = `payments.html?quoteId=${quoteId}`;
-}
-
-function convertToJob(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    if (confirm(`Convert quote ${quoteId} to a job?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will create a new job from this quote.`)) {
-        quote.status = 'converted';
-        filterAndRender();
-        updateCounts();
-        alert('Quote converted to job successfully!\n\n(Job creation page coming soon)');
-        // TODO: Navigate to job creation page
-        // window.location.href = `../[v2] Jobs/job_create.html?quoteId=${quoteId}`;
-    }
-}
-
-function viewJob(quoteId) {
-    alert(`View job for quote ${quoteId}\n\n(Job detail page coming soon)`);
-    // TODO: Navigate to job detail page
-    // window.location.href = `../[v2] Jobs/job_detail.html?quoteId=${quoteId}`;
-}
-
-function viewQuote(quoteId) {
-    alert(`View quote details for ${quoteId}\n\n(Quote detail page coming soon)`);
-    // TODO: Navigate to quote detail page
-    // window.location.href = `quote_detail.html?id=${quoteId}`;
-}
-
-function downloadPDF(quoteId) {
-    const quote = state.quotes.find(q => q.id === quoteId);
-    if (!quote) return;
-    
-    alert(`Downloading PDF for quote ${quoteId}...\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\n(PDF generation coming soon)`);
-    // TODO: Generate and download PDF
-}
-
-function toggleDropdown(event, quoteId) {
-    event.stopPropagation();
-    const dropdown = document.getElementById(`dropdown-${quoteId}`);
-    if (!dropdown) return;
-    
-    // Close all other dropdowns
-    document.querySelectorAll('.dropdown-menu').forEach(d => {
-        if (d.id !== `dropdown-${quoteId}`) {
-            d.classList.remove('show');
         }
-    });
-    
-    dropdown.classList.toggle('show');
-}
 
-// Add team member to filter
-function addCreatedByFilter(member) {
-    if (!state.createdByFilter.includes(member)) {
-        state.createdByFilter.push(member);
-        renderCreatedByTags();
-        document.getElementById('createdByInput').value = '';
-        document.getElementById('createdByAutocomplete').classList.add('hidden');
-    }
-}
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('paymentStatusFilter').value = '';
+            document.getElementById('createdByInput').value = '';
+            document.getElementById('dateRangeFilter').value = '';
+            document.getElementById('amountRangeFilter').value = '';
+            document.getElementById('sortBy').value = 'newest';
 
-// Remove team member from filter
-function removeCreatedByFilter(member) {
-    state.createdByFilter = state.createdByFilter.filter(m => m !== member);
-    renderCreatedByTags();
-}
+            state.searchTerm = '';
+            state.paymentStatusFilter = '';
+            state.createdByFilter = [];
+            state.dateRangeFilter = '';
+            state.amountRangeFilter = '';
+            state.sortBy = 'newest';
+            state.statusFilter = 'all';
 
-// Render selected team member tags
-function renderCreatedByTags() {
-    const container = document.getElementById('createdByTags');
-    
-    if (state.createdByFilter.length === 0) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    container.innerHTML = state.createdByFilter.map(member => `
+            renderCreatedByTags();
+
+            // Reset tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.status === 'all') {
+                    btn.classList.add('active');
+                }
+            });
+
+            filterAndRender();
+            document.getElementById('filterSummary').classList.add('hidden');
+        }
+
+        // Toggle quote selection
+        function toggleQuoteSelection(quoteId) {
+            if (state.selectedQuotes.has(quoteId)) {
+                state.selectedQuotes.delete(quoteId);
+            } else {
+                state.selectedQuotes.add(quoteId);
+            }
+            updateBulkActionBar();
+            renderQuotes();
+        }
+
+        // Toggle select all
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAllCheckbox').checked;
+
+            if (selectAll) {
+                state.filteredQuotes.forEach(q => state.selectedQuotes.add(q.id));
+            } else {
+                state.selectedQuotes.clear();
+            }
+
+            updateBulkActionBar();
+            renderQuotes();
+        }
+
+        // Update bulk action bar
+        function updateBulkActionBar() {
+            const bar = document.getElementById('bulkActionBar');
+            const count = state.selectedQuotes.size;
+
+            if (count > 0) {
+                bar.classList.remove('hidden');
+                document.getElementById('selectedCount').textContent = `${count} selected`;
+            } else {
+                bar.classList.add('hidden');
+            }
+        }
+
+        // Clear selection
+        function clearSelection() {
+            state.selectedQuotes.clear();
+            document.getElementById('selectAllCheckbox').checked = false;
+            updateBulkActionBar();
+            renderQuotes();
+        }
+
+        // Export utility functions
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            const headers = Object.keys(data[0]);
+            const rows = data.map(row => headers.map(h => {
+                const value = row[h];
+                // Escape quotes and wrap in quotes if contains comma
+                return typeof value === 'string' && value.includes(',') ? `"${value.replace(/"/g, '""')}"` : value;
+            }).join(','));
+            return [headers.join(','), ...rows].join('\n');
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function exportQuotes() {
+            const data = state.filteredQuotes.map(q => ({
+                'Quote ID': q.id,
+                'Customer': q.customerName,
+                'Email': q.customerEmail,
+                'Phone': q.customerPhone,
+                'Created': q.dateCreated,
+                'Valid Until': q.validUntil,
+                'Status': q.status,
+                'Total': q.total,
+                'Payment Status': q.paymentStatus,
+                'Amount Invoiced': q.amountInvoiced,
+                'Amount Paid': q.amountPaid,
+                'Created By': q.createdBy
+            }));
+
+            const csv = convertToCSV(data);
+            downloadCSV(csv, `quotes-export-${new Date().toISOString().split('T')[0]}.csv`);
+            alert(`${data.length} quote(s) exported successfully!`);
+        }
+
+        // Bulk actions
+        function bulkSend() {
+            const selectedIds = Array.from(state.selectedQuotes);
+            const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
+            const sendableQuotes = selectedQuotes.filter(q => q.status === 'draft' || q.status === 'sent');
+
+            if (sendableQuotes.length === 0) {
+                alert('No sendable quotes selected. Only Draft and Sent quotes can be sent.');
+                return;
+            }
+
+            if (confirm(`Send ${sendableQuotes.length} quote(s) to customers?`)) {
+                sendableQuotes.forEach(q => {
+                    const quote = state.quotes.find(sq => sq.id === q.id);
+                    if (quote && quote.status === 'draft') {
+                        quote.status = 'sent';
+                    }
+                });
+
+                clearSelection();
+                filterAndRender();
+                updateCounts();
+                alert(`${sendableQuotes.length} quote(s) sent successfully!`);
+            }
+        }
+
+        function bulkExport() {
+            const selectedIds = Array.from(state.selectedQuotes);
+            const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
+
+            if (selectedQuotes.length === 0) {
+                alert('No quotes selected for export');
+                return;
+            }
+
+            const data = selectedQuotes.map(q => ({
+                'Quote ID': q.id,
+                'Customer': q.customerName,
+                'Email': q.customerEmail,
+                'Phone': q.customerPhone,
+                'Created': q.dateCreated,
+                'Valid Until': q.validUntil,
+                'Status': q.status,
+                'Total': q.total,
+                'Payment Status': q.paymentStatus,
+                'Amount Invoiced': q.amountInvoiced,
+                'Amount Paid': q.amountPaid,
+                'Created By': q.createdBy
+            }));
+
+            const csv = convertToCSV(data);
+            downloadCSV(csv, `quotes-export-${new Date().toISOString().split('T')[0]}.csv`);
+            alert(`${selectedQuotes.length} quote(s) exported successfully!`);
+        }
+
+        function bulkArchive() {
+            const selectedIds = Array.from(state.selectedQuotes);
+            const selectedQuotes = state.quotes.filter(q => selectedIds.includes(q.id));
+
+            if (selectedQuotes.length === 0) {
+                alert('No quotes selected for archiving');
+                return;
+            }
+
+            const archivableQuotes = selectedQuotes.filter(q => q.status === 'declined');
+
+            if (archivableQuotes.length === 0) {
+                alert('No archivable quotes selected. Only Declined quotes can be archived.');
+                return;
+            }
+
+            if (confirm(`Archive ${archivableQuotes.length} quote(s)? They will be removed from the active list.`)) {
+                state.quotes = state.quotes.filter(q => !archivableQuotes.find(aq => aq.id === q.id));
+                clearSelection();
+                filterAndRender();
+                updateCounts();
+                alert(`${archivableQuotes.length} quote(s) archived successfully!`);
+            }
+        }
+
+        // Contextual action functions
+        function sendQuote(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            if (confirm(`Send quote ${quoteId} to ${quote.customerName}?`)) {
+                quote.status = 'sent';
+                filterAndRender();
+                updateCounts();
+                alert(`Quote sent to ${quote.customerName} successfully!`);
+            }
+        }
+
+        function markAsApproved(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            if (confirm(`Mark quote ${quoteId} as approved?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will change the status to "Accepted".`)) {
+                quote.status = 'accepted';
+                filterAndRender();
+                updateCounts();
+                alert(`Quote ${quoteId} marked as approved!\n\nYou can now create an invoice for this quote.`);
+            }
+        }
+
+        function createInvoice(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            if (confirm(`Create invoice for quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}`)) {
+                // TODO: Navigate to invoice creation page
+                alert('Invoice creation page coming soon!');
+                // window.location.href = `invoice_create.html?quoteId=${quoteId}`;
+            }
+        }
+
+        function sendPaymentLink(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            const outstanding = quote.amountInvoiced - quote.amountPaid;
+            if (confirm(`Send payment link for quote ${quoteId}?\n\nCustomer: ${quote.customerName}\nOutstanding: $${outstanding.toFixed(2)}`)) {
+                alert('Payment link sent successfully!\n\n(Payment gateway integration coming soon)');
+                // TODO: Generate and send payment link
+            }
+        }
+
+        function viewPayments(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            alert(`Payment History for ${quoteId}\n\nTotal: $${quote.total.toFixed(2)}\nInvoiced: $${quote.amountInvoiced.toFixed(2)}\nPaid: $${quote.amountPaid.toFixed(2)}\nOutstanding: $${(quote.amountInvoiced - quote.amountPaid).toFixed(2)}\n\n(Detailed payment history page coming soon)`);
+            // TODO: Navigate to payment history page
+            // window.location.href = `payments.html?quoteId=${quoteId}`;
+        }
+
+        function convertToJob(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            if (confirm(`Convert quote ${quoteId} to a job?\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\nThis will create a new job from this quote.`)) {
+                quote.status = 'converted';
+                filterAndRender();
+                updateCounts();
+                alert('Quote converted to job successfully!\n\n(Job creation page coming soon)');
+                // TODO: Navigate to job creation page
+                // window.location.href = `../[v2] Jobs/job_create.html?quoteId=${quoteId}`;
+            }
+        }
+
+        function viewJob(quoteId) {
+            alert(`View job for quote ${quoteId}\n\n(Job detail page coming soon)`);
+            // TODO: Navigate to job detail page
+            // window.location.href = `../[v2] Jobs/job_detail.html?quoteId=${quoteId}`;
+        }
+
+        function viewQuote(quoteId) {
+            alert(`View quote details for ${quoteId}\n\n(Quote detail page coming soon)`);
+            // TODO: Navigate to quote detail page
+            // window.location.href = `quote_detail.html?id=${quoteId}`;
+        }
+
+        function downloadPDF(quoteId) {
+            const quote = state.quotes.find(q => q.id === quoteId);
+            if (!quote) return;
+
+            alert(`Downloading PDF for quote ${quoteId}...\n\nCustomer: ${quote.customerName}\nAmount: $${quote.total.toFixed(2)}\n\n(PDF generation coming soon)`);
+            // TODO: Generate and download PDF
+        }
+
+        function toggleDropdown(event, quoteId) {
+            event.stopPropagation();
+            const dropdown = document.getElementById(`dropdown-${quoteId}`);
+            if (!dropdown) return;
+
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(d => {
+                if (d.id !== `dropdown-${quoteId}`) {
+                    d.classList.remove('show');
+                }
+            });
+
+            dropdown.classList.toggle('show');
+        }
+
+        // Add team member to filter
+        function addCreatedByFilter(member) {
+            if (!state.createdByFilter.includes(member)) {
+                state.createdByFilter.push(member);
+                renderCreatedByTags();
+                document.getElementById('createdByInput').value = '';
+                document.getElementById('createdByAutocomplete').classList.add('hidden');
+            }
+        }
+
+        // Remove team member from filter
+        function removeCreatedByFilter(member) {
+            state.createdByFilter = state.createdByFilter.filter(m => m !== member);
+            renderCreatedByTags();
+        }
+
+        // Render selected team member tags
+        function renderCreatedByTags() {
+            const container = document.getElementById('createdByTags');
+
+            if (state.createdByFilter.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = state.createdByFilter.map(member => `
         <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
             ${member}
             <button onclick="removeCreatedByFilter('${member}')" class="hover:text-blue-900">
@@ -2082,97 +2126,98 @@ function renderCreatedByTags() {
             </button>
         </span>
     `).join('');
-}
+        }
 
-// Setup event listeners
-function setupEventListeners() {
-    // Export button
-    document.getElementById('exportBtn').addEventListener('click', exportQuotes);
-    
-    // Search input
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        state.searchTerm = e.target.value;
-        filterAndRender();
-    });
-    
-    // Payment status filter
-    document.getElementById('paymentStatusFilter').addEventListener('change', (e) => {
-        state.paymentStatusFilter = e.target.value;
-    });
-    
-    // Created by autocomplete
-    const createdByInput = document.getElementById('createdByInput');
-    const createdByAutocomplete = document.getElementById('createdByAutocomplete');
-    
-    createdByInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        
-        if (searchTerm.length === 0) {
-            createdByAutocomplete.classList.add('hidden');
-            return;
-        }
-        
-        const matches = teamMembers.filter(member => 
-            member.toLowerCase().includes(searchTerm) && 
-            !state.createdByFilter.includes(member)
-        );
-        
-        if (matches.length === 0) {
-            createdByAutocomplete.classList.add('hidden');
-            return;
-        }
-        
-        createdByAutocomplete.innerHTML = matches.map(member => `
+        // Setup event listeners
+        function setupEventListeners() {
+            // Export button
+            document.getElementById('exportBtn').addEventListener('click', exportQuotes);
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                state.searchTerm = e.target.value;
+                filterAndRender();
+            });
+
+            // Payment status filter
+            document.getElementById('paymentStatusFilter').addEventListener('change', (e) => {
+                state.paymentStatusFilter = e.target.value;
+            });
+
+            // Created by autocomplete
+            const createdByInput = document.getElementById('createdByInput');
+            const createdByAutocomplete = document.getElementById('createdByAutocomplete');
+
+            createdByInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+
+                if (searchTerm.length === 0) {
+                    createdByAutocomplete.classList.add('hidden');
+                    return;
+                }
+
+                const matches = teamMembers.filter(member =>
+                    member.toLowerCase().includes(searchTerm) &&
+                    !state.createdByFilter.includes(member)
+                );
+
+                if (matches.length === 0) {
+                    createdByAutocomplete.classList.add('hidden');
+                    return;
+                }
+
+                createdByAutocomplete.innerHTML = matches.map(member => `
             <div class="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm" onclick="addCreatedByFilter('${member}')">
                 ${member}
             </div>
         `).join('');
-        
-        createdByAutocomplete.classList.remove('hidden');
-    });
-    
-    createdByInput.addEventListener('blur', () => {
-        setTimeout(() => createdByAutocomplete.classList.add('hidden'), 200);
-    });
-    
-    createdByInput.addEventListener('focus', (e) => {
-        if (e.target.value.length > 0) {
-            e.target.dispatchEvent(new Event('input'));
+
+                createdByAutocomplete.classList.remove('hidden');
+            });
+
+            createdByInput.addEventListener('blur', () => {
+                setTimeout(() => createdByAutocomplete.classList.add('hidden'), 200);
+            });
+
+            createdByInput.addEventListener('focus', (e) => {
+                if (e.target.value.length > 0) {
+                    e.target.dispatchEvent(new Event('input'));
+                }
+            });
+
+            // Date range filter
+            document.getElementById('dateRangeFilter').addEventListener('change', (e) => {
+                state.dateRangeFilter = e.target.value;
+            });
+
+            // Amount range filter
+            document.getElementById('amountRangeFilter').addEventListener('change', (e) => {
+                state.amountRangeFilter = e.target.value;
+            });
+
+            // Sort
+            document.getElementById('sortBy').addEventListener('change', (e) => {
+                state.sortBy = e.target.value;
+                filterAndRender();
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (state.currentPage > 1) {
+                    state.currentPage--;
+                    renderQuotes();
+                }
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                const maxPage = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
+                if (state.currentPage < maxPage) {
+                    state.currentPage++;
+                    renderQuotes();
+                }
+            });
         }
-    });
-    
-    // Date range filter
-    document.getElementById('dateRangeFilter').addEventListener('change', (e) => {
-        state.dateRangeFilter = e.target.value;
-    });
-    
-    // Amount range filter
-    document.getElementById('amountRangeFilter').addEventListener('change', (e) => {
-        state.amountRangeFilter = e.target.value;
-    });
-    
-    // Sort
-    document.getElementById('sortBy').addEventListener('change', (e) => {
-        state.sortBy = e.target.value;
-        filterAndRender();
-    });
-    
-    document.getElementById('prevBtn').addEventListener('click', () => {
-        if (state.currentPage > 1) {
-            state.currentPage--;
-            renderQuotes();
-        }
-    });
-    
-    document.getElementById('nextBtn').addEventListener('click', () => {
-        const maxPage = Math.ceil(state.filteredQuotes.length / state.itemsPerPage);
-        if (state.currentPage < maxPage) {
-            state.currentPage++;
-            renderQuotes();
-        }
-    });
-}
-</script>
+    </script>
 
 </body>
+
 </html>

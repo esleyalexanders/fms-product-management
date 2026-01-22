@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,32 +13,39 @@
         body {
             overflow: hidden;
         }
+
         .app-container {
             height: 100vh;
             overflow: hidden;
         }
+
         .main-content {
             overflow-y: auto;
             height: 100vh;
             flex: 1;
         }
+
         .calendar-day {
             min-height: 120px;
             transition: all 0.2s;
         }
+
         .calendar-day:hover {
             background-color: #f9fafb;
         }
+
         .calendar-day.drag-over {
             border-width: 2px;
             border-style: dashed;
         }
+
         .time-grid {
             display: grid;
             grid-template-columns: 80px repeat(7, 1fr);
             border: 1px solid #e5e7eb;
             background: white;
         }
+
         .time-label {
             border-right: 1px solid #e5e7eb;
             border-bottom: 1px solid #f3f4f6;
@@ -51,6 +59,7 @@
             height: 80px;
             padding: 8px;
         }
+
         .time-slot {
             border-right: 1px solid #e5e7eb;
             border-bottom: 1px solid #f3f4f6;
@@ -58,6 +67,7 @@
             height: 80px;
             background: white;
         }
+
         .job-block {
             position: absolute;
             left: 4px;
@@ -75,11 +85,13 @@
             overflow: hidden;
             line-height: 1.2;
         }
+
         .job-block:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             z-index: 20;
         }
+
         .job-pill {
             font-size: 0.75rem;
             padding: 0.25rem 0.5rem;
@@ -88,10 +100,12 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .job-pill:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         /* Job Popup (replaces tooltip) */
         .job-popup {
             position: fixed;
@@ -107,14 +121,17 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #e5e7eb;
         }
+
         .job-popup.show {
             opacity: 1;
             transform: translateY(0) scale(1);
             pointer-events: auto;
         }
+
         .job-popup.show * {
             pointer-events: auto;
         }
+
         .job-popup-header {
             padding: 16px;
             border-bottom: 1px solid #e5e7eb;
@@ -122,16 +139,20 @@
             border-radius: 12px 12px 0 0;
             color: white;
         }
+
         .job-popup-header.class-job {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
+
         .job-popup-header.recurring-job {
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
         }
+
         .job-popup-body {
             padding: 16px;
             background: white;
         }
+
         .job-popup-footer {
             padding: 12px 16px;
             border-top: 1px solid #e5e7eb;
@@ -140,6 +161,7 @@
             display: flex;
             gap: 8px;
         }
+
         .popup-arrow {
             position: absolute;
             width: 12px;
@@ -148,25 +170,31 @@
             border: 1px solid #e5e7eb;
             transform: rotate(45deg);
         }
+
         .popup-arrow.top {
             top: -6px;
             border-right: none;
             border-bottom: none;
         }
+
         .popup-arrow.bottom {
             bottom: -6px;
             border-left: none;
             border-top: none;
         }
+
         .popup-arrow.left {
             left: 20px;
         }
+
         .popup-arrow.right {
             right: 20px;
         }
+
         .job-modal {
             backdrop-filter: blur(4px);
         }
+
         .current-time-line {
             position: absolute;
             left: 0;
@@ -176,6 +204,7 @@
             z-index: 100;
             box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
         }
+
         .current-time-line::before {
             content: '';
             position: absolute;
@@ -187,6 +216,7 @@
             border-radius: 50%;
             box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
         }
+
         .current-time-indicator {
             position: absolute;
             left: 60px;
@@ -196,6 +226,7 @@
             z-index: 100;
             box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
         }
+
         .current-time-indicator::before {
             content: '';
             position: absolute;
@@ -207,24 +238,28 @@
             border-radius: 50%;
             box-shadow: 0 0 6px rgba(220, 38, 38, 0.5);
         }
+
         [draggable="true"] {
             user-select: none;
         }
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
+
         .animate-slide-in {
             animation: slideIn 0.3s ease-out;
             transition: all 0.3s ease-out;
         }
-        
+
         /* Class job styling */
         .class-job-indicator {
             position: absolute;
@@ -236,20 +271,23 @@
             border-radius: 50%;
             border: 1px solid white;
         }
-        
+
         .class-job-block {
             border-left: 3px solid #10b981 !important;
         }
+
         .recurring-job-block {
             border-left: 3px solid #6366f1 !important;
         }
+
         .recurring-job-card {
             border-left: 4px solid #6366f1 !important;
         }
     </style>
 </head>
+
 <body class="min-h-screen bg-gray-50">
-    
+
     <!-- Main Container -->
     <div class="app-container">
         <!-- Sidebar -->
@@ -268,537 +306,599 @@
 
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../[v2] Quotes/quote_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">JOBS & SCHEDULE</div>
-                <a href="job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-briefcase"></i><span>Jobs</span></a>
-                <a href="job_schedule.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                
-                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
-                <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../[v2] Quotes/quote_list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
 
-            <div class="sidebar-footer">
-                <a href="../manage-team/manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS & SCHEDULE</div>
+                <a href="job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+                <a href="job_schedule.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
 
         <!-- Main Content Area -->
         <main class="main-content">
             <div class="p-4">
                 <div class="max-w-7xl mx-auto">
-            
-            <!-- Header -->
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
-                <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h1 class="text-2xl font-bold text-white">Job Schedule</h1>
-                                <p class="text-indigo-100 text-sm mt-0.5">View and manage job schedules</p>
+
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
+                        <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h1 class="text-2xl font-bold text-white">Job Schedule</h1>
+                                        <p class="text-indigo-100 text-sm mt-0.5">View and manage job schedules</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="window.location.href='job_list.html'"
+                                        class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                        </svg>
+                                        List View
+                                    </button>
+                                    <button onclick="window.location.href='job_create_simple.html'"
+                                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-2 font-medium shadow-lg">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Create Job
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="window.location.href='job_list.html'" class="px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white rounded-lg transition-colors flex items-center gap-2 font-medium">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                                </svg>
-                                List View
+                    </div>
+
+                    <!-- View Toggle & Calendar Navigation -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex gap-2">
+                                <button id="monthViewBtn"
+                                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
+                                    Month
+                                </button>
+                                <button id="weekViewBtn"
+                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm">
+                                    Week
+                                </button>
+                                <button id="dayViewBtn"
+                                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
+                                    Day
+                                </button>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <button id="prevBtn" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <h2 id="currentWeek" class="text-lg font-semibold text-gray-900 min-w-48 text-center">
+                                    Nov 11-17, 2024</h2>
+                                <button id="nextBtn" class="p-2 hover:bg-gray-100 rounded-lg">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                                <button id="todayBtn"
+                                    class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
+                                    Today
+                                </button>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <div class="relative min-w-64">
+                                    <!-- Search Input -->
+                                    <div class="relative">
+                                        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        <input type="text" id="staffSearchInput" placeholder="Search staff to filter..."
+                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" />
+                                    </div>
+
+                                    <!-- Selected Staff Tags -->
+                                    <div id="selectedStaffTags" class="flex flex-wrap gap-1 mt-2 min-h-6">
+                                        <!-- Selected staff tags will appear here -->
+                                    </div>
+
+                                    <!-- Autocomplete Dropdown -->
+                                    <div id="staffAutocompleteDropdown"
+                                        class="hidden absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                                        <!-- Autocomplete results will appear here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                        <!-- Calendar View -->
+                        <div class="lg:col-span-3">
+                            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                                <!-- Calendar Header -->
+                                <div id="calendarHeader" class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Sun</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">10</div>
+                                    </div>
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Mon</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">11</div>
+                                    </div>
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Tue</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">12</div>
+                                    </div>
+                                    <div
+                                        class="p-3 text-center text-sm bg-blue-50 border-l-2 border-r-2 border-blue-500">
+                                        <div class="font-semibold text-blue-700">Wed</div>
+                                        <div class="text-lg font-bold text-blue-900 mt-1">13</div>
+                                        <div class="text-xs text-blue-600 mt-1">Today</div>
+                                    </div>
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Thu</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">14</div>
+                                    </div>
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Fri</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">15</div>
+                                    </div>
+                                    <div class="p-3 text-center text-sm">
+                                        <div class="font-semibold text-gray-700">Sat</div>
+                                        <div class="text-lg font-bold text-gray-900 mt-1">16</div>
+                                    </div>
+                                </div>
+
+                                <!-- Calendar Grid -->
+                                <div id="calendarGrid" class="relative">
+                                    <!-- Time grid will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="lg:col-span-1 space-y-4">
+                            <!-- Unscheduled Jobs -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Unscheduled Jobs
+                                </h3>
+                                <div id="unscheduledJobs" class="space-y-2">
+                                    <!-- Unscheduled jobs will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Legend -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h3 class="text-sm font-semibold text-gray-900 mb-3">Status Legend</h3>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
+                                        <span class="text-gray-700">Scheduled</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-4 h-4 bg-gray-100 border border-gray-300 rounded"></div>
+                                        <span class="text-gray-700">Created</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
+                                        <span class="text-gray-700">Completed</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-4 h-4 bg-orange-100 border border-orange-300 rounded"></div>
+                                        <span class="text-gray-700">On Hold</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Schedule Modal (for drag & drop) -->
+            <div id="quickScheduleModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                    <div class="bg-indigo-600 px-6 py-4 rounded-t-lg">
+                        <h2 class="text-xl font-bold text-white">Select Time</h2>
+                    </div>
+
+                    <div class="p-6">
+                        <div id="quickScheduleDetails" class="mb-4">
+                            <!-- Job details will be populated here -->
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Time Slot</label>
+                            <select id="quickScheduleTime"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="08:00">8:00 AM</option>
+                                <option value="08:30">8:30 AM</option>
+                                <option value="09:00" selected>9:00 AM</option>
+                                <option value="09:30">9:30 AM</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="10:30">10:30 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                            </select>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button onclick="closeQuickScheduleModal()"
+                                class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Cancel
                             </button>
-                            <button onclick="window.location.href='job_create_simple.html'" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center gap-2 font-medium shadow-lg">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Create Job
+                            <button onclick="confirmQuickSchedule()"
+                                class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                Schedule
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- View Toggle & Calendar Navigation -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex gap-2">
-                        <button id="monthViewBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
-                            Month
-                        </button>
-                        <button id="weekViewBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm">
-                            Week
-                        </button>
-                        <button id="dayViewBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
-                            Day
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-4">
-                        <button id="prevBtn" class="p-2 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                            </svg>
-                        </button>
-                        <h2 id="currentWeek" class="text-lg font-semibold text-gray-900 min-w-48 text-center">Nov 11-17, 2024</h2>
-                        <button id="nextBtn" class="p-2 hover:bg-gray-100 rounded-lg">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                        <button id="todayBtn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
-                            Today
-                        </button>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <div class="relative min-w-64">
-                            <!-- Search Input -->
-                            <div class="relative">
-                                <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
-                                <input 
-                                    type="text" 
-                                    id="staffSearchInput"
-                                    placeholder="Search staff to filter..."
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                                />
-                            </div>
-                            
-                            <!-- Selected Staff Tags -->
-                            <div id="selectedStaffTags" class="flex flex-wrap gap-1 mt-2 min-h-6">
-                                <!-- Selected staff tags will appear here -->
-                            </div>
-                            
-                            <!-- Autocomplete Dropdown -->
-                            <div id="staffAutocompleteDropdown" class="hidden absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                                <!-- Autocomplete results will appear here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                <!-- Calendar View -->
-                <div class="lg:col-span-3">
-                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                        <!-- Calendar Header -->
-                        <div id="calendarHeader" class="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Sun</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">10</div>
-                            </div>
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Mon</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">11</div>
-                            </div>
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Tue</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">12</div>
-                            </div>
-                            <div class="p-3 text-center text-sm bg-blue-50 border-l-2 border-r-2 border-blue-500">
-                                <div class="font-semibold text-blue-700">Wed</div>
-                                <div class="text-lg font-bold text-blue-900 mt-1">13</div>
-                                <div class="text-xs text-blue-600 mt-1">Today</div>
-                            </div>
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Thu</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">14</div>
-                            </div>
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Fri</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">15</div>
-                            </div>
-                            <div class="p-3 text-center text-sm">
-                                <div class="font-semibold text-gray-700">Sat</div>
-                                <div class="text-lg font-bold text-gray-900 mt-1">16</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Calendar Grid -->
-                        <div id="calendarGrid" class="relative">
-                            <!-- Time grid will be populated here -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="lg:col-span-1 space-y-4">
-                    <!-- Unscheduled Jobs -->
-                    <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Unscheduled Jobs
-                        </h3>
-                        <div id="unscheduledJobs" class="space-y-2">
-                            <!-- Unscheduled jobs will be populated here -->
-                        </div>
-                    </div>
-
-                    <!-- Legend -->
-                    <div class="bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="text-sm font-semibold text-gray-900 mb-3">Status Legend</h3>
-                        <div class="space-y-2 text-xs">
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
-                                <span class="text-gray-700">Scheduled</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 bg-gray-100 border border-gray-300 rounded"></div>
-                                <span class="text-gray-700">Created</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
-                                <span class="text-gray-700">Completed</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 bg-orange-100 border border-orange-300 rounded"></div>
-                                <span class="text-gray-700">On Hold</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Schedule Modal (for drag & drop) -->
-    <div id="quickScheduleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div class="bg-indigo-600 px-6 py-4 rounded-t-lg">
-                <h2 class="text-xl font-bold text-white">Select Time</h2>
-            </div>
-            
-            <div class="p-6">
-                <div id="quickScheduleDetails" class="mb-4">
-                    <!-- Job details will be populated here -->
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Time Slot</label>
-                    <select id="quickScheduleTime" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="08:00">8:00 AM</option>
-                        <option value="08:30">8:30 AM</option>
-                        <option value="09:00" selected>9:00 AM</option>
-                        <option value="09:30">9:30 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="10:30">10:30 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="11:30">11:30 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="12:30">12:30 PM</option>
-                        <option value="13:00">1:00 PM</option>
-                        <option value="13:30">1:30 PM</option>
-                        <option value="14:00">2:00 PM</option>
-                        <option value="14:30">2:30 PM</option>
-                        <option value="15:00">3:00 PM</option>
-                        <option value="15:30">3:30 PM</option>
-                        <option value="16:00">4:00 PM</option>
-                        <option value="16:30">4:30 PM</option>
-                        <option value="17:00">5:00 PM</option>
-                    </select>
-                </div>
-
-                <div class="flex gap-3">
-                    <button onclick="closeQuickScheduleModal()" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                        Cancel
-                    </button>
-                    <button onclick="confirmQuickSchedule()" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        Schedule
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Schedule Job Modal (Unified with Job Details Modal) -->
-    <div id="scheduleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 job-modal">
-        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 id="scheduleModalJobTitle" class="text-xl font-bold text-white">Schedule Job</h2>
-                        <p id="scheduleModalJobId" class="text-indigo-100 text-sm mt-0.5">JOB-2024-001</p>
-                    </div>
-                    <button onclick="closeScheduleModal()" class="text-white hover:text-indigo-200 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Modal Content -->
-            <div class="p-6 overflow-y-auto max-h-96">
-                <!-- Critical Information -->
-                <div class="space-y-4">
-                    <!-- Customer & Value (Read-only) -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-blue-800">Customer</span>
-                            </div>
-                            <p id="scheduleModalCustomerName" class="font-semibold text-blue-900">Sarah Johnson</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-green-800">Value</span>
-                            </div>
-                            <p id="scheduleModalJobValue" class="font-semibold text-green-900">$825.00</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Editable Schedule Info -->
-                    <div class="bg-purple-50 p-4 rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-purple-800">Schedule</span>
-                            </div>
-                            <div id="scheduleModalStatus" class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
-                                UNSCHEDULED
-                            </div>
-                        </div>
-                        
-                        <!-- Editable Date and Time -->
-                        <div class="grid grid-cols-2 gap-3">
+            <!-- Schedule Job Modal (Unified with Job Details Modal) -->
+            <div id="scheduleModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 job-modal">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+                    <!-- Modal Header -->
+                    <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
+                        <div class="flex justify-between items-center">
                             <div>
-                                <label class="block text-xs font-medium text-purple-700 mb-1">Date</label>
-                                <input 
-                                    type="date" 
-                                    id="scheduleModalEditDate"
-                                    class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                                />
+                                <h2 id="scheduleModalJobTitle" class="text-xl font-bold text-white">Schedule Job</h2>
+                                <p id="scheduleModalJobId" class="text-indigo-100 text-sm mt-0.5">JOB-2024-001</p>
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-purple-700 mb-1">Time</label>
-                                <input 
-                                    type="time" 
-                                    id="scheduleModalEditTime"
-                                    class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                                />
-                            </div>
+                            <button onclick="closeScheduleModal()"
+                                class="text-white hover:text-indigo-200 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    
-                    <!-- Editable Staff Assignment -->
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                            <span class="text-sm font-medium text-orange-800">Assigned Staff</span>
-                        </div>
-                        
-                        <!-- Current Staff Display -->
-                        <div id="scheduleModalCurrentStaff" class="flex flex-wrap gap-2 mb-3">
-                            <!-- Current staff will be populated here -->
-                        </div>
-                        
-                        <!-- Staff Search and Add -->
-                        <div class="relative">
-                            <input 
-                                type="text" 
-                                id="scheduleModalStaffSearch"
-                                placeholder="Search staff to add..."
-                                class="w-full px-3 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-                            />
-                            <div id="scheduleModalStaffAutocomplete" class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-32 overflow-y-auto">
-                                <!-- Staff autocomplete results -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Description (Read-only) -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="flex items-center gap-2 mb-2">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <span class="text-sm font-medium text-gray-700">Description</span>
-                        </div>
-                        <p id="scheduleModalDescription" class="text-gray-900">Math tutoring session</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Modal Actions -->
-            <div class="bg-gray-50 px-6 py-4 flex gap-3">
-                <button onclick="closeScheduleModal()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    Cancel
-                </button>
-                <button onclick="confirmSchedule()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                    Schedule Job
-                </button>
-                <button onclick="viewFullJobDetails()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
-                    View Full Details
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Job Details Modal -->
-    <div id="jobDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 job-modal">
-        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 id="modalJobTitle" class="text-xl font-bold text-white">Job Details</h2>
-                        <p id="modalJobId" class="text-indigo-100 text-sm mt-0.5">JOB-2024-001</p>
+                    <!-- Modal Content -->
+                    <div class="p-6 overflow-y-auto max-h-96">
+                        <!-- Critical Information -->
+                        <div class="space-y-4">
+                            <!-- Customer & Value (Read-only) -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-blue-800">Customer</span>
+                                    </div>
+                                    <p id="scheduleModalCustomerName" class="font-semibold text-blue-900">Sarah Johnson
+                                    </p>
+                                </div>
+
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-green-800">Value</span>
+                                    </div>
+                                    <p id="scheduleModalJobValue" class="font-semibold text-green-900">$825.00</p>
+                                </div>
+                            </div>
+
+                            <!-- Editable Schedule Info -->
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-purple-800">Schedule</span>
+                                    </div>
+                                    <div id="scheduleModalStatus"
+                                        class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                                        UNSCHEDULED
+                                    </div>
+                                </div>
+
+                                <!-- Editable Date and Time -->
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-purple-700 mb-1">Date</label>
+                                        <input type="date" id="scheduleModalEditDate"
+                                            class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-purple-700 mb-1">Time</label>
+                                        <input type="time" id="scheduleModalEditTime"
+                                            class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Editable Staff Assignment -->
+                            <div class="bg-orange-50 p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-orange-800">Assigned Staff</span>
+                                </div>
+
+                                <!-- Current Staff Display -->
+                                <div id="scheduleModalCurrentStaff" class="flex flex-wrap gap-2 mb-3">
+                                    <!-- Current staff will be populated here -->
+                                </div>
+
+                                <!-- Staff Search and Add -->
+                                <div class="relative">
+                                    <input type="text" id="scheduleModalStaffSearch"
+                                        placeholder="Search staff to add..."
+                                        class="w-full px-3 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" />
+                                    <div id="scheduleModalStaffAutocomplete"
+                                        class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-32 overflow-y-auto">
+                                        <!-- Staff autocomplete results -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description (Read-only) -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-700">Description</span>
+                                </div>
+                                <p id="scheduleModalDescription" class="text-gray-900">Math tutoring session</p>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="closeJobModal()" class="text-white hover:text-indigo-200 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+
+                    <!-- Modal Actions -->
+                    <div class="bg-gray-50 px-6 py-4 flex gap-3">
+                        <button onclick="closeScheduleModal()"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            Cancel
+                        </button>
+                        <button onclick="confirmSchedule()"
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            Schedule Job
+                        </button>
+                        <button onclick="viewFullJobDetails()"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                            View Full Details
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Modal Content -->
-            <div class="p-6 overflow-y-auto max-h-96">
-                <!-- Critical Information -->
-                <div class="space-y-4">
-                    <!-- Customer & Value (Read-only) -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-blue-800">Customer</span>
-                            </div>
-                            <p id="modalCustomerName" class="font-semibold text-blue-900">Sarah Johnson</p>
-                        </div>
-                        
-                        <div class="bg-green-50 p-4 rounded-lg">
-                            <div class="flex items-center gap-2 mb-2">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-green-800">Value</span>
-                            </div>
-                            <p id="modalJobValue" class="font-semibold text-green-900">$825.00</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Editable Schedule Info -->
-                    <div class="bg-purple-50 p-4 rounded-lg">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-purple-800">Schedule</span>
-                            </div>
-                            <div id="modalStatus" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                                SCHEDULED
-                            </div>
-                        </div>
-                        
-                        <!-- Editable Date and Time -->
-                        <div class="grid grid-cols-2 gap-3">
+
+            <!-- Job Details Modal -->
+            <div id="jobDetailsModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 job-modal">
+                <div class="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+                    <!-- Modal Header -->
+                    <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4">
+                        <div class="flex justify-between items-center">
                             <div>
-                                <label class="block text-xs font-medium text-purple-700 mb-1">Date</label>
-                                <input 
-                                    type="date" 
-                                    id="modalEditDate"
-                                    class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                                />
+                                <h2 id="modalJobTitle" class="text-xl font-bold text-white">Job Details</h2>
+                                <p id="modalJobId" class="text-indigo-100 text-sm mt-0.5">JOB-2024-001</p>
                             </div>
-                            <div>
-                                <label class="block text-xs font-medium text-purple-700 mb-1">Time</label>
-                                <input 
-                                    type="time" 
-                                    id="modalEditTime"
-                                    class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                                />
+                            <button onclick="closeJobModal()"
+                                class="text-white hover:text-indigo-200 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal Content -->
+                    <div class="p-6 overflow-y-auto max-h-96">
+                        <!-- Critical Information -->
+                        <div class="space-y-4">
+                            <!-- Customer & Value (Read-only) -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-blue-800">Customer</span>
+                                    </div>
+                                    <p id="modalCustomerName" class="font-semibold text-blue-900">Sarah Johnson</p>
+                                </div>
+
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-green-800">Value</span>
+                                    </div>
+                                    <p id="modalJobValue" class="font-semibold text-green-900">$825.00</p>
+                                </div>
+                            </div>
+
+                            <!-- Editable Schedule Info -->
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        <span class="text-sm font-medium text-purple-800">Schedule</span>
+                                    </div>
+                                    <div id="modalStatus"
+                                        class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                        SCHEDULED
+                                    </div>
+                                </div>
+
+                                <!-- Editable Date and Time -->
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-purple-700 mb-1">Date</label>
+                                        <input type="date" id="modalEditDate"
+                                            class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-purple-700 mb-1">Time</label>
+                                        <input type="time" id="modalEditTime"
+                                            class="w-full px-3 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Editable Staff Assignment -->
+                            <div class="bg-orange-50 p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-orange-800">Assigned Staff</span>
+                                </div>
+
+                                <!-- Current Staff Display -->
+                                <div id="modalCurrentStaff" class="flex flex-wrap gap-2 mb-3">
+                                    <!-- Current staff will be populated here -->
+                                </div>
+
+                                <!-- Staff Search and Add -->
+                                <div class="relative">
+                                    <input type="text" id="modalStaffSearch" placeholder="Search staff to add..."
+                                        class="w-full px-3 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" />
+                                    <div id="modalStaffAutocomplete"
+                                        class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-32 overflow-y-auto">
+                                        <!-- Staff autocomplete results -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description (Read-only) -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                    <span class="text-sm font-medium text-gray-700">Description</span>
+                                </div>
+                                <p id="modalDescription" class="text-gray-900">Math tutoring session</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Editable Staff Assignment -->
-                    <div class="bg-orange-50 p-4 rounded-lg">
-                        <div class="flex items-center gap-2 mb-3">
-                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                            <span class="text-sm font-medium text-orange-800">Assigned Staff</span>
-                        </div>
-                        
-                        <!-- Current Staff Display -->
-                        <div id="modalCurrentStaff" class="flex flex-wrap gap-2 mb-3">
-                            <!-- Current staff will be populated here -->
-                        </div>
-                        
-                        <!-- Staff Search and Add -->
-                        <div class="relative">
-                            <input 
-                                type="text" 
-                                id="modalStaffSearch"
-                                placeholder="Search staff to add..."
-                                class="w-full px-3 py-2 border border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
-                            />
-                            <div id="modalStaffAutocomplete" class="hidden absolute z-30 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-32 overflow-y-auto">
-                                <!-- Staff autocomplete results -->
-                            </div>
-                        </div>
+
+                    <!-- Modal Actions -->
+                    <div class="bg-gray-50 px-6 py-4 flex gap-3">
+                        <button onclick="closeJobModal()"
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            Cancel
+                        </button>
+                        <button onclick="saveJobChanges()"
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            Save Changes
+                        </button>
+                        <button onclick="viewFullJobDetails()"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                            View Full Details
+                        </button>
                     </div>
-                    
-                    <!-- Description (Read-only) -->
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="flex items-center gap-2 mb-2">
-                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <span class="text-sm font-medium text-gray-700">Description</span>
-                        </div>
-                        <p id="modalDescription" class="text-gray-900">Math tutoring session</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Modal Actions -->
-            <div class="bg-gray-50 px-6 py-4 flex gap-3">
-                <button onclick="closeJobModal()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
-                    Cancel
-                </button>
-                <button onclick="saveJobChanges()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                    Save Changes
-                </button>
-                <button onclick="viewFullJobDetails()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
-                    View Full Details
-                </button>
-            </div>
                 </div>
             </div>
         </main>
@@ -811,7 +911,8 @@
         <div id="jobPopupHeader" class="job-popup-header">
             <div class="flex items-center justify-between mb-2">
                 <h3 id="jobPopupTitle" class="text-lg font-bold"></h3>
-                <span id="jobPopupBadge" class="px-2 py-1 text-xs font-semibold rounded-full bg-white bg-opacity-20"></span>
+                <span id="jobPopupBadge"
+                    class="px-2 py-1 text-xs font-semibold rounded-full bg-white bg-opacity-20"></span>
             </div>
             <p id="jobPopupId" class="text-sm text-white text-opacity-90"></p>
         </div>
@@ -819,10 +920,12 @@
             <!-- Content will be populated by JavaScript -->
         </div>
         <div id="jobPopupFooter" class="job-popup-footer">
-            <button onclick="closeJobPopup()" class="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <button onclick="closeJobPopup()"
+                class="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 Close
             </button>
-            <button id="jobPopupViewBtn" onclick="viewJobFromPopup()" class="flex-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+            <button id="jobPopupViewBtn" onclick="viewJobFromPopup()"
+                class="flex-1 px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
                 View Details
             </button>
         </div>
@@ -830,4 +933,5 @@
 
     <script src="job_schedule_script.js"></script>
 </body>
+
 </html>

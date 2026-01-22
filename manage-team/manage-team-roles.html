@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,48 +11,265 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../home-styles.css">
     <style>
-        .roles-container { background:#fff; border-radius:8px; padding:24px; }
-        .roles-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
-        .roles-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
-        .roles-table th, .roles-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
-        .roles-table th { background:#f3f4f6; font-weight:500; color:#374151; }
-        .roles-table tr:last-child td { border-bottom:none; }
-        .role-name { font-weight:500; color:#111827; }
-        .role-description { color:#6b7280; font-size:14px; }
-        .permissions-list { display:flex; flex-wrap:wrap; gap:4px; }
-        .permission-tag { background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:12px; font-size:12px; }
-        .btn-primary, .btn-secondary { font-family:inherit; font-size:15px; border-radius:6px; padding:8px 16px; border:none; cursor:pointer; }
-        .btn-primary { background:#6366f1; color:#fff; }
-        .btn-secondary { background:#e5e7eb; color:#374151; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); align-items:center; justify-content:center; z-index:1000; }
-        .modal.active { display:flex; }
-        .modal-content { background:#fff; border-radius:10px; padding:32px 24px; min-width:500px; max-width:90vw; box-shadow:0 4px 24px rgba(0,0,0,0.08); max-height:90vh; overflow-y:auto; }
-        .modal-header { font-size:20px; font-weight:600; margin-bottom:18px; }
-        .modal-actions { display:flex; gap:12px; margin-top:24px; }
-        .form-group { margin-bottom:16px; }
-        .form-group label { display:block; font-size:15px; margin-bottom:8px; color:#374151; font-weight:500; }
-        .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:15px; }
-        .permissions-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-top:16px; }
-        .permission-group { border:1px solid #e5e7eb; border-radius:6px; padding:16px; }
-        .permission-group h4 { margin:0 0 12px 0; font-size:16px; color:#374151; }
-        .permission-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-        .permission-item:last-child { margin-bottom:0; }
-        .permission-item label { cursor:pointer; }
-        .permission-item input[type="checkbox"] { cursor:pointer; }
-        .sidebar .nav-item.manage-team-link { background:#eef2ff; color:#6366f1; font-weight:600; }
-        .tab-container { border-bottom:1px solid #e5e7eb; margin-bottom:24px; }
-        .tab-buttons { display:flex; gap:8px; }
-        .tab-button { padding:12px 24px; border:none; background:none; cursor:pointer; font-size:15px; font-weight:500; color:#6b7280; border-bottom:2px solid transparent; position:relative; bottom:-1px; }
-        .tab-button.active { color:#6366f1; border-bottom-color:#6366f1; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .config-permissions-btn { font-size:13px; padding:4px 10px; margin-left:8px; }
-        .staff-assign-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
-        .staff-assign-table th, .staff-assign-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
-        .staff-assign-table th { background:#f3f4f6; font-weight:500; color:#374151; }
-        .staff-assign-table tr:last-child td { border-bottom:none; }
+        .roles-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .roles-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .roles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .roles-table th,
+        .roles-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e6e9ee;
+            text-align: left;
+        }
+
+        .roles-table th {
+            background: #f3f4f6;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .roles-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .role-name {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .role-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .permissions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .permission-tag {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            font-family: inherit;
+            font-size: 15px;
+            border-radius: 6px;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.18);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            padding: 32px 24px;
+            min-width: 500px;
+            max-width: 90vw;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .permission-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px;
+        }
+
+        .permission-group h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .permission-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .permission-item label {
+            cursor: pointer;
+        }
+
+        .permission-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .sidebar .nav-item.manage-team-link {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .tab-container {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            position: relative;
+            bottom: -1px;
+        }
+
+        .tab-button.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .config-permissions-btn {
+            font-size: 13px;
+            padding: 4px 10px;
+            margin-left: 8px;
+        }
+
+        .staff-assign-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .staff-assign-table th,
+        .staff-assign-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e6e9ee;
+            text-align: left;
+        }
+
+        .staff-assign-table th {
+            background: #f3f4f6;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .staff-assign-table tr:last-child td {
+            border-bottom: none;
+        }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -66,26 +284,34 @@
             </div>
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                <a href="manage-team.html" class="nav-item manage-team-link" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-            <div class="sidebar-footer">
-                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item manage-team-link"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <div class="sidebar-footer">
+                    <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
         <!-- Main Content Area -->
         <main class="main-content">
@@ -95,7 +321,8 @@
                     <p class="page-subtitle">Configure roles and permissions for your team</p>
                 </div>
                 <div class="header-right">
-                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Team</button></a>
+                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i
+                                class="fas fa-arrow-left"></i> Back to Team</button></a>
                 </div>
             </header>
             <div class="content-wrapper">
@@ -111,48 +338,57 @@
                         <div class="roles-header">
                             <div>
                                 <h2 style="margin:0; font-size:24px;">Team Roles</h2>
-                                <p style="margin:4px 0 0 0; color:#6b7280;">Define roles and assign permissions to control access</p>
+                                <p style="margin:4px 0 0 0; color:#6b7280;">Define roles and assign permissions to
+                                    control access</p>
                             </div>
                             <button class="btn-primary" id="addRoleBtn"><i class="fas fa-plus"></i> Add Role</button>
                         </div>
 
                         <table class="roles-table" id="rolesTable">
-                        <thead>
-                            <tr>
-                                <th>Role Name</th>
-                                <th>Description</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="role-name">Manager</div>
-                                </td>
-                                <td>
-                                    <div class="role-description">Full system access and management capabilities</div>
-                                </td>
-                                <td>
-                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                        <a href="manage-team-permission.html?role=Manager" style="text-decoration:none;"><button class="btn-secondary" style="font-size:14px; padding:6px 12px;"><i class="fas fa-edit"></i> Edit</button></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="role-name">Staff</div>
-                                </td>
-                                <td>
-                                    <div class="role-description">General staff members including technicians, receptionists, and field workers</div>
-                                </td>
-                                <td>
-                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                        <a href="manage-team-permission.html?role=Staff" style="text-decoration:none;"><button class="btn-secondary" style="font-size:14px; padding:6px 12px;"><i class="fas fa-edit"></i> Edit</button></a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <thead>
+                                <tr>
+                                    <th>Role Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">Manager</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">Full system access and management capabilities
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                            <a href="manage-team-permission.html?role=Manager"
+                                                style="text-decoration:none;"><button class="btn-secondary"
+                                                    style="font-size:14px; padding:6px 12px;"><i
+                                                        class="fas fa-edit"></i> Edit</button></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="role-name">Staff</div>
+                                    </td>
+                                    <td>
+                                        <div class="role-description">General staff members including technicians,
+                                            receptionists, and field workers</div>
+                                    </td>
+                                    <td>
+                                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                            <a href="manage-team-permission.html?role=Staff"
+                                                style="text-decoration:none;"><button class="btn-secondary"
+                                                    style="font-size:14px; padding:6px 12px;"><i
+                                                        class="fas fa-edit"></i> Edit</button></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -295,18 +531,18 @@
     <script src="manage-team-roles-script.js"></script>
     <script>
         // Tab switching functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
 
             tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const targetTab = this.getAttribute('data-tab');
-                    
+
                     // Remove active class from all buttons and contents
                     tabButtons.forEach(btn => btn.classList.remove('active'));
                     tabContents.forEach(content => content.classList.remove('active'));
-                    
+
                     // Add active class to clicked button and corresponding content
                     this.classList.add('active');
                     document.getElementById(`${targetTab}-tab`).classList.add('active');
@@ -314,10 +550,10 @@
             });
 
             // Configure Permissions modal
-            window.configurePermissions = function(roleName) {
+            window.configurePermissions = function (roleName) {
                 const modal = document.getElementById('permissionsModal');
                 document.getElementById('permissionsModalTitle').textContent = `Configure Permissions: ${roleName.charAt(0).toUpperCase() + roleName.slice(1)}`;
-                
+
                 // Set permissions based on role
                 if (roleName === 'manager') {
                     // Manager gets all permissions
@@ -336,15 +572,15 @@
                     document.getElementById('perm_view_schedule').checked = true;
                     document.getElementById('perm_assign_jobs').checked = true;
                 }
-                
+
                 modal.classList.add('active');
             };
 
-            document.getElementById('cancelPermissionsBtn').addEventListener('click', function() {
+            document.getElementById('cancelPermissionsBtn').addEventListener('click', function () {
                 document.getElementById('permissionsModal').classList.remove('active');
             });
 
-            document.getElementById('savePermissionsBtn').addEventListener('click', function(e) {
+            document.getElementById('savePermissionsBtn').addEventListener('click', function (e) {
                 e.preventDefault();
                 alert('Permissions saved successfully!');
                 document.getElementById('permissionsModal').classList.remove('active');
@@ -352,7 +588,7 @@
 
             // Permission checkbox labels click handlers
             document.querySelectorAll('.permission-item label').forEach(label => {
-                label.addEventListener('click', function() {
+                label.addEventListener('click', function () {
                     const checkbox = this.previousElementSibling;
                     checkbox.checked = !checkbox.checked;
                 });
@@ -368,7 +604,7 @@
             const roleDescriptionInput = document.getElementById('roleDescription');
 
             // Open modal when Add Role button is clicked
-            addRoleBtn.addEventListener('click', function(e) {
+            addRoleBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 modalTitle.textContent = 'Add New Role';
                 roleNameInput.value = '';
@@ -377,27 +613,27 @@
             });
 
             // Close modal when Cancel is clicked
-            cancelRoleBtn.addEventListener('click', function() {
+            cancelRoleBtn.addEventListener('click', function () {
                 roleModal.classList.remove('active');
             });
 
             // Handle form submission
-            roleForm.addEventListener('submit', function(e) {
+            roleForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const roleName = roleNameInput.value.trim();
                 const roleDescription = roleDescriptionInput.value.trim();
-                
+
                 if (!roleName) {
                     alert('Please enter a role name');
                     return;
                 }
-                
+
                 // Redirect to permission page with the role name
                 window.location.href = `manage-team-permission.html?role=${encodeURIComponent(roleName)}`;
             });
 
             // Close modal when clicking outside
-            roleModal.addEventListener('click', function(e) {
+            roleModal.addEventListener('click', function (e) {
                 if (e.target === roleModal) {
                     roleModal.classList.remove('active');
                 }
@@ -405,4 +641,5 @@
         });
     </script>
 </body>
+
 </html>

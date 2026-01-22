@@ -18,15 +18,15 @@ Successfully implemented two new fields in the Pricebook module to enhance servi
 
 ### Files Modified
 
-1. **`admin/pricebook-create.html`** ✅
+1. **`pricebook/pricebook-create.html`** ✅
    - Added "Applicable Service Types" field in Service Details section
    - Added "Supported Payment Models" field in Pricing section
 
-2. **`admin/pricebook-edit.html`** ✅
+2. **`pricebook/pricebook-edit.html`** ✅
    - Added "Applicable Service Types" field in Service Details section
    - Added "Supported Payment Models" field in Pricing section
 
-3. **`admin/PRICEBOOK_ENHANCEMENT_REQUIREMENTS.md`** ✅
+3. **`pricebook/PRICEBOOK_ENHANCEMENT_REQUIREMENTS.md`** ✅
    - Comprehensive business requirements document created
 
 ---
@@ -262,7 +262,7 @@ When backend is implemented:
 
 ### Business Requirements
 Complete business requirements document created:
-- **File:** `admin/PRICEBOOK_ENHANCEMENT_REQUIREMENTS.md`
+- **File:** `pricebook/PRICEBOOK_ENHANCEMENT_REQUIREMENTS.md`
 - **Sections:** 15 comprehensive sections including:
   - Business context and objectives
   - Detailed field specifications

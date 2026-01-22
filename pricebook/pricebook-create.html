@@ -21,21 +21,22 @@
 
         .form-row {
             display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .form-row .form-group {
             flex: 1;
+            margin-bottom: 0;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             margin-bottom: 6px;
             color: #374151;
@@ -45,10 +46,10 @@
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
+            padding: 9px 12px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-group input:focus,
@@ -80,7 +81,7 @@
             border: 1px solid #d1d5db;
             border-radius: 6px;
             background: #fff;
-            padding: 10px 12px;
+            padding: 9px 12px;
             font-size: 14px;
             font-weight: 500;
             color: #374151;
@@ -107,8 +108,8 @@
             width: 100%;
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            padding: 10px 16px;
-            font-size: 15px;
+            padding: 9px 12px;
+            font-size: 14px;
         }
 
         .price-input:focus {
@@ -125,19 +126,20 @@
             display: flex;
             gap: 12px;
             justify-content: flex-end;
-            padding-top: 24px;
+            padding-top: 20px;
             border-top: 1px solid #e5e7eb;
-            margin-top: 24px;
+            margin-top: 20px;
         }
 
         .btn-primary,
         .btn-secondary {
             font-family: inherit;
-            font-size: 15px;
+            font-size: 14px;
             border-radius: 6px;
             padding: 10px 20px;
             border: none;
             cursor: pointer;
+            font-weight: 500;
         }
 
         .btn-primary {
@@ -145,18 +147,30 @@
             color: #fff;
         }
 
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+
         .btn-secondary {
             background: #e5e7eb;
             color: #374151;
         }
 
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin: 24px 0 16px 0;
-            color: #374151;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e5e7eb;
+            margin: 20px 0 12px 0;
+            color: #111827;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
         }
 
         .sidebar .nav-item.manage-team-link {
@@ -201,12 +215,12 @@
             background: #f9fafb;
             padding: 16px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         .preview-section h4 {
             margin: 0 0 12px 0;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
         }
 
@@ -219,12 +233,12 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 20px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
             background: #fff;
             color: #6b7280;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -246,6 +260,14 @@
         .toggle-option.active:hover {
             border-color: #4f46e5;
             background: #e0e7ff;
+        }
+
+        /* Toggle group spacing */
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
         }
     </style>
 </head>
@@ -345,7 +367,7 @@
 
                             <div class="form-group">
                                 <label>Package Type <span class="required">*</span></label>
-                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                <div class="toggle-group">
                                     <div class="toggle-option" data-value="non-subscription"
                                         onclick="selectPackageModel(this)">
                                         <input type="radio" name="packageModel" id="packageModel_nonSubscription"
@@ -364,13 +386,13 @@
                             </div>
                         </div>
 
-                        <!-- Service-Specific Fields -->
+                        <!-- Service Configuration (Services only) - MERGED & STREAMLINED -->
                         <div id="serviceFields" style="display: block;">
-                            <div class="section-title">Service Details</div>
+                            <div class="section-title">Service Configuration</div>
 
                             <div class="form-group">
                                 <label>Service Type <span class="required">*</span></label>
-                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                <div class="toggle-group">
                                     <div class="toggle-option active" data-value="class"
                                         onclick="selectServiceType(this)">
                                         <input type="radio" name="serviceType" id="serviceType_class" value="class"
@@ -389,12 +411,16 @@
                                         <span>One-to-One</span>
                                     </div>
                                 </div>
-                                <div class="info-text">Select the type of service delivery</div>
                             </div>
 
                             <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
-                                <label>Subscription Frequency <span class="required">*</span></label>
-                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                <label>Session Frequency <span class="required">*</span></label>
+                                <div class="toggle-group">
+                                    <div class="toggle-option" data-value="daily" onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_daily" value="daily"
+                                            style="display: none;">
+                                        <span>Daily</span>
+                                    </div>
                                     <div class="toggle-option active" data-value="weekly"
                                         onclick="selectFrequency(this)">
                                         <input type="radio" name="frequency" id="frequency_weekly" value="weekly"
@@ -406,42 +432,64 @@
                                             style="display: none;">
                                         <span>Monthly</span>
                                     </div>
-                                    <div class="toggle-option" data-value="quarterly" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_quarterly" value="quarterly"
+                                    <div class="toggle-option" data-value="custom" onclick="selectFrequency(this)">
+                                        <input type="radio" name="frequency" id="frequency_custom" value="custom"
                                             style="display: none;">
-                                        <span>Quarterly</span>
+                                        <span>Custom</span>
                                     </div>
-                                    <div class="toggle-option" data-value="annually" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_annually" value="annually"
-                                            style="display: none;">
-                                        <span>Annually</span>
-                                    </div>
-                                </div>
-                                <div class="info-text">Select billing frequency for subscription services</div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="moq" id="moqLabel">MOQ (Minimum Order Quantity)</label>
-                                    <input type="number" id="moq" placeholder="1" min="0" step="0.5">
-                                </div>
-                                <div class="form-group">
-                                    <label for="unit">Unit</label>
-                                    <select id="unit">
-                                        <option value="hour">Hour</option>
-                                        <option value="each">Each</option>
-                                        <option value="sqft">Square Foot</option>
-                                        <option value="sqm">Square Meter</option>
-                                        <option value="custom">Add Custom Unit</option>
-                                    </select>
                                 </div>
                             </div>
 
-                            <div class="form-group" id="serviceCustomUnitGroup" style="display: none;">
-                                <label for="serviceCustomUnit">Custom Unit <span class="required">*</span></label>
-                                <input type="text" id="serviceCustomUnit" placeholder="e.g., kg, liter, piece"
-                                    style="text-transform: lowercase;">
-                                <div class="info-text">Enter a custom unit name</div>
+                            <!-- For SUBSCRIPTION services -->
+                            <div id="subscriptionServiceFields" style="display: block;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="minCapacity">Min Capacity <span class="required">*</span></label>
+                                        <input type="number" id="minCapacity" min="1" value="1">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="maxCapacity">Max Capacity <span class="required">*</span></label>
+                                        <input type="number" id="maxCapacity" min="1" value="20">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sessionDuration">Duration (min) <span
+                                                class="required">*</span></label>
+                                        <input type="number" id="sessionDuration" min="15" step="15" value="60">
+                                    </div>
+
+                                    <div class="form-group" style="max-width: 150px;">
+                                        <label for="minStaffCount">Min Staff <span class="required">*</span></label>
+                                        <input type="number" id="minStaffCount" min="1" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Required Skills <span class="required">*</span></label>
+                                    <input type="text" id="skillInput" placeholder="Type skill and press Enter"
+                                        style="margin-bottom: 8px;">
+                                    <div id="requiredSkillsContainer"
+                                        style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 32px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
+                                        <!-- Skill tags will appear here -->
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="equipmentNeeded">Equipment Needed</label>
+                                    <input type="text" id="equipmentNeeded"
+                                        placeholder="e.g., Whiteboard, Projector, Calculators">
+                                    <div class="info-text">Comma-separated list (optional)</div>
+                                </div>
+                            </div>
+
+                            <!-- For NON-SUBSCRIPTION services -->
+                            <div id="nonSubscriptionServiceNote" style="display: none;">
+                                <div class="info-text"
+                                    style="background: #f0f9ff; padding: 12px; border-radius: 6px; border-left: 3px solid #3b82f6;">
+                                    <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+                                    For non-subscription services, configure MOQ and Unit in the Pricing section below.
+                                </div>
                             </div>
                         </div>
 
@@ -485,6 +533,33 @@
 
                         <!-- Pricing -->
                         <div class="section-title">Pricing</div>
+
+                        <!-- MOQ & Unit (for non-subscription services) -->
+                        <div id="moqUnitSection" style="display: none;">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="moq" id="moqLabel">MOQ (Minimum Order Quantity)</label>
+                                    <input type="number" id="moq" placeholder="1" min="0" step="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="unit">Unit</label>
+                                    <select id="unit">
+                                        <option value="hour">Hour</option>
+                                        <option value="each">Each</option>
+                                        <option value="sqft">Square Foot</option>
+                                        <option value="sqm">Square Meter</option>
+                                        <option value="custom">Add Custom Unit</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="serviceCustomUnitGroup" style="display: none;">
+                                <label for="serviceCustomUnit">Custom Unit <span class="required">*</span></label>
+                                <input type="text" id="serviceCustomUnit" placeholder="e.g., kg, liter, piece"
+                                    style="text-transform: lowercase;">
+                                <div class="info-text">Enter a custom unit name</div>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="price" id="priceLabel">Price (per hour) <span class="required">*</span></label>
@@ -562,7 +637,50 @@
     </div>
 
     <script>
-        // Radio button selection functions (single-select)
+        // ============================================================================
+        // SERVICE CONFIGURATION: Skills Management
+        // ============================================================================
+
+        let requiredSkills = [];
+
+        function initializeSkillsInput() {
+            const skillInput = document.getElementById('skillInput');
+            if (!skillInput) return;
+
+            skillInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const skill = skillInput.value.trim();
+                    if (skill && !requiredSkills.includes(skill)) {
+                        requiredSkills.push(skill);
+                        renderSkillTags();
+                        skillInput.value = '';
+                    }
+                }
+            });
+        }
+
+        function renderSkillTags() {
+            const container = document.getElementById('requiredSkillsContainer');
+            if (!container) return;
+
+            container.innerHTML = requiredSkills.map(skill => `
+                <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #6366f1; color: white; border-radius: 16px; font-size: 13px;">
+                    <span>${skill}</span>
+                    <button type="button" onclick="removeSkill('${skill}')" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px; line-height: 1; padding: 0;">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeSkill(skill) {
+            requiredSkills = requiredSkills.filter(s => s !== skill);
+            renderSkillTags();
+        }
+
+        // ============================================================================
+        // EXISTING CODE: Radio button selection functions (single-select)
+        // ============================================================================
+
         function selectPackageModel(element) {
             // Remove active from all package model options
             document.querySelectorAll('[name="packageModel"]').forEach(el => {
@@ -617,28 +735,47 @@
             const priceLabel = document.getElementById('priceLabel');
             const priceInfo = document.getElementById('priceInfo');
 
+            // Toggle service configuration fields
+            const subscriptionServiceFields = document.getElementById('subscriptionServiceFields');
+            const nonSubscriptionServiceNote = document.getElementById('nonSubscriptionServiceNote');
+            const moqUnitSection = document.getElementById('moqUnitSection');
+
             if (subscriptionRadio && subscriptionRadio.checked) {
                 // Subscription mode
                 frequencyGroup.style.display = 'block';
 
                 // Lock unit to "hour"
-                unitSelect.value = 'hour';
-                unitSelect.disabled = true;
+                if (unitSelect) {
+                    unitSelect.value = 'hour';
+                    unitSelect.disabled = true;
+                }
 
                 priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
                 priceInfo.textContent = 'Price will be calculated per hour';
+
+                // Show subscription service fields (capacity, duration, skills)
+                if (subscriptionServiceFields) subscriptionServiceFields.style.display = 'block';
+                if (nonSubscriptionServiceNote) nonSubscriptionServiceNote.style.display = 'none';
+                if (moqUnitSection) moqUnitSection.style.display = 'none';
             } else {
                 // Non-subscription mode
                 frequencyGroup.style.display = 'none';
 
                 // Enable unit selection
-                unitSelect.disabled = false;
+                if (unitSelect) {
+                    unitSelect.disabled = false;
+                }
 
                 // Update price label based on selected unit
-                const unit = unitSelect.value;
+                const unit = unitSelect ? unitSelect.value : 'unit';
                 const unitText = unit === 'custom' ? 'unit' : unit;
                 priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
                 priceInfo.textContent = `Price will be per ${unitText}`;
+
+                // Hide subscription service fields, show MOQ/Unit section
+                if (subscriptionServiceFields) subscriptionServiceFields.style.display = 'none';
+                if (nonSubscriptionServiceNote) nonSubscriptionServiceNote.style.display = 'block';
+                if (moqUnitSection) moqUnitSection.style.display = 'block';
             }
         }
 
@@ -729,12 +866,9 @@
             const imageInput = document.getElementById('imageInput');
             const previewImage = document.getElementById('previewImage');
             const imagePlaceholder = document.getElementById('imagePlaceholder');
-            // const codeInput = document.getElementById('code'); // Removed, now in updatePreview
-            // const nameInput = document.getElementById('name'); // Removed, now in updatePreview
-            // const priceInput = document.getElementById('price'); // Removed, now in updatePreview
-            // const currencySelect = document.getElementById('currency'); // Removed, now in updatePreview
-            // const descriptionInput = document.getElementById('description'); // Removed, now in updatePreview
-            // const previewContent = document.getElementById('previewContent'); // Removed, now in updatePreview
+
+            // Initialize new features
+            initializeSkillsInput();
 
             // Initialize package model UI
             updatePackageModelUI();
@@ -748,17 +882,20 @@
                     serviceFields.style.display = 'block';
                     productFields.style.display = 'none';
                     packageModelSection.style.display = 'block';
+                    toggleServiceSections(true); // Show new service sections
                     updatePackageModelUI();
                 } else if (typeSelect.value === 'product') {
                     serviceFields.style.display = 'none';
                     productFields.style.display = 'block';
                     packageModelSection.style.display = 'none';
+                    toggleServiceSections(false); // Hide new service sections
                     priceLabel.innerHTML = 'Price (per unit) <span class="required">*</span>';
                     priceInfo.textContent = 'Price will be per unit';
                 } else {
                     serviceFields.style.display = 'none';
                     productFields.style.display = 'none';
                     packageModelSection.style.display = 'none';
+                    toggleServiceSections(false); // Hide new service sections
                     priceLabel.innerHTML = 'Price <span class="required">*</span>';
                     priceInfo.textContent = 'Enter the price';
                 }
@@ -858,17 +995,110 @@
             // Form submission
             document.getElementById('pricebookForm').addEventListener('submit', function (e) {
                 e.preventDefault();
-                alert('Item created successfully! (Demo)');
-                // In real implementation, send data to server
-                // window.location.href = 'pricebook.html';
+
+                const formData = collectFormData();
+                console.log('Pricebook Item Data:', formData);
+
+                // Save to localStorage
+                savePricebookItem(formData);
+
+                alert('Item created successfully!');
+                window.location.href = 'pricebook.html';
             });
 
             // Save draft
             document.getElementById('saveDraftBtn').addEventListener('click', function () {
-                alert('Draft saved! (Demo)');
-                // In real implementation, save to server
+                const formData = collectFormData();
+                formData.status = 'draft';
+
+                console.log('Draft Data:', formData);
+                savePricebookItem(formData);
+
+                alert('Draft saved successfully!');
             });
         });
+
+        // ============================================================================
+        // DATA COLLECTION & STORAGE
+        // ============================================================================
+
+        function collectFormData() {
+            const typeSelect = document.getElementById('typeSelect');
+            const type = typeSelect.value;
+
+            // Basic fields
+            const data = {
+                id: Date.now().toString(),
+                type: type,
+                code: document.getElementById('code').value,
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                sku: document.getElementById('sku').value,
+                tags: document.getElementById('tags').value,
+                currency: document.getElementById('currency').value,
+                price: parseFloat(document.getElementById('price').value),
+                taxCategory: document.getElementById('tax').value,
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+
+            // Service-specific fields
+            if (type === 'service') {
+                const packageModel = document.querySelector('input[name="packageModel"]:checked')?.value || 'non-subscription';
+                data.packageModel = packageModel;
+                data.serviceType = document.querySelector('input[name="serviceType"]:checked')?.value || 'class';
+
+                if (packageModel === 'subscription') {
+                    // Subscription service fields
+                    data.sessionFrequency = document.querySelector('input[name="frequency"]:checked')?.value || 'weekly';
+                    data.capacity = {
+                        minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
+                        maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
+                    };
+                    data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+                    data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
+                    data.requiredSkills = requiredSkills; // From global variable
+                    data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
+                    data.unit = 'hour'; // Fixed for subscription
+                } else {
+                    // Non-subscription service fields
+                    data.moq = parseFloat(document.getElementById('moq')?.value || 1);
+                    const unitSelect = document.getElementById('unit');
+                    const customUnit = document.getElementById('serviceCustomUnit')?.value;
+                    data.unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
+                }
+            }
+            // Product-specific fields
+            else if (type === 'product') {
+                data.moq = parseFloat(document.getElementById('productMOQ')?.value || 1);
+                const productUnitSelect = document.getElementById('productUnit');
+                const productCustomUnit = document.getElementById('productCustomUnit')?.value;
+                data.unit = productUnitSelect?.value === 'custom' && productCustomUnit ? productCustomUnit : productUnitSelect?.value || 'each';
+            }
+
+            return data;
+        }
+
+        function savePricebookItem(itemData) {
+            // Get existing pricebook items
+            let pricebookItems = JSON.parse(localStorage.getItem('pricebookItems') || '[]');
+
+            // Check if updating existing item
+            const existingIndex = pricebookItems.findIndex(item => item.id === itemData.id);
+
+            if (existingIndex >= 0) {
+                // Update existing
+                pricebookItems[existingIndex] = itemData;
+            } else {
+                // Add new
+                pricebookItems.push(itemData);
+            }
+
+            // Save back to localStorage
+            localStorage.setItem('pricebookItems', JSON.stringify(pricebookItems));
+
+            return itemData;
+        }
     </script>
 </body>
 

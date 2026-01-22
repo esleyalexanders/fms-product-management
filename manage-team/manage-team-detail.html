@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,29 +11,154 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../home-styles.css">
     <style>
-        .detail-container { max-width:800px; margin:0 auto; background:#fff; border-radius:8px; padding:24px; }
-        .staff-header { display:flex; align-items:center; gap:24px; margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid #e5e7eb; }
-        .staff-photo { width:100px; height:100px; border-radius:50%; background:#f3f4f6; display:flex; align-items:center; justify-content:center; color:#6b7280; font-size:36px; }
-        .staff-photo img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
-        .staff-info h1 { margin:0; font-size:28px; color:#111827; }
-        .staff-role { color:#6366f1; font-weight:500; margin:4px 0; }
-        .staff-status { display:inline-block; padding:4px 12px; border-radius:20px; font-size:14px; font-weight:500; }
-        .status-active { background:#dcfce7; color:#166534; }
-        .status-inactive { background:#fef2f2; color:#991b1b; }
-        .detail-section { margin-bottom:32px; }
-        .detail-section h3 { font-size:18px; font-weight:600; margin-bottom:16px; color:#374151; border-bottom:1px solid #e5e7eb; padding-bottom:8px; }
-        .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-        .detail-item { margin-bottom:12px; }
-        .detail-label { font-size:14px; font-weight:500; color:#6b7280; margin-bottom:4px; }
-        .detail-value { font-size:15px; color:#111827; }
-        .actions-bar { background:#f9fafb; padding:16px; border-radius:6px; margin-bottom:24px; }
-        .btn-primary, .btn-secondary { font-family:inherit; font-size:15px; border-radius:6px; padding:8px 16px; border:none; cursor:pointer; margin-right:8px; }
-        .btn-primary { background:#6366f1; color:#fff; }
-        .btn-secondary { background:#e5e7eb; color:#374151; }
-        .sidebar .nav-item.manage-team-link { background:#eef2ff; color:#6366f1; font-weight:600; }
-        @media (max-width:768px) { .detail-grid { grid-template-columns:1fr; } .staff-header { flex-direction:column; text-align:center; } }
+        .detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .staff-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .staff-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 36px;
+        }
+
+        .staff-photo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .staff-info h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #111827;
+        }
+
+        .staff-role {
+            color: #6366f1;
+            font-weight: 500;
+            margin: 4px 0;
+        }
+
+        .staff-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .detail-section {
+            margin-bottom: 32px;
+        }
+
+        .detail-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            color: #111827;
+        }
+
+        .actions-bar {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            font-family: inherit;
+            font-size: 15px;
+            border-radius: 6px;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .sidebar .nav-item.manage-team-link {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        @media (max-width:768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .staff-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -47,26 +173,34 @@
             </div>
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                <a href="manage-team.html" class="nav-item manage-team-link" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-            <div class="sidebar-footer">
-                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item manage-team-link"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <div class="sidebar-footer">
+                    <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
         <!-- Main Content Area -->
         <main class="main-content">
@@ -76,13 +210,15 @@
                     <p class="page-subtitle">View complete staff member information</p>
                 </div>
                 <div class="header-right">
-                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Team</button></a>
+                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i
+                                class="fas fa-arrow-left"></i> Back to Team</button></a>
                 </div>
             </header>
             <div class="content-wrapper">
                 <div class="detail-container">
                     <div class="actions-bar">
-                        <a href="manage-team-edit.html?id=1" style="text-decoration:none;"><button class="btn-primary"><i class="fas fa-edit"></i> Edit Staff</button></a>
+                        <a href="manage-team-edit.html?id=1" style="text-decoration:none;"><button
+                                class="btn-primary"><i class="fas fa-edit"></i> Edit Staff</button></a>
                         <button class="btn-secondary" id="printBtn"><i class="fas fa-print"></i> Print Details</button>
                         <button class="btn-secondary" id="exportBtn"><i class="fas fa-download"></i> Export</button>
                     </div>
@@ -140,7 +276,9 @@
                                 <div class="detail-value" id="employmentType">Full-time</div>
                             </div>
                             <div class="detail-item" id="payRateItem">
-                                <div class="detail-label">Pay Rate (Hourly) <i class="fas fa-lock" style="color:#6b7280; font-size:12px;" title="Visible to Managers only"></i></div>
+                                <div class="detail-label">Pay Rate (Hourly) <i class="fas fa-lock"
+                                        style="color:#6b7280; font-size:12px;" title="Visible to Managers only"></i>
+                                </div>
                                 <div class="detail-value" id="hourlyRate">$25.00/hr</div>
                             </div>
                             <div class="detail-item">
@@ -156,4 +294,5 @@
     <script src="staff_store.js"></script>
     <script src="manage-team-detail-script.js"></script>
 </body>
+
 </html>

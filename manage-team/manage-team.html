@@ -1,5 +1,6 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,27 +11,121 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../home-styles.css">
     <style>
-        .staff-table { width:100%; border-collapse:collapse; margin-top:24px; background:#fff; border-radius:8px; overflow:hidden; }
-        .staff-table th, .staff-table td { padding:12px 16px; border-bottom:1px solid #e6e9ee; text-align:left; }
-        .staff-table th { background:#f3f4f6; font-weight:500; color:#374151; }
-        .staff-table tr:last-child td { border-bottom:none; }
-        .staff-actions { display:flex; gap:8px; }
-        .btn-primary, .btn-secondary, .btn-link { font-family:inherit; font-size:15px; border-radius:6px; padding:8px 16px; border:none; cursor:pointer; }
-        .btn-primary { background:#6366f1; color:#fff; }
-        .btn-secondary { background:#e5e7eb; color:#374151; }
-        .btn-link { background:none; color:#6366f1; text-decoration:underline; padding:0; }
-        .btn-link.activate-btn { color:#059669; }
-        .btn-link.activate-btn:hover { color:#047857; }
-        .btn-link.delete-btn { color:#dc2626; }
-        .btn-link.delete-btn:hover { color:#b91c1c; }
-        .status-active { color:#059669; font-weight:500; }
-        .status-inactive { color:#dc2626; font-weight:500; }
-        .filter-section { display:flex; gap:16px; align-items:center; margin-bottom:18px; }
-        .filter-section select, .filter-section input { padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px; font-size:15px; }
-        .sidebar .nav-item.manage-team-link { background:#eef2ff; color:#6366f1; font-weight:600; }
-        @media (max-width:900px) { .filter-section { flex-direction:column; align-items:stretch; } }
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .staff-table th,
+        .staff-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e6e9ee;
+            text-align: left;
+        }
+
+        .staff-table th {
+            background: #f3f4f6;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .staff-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .staff-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-link {
+            font-family: inherit;
+            font-size: 15px;
+            border-radius: 6px;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-link {
+            background: none;
+            color: #6366f1;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        .btn-link.activate-btn {
+            color: #059669;
+        }
+
+        .btn-link.activate-btn:hover {
+            color: #047857;
+        }
+
+        .btn-link.delete-btn {
+            color: #dc2626;
+        }
+
+        .btn-link.delete-btn:hover {
+            color: #b91c1c;
+        }
+
+        .status-active {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .status-inactive {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            padding: 8px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .sidebar .nav-item.manage-team-link {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        @media (max-width:900px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -48,26 +143,34 @@
             </div>
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                <a href="manage-team.html" class="nav-item manage-team-link" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-            <div class="sidebar-footer">
-                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item manage-team-link"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <div class="sidebar-footer">
+                    <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
         <!-- Main Content Area -->
         <main class="main-content">
@@ -77,15 +180,19 @@
                     <p class="page-subtitle">Manage your staff members, roles, and permissions</p>
                 </div>
                 <div class="header-right">
-                    <a href="manage-team-create.html" style="text-decoration:none;"><button class="btn-primary" id="addStaffBtn"><i class="fas fa-user-plus"></i> Add Staff</button></a>
-                    <a href="manage-team-roles.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-shield-alt"></i> Manage Roles</button></a>
+                    <a href="manage-team-create.html" style="text-decoration:none;"><button class="btn-primary"
+                            id="addStaffBtn"><i class="fas fa-user-plus"></i> Add Staff</button></a>
+                    <a href="manage-team-roles.html" style="text-decoration:none;"><button class="btn-secondary"><i
+                                class="fas fa-shield-alt"></i> Manage Roles</button></a>
                 </div>
             </header>
             <div class="content-wrapper">
                 <section>
                     <div class="filter-section">
-                        <input type="text" id="searchInput" placeholder="Search by name, role, status" style="flex:1; min-width:200px;">
-                        <input type="text" id="roleFilter" placeholder="Search by contact" style="flex:1; min-width:150px;">
+                        <input type="text" id="searchInput" placeholder="Search by name, role, status"
+                            style="flex:1; min-width:200px;">
+                        <input type="text" id="roleFilter" placeholder="Search by contact"
+                            style="flex:1; min-width:150px;">
                         <select id="statusFilter">
                             <option value="">All Status</option>
                             <option value="active" selected>Active</option>
@@ -119,4 +226,5 @@
     <script src="staff_store.js"></script>
     <script src="manage-team-script.js"></script>
 </body>
+
 </html>

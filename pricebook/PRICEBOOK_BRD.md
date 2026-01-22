@@ -279,8 +279,8 @@ Products are inherently non-subscription items; simplifies the form and prevents
 **Status:** ✅ Complete  
 **Implementation Date:** January 13, 2026  
 **Files Modified:**
-- `admin/pricebook-create.html` - Create form
-- `admin/pricebook-edit.html` - Edit form
+- `pricebook/pricebook-create.html` - Create form
+- `pricebook/pricebook-edit.html` - Edit form
 
 **Testing Status:** ✅ Browser testing completed
 

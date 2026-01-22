@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Customer</title>
-    <link rel="stylesheet" href="../home-styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Custom scrollbar */
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-      
-      /* Override home-styles.css to allow scrolling */
-      .main-content {
-        overflow: visible !important;
-        overflow-y: auto !important;
-        padding: 1.5rem;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Customer</title>
+  <link rel="stylesheet" href="../home-styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Override home-styles.css to allow scrolling */
+    .main-content {
+      overflow: visible !important;
+      overflow-y: auto !important;
+      padding: 1.5rem;
+    }
+  </style>
 </head>
+
 <body class="bg-gray-50">
   <div class="app-container">
-  <!-- Sidebar (same structure as home.html) -->
-  <nav class="sidebar">
+    <!-- Sidebar (same structure as home.html) -->
+    <nav class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
           <i class="fas fa-store"></i>
@@ -54,12 +59,18 @@
 
       <div class="sidebar-nav">
         <div class="nav-section-label">MAIN</div>
-        <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-        <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-        <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-        <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-        <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
+        <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-home"></i><span>Home</span></a>
+        <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-file-contract"></i><span>Quotes</span></a>
+        <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+        <a href="../manage-team/manage-team.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-users"></i><span>Manage team</span></a>
+        <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-book"></i><span>My pricebook</span></a>
+        <a href="customer-list.html" class="nav-item customers-link" style="text-decoration: none; color: inherit;"><i
+            class="fas fa-user-friends"></i><span>Customers</span></a>
       </div>
 
       <div class="sidebar-footer">
@@ -85,7 +96,8 @@
           <div class="flex items-center gap-3">
             <a href="customer-list.html" class="text-gray-600 hover:text-gray-900">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                </path>
               </svg>
             </a>
             <div>
@@ -112,11 +124,15 @@
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                <input id="firstName" name="firstName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John" required>
+                <input id="firstName" name="firstName" type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="John" required>
               </div>
               <div>
                 <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                <input id="lastName" name="lastName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Doe" required>
+                <input id="lastName" name="lastName" type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Doe" required>
               </div>
             </div>
           </div>
@@ -126,7 +142,9 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Company</h2>
             <div>
               <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-              <input id="company" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ABC Corp">
+              <input id="company" type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="ABC Corp">
             </div>
           </div>
 
@@ -134,28 +152,35 @@
           <div class="bg-white rounded-lg shadow-sm p-4">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-lg font-semibold text-gray-900">Contact Information</h2>
-              <button type="button" id="addSecondaryContactBtn" class="px-3 py-2 border border-blue-600 text-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 flex items-center gap-2 transition-colors">
+              <button type="button" id="addSecondaryContactBtn"
+                class="px-3 py-2 border border-blue-600 text-blue-600 text-sm font-medium rounded-lg hover:bg-blue-50 flex items-center gap-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
                 Add Secondary Contact
               </button>
             </div>
-            
+
             <!-- Primary Contact -->
             <div class="space-y-3">
               <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Primary Contact</div>
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                <input id="email" type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="john@example.com" required>
+                <input id="email" type="email"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="john@example.com" required>
               </div>
               <div>
                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                <input id="phone" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900">
+                <input id="phone" type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="+1 234 567 8900">
               </div>
               <div>
-                <label for="preferredContactMethod" class="block text-sm font-medium text-gray-700 mb-1">Preferred Contact Method</label>
-                <select id="preferredContactMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label for="preferredContactMethod" class="block text-sm font-medium text-gray-700 mb-1">Preferred
+                  Contact Method</label>
+                <select id="preferredContactMethod"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="email">Email</option>
                   <option value="phone">Phone</option>
                   <option value="whatsapp">WhatsApp</option>
@@ -170,9 +195,12 @@
               <div class="border-t border-gray-200 pt-4" id="secondary-default">
                 <div class="flex justify-between items-center mb-3">
                   <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Secondary Contact</div>
-                  <button type="button" class="text-red-600 text-sm hover:text-red-800 flex items-center gap-1" onclick="window.removeSecondaryContact('secondary-default')">
+                  <button type="button" class="text-red-600 text-sm hover:text-red-800 flex items-center gap-1"
+                    onclick="window.removeSecondaryContact('secondary-default')">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                      </path>
                     </svg>
                     Remove
                   </button>
@@ -180,19 +208,27 @@
                 <div class="space-y-3">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
-                    <input type="text" class="secondary-contact-name w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contact person name">
+                    <input type="text"
+                      class="secondary-contact-name w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Contact person name">
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" class="secondary-contact-email w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="contact@example.com">
+                    <input type="email"
+                      class="secondary-contact-email w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="contact@example.com">
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <input type="text" class="secondary-contact-phone w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+1 234 567 8900">
+                    <input type="text"
+                      class="secondary-contact-phone w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="+1 234 567 8900">
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Role/Relationship</label>
-                    <input type="text" class="secondary-contact-role w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Spouse, Assistant, Manager">
+                    <input type="text"
+                      class="secondary-contact-role w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="e.g., Spouse, Assistant, Manager">
                   </div>
                 </div>
               </div>
@@ -205,26 +241,36 @@
             <div class="space-y-3">
               <div>
                 <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Street</label>
-                <input id="street" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 Main St">
+                <input id="street" type="text"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="123 Main St">
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <input id="city" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="New York">
+                  <input id="city" type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="New York">
                 </div>
                 <div>
                   <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
-                  <input id="state" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="NY">
+                  <input id="state" type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="NY">
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <label for="postalCode" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                  <input id="postalCode" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="10001">
+                  <input id="postalCode" type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="10001">
                 </div>
                 <div>
                   <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                  <input id="country" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Australia" value="Australia">
+                  <input id="country" type="text"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Australia" value="Australia">
                 </div>
               </div>
             </div>
@@ -235,7 +281,9 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
             <div>
               <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
-              <textarea id="notes" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional notes about the customer"></textarea>
+              <textarea id="notes" rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Additional notes about the customer"></textarea>
             </div>
           </div>
         </div>
@@ -298,16 +346,16 @@
     }
 
     // Secondary Contact Functions
-    window.addSecondaryContact = function(data = {}) {
+    window.addSecondaryContact = function (data = {}) {
       console.log('Adding secondary contact...', data);
       const contactId = `secondary-${secondaryContactCounter++}`;
       const container = document.getElementById('secondaryContactsContainer');
-      
+
       if (!container) {
         console.error('Secondary contacts container not found!');
         return;
       }
-      
+
       const contactDiv = document.createElement('div');
       contactDiv.className = 'border-t border-gray-200 pt-4';
       contactDiv.id = contactId;
@@ -340,13 +388,13 @@
           </div>
         </div>
       `;
-      
+
       container.appendChild(contactDiv);
       secondaryContacts.push(contactId);
       console.log('Secondary contact added successfully!', contactId);
     }
 
-    window.removeSecondaryContact = function(contactId) {
+    window.removeSecondaryContact = function (contactId) {
       console.log('Removing secondary contact...', contactId);
       const element = document.getElementById(contactId);
       if (element) {
@@ -490,7 +538,7 @@
       postalCodeInput.value = customer.address?.postalCode || '';
       countryInput.value = customer.address?.country || '';
       notesTextarea.value = customer.notes || '';
-      
+
       // Load secondary contacts if they exist
       if (customer.secondaryContacts && Array.isArray(customer.secondaryContacts) && customer.secondaryContacts.length > 0) {
         // Clear the default form first
@@ -500,13 +548,13 @@
           secondaryContacts = [];
           secondaryContactCounter = 0;
         }
-        
+
         // Add saved contacts
         customer.secondaryContacts.forEach(contact => {
           addSecondaryContact(contact);
         });
       }
-      
+
       updatePreview();
     } else {
       alert('Customer not found.');
@@ -573,4 +621,5 @@
     }
   </script>
 </body>
+
 </html>

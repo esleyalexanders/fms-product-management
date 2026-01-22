@@ -174,9 +174,9 @@
 
 ---
 
-## 🔧 Admin Module (3 files)
+## 🔧 Pricebook Module (3 files)
 
-**Path:** `admin/`
+**Path:** `pricebook/`
 
 ### Pricebook Management
 - `pricebook.html` - **[OFFICIAL]** Pricebook listing
@@ -220,7 +220,7 @@
 | Quotes & Invoices | 52 | Active |
 | - Main Quotes | 12 | Active |
 | - Quote Simple | 40 | Alternative Flow |
-| Admin (Pricebook) | 3 | Active |
+| Pricebook Module | 3 | Active |
 | Team Management | 6 | Active |
 | **TOTAL** | **89** | |
 

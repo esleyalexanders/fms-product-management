@@ -177,7 +177,7 @@
                 <a href="manage-team/manage-team.html" class="nav-item"
                     style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
                         team</span></a>
-                <a href="admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                <a href="pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-book"></i><span>My pricebook</span></a>
                 <a href="Customer Management/customer-list.html" class="nav-item"
                     style="text-decoration: none; color: inherit;"><i
@@ -316,20 +316,22 @@
                                 </div>
                             </a>
 
-                            <!-- Create Invoice -->
-                            <a href="[v2] Quotes/quote_simple/invoice_create_simple.html"
+                            <!-- Add Customer -->
+                            <a href="Customer Management/customer-create.html"
                                 class="quick-action-card bg-white rounded-lg p-5 cursor-pointer">
                                 <div class="flex items-start gap-4">
                                     <div
-                                        class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-file-invoice text-amber-600 text-xl"></i>
+                                        class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user-plus text-green-600 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="font-semibold text-gray-900 mb-1">Create Invoice</h3>
-                                        <p class="text-sm text-gray-600">Generate invoice from quote or manually</p>
+                                        <h3 class="font-semibold text-gray-900 mb-1">Add Customer</h3>
+                                        <p class="text-sm text-gray-600">Register a new client profile</p>
                                     </div>
                                 </div>
                             </a>
+
+
 
                             <!-- Schedule Session -->
                             <a href="[v2] Jobs/service_job_v3/session_create.html"
@@ -402,78 +404,9 @@
                                 <a href="[v2] Quotes/quote_simple/quote_list_simple.html"
                                     class="text-sm text-blue-600 hover:text-blue-700">View all</a>
                             </div>
-                            <div class="space-y-3">
-                                <!-- Quote Item -->
-                                <div class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-blue-300"
-                                    onclick="window.location.href='[v2] Quotes/quote_simple/quote_edit_simple.html'">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-file-contract text-blue-600"></i>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="font-medium text-gray-900">Quote #Q-2024-045</p>
-                                            <p class="text-sm text-gray-600">John Doe • Math Tutoring Package</p>
-                                            <p class="text-xs text-gray-500 mt-1">$1,200 • Sent 2 days ago</p>
-                                        </div>
-                                        <span
-                                            class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Sent</span>
-                                    </div>
-                                </div>
-
-                                <!-- Invoice Item -->
-                                <div class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-amber-300"
-                                    onclick="window.location.href='[v2] Quotes/quote_simple/invoice_detail_simple.html'">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-file-invoice-dollar text-amber-600"></i>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="font-medium text-gray-900">Invoice #INV-2024-089</p>
-                                            <p class="text-sm text-gray-600">Sarah Williams • English Classes</p>
-                                            <p class="text-xs text-gray-500 mt-1">$850 • Due in 3 days</p>
-                                        </div>
-                                        <span
-                                            class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">Unpaid</span>
-                                    </div>
-                                </div>
-
-                                <!-- Quote Item -->
-                                <div
-                                    class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-blue-300">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-file-contract text-blue-600"></i>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="font-medium text-gray-900">Quote #Q-2024-046</p>
-                                            <p class="text-sm text-gray-600">Mike Johnson • Physics Tutoring</p>
-                                            <p class="text-xs text-gray-500 mt-1">$2,400 • Sent 1 day ago</p>
-                                        </div>
-                                        <span
-                                            class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Sent</span>
-                                    </div>
-                                </div>
-
-                                <!-- Invoice Item -->
-                                <div
-                                    class="activity-item p-3 rounded-lg border border-red-200 cursor-pointer hover:border-red-300">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-exclamation-triangle text-red-600"></i>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="font-medium text-gray-900">Invoice #INV-2024-082</p>
-                                            <p class="text-sm text-gray-600">Emma Thompson • Group Classes</p>
-                                            <p class="text-xs text-gray-500 mt-1">$1,500 • Overdue by 5 days</p>
-                                        </div>
-                                        <span
-                                            class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">Overdue</span>
-                                    </div>
-                                </div>
+                            <div class="space-y-3" id="pending-activity-list">
+                                <!-- Dynamically populated by home-dashboard-stats.js -->
+                                <div class="text-center py-6 text-gray-500">Loading activities...</div>
                             </div>
                         </div>
 
@@ -484,81 +417,9 @@
                                 <a href="[v2] Jobs/service_job_v3/schedule_calendar.html"
                                     class="text-sm text-purple-600 hover:text-purple-700">View calendar</a>
                             </div>
-                            <div class="space-y-3">
-                                <!-- Today -->
-                                <div class="mb-3">
-                                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Today - Tuesday, Oct 3
-                                    </p>
-                                    <div class="space-y-2">
-                                        <div
-                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
-                                            <div class="flex items-start gap-3">
-                                                <div
-                                                    class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-book-reader text-purple-600"></i>
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="font-medium text-gray-900 truncate">Math Tutoring - Grade
-                                                        5</p>
-                                                    <p class="text-sm text-gray-600">Sarah Williams • 2:00 PM - 3:00 PM
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
-                                            <div class="flex items-start gap-3">
-                                                <div
-                                                    class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-users text-blue-600"></i>
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="font-medium text-gray-900 truncate">English Class -
-                                                        Intermediate</p>
-                                                    <p class="text-sm text-gray-600">Group Session • 4:00 PM - 5:30 PM
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Tomorrow -->
-                                <div>
-                                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Tomorrow - Wednesday,
-                                        Oct 4</p>
-                                    <div class="space-y-2">
-                                        <div
-                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
-                                            <div class="flex items-start gap-3">
-                                                <div
-                                                    class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-calculator text-amber-600"></i>
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="font-medium text-gray-900 truncate">Physics - Advanced</p>
-                                                    <p class="text-sm text-gray-600">Mike Johnson • 10:00 AM - 11:00 AM
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="activity-item p-3 rounded-lg border border-gray-200 cursor-pointer hover:border-purple-300">
-                                            <div class="flex items-start gap-3">
-                                                <div
-                                                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                    <i class="fas fa-language text-green-600"></i>
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="font-medium text-gray-900 truncate">Spanish Conversation
-                                                    </p>
-                                                    <p class="text-sm text-gray-600">Emma Thompson • 3:00 PM - 4:00 PM
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="space-y-3" id="upcoming-schedule-list">
+                                <!-- Dynamically populated by home-dashboard-stats.js -->
+                                <div class="text-center py-6 text-gray-500">Loading schedule...</div>
                             </div>
                         </div>
                     </div>
@@ -593,7 +454,7 @@
                                         <p class="text-sm text-gray-600">Create a service in your pricebook to start
                                             offering to customers</p>
                                     </div>
-                                    <a href="admin/pricebook-create.html"
+                                    <a href="pricebook/pricebook-create.html"
                                         class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap">
                                         Add to Pricebook →
                                     </a>
@@ -648,6 +509,7 @@
         </main>
     </div>
 
+    <script src="data-seed.js"></script>
     <script src="home-script.js"></script>
     <script src="home-dashboard-stats.js"></script>
     <script>

@@ -10,7 +10,7 @@ Date: 2025-10-21
 
 The Pricebook item supports both services and products. Each entry represents a canonical item franchisees use when building quotes and invoices. The UI supports drafts, publishing (versioning), and optionally notifying franchisees.
 
-The client pages: `admin/pricebook-create.html` and `admin/pricebook-edit.html` (under `admin/`) are styled to match `add-product.html` and contain fields described below.
+The client pages: `pricebook/pricebook-create.html` and `pricebook/pricebook-edit.html` (under `pricebook/`) are styled to match `add-product.html` and contain fields described below.
 
 ---
 

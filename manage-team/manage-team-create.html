@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,72 +11,425 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../home-styles.css">
     <style>
-        .form-container { max-width:800px; margin:0 auto; background:#fff; border-radius:8px; padding:24px; }
-        .form-tabs { display:flex; border-bottom:1px solid #e5e7eb; margin-bottom:24px; }
-        .tab-btn { padding:12px 24px; border:none; background:none; cursor:pointer; font-size:15px; font-weight:500; color:#6b7280; border-bottom:2px solid transparent; }
-        .tab-btn.active { color:#6366f1; border-bottom-color:#6366f1; }
-        .tab-content { display:none; }
-        .tab-content.active { display:block; }
-        .form-section { margin-bottom:32px; }
-        .form-section h3 { font-size:18px; font-weight:600; margin-bottom:16px; color:#374151; }
-        .form-row { display:flex; gap:16px; margin-bottom:16px; }
-        .form-row .form-group { flex:1; }
-        .form-group label { display:block; font-size:14px; font-weight:500; margin-bottom:6px; color:#374151; }
-        .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:15px; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
-        .required { color:#dc2626; }
-        .form-actions { display:flex; gap:12px; justify-content:flex-end; padding-top:24px; border-top:1px solid #e5e7eb; }
-        .btn-primary, .btn-secondary { font-family:inherit; font-size:15px; border-radius:6px; padding:10px 20px; border:none; cursor:pointer; }
-        .btn-primary { background:#6366f1; color:#fff; }
-        .btn-secondary { background:#e5e7eb; color:#374151; }
-        .photo-upload { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
-        .photo-preview { width:80px; height:80px; border-radius:50%; background:#f3f4f6; display:flex; align-items:center; justify-content:center; color:#6b7280; font-size:24px; }
-        .photo-preview img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
-        .upload-btn { padding:8px 16px; border:1px solid #d1d5db; border-radius:6px; background:#fff; cursor:pointer; }
-        .error-message { color:#dc2626; font-size:14px; margin-top:4px; }
-        .sidebar .nav-item.manage-team-link { background:#eef2ff; color:#6366f1; font-weight:600; }
-        .avail-day { border:1px dashed #e6e9ee; padding:8px; border-radius:6px; margin-bottom:8px; }
-        .avail-day-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-        .range-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
-        .range-to { color:#6b7280; font-size:14px; }
-        .blocked-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
-        .availability-controls { display:flex; flex-direction:column; gap:8px; }
-        .weekday-preset { display:flex; flex-direction:column; gap:4px; }
-        .preset-inputs { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-        .availability-hint { margin-top:4px; }
-        .scheduling-section { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:20px; margin-top:16px; }
-        .scheduling-subsection { margin-bottom:24px; }
-        .scheduling-subsection:last-child { margin-bottom:0; }
-        .subsection-header { display:flex; align-items:center; gap:8px; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #e5e7eb; }
-        .subsection-header i { color:#6366f1; font-size:18px; }
-        .subsection-header h4 { margin:0; font-size:16px; font-weight:600; color:#374151; }
-        .subsection-description { font-size:13px; color:#6b7280; margin-bottom:12px; }
-        .preset-card { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:12px; margin-bottom:12px; }
-        .preset-card-header { font-size:14px; font-weight:500; color:#374151; margin-bottom:8px; }
-        .avail-day { border:1px solid #e5e7eb; padding:12px; border-radius:6px; margin-bottom:8px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
-        .avail-day-header strong { font-size:14px; color:#374151; text-transform:capitalize; }
-        .btn-add-small { font-size:13px; padding:4px 10px; }
-        .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-        .info-badge { display:inline-flex; align-items:center; gap:4px; background:#dbeafe; color:#1e40af; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:500; }
-        .info-badge i { font-size:10px; }
-        .constraint-group { background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:12px; }
-        .checkbox-group { display:flex; flex-direction:column; gap:8px; }
-        .checkbox-label { display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer; }
-        .checkbox-label input[type="checkbox"] { width:18px; height:18px; cursor:pointer; }
-        .pay-rate-input { display:flex; align-items:stretch; }
-        .pay-rate-input .currency-prefix { padding:10px 12px; background:#f3f4f6; border:1px solid #d1d5db; border-right:none; border-radius:6px 0 0 6px; color:#374151; font-weight:500; display:flex; align-items:center; }
-        .pay-rate-input input { flex:1; border-radius:0; border-left:none; border-right:none; }
-        .pay-rate-input .rate-suffix { padding:10px 12px; background:#f3f4f6; border:1px solid #d1d5db; border-left:none; border-radius:0 6px 6px 0; color:#6b7280; font-size:14px; display:flex; align-items:center; }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .form-tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            font-family: inherit;
+            font-size: 15px;
+            border-radius: 6px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .photo-upload {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 24px;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .upload-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .sidebar .nav-item.manage-team-link {
+            background: #eef2ff;
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .avail-day {
+            border: 1px dashed #e6e9ee;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .avail-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .range-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .range-to {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .blocked-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .availability-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .weekday-preset {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .preset-inputs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .availability-hint {
+            margin-top: 4px;
+        }
+
+        .scheduling-section {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .scheduling-subsection {
+            margin-bottom: 24px;
+        }
+
+        .scheduling-subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .subsection-header i {
+            color: #6366f1;
+            font-size: 18px;
+        }
+
+        .subsection-header h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .subsection-description {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .preset-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .preset-card-header {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .avail-day {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .avail-day-header strong {
+            font-size: 14px;
+            color: #374151;
+            text-transform: capitalize;
+        }
+
+        .btn-add-small {
+            font-size: 13px;
+            padding: 4px 10px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .info-badge i {
+            font-size: 10px;
+        }
+
+        .constraint-group {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .pay-rate-input {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .pay-rate-input .currency-prefix {
+            padding: 10px 12px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-right: none;
+            border-radius: 6px 0 0 6px;
+            color: #374151;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .pay-rate-input input {
+            flex: 1;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+
+        .pay-rate-input .rate-suffix {
+            padding: 10px 12px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            color: #6b7280;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
         @media (max-width:768px) {
-            .avail-day-header { flex-direction:column; align-items:flex-start; gap:8px; }
-            .range-row, .blocked-row { flex-direction:column; align-items:stretch; }
-            .range-row input, .blocked-row input { width:100%; }
-            .preset-inputs { flex-direction:column; align-items:stretch; gap:4px; }
-            .preset-inputs input { width:100%; }
-            .form-grid-2 { grid-template-columns:1fr; }
+            .avail-day-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .range-row,
+            .blocked-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .range-row input,
+            .blocked-row input {
+                width: 100%;
+            }
+
+            .preset-inputs {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+
+            .preset-inputs input {
+                width: 100%;
+            }
+
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -90,26 +444,34 @@
             </div>
             <div class="sidebar-nav">
                 <div class="nav-section-label">MAIN</div>
-                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i><span>Home</span></a>
-                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-file-contract"></i><span>Quotes</span></a>
-                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
-                <a href="manage-team.html" class="nav-item manage-team-link" style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage team</span></a>
-                <a href="../admin/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My pricebook</span></a>
-                <a href="../Customer Management/customer-list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i class="fas fa-user-friends"></i><span>Customers</span></a>
-            <div class="sidebar-footer">
-                <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Manage roles</span>
-                </a>
-                <div class="nav-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Get Set Up</span>
+                <a href="../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../quotes.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../tenant_schedule.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+                <a href="manage-team.html" class="nav-item manage-team-link"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../pricebook/pricebook.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-book"></i><span>My pricebook</span></a>
+                <a href="../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <div class="sidebar-footer">
+                    <a href="manage-team-roles.html" class="nav-item" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
                 </div>
-                <div class="nav-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </div>
-            </div>
         </nav>
         <!-- Main Content Area -->
         <main class="main-content">
@@ -119,7 +481,8 @@
                     <p class="page-subtitle">Create a new staff account with roles and permissions</p>
                 </div>
                 <div class="header-right">
-                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Team</button></a>
+                    <a href="manage-team.html" style="text-decoration:none;"><button class="btn-secondary"><i
+                                class="fas fa-arrow-left"></i> Back to Team</button></a>
                 </div>
             </header>
             <div class="content-wrapper">
@@ -139,10 +502,12 @@
                                     </div>
                                     <div>
                                         <input type="file" id="profilePhoto" accept="image/*" style="display:none;">
-                                        <button type="button" class="upload-btn" onclick="document.getElementById('profilePhoto').click()">
+                                        <button type="button" class="upload-btn"
+                                            onclick="document.getElementById('profilePhoto').click()">
                                             <i class="fas fa-upload"></i> Upload Photo
                                         </button>
-                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Optional. Max 5MB, JPG/PNG</div>
+                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Optional. Max 5MB,
+                                            JPG/PNG</div>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -166,13 +531,17 @@
                                         </select>
                                         <div class="error-message" id="roleError"></div>
                                         <div style="font-size:12px; color:#6b7280; margin-top:4px;">
-                                            <i class="fas fa-info-circle"></i> Need to add or edit roles? Go to <a href="manage-team-roles.html" style="color:#6366f1; text-decoration:underline;">Manage Roles</a>
+                                            <i class="fas fa-info-circle"></i> Need to add or edit roles? Go to <a
+                                                href="manage-team-roles.html"
+                                                style="color:#6366f1; text-decoration:underline;">Manage Roles</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="jobTitle">Job Title</label>
-                                        <input type="text" id="jobTitle" placeholder="e.g. Senior Technician, Lead Installer">
-                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Specific job title for this staff member</div>
+                                        <input type="text" id="jobTitle"
+                                            placeholder="e.g. Senior Technician, Lead Installer">
+                                        <div style="font-size:12px; color:#6b7280; margin-top:4px;">Specific job title
+                                            for this staff member</div>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -196,7 +565,8 @@
                                         <label for="payRate">Pay Rate (Hourly) <span class="required">*</span></label>
                                         <div class="pay-rate-input">
                                             <span class="currency-prefix">$</span>
-                                            <input type="number" id="payRate" step="0.01" min="0" placeholder="0.00" required>
+                                            <input type="number" id="payRate" step="0.01" min="0" placeholder="0.00"
+                                                required>
                                             <span class="rate-suffix">/hr</span>
                                         </div>
                                         <div class="error-message" id="payRateError"></div>
@@ -209,7 +579,8 @@
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn-secondary" onclick="window.location.href='manage-team.html'">Cancel</button>
+                            <button type="button" class="btn-secondary"
+                                onclick="window.location.href='manage-team.html'">Cancel</button>
                             <button type="submit" class="btn-primary">Create Staff Member</button>
                         </div>
                     </form>
@@ -220,4 +591,5 @@
     <script src="staff_store.js"></script>
     <script src="manage-team-create-script.js"></script>
 </body>
+
 </html>
