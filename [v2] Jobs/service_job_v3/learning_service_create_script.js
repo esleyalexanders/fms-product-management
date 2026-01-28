@@ -7,6 +7,7 @@
 let selectedType = '';
 let selectedDays = [];
 let selectedPricebookItem = null;
+let selectedStaff = [];
 
 // NEW: Time Slot Builder State
 let dailySchedule = []; // For daily frequency
@@ -21,6 +22,16 @@ let weeklySchedule = {
     sunday: []
 };
 let slotIdCounter = 0;
+
+// GLOBAL ENTRY POINT (Debugging)
+window.assignStaffGlobal = function (slotId, staffId, context) {
+    console.log('GLOBAL ENTRY POINT: assignStaffGlobal called', { slotId, staffId, context });
+    if (typeof addStaffToSlot === 'function') {
+        addStaffToSlot(slotId, staffId, context);
+    } else {
+        alert('CRITICAL: addStaffToSlot function is missing!');
+    }
+};
 
 // Sample staff data (would come from API)
 // hourlyRate is the default pay rate from staff profile
@@ -917,14 +928,19 @@ function handleSubmit(event) {
         pricebookItemName: selectedPricebookItem?.name || null,
         schedule: {
             frequency: document.getElementById('frequency').value,
+            frequency: document.getElementById('frequency').value,
+            // Complex schedule data config
+            config: {
+                dailySlots: document.getElementById('frequency').value === 'daily' ? dailySchedule : [],
+                weeklySlots: document.getElementById('frequency').value === 'weekly' ? weeklySchedule : {}
+            },
+            // Legacy/Simple support (fallback)
             daysOfWeek: selectedDays,
-            startTime: document.getElementById('startTime').value,
-            endTime: document.getElementById('endTime').value,
+            startTime: null, // No longer single start time
+            endTime: null,   // No longer single end time
             duration: parseInt(document.getElementById('duration').value) || 0,
             startDate: document.getElementById('scheduleStartDate').value || null,
             endDate: document.getElementById('scheduleEndDate').value || null,
-            customInterval: document.getElementById('customInterval').value || null,
-            customIntervalUnit: document.getElementById('customIntervalUnit').value || null
         },
         staff: selectedStaff.map(s => ({
             id: s.id,
@@ -1077,7 +1093,7 @@ function renderDailySlots() {
 
 // ===== WEEKLY SCHEDULE FUNCTIONS =====
 
-function toggleDaySelection(dayName) {
+function toggleWeeklyBuilderDay(dayName) {
     const btn = document.querySelector(`[data-day="${dayName}"]`);
 
     if (weeklySchedule.selectedDays.includes(dayName)) {
@@ -1166,15 +1182,6 @@ function renderDaySlots(dayName) {
 
 function renderTimeSlotCard(slot, context) {
     const duration = selectedPricebookItem?.sessionDuration || 60;
-    const staffList = slot.staffIds.map(staffId => {
-        const staff = selectedStaff.find(s => s.id === staffId);
-        return staff ? `
-            <span class="staff-tag">
-                ${staff.name}
-                <button type="button" onclick="removeStaffFromSlot('${slot.id}', '${staffId}', '${context}')" title="Remove">×</button>
-            </span>
-        ` : '';
-    }).join('');
 
     return `
         <div class="time-slot-card" data-slot-id="${slot.id}">
@@ -1197,21 +1204,6 @@ function renderTimeSlotCard(slot, context) {
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed" />
                         </div>
                     </div>
-                    
-                    <!-- Staff Assignment -->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-600 mb-2">Assigned Staff (Team Teaching Supported)</label>
-                        <div class="flex flex-wrap gap-2 mb-2">
-                            ${staffList || '<span class="text-xs text-gray-400 italic">No staff assigned</span>'}
-                        </div>
-                        <button type="button" onclick="showStaffDropdown('${slot.id}', '${context}')"
-                            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-                            + Add Staff
-                        </button>
-                        <div id="staffDropdown_${slot.id}" class="hidden add-staff-dropdown">
-                            ${renderStaffDropdownOptions(slot.id, context)}
-                        </div>
-                    </div>
                 </div>
                 
                 <!-- Remove Button -->
@@ -1232,8 +1224,11 @@ function renderStaffDropdownOptions(slotId, context) {
         return '<div class="px-4 py-3 text-sm text-gray-500">No staff available in the system.</div>';
     }
 
+    console.log('Rendering dropdown options for slot:', slotId, 'Context:', context);
+
     return sampleStaff.map(staff => `
-        <div class="staff-option" onclick="addStaffToSlot('${slotId}', '${staff.id}', '${context}')">
+        <div class="staff-option" style="cursor: pointer; position: relative; z-index: 50;" 
+             onclick="console.log('Click detected on staff option'); window.assignStaffGlobal('${slotId}', '${staff.id}', '${context}')">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-semibold text-xs">
                     ${staff.avatar || staff.name.substring(0, 2).toUpperCase()}
@@ -1304,24 +1299,43 @@ function showStaffDropdown(slotId, context) {
     }
 }
 
+// Standard function declaration for hoisting reliability
 function addStaffToSlot(slotId, staffId, context) {
-    const slot = findSlot(slotId, context);
-    if (!slot) return;
+    console.log('addStaffToSlot called:', { slotId, staffId, context });
 
-    if (!slot.staffIds.includes(staffId)) {
-        slot.staffIds.push(staffId);
+    try {
+        const slot = findSlot(slotId, context);
 
-        // Re-render
-        if (context === 'daily') {
-            renderDailySlots();
-        } else {
-            renderDaySlots(context);
+        if (!slot) {
+            const msg = `Slot not found: ${slotId} in ${context}`;
+            console.error(msg);
+            alert(msg + '\nPlease start fresh or refresh the page.');
+            return;
         }
-    }
 
-    // Hide dropdown
-    const dropdown = document.getElementById(`staffDropdown_${slotId}`);
-    if (dropdown) dropdown.classList.add('hidden');
+        if (!slot.staffIds.includes(staffId)) {
+            slot.staffIds.push(staffId);
+            console.log('Staff added successfully. New list:', slot.staffIds);
+
+            // Re-render
+            if (context === 'daily') {
+                renderDailySlots();
+            } else {
+                renderDaySlots(context);
+            }
+            showNotification('success', 'Staff Added', 'Staff member assigned to slot');
+        } else {
+            showNotification('info', 'Info', 'Staff member already assigned');
+        }
+
+        // Hide dropdown
+        const dropdown = document.getElementById(`staffDropdown_${slotId}`);
+        if (dropdown) dropdown.classList.add('hidden');
+
+    } catch (e) {
+        console.error('CRITICAL ERROR:', e);
+        alert('Error: ' + e.message);
+    }
 }
 
 function removeStaffFromSlot(slotId, staffId, context) {
@@ -1344,3 +1358,5 @@ document.addEventListener('click', function (e) {
         document.querySelectorAll('.add-staff-dropdown').forEach(d => d.classList.add('hidden'));
     }
 });
+
+console.log("Script Updated & Loaded: Staff Assignment Fix Active");

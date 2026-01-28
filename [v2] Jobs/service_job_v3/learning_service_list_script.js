@@ -334,6 +334,19 @@ function getStatusBadge(status) {
 function formatSchedule(schedule) {
     if (!schedule) return 'No schedule';
 
+    // Handle new complex schedule format
+    if (schedule.config) {
+        if (schedule.frequency === 'daily') {
+            const slotCount = schedule.config.dailySlots ? schedule.config.dailySlots.length : 0;
+            return `Daily (${slotCount} slot${slotCount !== 1 ? 's' : ''})`;
+        } else if (schedule.frequency === 'weekly') {
+            const days = schedule.config.weeklySlots ? Object.keys(schedule.config.weeklySlots) : [];
+            const dayStr = days.map(d => d.charAt(0).toUpperCase() + d.slice(1, 3)).join(', ');
+            return dayStr ? `${dayStr} (Varied)` : 'Weekly (Configuring)';
+        }
+    }
+
+    // Fallback to legacy format
     const days = schedule.daysOfWeek?.map(d => d.substring(0, 3)).join(', ') || '';
     const time = schedule.startTime ? `${schedule.startTime} - ${schedule.endTime}` : '';
 

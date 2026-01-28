@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session Details - FMS</title>
+    <title>Subscription Session Details - FMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -147,11 +147,12 @@
                 <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-briefcase"></i><span>Jobs</span></a>
 
-                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <div class="nav-section-label" style="margin-top: 20px;">SESSIONS MANAGEMENT</div>
                 <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-chalkboard-teacher"></i><span>Learning Services</span></a>
+                        class="fas fa-graduation-cap"></i><span>Sessions
+                        Management</span></a>
                 <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+                        class="fas fa-calendar-day"></i><span>Subscription Sessions</span></a>
 
                 <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
                 <a href="schedule_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
@@ -200,7 +201,8 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <div class="flex items-center gap-3 mb-1">
-                                    <h1 class="text-2xl font-bold text-gray-900" id="sessionTitle">Session Details</h1>
+                                    <h1 class="text-2xl font-bold text-gray-900" id="sessionTitle">Session Slot Details
+                                    </h1>
                                     <span id="sessionIdBadge"
                                         class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm font-medium">SESSION-001</span>
                                     <span id="sessionTypeBadge"
@@ -267,213 +269,364 @@
                         </div>
                     </div>
 
-                    <!-- Main Content Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Tab Navigation -->
+                    <div class="bg-white rounded-lg shadow-sm mb-4">
+                        <div class="border-b border-gray-200">
+                            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                                <button id="overviewTab"
+                                    class="tab-button active py-4 px-1 border-b-2 border-indigo-500 font-medium text-sm text-indigo-600"
+                                    onclick="switchTab('overview')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                            </path>
+                                        </svg>
+                                        Overview
+                                    </span>
+                                </button>
+                                <button id="staffTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('staff')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                        Staff Assignment
+                                    </span>
+                                </button>
+                                <button id="enrollmentTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('enrollment')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                                            </path>
+                                        </svg>
+                                        Enrollment
+                                    </span>
+                                </button>
+                                <button id="sessionsTab"
+                                    class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    onclick="switchTab('sessions')">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        Slots
+                                    </span>
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
 
-                        <!-- Left Column - Main Content -->
-                        <div class="lg:col-span-2 space-y-4">
+                    <!-- overviewContent -->
+                    <div id="overviewContent" class="tab-content">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-                            <!-- Session Information Card -->
-                            <div class="bg-white rounded-lg shadow-sm p-4">
-                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Session Information</h2>
+                            <!-- Left Column - Main Content -->
+                            <div class="lg:col-span-2 space-y-4">
 
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                                        <div class="view-only">
-                                            <p class="text-sm text-gray-900" id="viewDate">-</p>
-                                        </div>
-                                        <div class="edit-only">
-                                            <input type="date" id="editDate"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                                        </div>
-                                    </div>
+                                <!-- Session Information Card -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Slot Information</h2>
 
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                                        <div class="view-only">
-                                            <p class="text-sm text-gray-900" id="viewTime">-</p>
-                                        </div>
-                                        <div class="edit-only">
-                                            <div class="grid grid-cols-2 gap-2">
-                                                <input type="time" id="editStartTime"
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                            <div class="view-only">
+                                                <p class="text-sm text-gray-900" id="viewDate">-</p>
+                                            </div>
+                                            <div class="edit-only">
+                                                <input type="date" id="editDate"
                                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                                                <input type="time" id="editEndTime"
-                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-                                        <p class="text-sm text-gray-900" id="viewDuration">-</p>
-                                    </div>
-
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                        <div class="view-only">
-                                            <span id="viewStatus"
-                                                class="px-2 py-1 text-xs font-medium rounded-full">-</span>
-                                        </div>
-                                        <div class="edit-only">
-                                            <select id="editStatus"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                                <option value="scheduled">Scheduled</option>
-                                                <option value="in_progress">In Progress</option>
-                                                <option value="completed">Completed</option>
-                                                <option value="cancelled">Cancelled</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-span-2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Learning
-                                            Service</label>
-                                        <a href="#" id="viewLearningService" onclick="viewLearningService(event)"
-                                            class="text-indigo-600 hover:text-indigo-700 font-medium">-</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Type-Specific Information -->
-                            <div id="typeSpecificInfo" class="space-y-4">
-                                <!-- Class Type Details -->
-                                <div id="classTypeDetails"
-                                    class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-sm p-4 border border-purple-200 hidden">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h3 class="text-lg font-semibold text-purple-900 mb-2">Class Information
-                                            </h3>
-                                            <div class="grid grid-cols-2 gap-3 text-sm">
-                                                <div>
-                                                    <span class="text-purple-600 font-medium">Curriculum:</span>
-                                                    <span class="text-purple-900 ml-2" id="classCurriculum">-</span>
-                                                </div>
-                                                <div>
-                                                    <span class="text-purple-600 font-medium">Cohort:</span>
-                                                    <span class="text-purple-900 ml-2" id="classCohort">-</span>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                            <div class="view-only">
+                                                <p class="text-sm text-gray-900" id="viewTime">-</p>
+                                            </div>
+                                            <div class="edit-only">
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    <input type="time" id="editStartTime"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                                                    <input type="time" id="editEndTime"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                                            <p class="text-sm text-gray-900" id="viewDuration">-</p>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                            <div class="view-only">
+                                                <span id="viewStatus"
+                                                    class="px-2 py-1 text-xs font-medium rounded-full">-</span>
+                                            </div>
+                                            <div class="edit-only">
+                                                <select id="editStatus"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                    <option value="scheduled">Scheduled</option>
+                                                    <option value="in_progress">In Progress</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-span-2">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Learning
+                                                Service</label>
+                                            <a href="#" id="viewLearningService" onclick="viewLearningService(event)"
+                                                class="text-indigo-600 hover:text-indigo-700 font-medium">-</a>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Group Type Details -->
-                                <div id="groupTypeDetails"
-                                    class="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg shadow-sm p-4 border border-amber-200 hidden">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                                                </path>
-                                            </svg>
+                                <!-- Type-Specific Information -->
+                                <div id="typeSpecificInfo" class="space-y-4">
+                                    <!-- Class Type Details -->
+                                    <div id="classTypeDetails"
+                                        class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-sm p-4 border border-purple-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-purple-900 mb-2">Class Information
+                                                </h3>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Curriculum:</span>
+                                                        <span class="text-purple-900 ml-2" id="classCurriculum">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-purple-600 font-medium">Cohort:</span>
+                                                        <span class="text-purple-900 ml-2" id="classCohort">-</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="flex-1">
-                                            <h3 class="text-lg font-semibold text-amber-900 mb-2">Group Information</h3>
-                                            <div class="text-sm">
-                                                <span class="text-amber-600 font-medium">Min Capacity Required:</span>
-                                                <span class="text-amber-900 ml-2" id="groupMinCapacity">-</span>
+                                    </div>
+
+                                    <!-- Group Type Details -->
+                                    <div id="groupTypeDetails"
+                                        class="bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg shadow-sm p-4 border border-amber-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-amber-900 mb-2">Group Information
+                                                </h3>
+                                                <div class="text-sm">
+                                                    <span class="text-amber-600 font-medium">Min Capacity
+                                                        Required:</span>
+                                                    <span class="text-amber-900 ml-2" id="groupMinCapacity">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- One-to-One Type Details -->
+                                    <div id="oneToOneTypeDetails"
+                                        class="bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg shadow-sm p-4 border border-cyan-200 hidden">
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-cyan-900 mb-2">One-to-One
+                                                    Information
+                                                </h3>
+                                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Focus Area:</span>
+                                                        <span class="text-cyan-900 ml-2" id="oneToOneFocus">-</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-cyan-600 font-medium">Personalization:</span>
+                                                        <span class="text-cyan-900 ml-2"
+                                                            id="oneToOnePersonalization">-</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- One-to-One Type Details -->
-                                <div id="oneToOneTypeDetails"
-                                    class="bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg shadow-sm p-4 border border-cyan-200 hidden">
-                                    <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <h3 class="text-lg font-semibold text-cyan-900 mb-2">One-to-One Information
-                                            </h3>
-                                            <div class="grid grid-cols-2 gap-3 text-sm">
-                                                <div>
-                                                    <span class="text-cyan-600 font-medium">Focus Area:</span>
-                                                    <span class="text-cyan-900 ml-2" id="oneToOneFocus">-</span>
-                                                </div>
-                                                <div>
-                                                    <span class="text-cyan-600 font-medium">Personalization:</span>
-                                                    <span class="text-cyan-900 ml-2"
-                                                        id="oneToOnePersonalization">-</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Staff/Team Assignment Card -->
-                            <div class="bg-white rounded-lg shadow-sm p-4">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-                                            style="background-color: #FDF4EC;">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                style="color: #F28A3F;">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                        <h2 class="text-lg font-semibold" style="color: #2D3748;">Staff/Team Assignment
-                                        </h2>
-                                    </div>
+
+                                <!-- Notes Section -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+
                                     <div class="view-only">
-                                        <button onclick="openStaffOverrideModal()"
-                                            class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50"
-                                            style="border-color: #D1D5DB; color: #4B5563;">
-                                            Override Default Assignments
+                                        <p class="text-sm text-gray-700" id="viewNotes">No notes</p>
+                                    </div>
+                                    <div class="edit-only">
+                                        <textarea id="editNotes" rows="3" placeholder="Add slot-specific notes..."
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Column - Sidebar -->
+                            <div class="space-y-4">
+                                <!-- Learning Service Summary -->
+                                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Learning Service</h2>
+
+                                    <div class="space-y-3 mb-4">
+                                        <div class="p-3 bg-indigo-50 rounded-lg">
+                                            <div class="text-xs text-indigo-600 mb-1">Service Name</div>
+                                            <div class="text-sm font-bold text-indigo-700" id="sidebarServiceName">-
+                                            </div>
+                                            <div class="mt-2">
+                                                <span id="sidebarTypeBadge"
+                                                    class="px-2 py-0.5 text-xs font-medium rounded-full">-</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Schedule</span>
+                                                <span class="font-medium text-gray-900" id="sidebarSchedule">-</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Capacity</span>
+                                                <span class="font-medium text-gray-900" id="sidebarCapacity">-</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Default Staff</span>
+                                                <span class="font-medium text-gray-900" id="sidebarStaff">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Links -->
+                                    <div class="border-t border-gray-200 pt-4 space-y-2">
+                                        <button onclick="viewLearningService()"
+                                            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                            View Learning Service
+                                        </button>
+                                        <button onclick="viewAllSessions()"
+                                            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                </path>
+                                            </svg>
+                                            View All Subscription Sessions
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <!-- Default Staff Display -->
-                                <div id="defaultStaffSection" class="mb-4">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <p class="text-sm font-medium" style="color: #4B5563;">Default Staff (Inherited)
-                                        </p>
-                                        <span class="px-2 py-0.5 text-xs font-medium rounded-full"
-                                            style="background-color: #D1FAE5; color: #065F46;">Inherited</span>
+                    <!-- staffContent -->
+                    <div id="staffContent" class="tab-content hidden">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <div class="lg:col-span-2 space-y-4">
+                                <!-- Staff/Team Assignment Card (Moved from Overview) -->
+                                <div class="bg-white rounded-lg shadow-sm p-4">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                                                style="background-color: #FDF4EC;">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24" style="color: #F28A3F;">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <h2 class="text-lg font-semibold" style="color: #2D3748;">Staff/Team
+                                                Assignment
+                                            </h2>
+                                        </div>
+                                        <div class="view-only">
+                                            <button onclick="openStaffOverrideModal()"
+                                                class="px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50"
+                                                style="border-color: #D1D5DB; color: #4B5563;">
+                                                Override Default Assignments
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div id="defaultStaffList" class="flex flex-wrap gap-2">
-                                        <!-- Default staff will be shown here -->
-                                    </div>
-                                </div>
 
-                                <!-- Override Staff Display -->
-                                <div id="overrideStaffSection" class="hidden mb-4">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <p class="text-sm font-medium text-gray-700">Override Staff</p>
-                                        <span
-                                            class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Overridden</span>
+                                    <!-- Default Staff Display -->
+                                    <div id="defaultStaffSection" class="mb-4">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <p class="text-sm font-medium" style="color: #4B5563;">Default Staff
+                                                (Inherited)
+                                            </p>
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full"
+                                                style="background-color: #D1FAE5; color: #065F46;">Inherited</span>
+                                        </div>
+                                        <div id="defaultStaffList" class="flex flex-wrap gap-2">
+                                            <!-- Default staff will be shown here -->
+                                        </div>
                                     </div>
-                                    <div id="overrideStaffList" class="flex flex-wrap gap-2">
-                                        <!-- Override staff will be shown here -->
+
+                                    <!-- Override Staff Display -->
+                                    <div id="overrideStaffSection" class="hidden mb-4">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <p class="text-sm font-medium text-gray-700">Override Staff</p>
+                                            <span
+                                                class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Overridden</span>
+                                        </div>
+                                        <div id="overrideStaffList" class="flex flex-wrap gap-2">
+                                            <!-- Override staff will be shown here -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Enrollment Card -->
+                    <!-- enrollmentContent -->
+                    <div id="enrollmentContent" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <!-- Enrollment Card (Moved from Overview) -->
                             <div class="bg-white rounded-lg shadow-sm p-4">
                                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Enrollment</h2>
 
@@ -509,7 +662,7 @@
                                 </div>
                             </div>
 
-                            <!-- Attendees List -->
+                            <!-- Attendees List (Moved from Overview) -->
                             <div class="bg-white rounded-lg shadow-sm p-4">
                                 <div class="flex items-center justify-between mb-4">
                                     <h2 class="text-lg font-semibold text-gray-900">Attendees</h2>
@@ -558,80 +711,52 @@
                                     <p class="text-xs text-gray-500">Click "Add Attendee" to enroll a customer</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Notes Section -->
+                    <!-- sessionsContent -->
+                    <div id="sessionsContent" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <!-- Slots Header -->
                             <div class="bg-white rounded-lg shadow-sm p-4">
-                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
-
-                                <div class="view-only">
-                                    <p class="text-sm text-gray-700" id="viewNotes">No notes</p>
-                                </div>
-                                <div class="edit-only">
-                                    <textarea id="editNotes" rows="3" placeholder="Add session-specific notes..."
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h2 class="text-lg font-semibold text-gray-900">Slots</h2>
+                                        <p class="text-sm text-gray-500">All scheduled slots for this slot pattern
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button id="generateSlotsBtn" onclick="generateSessions()"
+                                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2 text-sm font-medium">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Generate Slots
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
-                        </div>
-
-                        <!-- Right Column - Sidebar -->
-                        <div class="space-y-4">
-                            <!-- Learning Service Summary -->
-                            <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
-                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Learning Service</h2>
-
-                                <div class="space-y-3 mb-4">
-                                    <div class="p-3 bg-indigo-50 rounded-lg">
-                                        <div class="text-xs text-indigo-600 mb-1">Service Name</div>
-                                        <div class="text-sm font-bold text-indigo-700" id="sidebarServiceName">-</div>
-                                        <div class="mt-2">
-                                            <span id="sidebarTypeBadge"
-                                                class="px-2 py-0.5 text-xs font-medium rounded-full">-</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-2 text-sm">
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Schedule</span>
-                                            <span class="font-medium text-gray-900" id="sidebarSchedule">-</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Capacity</span>
-                                            <span class="font-medium text-gray-900" id="sidebarCapacity">-</span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-gray-600">Default Staff</span>
-                                            <span class="font-medium text-gray-900" id="sidebarStaff">-</span>
-                                        </div>
-                                    </div>
+                            <!-- Sessions List -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div id="sessionsList" class="space-y-2">
+                                    <!-- Sessions will be rendered here -->
                                 </div>
-
-                                <!-- Quick Links -->
-                                <div class="border-t border-gray-200 pt-4 space-y-2">
-                                    <button onclick="viewLearningService()"
-                                        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                        View Learning Service
-                                    </button>
-                                    <button onclick="viewAllSessions()"
-                                        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                            </path>
-                                        </svg>
-                                        View All Sessions
-                                    </button>
+                                <!-- Empty Sessions State -->
+                                <div id="emptySessions" class="text-center py-12 text-gray-500">
+                                    <svg class="mx-auto mb-3 text-gray-300 w-12 h-12" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <p class="text-sm font-medium">No slots yet</p>
+                                    <p class="text-xs">Generate slots for this slot pattern</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                </div>
-            </div>
         </main>
     </div>
 
@@ -645,7 +770,7 @@
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900">Add Attendee</h3>
-                    <p class="text-sm text-gray-500 mt-1">Search customer and enroll an attendee for this session</p>
+                    <p class="text-sm text-gray-500 mt-1">Search customer and enroll an attendee for this slot</p>
                 </div>
                 <button onclick="closeBookCustomerModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -735,10 +860,19 @@
                                 <span id="paymentWarningText">This quote is not fully paid.</span>
                             </div>
                         </div>
+                        <!-- Attendee Name Input -->
+                        <div class="mt-4 mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Attendee Name <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" id="attendeeName"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Who is attending?" oninput="updateBookingButtonState()">
+                        </div>
+
                     </div>
 
                     <!-- Add Attendee Button -->
-                    <button onclick="confirmBooking()" id="confirmBookingBtn" disabled
+                    <button onclick="confirmEnrollment()" id="confirmBookingBtn" disabled
                         class="w-full px-4 py-3 text-white rounded-lg hover:opacity-90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:opacity-100"
                         style="background-color: #5C40E6;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

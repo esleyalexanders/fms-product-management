@@ -285,10 +285,10 @@
                     style="text-decoration: none; color: inherit;"><i
                         class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
 
-                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <div class="nav-section-label" style="margin-top: 20px;">SESSIONS MANAGEMENT</div>
                 <a href="learning_service_list.html" class="nav-item active"
-                    style="text-decoration: none; color: inherit;"><i class="fas fa-graduation-cap"></i><span>Learning
-                        Services</span></a>
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-graduation-cap"></i><span>Sessions
+                        Management</span></a>
                 <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-calendar-day"></i><span>Sessions</span></a>
 
@@ -756,6 +756,45 @@
                             </div>
                         </div>
 
+                        <!-- Section 4: Staff Assignment -->
+                        <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h2 class="text-xl font-semibold text-gray-900">Staff Assignment</h2>
+                            </div>
+
+                            <div class="mb-3 relative">
+                                <input type="text" id="assignmentSearchInput" placeholder="Search staff or teams..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    autocomplete="off">
+                                <div id="assignmentAutocomplete"
+                                    class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                    <!-- Autocomplete results will appear here -->
+                                </div>
+                            </div>
+
+                            <div id="selectedAssignmentsList" class="space-y-2 mb-3">
+                                <!-- Selected staff/teams will appear here -->
+                            </div>
+
+                            <p id="noAssignmentsSelected" class="text-sm text-gray-500 italic">No staff or teams
+                                assigned yet.</p>
+                            <p id="selectedAssignmentsCount" class="hidden text-xs text-gray-500 mt-2">
+                                <span id="selectedAssignmentsCountValue">0</span> assigned
+                            </p>
+
+                            <div id="recommendedAssignmentsList" class="mt-4">
+                                <!-- Recommended staff will appear here -->
+                            </div>
+                        </div>
+
                         <!-- Section 5: Time Slot Builder (NEW) -->
                         <div class="bg-white rounded-lg shadow-sm p-6 mb-4 section-card">
                             <div class="flex items-center gap-2 mb-4">
@@ -797,25 +836,28 @@
                                     <div class="flex flex-wrap gap-2">
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="monday" onclick="toggleDaySelection('monday')">Mon</button>
+                                            data-day="monday" onclick="toggleWeeklyBuilderDay('monday')">Mon</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="tuesday" onclick="toggleDaySelection('tuesday')">Tue</button>
+                                            data-day="tuesday" onclick="toggleWeeklyBuilderDay('tuesday')">Tue</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="wednesday" onclick="toggleDaySelection('wednesday')">Wed</button>
+                                            data-day="wednesday"
+                                            onclick="toggleWeeklyBuilderDay('wednesday')">Wed</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="thursday" onclick="toggleDaySelection('thursday')">Thu</button>
+                                            data-day="thursday"
+                                            onclick="toggleWeeklyBuilderDay('thursday')">Thu</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="friday" onclick="toggleDaySelection('friday')">Fri</button>
+                                            data-day="friday" onclick="toggleWeeklyBuilderDay('friday')">Fri</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="saturday" onclick="toggleDaySelection('saturday')">Sat</button>
+                                            data-day="saturday"
+                                            onclick="toggleWeeklyBuilderDay('saturday')">Sat</button>
                                         <button type="button"
                                             class="day-selector-btn px-4 py-2 border-2 border-gray-300 rounded-lg font-medium hover:border-indigo-500 transition-colors"
-                                            data-day="sunday" onclick="toggleDaySelection('sunday')">Sun</button>
+                                            data-day="sunday" onclick="toggleWeeklyBuilderDay('sunday')">Sun</button>
                                     </div>
                                 </div>
 

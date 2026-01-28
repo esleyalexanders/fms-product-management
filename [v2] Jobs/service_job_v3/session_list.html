@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sessions - FMS</title>
+    <title>Subscription Sessions - FMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../home-styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="seed_data.js"></script>
     <style>
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
@@ -131,11 +132,12 @@
                 <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-briefcase"></i><span>Jobs</span></a>
 
-                <div class="nav-section-label" style="margin-top: 20px;">LEARNING SERVICES</div>
+                <div class="nav-section-label" style="margin-top: 20px;">SESSIONS MANAGEMENT</div>
                 <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-chalkboard-teacher"></i><span>Learning Services</span></a>
+                        class="fas fa-graduation-cap"></i><span>Sessions
+                        Management</span></a>
                 <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-calendar-day"></i><span>Sessions</span></a>
+                        class="fas fa-calendar-day"></i><span>Subscription Sessions</span></a>
 
                 <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
                 <a href="schedule_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
@@ -183,18 +185,11 @@
                     <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h1 class="text-2xl font-bold text-gray-900">Sessions</h1>
-                                <p class="text-sm text-gray-500 mt-1">Manage all Learning Service sessions</p>
+                                <h1 class="text-2xl font-bold text-gray-900">Subscription Sessions</h1>
+                                <p class="text-sm text-gray-500 mt-1">Manage all configured subscription sessions</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="window.location.href='session_create.html'"
-                                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 4v16m8-8H4"></path>
-                                    </svg>
-                                    Create Session
-                                </button>
+                                <!-- Create button removed -->
                             </div>
                         </div>
                     </div>
@@ -204,7 +199,7 @@
                         <div class="bg-white rounded-lg shadow-sm p-4">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm text-gray-600">Total Sessions</p>
+                                    <p class="text-sm text-gray-600">Total Patterns</p>
                                     <p class="text-2xl font-bold text-gray-900" id="totalSessions">0</p>
                                 </div>
                                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -299,14 +294,6 @@
                             </div>
 
                             <!-- Date Range -->
-                            <div class="flex gap-2">
-                                <input type="date" id="startDate" onchange="handleFilterChange()"
-                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                                <span class="self-center text-gray-500">to</span>
-                                <input type="date" id="endDate" onchange="handleFilterChange()"
-                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                            </div>
-
                             <!-- Type Filter -->
                             <div class="flex gap-2">
                                 <button onclick="filterByType('')" id="filterAll"
@@ -327,16 +314,6 @@
                                 </button>
                             </div>
 
-                            <!-- Status Filter -->
-                            <select id="statusFilter" onchange="handleFilterChange()"
-                                class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">All Status</option>
-                                <option value="scheduled">Scheduled</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-
                             <!-- Clear Filters -->
                             <button onclick="clearFilters()"
                                 class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm">
@@ -349,7 +326,7 @@
                     <div class="bg-white rounded-lg shadow-sm p-4">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <h2 class="text-lg font-semibold text-gray-900">All Sessions</h2>
+                                <h2 class="text-lg font-semibold text-gray-900">All Subscription Sessions</h2>
                                 <p class="text-sm text-gray-500" id="resultsCount">0 sessions found</p>
                             </div>
                         </div>
@@ -367,16 +344,8 @@
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <p class="text-sm font-medium text-gray-700 mb-1">No sessions found</p>
-                            <p class="text-xs text-gray-500 mb-4">Create a session or check your filters</p>
-                            <button onclick="window.location.href='session_create.html'"
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium inline-flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Create First Session
-                            </button>
+                            <p class="text-sm font-medium text-gray-700 mb-1">No subscription sessions found</p>
+                            <p class="text-xs text-gray-500 mb-4">Check your search or filters</p>
                         </div>
                     </div>
 

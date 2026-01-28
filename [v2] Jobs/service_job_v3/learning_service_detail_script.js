@@ -10,6 +10,11 @@ let hasUnsavedChanges = false;
 let currentTab = 'overview';
 let originalData = null; // Store original data for cancel/reset
 
+// ===== SCHEDULE BUILDER STATE =====
+let dailySchedule = [];
+let weeklySchedule = { selectedDays: [] };
+let slotIdCounter = 0;
+
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function () {
     loadServiceData();
@@ -85,7 +90,7 @@ function getSampleService() {
         avgEnrollment: 85,
         totalEnrolled: 17,
         createdAt: '2024-11-01T10:00:00Z',
-        
+
         // Sample enrollments (using pb1 pricebook item customers)
         enrollments: [
             {
@@ -154,7 +159,7 @@ function renderServiceData() {
     showTypeCard(currentService.type);
 
     // Handle tab visibility based on type
-    updateTabVisibility(currentService.type);
+    // updateTabVisibility(currentService.type); // Removed as Enrollment tab is moved
 
     // Populate view fields
     populateViewFields();
@@ -169,18 +174,10 @@ function renderServiceData() {
     renderEnrollmentList();
 }
 
-function updateTabVisibility(type) {
-    const enrollmentTab = document.getElementById('enrollmentTab');
-    
-    // Hide Enrollment tab for Class type
-    // Class type: Students enroll in the entire class/cohort, not individual sessions
-    // Enrollment is managed differently for classes
-    if (type === 'Class') {
-        enrollmentTab.classList.add('hidden');
-    } else {
-        enrollmentTab.classList.remove('hidden');
-    }
-}
+// function updateTabVisibility(type) {
+//     const enrollmentTab = document.getElementById('enrollmentTab');
+//     // Tab moved to session_detail
+// }
 
 function getTypeStyles(type) {
     const styles = {
@@ -233,9 +230,7 @@ function populateViewFields() {
     document.getElementById('viewStatus').textContent = currentService.status.charAt(0).toUpperCase() + currentService.status.slice(1);
 
     // Schedule
-    document.getElementById('viewFrequency').textContent = currentService.schedule?.frequency?.charAt(0).toUpperCase() + currentService.schedule?.frequency?.slice(1) || '-';
-    document.getElementById('viewDays').textContent = currentService.schedule?.daysOfWeek?.map(d => d.substring(0, 3)).join(', ') || '-';
-    document.getElementById('viewTime').textContent = `${currentService.schedule?.startTime || '-'} - ${currentService.schedule?.endTime || '-'}`;
+    renderScheduleDetails(currentService.schedule);
     document.getElementById('viewDuration').textContent = `${currentService.schedule?.duration || '-'} minutes`;
 
     // Capacity
@@ -256,12 +251,36 @@ function populateEditFields() {
     document.getElementById('editStatus').value = currentService.status || 'active';
 
     // Schedule
-    document.getElementById('editFrequency').value = currentService.schedule?.frequency || 'weekly';
+    const frequency = currentService.schedule?.frequency || 'weekly';
+    document.getElementById('editFrequency').value = frequency;
+
+    // Initialize builder state from saved config or defaults
+    if (currentService.schedule?.config) {
+        dailySchedule = currentService.schedule.config.dailySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.dailySlots)) : [];
+        weeklySchedule = currentService.schedule.config.weeklySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.weeklySlots)) : { selectedDays: [] };
+
+        // Reconstruct selectedDays if missing (from keys)
+        if (!weeklySchedule.selectedDays) {
+            weeklySchedule.selectedDays = Object.keys(weeklySchedule).filter(k => k !== 'selectedDays');
+        }
+    } else {
+        // Fallback for legacy data
+        dailySchedule = [];
+        weeklySchedule = { selectedDays: currentService.schedule?.daysOfWeek || [] };
+
+        // If legacy data exists, we might want to try to populate the builders roughly?
+        // For now, respect the 'frequency' and leave builders empty if switching to new mode
+    }
+
+    // Toggle appropriate builder
+    toggleScheduleBuilder();
+
+    // Populate Custom/Legacy fields if needed
     document.getElementById('editStartTime').value = currentService.schedule?.startTime || '';
     document.getElementById('editEndTime').value = currentService.schedule?.endTime || '';
     document.getElementById('editDuration').value = currentService.schedule?.duration || '';
 
-    // Set selected days
+    // Set selected days for Custom builder
     document.querySelectorAll('.day-selector').forEach(btn => {
         const day = btn.dataset.day;
         if (currentService.schedule?.daysOfWeek?.includes(day)) {
@@ -270,6 +289,34 @@ function populateEditFields() {
             btn.classList.remove('selected');
         }
     });
+
+    // Render builders
+    renderDailySlots();
+    // Render weekly builder days
+    if (weeklySchedule.selectedDays) {
+        // Clear existing Day selection in Weekly Builder
+        document.querySelectorAll('.day-selector-btn').forEach(btn => {
+            const day = btn.dataset.day;
+            if (weeklySchedule.selectedDays.map(d => d.toLowerCase()).includes(day.toLowerCase())) {
+                btn.classList.add('selected');
+                // Ensure section exists (careful not to dupe)
+                // renderDaySection checks via ID, but we should probably clear first or handle re-render
+                // The easiest way is to re-render the whole container
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        // Re-render all sections
+        const container = document.getElementById('weeklyDaysContainer');
+        container.innerHTML = ''; // clear
+        weeklySchedule.selectedDays.forEach(day => {
+            renderDaySection(day.toLowerCase());
+            renderDaySlots(day.toLowerCase());
+        });
+    }
+
+    // Capacity
 
     // Capacity
     if (currentService.type === 'One-to-One') {
@@ -300,17 +347,6 @@ function updateSummary() {
 
 // ===== TAB NAVIGATION =====
 function switchTab(tabName) {
-    // Check if in edit mode and trying to access view-only tabs
-    if (isEditMode && (tabName === 'enrollment' || tabName === 'sessions')) {
-        showEditModeWarning();
-        return;
-    }
-
-    // Check if enrollment tab is hidden (Class type) and trying to access it
-    if (tabName === 'enrollment' && currentService?.type === 'Class') {
-        return;
-    }
-
     currentTab = tabName;
 
     // Update tab buttons
@@ -333,16 +369,6 @@ function switchTab(tabName) {
     const activeContent = document.getElementById(`${tabName}Content`);
     if (activeContent) {
         activeContent.classList.remove('hidden');
-    }
-    
-    // If switching to enrollment tab, re-render to show/hide One-to-One form
-    if (tabName === 'enrollment') {
-        renderEnrollmentList();
-    } else {
-        // Clear One-to-One form when switching away
-        if (currentService?.type === 'One-to-One') {
-            clearOneToOneSelection();
-        }
     }
 }
 
@@ -381,15 +407,15 @@ function enterEditMode() {
     // Show schedule warning
     document.getElementById('scheduleWarning').classList.remove('hidden');
 
-    // Disable view-only tabs
-    document.getElementById('enrollmentTab').disabled = true;
-    document.getElementById('sessionsTab').disabled = true;
+    // Disable view-only tabs (if any remaining)
+    // document.getElementById('enrollmentTab').disabled = true; 
+    // document.getElementById('sessionsTab').disabled = true;
 
     // Add edit-mode class to body for CSS targeting
     document.body.classList.add('edit-mode');
 
     // If on a view-only tab, switch to overview
-    if (currentTab === 'enrollment' || currentTab === 'sessions') {
+    if (currentTab !== 'overview' && currentTab !== 'staff') {
         switchTab('overview');
     }
 }
@@ -432,8 +458,8 @@ function exitEditMode() {
     document.getElementById('scheduleWarning').classList.add('hidden');
 
     // Enable all tabs
-    document.getElementById('enrollmentTab').disabled = false;
-    document.getElementById('sessionsTab').disabled = false;
+    // document.getElementById('enrollmentTab').disabled = false;
+    // document.getElementById('sessionsTab').disabled = false;
 
     // Remove edit-mode class
     document.body.classList.remove('edit-mode');
@@ -447,12 +473,20 @@ function saveChanges() {
         description: document.getElementById('editDescription').value.trim(),
         skillLevel: document.getElementById('editSkillLevel').value,
         status: document.getElementById('editStatus').value,
+        status: document.getElementById('editStatus').value,
         schedule: {
             ...currentService.schedule,
             frequency: document.getElementById('editFrequency').value,
-            daysOfWeek: getSelectedDays(),
-            startTime: document.getElementById('editStartTime').value,
-            endTime: document.getElementById('editEndTime').value,
+            // Complex config
+            config: {
+                dailySlots: document.getElementById('editFrequency').value === 'daily' ? dailySchedule : [],
+                weeklySlots: document.getElementById('editFrequency').value === 'weekly' ? weeklySchedule : {}
+            },
+            // Legacy/Custom support
+            daysOfWeek: document.getElementById('editFrequency').value === 'custom' ? getSelectedDays() :
+                (document.getElementById('editFrequency').value === 'weekly' ? weeklySchedule.selectedDays : []),
+            startTime: document.getElementById('editFrequency').value === 'custom' ? document.getElementById('editStartTime').value : null,
+            endTime: document.getElementById('editFrequency').value === 'custom' ? document.getElementById('editEndTime').value : null,
             duration: parseInt(document.getElementById('editDuration').value) || 0
         }
     };
@@ -583,6 +617,250 @@ function showToast(message) {
     setTimeout(() => {
         toast.remove();
     }, 3000);
+}
+
+// ===== TIME SLOT BUILDER FUNCTIONS (Ported from Create) =====
+
+function toggleScheduleBuilder() {
+    const frequency = document.getElementById('editFrequency').value;
+
+    document.getElementById('dailyScheduleBuilder').classList.add('hidden');
+    document.getElementById('weeklyScheduleBuilder').classList.add('hidden');
+    document.getElementById('customScheduleBuilder').classList.add('hidden');
+
+    if (frequency === 'daily') {
+        document.getElementById('dailyScheduleBuilder').classList.remove('hidden');
+    } else if (frequency === 'weekly') {
+        document.getElementById('weeklyScheduleBuilder').classList.remove('hidden');
+    } else {
+        document.getElementById('customScheduleBuilder').classList.remove('hidden');
+    }
+}
+
+// Generate unique slot ID
+function generateSlotId() {
+    return `slot_${Date.now()}_${slotIdCounter++}`;
+}
+
+// ... Daily Schedule ...
+function addDailyTimeSlot() {
+    const slot = {
+        id: generateSlotId(),
+        startTime: '',
+        endTime: '',
+        duration: 60, // Default duration
+        staffIds: []
+    };
+    dailySchedule.push(slot);
+    renderDailySlots();
+    markUnsaved(); // Mark as unsaved
+}
+
+function removeDailyTimeSlot(slotId) {
+    dailySchedule = dailySchedule.filter(s => s.id !== slotId);
+    renderDailySlots();
+    markUnsaved();
+}
+
+function renderDailySlots() {
+    const container = document.getElementById('dailySlotsList');
+    if (!container) return;
+
+    if (dailySchedule.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 italic py-4">No time slots configured. Click "+ Add Time Slot" to begin.</p>';
+        return;
+    }
+
+    container.innerHTML = dailySchedule.map(slot => renderTimeSlotCard(slot, 'daily')).join('');
+}
+
+// ... Weekly Schedule ...
+function toggleWeeklyBuilderDay(dayName) {
+    const btn = document.querySelector(`.day-selector-btn[data-day="${dayName}"]`);
+
+    if (!weeklySchedule.selectedDays) weeklySchedule.selectedDays = [];
+
+    // Normalize case for comparison
+    const dayLower = dayName.toLowerCase();
+    const index = weeklySchedule.selectedDays.findIndex(d => d.toLowerCase() === dayLower);
+
+    if (index >= 0) {
+        // Deselect
+        weeklySchedule.selectedDays.splice(index, 1);
+        btn.classList.remove('selected');
+        // Remove section
+        const daySection = document.querySelector(`[data-day-section="${dayLower}"]`);
+        if (daySection) daySection.remove();
+        // Remove data
+        delete weeklySchedule[dayLower];
+    } else {
+        // Select
+        weeklySchedule.selectedDays.push(dayName); // Push original case or standard?
+        btn.classList.add('selected');
+
+        // Init data if needed
+        if (!weeklySchedule[dayLower]) weeklySchedule[dayLower] = [];
+
+        renderDaySection(dayLower);
+    }
+    markUnsaved();
+}
+
+function renderDaySection(dayName) {
+    const container = document.getElementById('weeklyDaysContainer');
+    if (!container) return;
+
+    // Check if already exists to avoid duplicates (though logic should prevent)
+    if (document.querySelector(`[data-day-section="${dayName}"]`)) return;
+
+    const dayLabel = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+
+    const daySection = document.createElement('div');
+    daySection.className = 'day-schedule-section border border-gray-200 rounded-lg p-4 bg-gray-50';
+    daySection.setAttribute('data-day-section', dayName);
+    daySection.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+            <h4 class="text-lg font-semibold text-gray-900">${dayLabel}</h4>
+            <button type="button" onclick="toggleWeeklyBuilderDay('${dayName}')" 
+                class="text-sm text-red-600 hover:text-red-800">
+                Remove Day
+            </button>
+        </div>
+        <div id="${dayName}SlotsList" class="space-y-3 mb-3">
+            <p class="text-sm text-gray-500 italic">No time slots for this day. Click "+ Add Time Slot" below.</p>
+        </div>
+        <button type="button" onclick="addWeeklyTimeSlot('${dayName}')" 
+            class="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-gray-600 hover:text-indigo-600 text-sm font-medium">
+            + Add Time Slot
+        </button>
+    `;
+
+    container.appendChild(daySection);
+}
+
+function addWeeklyTimeSlot(dayName) {
+    const slot = {
+        id: generateSlotId(),
+        startTime: '',
+        endTime: '',
+        duration: 60,
+        staffIds: []
+    };
+
+    const dayLower = dayName.toLowerCase();
+    if (!weeklySchedule[dayLower]) weeklySchedule[dayLower] = [];
+
+    weeklySchedule[dayLower].push(slot);
+    renderDaySlots(dayLower);
+    markUnsaved();
+}
+
+function removeWeeklyTimeSlot(dayName, slotId) {
+    const dayLower = dayName.toLowerCase();
+    if (weeklySchedule[dayLower]) {
+        weeklySchedule[dayLower] = weeklySchedule[dayLower].filter(s => s.id !== slotId);
+        renderDaySlots(dayLower);
+    }
+    markUnsaved();
+}
+
+function renderDaySlots(dayName) {
+    const container = document.getElementById(`${dayName}SlotsList`);
+    const dayLower = dayName.toLowerCase();
+    const slots = weeklySchedule[dayLower] || [];
+
+    if (slots.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 italic">No time slots for this day. Click "+ Add Time Slot" below.</p>';
+        return;
+    }
+
+    container.innerHTML = slots.map(slot => renderTimeSlotCard(slot, dayLower)).join('');
+}
+
+function renderTimeSlotCard(slot, context) {
+    return `
+        <div class="time-slot-card bg-white p-3 border border-gray-200 rounded-lg shadow-sm" data-slot-id="${slot.id}">
+            <div class="flex items-start gap-4">
+                <!-- Time Inputs -->
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="flex-1">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Start Time</label>
+                            <input type="time" value="${slot.startTime}" 
+                                onchange="updateSlotStartTime('${slot.id}', this.value, '${context}')"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div class="flex-1">
+                             <label class="block text-xs font-medium text-gray-600 mb-1">Duration (min)</label>
+                             <input type="number" value="${slot.duration}" 
+                                onchange="updateSlotDuration('${slot.id}', this.value, '${context}')"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">End Time</label>
+                            <input type="time" value="${slot.endTime}" readonly
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed" />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Remove Button -->
+                <button type="button" onclick="removeTimeSlot('${slot.id}', '${context}')"
+                    class="text-gray-400 hover:text-red-500 transition-colors mt-6">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function updateSlotStartTime(slotId, startTime, context) {
+    const slot = findSlot(slotId, context);
+    if (!slot) return;
+
+    slot.startTime = startTime;
+    slot.endTime = calculateEndTime(startTime, slot.duration);
+
+    if (context === 'daily') renderDailySlots();
+    else renderDaySlots(context);
+
+    markUnsaved();
+}
+
+function updateSlotDuration(slotId, duration, context) {
+    const slot = findSlot(slotId, context);
+    if (!slot) return;
+
+    slot.duration = parseInt(duration) || 60;
+    slot.endTime = calculateEndTime(slot.startTime, slot.duration);
+
+    if (context === 'daily') renderDailySlots();
+    else renderDaySlots(context);
+
+    markUnsaved();
+}
+
+function calculateEndTime(startTime, durationMinutes) {
+    if (!startTime) return '';
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const startDate = new Date(2000, 0, 1, hours, minutes);
+    const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
+    return `${String(endDate.getHours()).padStart(2, '0')}:${String(endDate.getMinutes()).padStart(2, '0')}`;
+}
+
+function findSlot(slotId, context) {
+    if (context === 'daily') {
+        return dailySchedule.find(s => s.id === slotId);
+    } else {
+        return weeklySchedule[context]?.find(s => s.id === slotId);
+    }
+}
+
+function removeTimeSlot(slotId, context) {
+    if (context === 'daily') removeDailyTimeSlot(slotId);
+    else removeWeeklyTimeSlot(context, slotId);
 }
 
 // ===== ACTIONS =====
@@ -793,14 +1071,14 @@ function openBookCustomerModal() {
             return;
         }
     }
-    
+
     document.getElementById('bookCustomerModal').classList.remove('hidden');
     document.getElementById('customerSearchInput').value = '';
     document.getElementById('customerAutocomplete').classList.add('hidden');
     document.getElementById('slotBookingForm').classList.add('hidden');
     selectedCustomer = null;
     selectedQuote = null;
-    
+
     // Update search hint based on pricebook item and type
     const hint = document.getElementById('customerSearchHint');
     if (currentService?.type === 'One-to-One') {
@@ -822,7 +1100,7 @@ function calculateSlotInventory(customerId, quoteId) {
     // Get all enrollments across all services for this customer and quote
     const stored = localStorage.getItem('fms_learning_services');
     const services = stored ? JSON.parse(stored) : [];
-    
+
     let bookedSlots = 0;
     services.forEach(service => {
         if (service.enrollments) {
@@ -833,14 +1111,14 @@ function calculateSlotInventory(customerId, quoteId) {
             });
         }
     });
-    
+
     // Also check current service enrollments (if not yet saved)
     if (currentService?.enrollments) {
         currentService.enrollments.forEach(enrollment => {
             if (enrollment.customerId === customerId && enrollment.quoteId === quoteId) {
                 // Don't double count if already in localStorage
-                const alreadyCounted = services.some(s => 
-                    s.id === currentService.id && 
+                const alreadyCounted = services.some(s =>
+                    s.id === currentService.id &&
                     s.enrollments?.some(e => e.id === enrollment.id)
                 );
                 if (!alreadyCounted) {
@@ -849,15 +1127,15 @@ function calculateSlotInventory(customerId, quoteId) {
             }
         });
     }
-    
+
     // Check local slotUsage tracker
     const usageKey = `${customerId}-${quoteId}`;
     bookedSlots += slotUsage[usageKey] || 0;
-    
+
     const customer = sampleCustomers.find(c => c.id === customerId);
     const quote = customer?.quotes?.find(q => q.id === quoteId);
     const totalSlots = quote?.slots || 0;
-    
+
     return {
         total: totalSlots,
         booked: bookedSlots,
@@ -868,7 +1146,7 @@ function calculateSlotInventory(customerId, quoteId) {
 function searchCustomersForBooking(query) {
     const autocomplete = document.getElementById('customerAutocomplete');
     const pricebookItemId = currentService?.pricebookItemId;
-    
+
     // Check if pricebook item is selected
     if (!pricebookItemId) {
         if (query && query.length >= 2) {
@@ -879,40 +1157,40 @@ function searchCustomersForBooking(query) {
         }
         return;
     }
-    
+
     if (!query || query.trim().length < 2) {
         autocomplete.classList.add('hidden');
         return;
     }
-    
+
     query = query.trim().toLowerCase();
-    
+
     // Filter customers and their matching quotes
     const matchingEntries = sampleCustomers.reduce((entries, customer) => {
         const matchesSearch = customer.name.toLowerCase().includes(query) ||
             customer.email.toLowerCase().includes(query);
-        
+
         if (!matchesSearch || !customer.quotes) return entries;
-        
+
         // Get quotes matching the pricebook item with available slots
         const matchingQuotes = customer.quotes.filter(quote => {
             if (quote.pricebookItemId !== pricebookItemId || quote.status !== 'approved') {
                 return false;
             }
-            
+
             // Calculate available slots for this quote
             const inventory = calculateSlotInventory(customer.id, quote.id);
             return inventory.available > 0;
         });
-        
+
         matchingQuotes.forEach(quote => {
             const inventory = calculateSlotInventory(customer.id, quote.id);
             entries.push({ customer, quote, inventory });
         });
-        
+
         return entries;
     }, []);
-    
+
     if (matchingEntries.length === 0) {
         autocomplete.innerHTML = `
             <div class="p-3 text-sm text-gray-500">
@@ -922,7 +1200,7 @@ function searchCustomersForBooking(query) {
         autocomplete.classList.remove('hidden');
         return;
     }
-    
+
     // Group by customer
     const groupedByCustomer = matchingEntries.reduce((map, entry) => {
         if (!map.has(entry.customer.id)) {
@@ -931,7 +1209,7 @@ function searchCustomersForBooking(query) {
         map.get(entry.customer.id).quotes.push({ quote: entry.quote, inventory: entry.inventory });
         return map;
     }, new Map());
-    
+
     autocomplete.innerHTML = Array.from(groupedByCustomer.values()).map(group => `
         <div class="p-3 border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
             <div class="flex items-center justify-between mb-2">
@@ -942,11 +1220,11 @@ function searchCustomersForBooking(query) {
             </div>
             <div class="space-y-1 pl-2 border-l-2 border-gray-200">
                 ${group.quotes.map(q => {
-                    const paymentClass = q.quote.paymentStatus === 'paid' ? 'text-emerald-600' : 
-                                        q.quote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600';
-                    const paymentIcon = q.quote.paymentStatus === 'paid' ? '✓' : 
-                                       q.quote.paymentStatus === 'partial' ? '◐' : '○';
-                    return `
+        const paymentClass = q.quote.paymentStatus === 'paid' ? 'text-emerald-600' :
+            q.quote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600';
+        const paymentIcon = q.quote.paymentStatus === 'paid' ? '✓' :
+            q.quote.paymentStatus === 'partial' ? '◐' : '○';
+        return `
                         <div class="p-2 rounded hover:bg-indigo-50 cursor-pointer transition-colors" 
                              onclick="selectCustomerQuote('${group.customer.id}', '${q.quote.id}')">
                             <div class="flex items-center justify-between">
@@ -958,29 +1236,29 @@ function searchCustomersForBooking(query) {
                             </div>
                         </div>
                     `;
-                }).join('')}
+    }).join('')}
             </div>
         </div>
     `).join('');
-    
+
     autocomplete.classList.remove('hidden');
 }
 
 function selectCustomerQuote(customerId, quoteId) {
     selectedCustomer = sampleCustomers.find(c => c.id === customerId);
     selectedQuote = selectedCustomer?.quotes?.find(q => q.id === quoteId);
-    
+
     if (!selectedCustomer || !selectedQuote) return;
-    
+
     document.getElementById('customerAutocomplete').classList.add('hidden');
     document.getElementById('customerSearchInput').value = selectedCustomer.name;
-    
+
     // Show booking form
     document.getElementById('slotBookingForm').classList.remove('hidden');
-    
+
     // Calculate inventory
     const inventory = calculateSlotInventory(customerId, quoteId);
-    
+
     // Populate customer info
     document.getElementById('slotBookCustomerName').textContent = selectedCustomer.name;
     document.getElementById('slotBookCustomerEmail').textContent = selectedCustomer.email;
@@ -990,25 +1268,25 @@ function selectCustomerQuote(customerId, quoteId) {
     document.getElementById('slotBookQuoteDisplay').innerHTML = `
         <div class="flex items-center justify-between">
             <span class="font-mono text-sm">${selectedQuote.id}</span>
-            <span class="text-xs ${selectedQuote.paymentStatus === 'paid' ? 'text-emerald-600' : 
-                                  selectedQuote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600'}">
-                ${selectedQuote.paymentStatus === 'paid' ? '✓ Paid' : 
-                  selectedQuote.paymentStatus === 'partial' ? '◐ Partial' : '○ Unpaid'}
+            <span class="text-xs ${selectedQuote.paymentStatus === 'paid' ? 'text-emerald-600' :
+            selectedQuote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600'}">
+                ${selectedQuote.paymentStatus === 'paid' ? '✓ Paid' :
+            selectedQuote.paymentStatus === 'partial' ? '◐ Partial' : '○ Unpaid'}
                 ($${selectedQuote.amountPaid.toFixed(2)} / $${selectedQuote.total.toFixed(2)})
             </span>
         </div>
     `;
-    
+
     // Show payment warning if not fully paid
     const paymentWarning = document.getElementById('paymentWarning');
     if (selectedQuote.paymentStatus !== 'paid') {
         paymentWarning.classList.remove('hidden');
-        document.getElementById('paymentWarningText').textContent = 
+        document.getElementById('paymentWarningText').textContent =
             `This quote is ${selectedQuote.paymentStatus === 'partial' ? 'only partially' : 'not'} paid.`;
     } else {
         paymentWarning.classList.add('hidden');
     }
-    
+
     // Clear form
     document.getElementById('attendeeName').value = '';
     document.getElementById('attendeeNotes').value = '';
@@ -1025,12 +1303,12 @@ function clearSlotBooking() {
 function updateBookingButtonState() {
     const attendeeName = document.getElementById('attendeeName').value.trim();
     const btn = document.getElementById('confirmBookingBtn');
-    
+
     if (!selectedCustomer || !selectedQuote) {
         btn.disabled = true;
         return;
     }
-    
+
     const inventory = calculateSlotInventory(selectedCustomer.id, selectedQuote.id);
     btn.disabled = !attendeeName || inventory.available <= 0;
 }
@@ -1043,7 +1321,7 @@ function confirmEnrollment() {
         alert('Please fill in all required fields');
         return;
     }
-    
+
     // Check One-to-One capacity (max 1 attendee)
     if (currentService?.type === 'One-to-One') {
         const currentEnrollments = currentService.enrollments || [];
@@ -1052,7 +1330,7 @@ function confirmEnrollment() {
             return;
         }
     }
-    
+
     // Check inventory again
     const inventory = calculateSlotInventory(selectedCustomer.id, selectedQuote.id);
     if (inventory.available <= 0) {
@@ -1112,7 +1390,7 @@ function renderEnrollmentList() {
         if (searchBar) searchBar.classList.add('hidden');
         if (addBtn) addBtn.classList.add('hidden');
         if (addFirstBtn) addFirstBtn.classList.add('hidden');
-        
+
         // Show One-to-One form when no attendee
         if (oneToOneForm) {
             if (hasAttendee) {
@@ -1121,7 +1399,7 @@ function renderEnrollmentList() {
                 oneToOneForm.classList.remove('hidden');
             }
         }
-        
+
         // Hide empty state for One-to-One (form replaces it)
         if (emptyState) emptyState.classList.add('hidden');
     } else {
@@ -1149,11 +1427,11 @@ function renderEnrollmentList() {
             cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
         };
         const status = statusConfig[e.status] || statusConfig.confirmed;
-        
+
         const paymentBadge = e.paymentStatus === 'paid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>' :
-                            e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
-                            e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
-        
+            e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
+                e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
+
         return `
             <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
                 <div class="flex items-start justify-between mb-2">
@@ -1197,11 +1475,11 @@ function updateEnrollmentStats() {
     const enrollments = currentService.enrollments || [];
     // One-to-One always has max capacity of 1
     const maxCapacity = currentService?.type === 'One-to-One' ? 1 : (currentService.maxCapacity || 1);
-    
+
     document.getElementById('statTotalBookings').textContent = enrollments.length;
     document.getElementById('statConfirmed').textContent = enrollments.filter(e => e.status === 'confirmed').length;
     document.getElementById('statAvailable').textContent = Math.max(0, maxCapacity - enrollments.length);
-    
+
     const fillRate = maxCapacity > 0 ? Math.round((enrollments.length / maxCapacity) * 100) : 0;
     document.getElementById('statAvgEnrollment').textContent = `${fillRate}%`;
 }
@@ -1209,13 +1487,13 @@ function updateEnrollmentStats() {
 function filterEnrolledAttendees(query) {
     const enrollments = currentService.enrollments || [];
     const container = document.getElementById('enrolledList');
-    
+
     if (!query.trim()) {
         renderEnrollmentList();
         return;
     }
 
-    const filtered = enrollments.filter(e => 
+    const filtered = enrollments.filter(e =>
         e.attendeeName.toLowerCase().includes(query.toLowerCase()) ||
         e.customerName.toLowerCase().includes(query.toLowerCase()) ||
         (e.attendeeEmail && e.attendeeEmail.toLowerCase().includes(query.toLowerCase()))
@@ -1233,11 +1511,11 @@ function filterEnrolledAttendees(query) {
             cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
         };
         const status = statusConfig[e.status] || statusConfig.confirmed;
-        
+
         const paymentBadge = e.paymentStatus === 'paid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>' :
-                            e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
-                            e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
-        
+            e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
+                e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
+
         return `
             <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
                 <div class="flex items-start justify-between mb-2">
@@ -1285,7 +1563,7 @@ function openTransferModal(enrollmentId) {
     attendeeToTransfer = enrollment;
     currentTransferType = 'service';
     selectedTransferSession = null;
-    
+
     const initials = enrollment.attendeeName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
     document.getElementById('transferAttendeeInitials').textContent = initials;
     document.getElementById('transferAttendeeName').textContent = enrollment.attendeeName;
@@ -1294,7 +1572,7 @@ function openTransferModal(enrollmentId) {
     // Reset UI
     setTransferType('service');
     populateTransferTargets();
-    
+
     document.getElementById('transferAttendeeModal').classList.remove('hidden');
 }
 
@@ -1334,14 +1612,14 @@ function closeTransferModal() {
 
 function populateTransferTargets() {
     const select = document.getElementById('transferTargetService');
-    
+
     // Get other learning services with same pricebook item
     const stored = localStorage.getItem('fms_learning_services');
     let services = stored ? JSON.parse(stored) : [];
-    
+
     // Filter to same pricebook, exclude current
-    const compatible = services.filter(s => 
-        s.id !== currentService.id && 
+    const compatible = services.filter(s =>
+        s.id !== currentService.id &&
         s.pricebookItemId === currentService.pricebookItemId &&
         s.status === 'active'
     );
@@ -1349,10 +1627,10 @@ function populateTransferTargets() {
     if (compatible.length === 0) {
         select.innerHTML = '<option value="">No compatible learning services found</option>';
     } else {
-        select.innerHTML = '<option value="">Select a learning service...</option>' + 
+        select.innerHTML = '<option value="">Select a learning service...</option>' +
             compatible.map(s => `<option value="${s.id}">${s.name} (${s.type})</option>`).join('');
     }
-    
+
     updateTransferButtonState();
 }
 
@@ -1403,7 +1681,7 @@ function confirmTransfer() {
         // Save both
         const currentIndex = services.findIndex(s => s.id === currentService.id);
         if (currentIndex >= 0) services[currentIndex] = currentService;
-        
+
         const targetIndex = services.findIndex(s => s.id === targetServiceId);
         if (targetIndex >= 0) services[targetIndex] = targetService;
 
@@ -1433,7 +1711,7 @@ function confirmTransfer() {
         const bookingsStored = localStorage.getItem('fms_session_bookings');
         let allBookings = bookingsStored ? JSON.parse(bookingsStored) : [];
         const sessionBookings = allBookings.filter(b => b.sessionId === targetSession.id && b.status === 'confirmed');
-        
+
         if (targetSession.maxCapacity && sessionBookings.length >= targetSession.maxCapacity) {
             alert('Target session is at full capacity');
             return;
@@ -1496,8 +1774,8 @@ function searchSessionsForTransferLS(query) {
         const dateStr = formatDate(session.date);
         const timeStr = `${formatTime(session.startTime)} - ${formatTime(session.endTime)}`;
         return dateStr.toLowerCase().includes(lowerQuery) ||
-               session.learningServiceName.toLowerCase().includes(lowerQuery) ||
-               timeStr.toLowerCase().includes(lowerQuery);
+            session.learningServiceName.toLowerCase().includes(lowerQuery) ||
+            timeStr.toLowerCase().includes(lowerQuery);
     });
 
     renderSessionAutocompleteLS(matching);
@@ -1631,7 +1909,7 @@ let oneToOneSelectedQuote = null;
 function searchCustomersForOneToOne(query) {
     const autocomplete = document.getElementById('oneToOneCustomerAutocomplete');
     const pricebookItemId = currentService?.pricebookItemId;
-    
+
     if (!pricebookItemId) {
         if (query && query.length >= 2) {
             autocomplete.innerHTML = '<div class="p-3 text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded">⚠️ Please ensure a pricebook item is linked to this learning service</div>';
@@ -1641,45 +1919,45 @@ function searchCustomersForOneToOne(query) {
         }
         return;
     }
-    
+
     if (!query || query.trim().length < 2) {
         autocomplete.classList.add('hidden');
         return;
     }
-    
+
     query = query.trim().toLowerCase();
-    
+
     // Filter customers and their matching quotes
     const matchingEntries = sampleCustomers.reduce((entries, customer) => {
         const matchesSearch = customer.name.toLowerCase().includes(query) ||
             customer.email.toLowerCase().includes(query);
-        
+
         if (!matchesSearch || !customer.quotes) return entries;
-        
+
         // Get quotes matching the pricebook item with available slots
         const matchingQuotes = customer.quotes.filter(quote => {
             if (quote.pricebookItemId !== pricebookItemId || quote.status !== 'approved') {
                 return false;
             }
-            
+
             const inventory = calculateSlotInventory(customer.id, quote.id);
             return inventory.available > 0;
         });
-        
+
         matchingQuotes.forEach(quote => {
             const inventory = calculateSlotInventory(customer.id, quote.id);
             entries.push({ customer, quote, inventory });
         });
-        
+
         return entries;
     }, []);
-    
+
     if (matchingEntries.length === 0) {
         autocomplete.innerHTML = '<div class="p-3 text-sm text-gray-500">No customers found with available slots</div>';
         autocomplete.classList.remove('hidden');
         return;
     }
-    
+
     // Group by customer
     const groupedByCustomer = matchingEntries.reduce((map, entry) => {
         if (!map.has(entry.customer.id)) {
@@ -1688,7 +1966,7 @@ function searchCustomersForOneToOne(query) {
         map.get(entry.customer.id).quotes.push({ quote: entry.quote, inventory: entry.inventory });
         return map;
     }, new Map());
-    
+
     autocomplete.innerHTML = Array.from(groupedByCustomer.values()).map(group => `
         <div class="p-3 border-b border-gray-200 last:border-b-0 hover:bg-gray-50">
             <div class="flex items-center justify-between mb-2">
@@ -1699,11 +1977,11 @@ function searchCustomersForOneToOne(query) {
             </div>
             <div class="space-y-1 pl-2 border-l-2 border-gray-200">
                 ${group.quotes.map(q => {
-                    const paymentClass = q.quote.paymentStatus === 'paid' ? 'text-emerald-600' : 
-                                        q.quote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600';
-                    const paymentIcon = q.quote.paymentStatus === 'paid' ? '✓' : 
-                                       q.quote.paymentStatus === 'partial' ? '◐' : '○';
-                    return `
+        const paymentClass = q.quote.paymentStatus === 'paid' ? 'text-emerald-600' :
+            q.quote.paymentStatus === 'partial' ? 'text-amber-600' : 'text-red-600';
+        const paymentIcon = q.quote.paymentStatus === 'paid' ? '✓' :
+            q.quote.paymentStatus === 'partial' ? '◐' : '○';
+        return `
                         <div class="p-2 rounded hover:bg-indigo-50 cursor-pointer transition-colors" 
                              onclick="selectCustomerForOneToOne('${group.customer.id}', '${q.quote.id}')">
                             <div class="flex items-center justify-between">
@@ -1715,29 +1993,29 @@ function searchCustomersForOneToOne(query) {
                             </div>
                         </div>
                     `;
-                }).join('')}
+    }).join('')}
             </div>
         </div>
     `).join('');
-    
+
     autocomplete.classList.remove('hidden');
 }
 
 function selectCustomerForOneToOne(customerId, quoteId) {
     oneToOneSelectedCustomer = sampleCustomers.find(c => c.id === customerId);
     oneToOneSelectedQuote = oneToOneSelectedCustomer?.quotes?.find(q => q.id === quoteId);
-    
+
     if (!oneToOneSelectedCustomer || !oneToOneSelectedQuote) return;
-    
+
     document.getElementById('oneToOneCustomerAutocomplete').classList.add('hidden');
     document.getElementById('oneToOneCustomerSearch').value = oneToOneSelectedCustomer.name;
-    
+
     // Show selected customer info
     document.getElementById('oneToOneSelectedCustomer').classList.remove('hidden');
     document.getElementById('oneToOneCustomerName').textContent = oneToOneSelectedCustomer.name;
     document.getElementById('oneToOneCustomerEmail').textContent = oneToOneSelectedCustomer.email;
     document.getElementById('oneToOneQuoteId').textContent = oneToOneSelectedQuote.id;
-    
+
     updateOneToOneButtonState();
 }
 
@@ -1760,14 +2038,14 @@ function clearOneToOneSelection() {
 function updateOneToOneButtonState() {
     const attendeeNameEl = document.getElementById('oneToOneAttendeeName');
     const btn = document.getElementById('oneToOneEnrollBtn');
-    
+
     if (!btn) return;
-    
+
     if (!oneToOneSelectedCustomer || !oneToOneSelectedQuote) {
         btn.disabled = true;
         return;
     }
-    
+
     const attendeeName = attendeeNameEl ? attendeeNameEl.value.trim() : '';
     const inventory = calculateSlotInventory(oneToOneSelectedCustomer.id, oneToOneSelectedQuote.id);
     btn.disabled = !attendeeName || inventory.available <= 0;
@@ -1781,7 +2059,7 @@ function confirmOneToOneEnrollment() {
         alert('Please fill in all required fields');
         return;
     }
-    
+
     // Check inventory
     const inventory = calculateSlotInventory(oneToOneSelectedCustomer.id, oneToOneSelectedQuote.id);
     if (inventory.available <= 0) {
@@ -1817,10 +2095,10 @@ function confirmOneToOneEnrollment() {
     // Save and refresh
     saveToStorage();
     renderEnrollmentList();
-    
+
     // Clear form
     clearOneToOneSelection();
-    
+
     showToast(`${attendeeName} enrolled successfully!`);
 }
 
@@ -1834,7 +2112,99 @@ document.addEventListener('click', function (e) {
 });
 
 // Transfer target service change
-document.getElementById('transferTargetService')?.addEventListener('change', function() {
+document.getElementById('transferTargetService')?.addEventListener('change', function () {
     updateTransferButtonState();
 });
 
+
+// ===== COMPLEX SCHEDULE RENDERING =====
+function renderScheduleDetails(schedule) {
+    const container = document.getElementById('scheduleDetailsContainer');
+    const header = document.getElementById('simpleScheduleHeader');
+
+    // Frequency Display
+    const freqEl = document.getElementById('viewFrequency');
+    if (freqEl) {
+        freqEl.textContent = schedule?.frequency ?
+            schedule.frequency.charAt(0).toUpperCase() + schedule.frequency.slice(1) : '-';
+    }
+
+    if (!schedule || !schedule.config) {
+        // Fallback / Simple Legacy
+        if (header) header.classList.remove('hidden');
+        if (container) {
+            container.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                   <div>
+                       <p class="text-xs text-gray-500 mb-1">Days</p>
+                       <p class="text-sm font-medium text-gray-900">${schedule?.daysOfWeek?.map(d => d.substring(0, 3)).join(', ') || '-'}</p>
+                   </div>
+                   <div>
+                       <p class="text-xs text-gray-500 mb-1">Time</p>
+                       <p class="text-sm font-medium text-gray-900">${schedule?.startTime || '-'} - ${schedule?.endTime || '-'}</p>
+                   </div>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    // Complex Schedule
+    if (header) header.classList.add('hidden');
+
+    if (!container) return;
+
+    let html = '';
+
+    if (schedule.frequency === 'daily') {
+        html = '<div class="space-y-2">';
+        html += '<p class="text-xs font-semibold text-gray-500">Daily Slots:</p>';
+        const slots = schedule.config.dailySlots || [];
+        if (slots.length === 0) {
+            html += '<p class="text-sm text-gray-400 italic">No slots configured</p>';
+        } else {
+            html += slots.map(slot => `
+                <div class="flex items-center gap-3 p-2 bg-white border border-gray-200 rounded text-sm">
+                    <span class="font-medium text-gray-900">${slot.startTime || '?'} - ${slot.endTime || '?'}</span>
+                    <span class="text-xs text-gray-500">(${slot.duration}m)</span>
+                </div>
+             `).join('');
+        }
+        html += '</div>';
+
+    } else if (schedule.frequency === 'weekly') {
+        html = '<div class="space-y-3">';
+        const days = schedule.config.weeklySlots || {};
+        const daysList = Object.keys(days);
+
+        // Sort days
+        const sorter = { 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6, 'sunday': 7 };
+        daysList.sort((a, b) => sorter[a.toLowerCase()] - sorter[b.toLowerCase()]);
+
+        if (daysList.length === 0) {
+            html += '<p class="text-sm text-gray-400 italic">No days configured</p>';
+        } else {
+            daysList.forEach(day => {
+                const slots = days[day] || [];
+                html += `
+                    <div>
+                        <p class="text-xs font-bold text-gray-700 mb-1 uppercase bg-gray-100 p-1 rounded inline-block">${day}</p>
+                        <div class="space-y-1 mt-1 pl-2 border-l-2 border-indigo-100">
+                            ${slots.length ? slots.map(slot => `
+                                <div class="flex items-center gap-3 p-2 bg-white border border-gray-200 rounded text-sm">
+                                    <span class="font-medium text-gray-900">${slot.startTime} - ${slot.endTime}</span>
+                                    <span class="text-xs text-gray-500">(${slot.duration}m)</span>
+                                </div>
+                            `).join('') : '<p class="text-xs text-gray-400 italic px-2">No slots</p>'}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        html += '</div>';
+    } else {
+        html = '<p class="text-sm text-gray-500">Custom schedule configuration</p>';
+    }
+
+    container.innerHTML = html;
+}
