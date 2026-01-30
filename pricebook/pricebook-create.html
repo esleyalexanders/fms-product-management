@@ -416,11 +416,6 @@
                             <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
                                 <label>Session Frequency <span class="required">*</span></label>
                                 <div class="toggle-group">
-                                    <div class="toggle-option" data-value="daily" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_daily" value="daily"
-                                            style="display: none;">
-                                        <span>Daily</span>
-                                    </div>
                                     <div class="toggle-option active" data-value="weekly"
                                         onclick="selectFrequency(this)">
                                         <input type="radio" name="frequency" id="frequency_weekly" value="weekly"
@@ -432,16 +427,11 @@
                                             style="display: none;">
                                         <span>Monthly</span>
                                     </div>
-                                    <div class="toggle-option" data-value="custom" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_custom" value="custom"
-                                            style="display: none;">
-                                        <span>Custom</span>
-                                    </div>
                                 </div>
                             </div>
 
-                            <!-- For SUBSCRIPTION services -->
-                            <div id="subscriptionServiceFields" style="display: block;">
+                            <!-- Service Configuration Fields (for all services) -->
+                            <div id="serviceConfigFields" style="display: block;">
                                 <div class="form-row">
                                     <div class="form-group">
                                         <label for="minCapacity">Min Capacity <span class="required">*</span></label>
@@ -454,7 +444,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="sessionDuration">Duration (min) <span
+                                        <label for="sessionDuration">Session Duration <span
                                                 class="required">*</span></label>
                                         <input type="number" id="sessionDuration" min="15" step="15" value="60">
                                     </div>
@@ -480,15 +470,6 @@
                                     <input type="text" id="equipmentNeeded"
                                         placeholder="e.g., Whiteboard, Projector, Calculators">
                                     <div class="info-text">Comma-separated list (optional)</div>
-                                </div>
-                            </div>
-
-                            <!-- For NON-SUBSCRIPTION services -->
-                            <div id="nonSubscriptionServiceNote" style="display: none;">
-                                <div class="info-text"
-                                    style="background: #f0f9ff; padding: 12px; border-radius: 6px; border-left: 3px solid #3b82f6;">
-                                    <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
-                                    For non-subscription services, configure MOQ and Unit in the Pricing section below.
                                 </div>
                             </div>
                         </div>
@@ -531,6 +512,34 @@
                             </div>
                         </div>
 
+                        <!-- Recurrence Configuration (for non-subscription services) -->
+                        <div id="recurrenceSection" style="display: none;">
+                            <div class="section-title">Configure Recurrence</div>
+                            <div class="info-text" style="margin-bottom: 16px;">Set up how often this service repeats
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="recurrenceFrequency">Repeat every</label>
+                                    <select id="recurrenceFrequency"
+                                        style="padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                        <option value="week" selected>week</option>
+                                        <option value="month">month</option>
+                                    </select>
+                                    <input type="hidden" id="recurrenceInterval" value="1">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="recurrenceOccurrences">After</label>
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <input type="number" id="recurrenceOccurrences" min="1" value="12"
+                                            style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                        <span style="color: #6b7280;">occurrences</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Pricing -->
                         <div class="section-title">Pricing</div>
 
@@ -552,6 +561,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
 
                             <div class="form-group" id="serviceCustomUnitGroup" style="display: none;">
                                 <label for="serviceCustomUnit">Custom Unit <span class="required">*</span></label>
@@ -735,10 +746,10 @@
             const priceLabel = document.getElementById('priceLabel');
             const priceInfo = document.getElementById('priceInfo');
 
-            // Toggle service configuration fields
-            const subscriptionServiceFields = document.getElementById('subscriptionServiceFields');
-            const nonSubscriptionServiceNote = document.getElementById('nonSubscriptionServiceNote');
+            // Service configuration fields are always shown for services
+            const serviceConfigFields = document.getElementById('serviceConfigFields');
             const moqUnitSection = document.getElementById('moqUnitSection');
+            const recurrenceSection = document.getElementById('recurrenceSection');
 
             if (subscriptionRadio && subscriptionRadio.checked) {
                 // Subscription mode
@@ -753,10 +764,9 @@
                 priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
                 priceInfo.textContent = 'Price will be calculated per hour';
 
-                // Show subscription service fields (capacity, duration, skills)
-                if (subscriptionServiceFields) subscriptionServiceFields.style.display = 'block';
-                if (nonSubscriptionServiceNote) nonSubscriptionServiceNote.style.display = 'none';
+                // Hide MOQ/Unit section and recurrence for subscription
                 if (moqUnitSection) moqUnitSection.style.display = 'none';
+                if (recurrenceSection) recurrenceSection.style.display = 'none';
             } else {
                 // Non-subscription mode
                 frequencyGroup.style.display = 'none';
@@ -772,11 +782,13 @@
                 priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
                 priceInfo.textContent = `Price will be per ${unitText}`;
 
-                // Hide subscription service fields, show MOQ/Unit section
-                if (subscriptionServiceFields) subscriptionServiceFields.style.display = 'none';
-                if (nonSubscriptionServiceNote) nonSubscriptionServiceNote.style.display = 'block';
+                // Show MOQ/Unit section and recurrence for non-subscription
                 if (moqUnitSection) moqUnitSection.style.display = 'block';
+                if (recurrenceSection) recurrenceSection.style.display = 'block';
             }
+
+            // Service config fields are always visible for services
+            if (serviceConfigFields) serviceConfigFields.style.display = 'block';
         }
 
         // Global updatePreview function (needs to be accessible from event handlers)
@@ -1063,9 +1075,19 @@
                 } else {
                     // Non-subscription service fields
                     data.moq = parseFloat(document.getElementById('moq')?.value || 1);
+                    data.totalAmount = parseFloat(document.getElementById('totalAmount')?.value || 0);
                     const unitSelect = document.getElementById('unit');
                     const customUnit = document.getElementById('serviceCustomUnit')?.value;
                     data.unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
+                    // Include service config fields for non-subscription too
+                    data.capacity = {
+                        minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
+                        maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
+                    };
+                    data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+                    data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
+                    data.requiredSkills = requiredSkills;
+                    data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
                 }
             }
             // Product-specific fields
