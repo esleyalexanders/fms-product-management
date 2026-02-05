@@ -268,9 +268,6 @@ function renderActionButtons(isPast) {
     } else {
         // Future session - full actions
         container.innerHTML = `
-            <button onclick="sendReminder()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700">
-                <i class="fas fa-bell mr-2"></i>Send Reminder
-            </button>
             <button onclick="cancelSlot()" class="px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 text-sm font-medium">
                 <i class="fas fa-times mr-2"></i>Cancel Slot
             </button>
