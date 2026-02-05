@@ -21,6 +21,13 @@ let weeklySchedule = {
     saturday: [],
     sunday: []
 };
+let monthlySchedule = {
+    type: 'date', // 'date' or 'day_of_week'
+    date: 1, // Day of month (1-31)
+    week: 'first', // 'first', 'second', 'third', 'fourth', 'last'
+    dayOfWeek: 'monday', // 'monday' - 'sunday'
+    slots: []
+}; // For monthly frequency - single pattern object
 let slotIdCounter = 0;
 
 // GLOBAL ENTRY POINT (Debugging)
@@ -803,6 +810,11 @@ function clearPricebookSelection() {
     document.getElementById('selectPricebookBtn').classList.remove('hidden');
     document.getElementById('selectedPricebookDisplay').classList.add('hidden');
 
+    // Reset schedule state
+    dailySchedule = [];
+    weeklySchedule = { selectedDays: [], monday: [], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: [] };
+    monthlySchedule = { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
+
     // Re-enable all fields
     document.querySelectorAll('.type-card').forEach(card => {
         card.style.pointerEvents = 'auto';
@@ -927,18 +939,18 @@ function handleSubmit(event) {
         pricebookItemId: selectedPricebookItem?.id || null,
         pricebookItemName: selectedPricebookItem?.name || null,
         schedule: {
-            frequency: document.getElementById('frequency').value,
-            frequency: document.getElementById('frequency').value,
+            frequency: selectedPricebookItem?.sessionFrequency || document.getElementById('frequency')?.value || 'weekly',
             // Complex schedule data config
             config: {
-                dailySlots: document.getElementById('frequency').value === 'daily' ? dailySchedule : [],
-                weeklySlots: document.getElementById('frequency').value === 'weekly' ? weeklySchedule : {}
+                dailySlots: selectedPricebookItem?.sessionFrequency === 'daily' ? dailySchedule : [],
+                weeklySlots: selectedPricebookItem?.sessionFrequency === 'weekly' ? weeklySchedule : {},
+                monthlyPattern: selectedPricebookItem?.sessionFrequency === 'monthly' ? monthlySchedule : null
             },
             // Legacy/Simple support (fallback)
             daysOfWeek: selectedDays,
             startTime: null, // No longer single start time
             endTime: null,   // No longer single end time
-            duration: parseInt(document.getElementById('duration').value) || 0,
+            duration: parseInt(document.getElementById('duration')?.value) || 0,
             startDate: document.getElementById('scheduleStartDate').value || null,
             endDate: document.getElementById('scheduleEndDate').value || null,
         },
@@ -1041,12 +1053,30 @@ function initializeScheduleBuilder() {
 
     const frequency = selectedPricebookItem.sessionFrequency;
 
+    // Hide all builders first
+    document.getElementById('dailyScheduleBuilder').classList.add('hidden');
+    document.getElementById('weeklyScheduleBuilder').classList.add('hidden');
+    document.getElementById('monthlyScheduleBuilder').classList.add('hidden');
+
+    // Update section title
+    const titleElement = document.getElementById('scheduleBuilderTitle');
+    if (titleElement) {
+        const titles = {
+            'daily': 'Daily Schedule',
+            'weekly': 'Weekly Schedule',
+            'monthly': 'Monthly Schedule'
+        };
+        titleElement.textContent = titles[frequency] || 'Schedule';
+    }
+
+    // Show the appropriate builder
     if (frequency === 'daily') {
         document.getElementById('dailyScheduleBuilder').classList.remove('hidden');
-        document.getElementById('weeklyScheduleBuilder').classList.add('hidden');
     } else if (frequency === 'weekly') {
-        document.getElementById('dailyScheduleBuilder').classList.add('hidden');
         document.getElementById('weeklyScheduleBuilder').classList.remove('hidden');
+    } else if (frequency === 'monthly') {
+        document.getElementById('monthlyScheduleBuilder').classList.remove('hidden');
+        initializeMonthlyScheduleUI();
     }
 }
 
@@ -1178,6 +1208,85 @@ function renderDaySlots(dayName) {
     container.innerHTML = slots.map(slot => renderTimeSlotCard(slot, dayName)).join('');
 }
 
+// ===== MONTHLY SCHEDULE FUNCTIONS =====
+
+function initializeMonthlyScheduleUI() {
+    // Populate date dropdown (1-31)
+    const dateSelect = document.getElementById('monthlyDateValue');
+    if (dateSelect && dateSelect.options.length === 0) {
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === 1) option.selected = true;
+            dateSelect.appendChild(option);
+        }
+    }
+}
+
+function setMonthlyPatternType(type) {
+    monthlySchedule.type = type;
+
+    // Update button styles
+    const dateBtn = document.getElementById('monthlyPatternTypeDate');
+    const dayOfWeekBtn = document.getElementById('monthlyPatternTypeDayOfWeek');
+
+    if (type === 'date') {
+        dateBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors bg-indigo-100 border-indigo-500 text-indigo-700 font-medium';
+        dayOfWeekBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors border-gray-300 text-gray-600 hover:border-indigo-300';
+        document.getElementById('monthlySpecificDateConfig').classList.remove('hidden');
+        document.getElementById('monthlyRelativeDayConfig').classList.add('hidden');
+    } else {
+        dateBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors border-gray-300 text-gray-600 hover:border-indigo-300';
+        dayOfWeekBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors bg-indigo-100 border-indigo-500 text-indigo-700 font-medium';
+        document.getElementById('monthlySpecificDateConfig').classList.add('hidden');
+        document.getElementById('monthlyRelativeDayConfig').classList.remove('hidden');
+    }
+}
+
+function updateMonthlyPatternConfig() {
+    if (monthlySchedule.type === 'date') {
+        monthlySchedule.date = parseInt(document.getElementById('monthlyDateValue').value);
+    } else {
+        monthlySchedule.week = document.getElementById('monthlyWeekValue').value;
+        monthlySchedule.dayOfWeek = document.getElementById('monthlyDayOfWeekValue').value;
+    }
+}
+
+function addMonthlyTimeSlot() {
+    if (!selectedPricebookItem) {
+        showNotification('error', 'Error', 'Please select a Pricebook item first');
+        return;
+    }
+
+    const slot = {
+        id: generateSlotId(),
+        startTime: '',
+        endTime: '',
+        duration: selectedPricebookItem.sessionDuration,
+        staffIds: []
+    };
+
+    monthlySchedule.slots.push(slot);
+    renderMonthlySlots();
+}
+
+function removeMonthlyTimeSlot(slotId) {
+    monthlySchedule.slots = monthlySchedule.slots.filter(s => s.id !== slotId);
+    renderMonthlySlots();
+}
+
+function renderMonthlySlots() {
+    const container = document.getElementById('monthlySlotsList');
+
+    if (monthlySchedule.slots.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 italic">No time slots configured. Click "+ Add Time Slot" to begin.</p>';
+        return;
+    }
+
+    container.innerHTML = monthlySchedule.slots.map(slot => renderTimeSlotCard(slot, 'monthly')).join('');
+}
+
 // ===== TIME SLOT CARD RENDERING =====
 
 function renderTimeSlotCard(slot, context) {
@@ -1254,6 +1363,8 @@ function updateSlotStartTime(slotId, startTime, context) {
     // Re-render the specific context
     if (context === 'daily') {
         renderDailySlots();
+    } else if (context === 'monthly') {
+        renderMonthlySlots();
     } else {
         renderDaySlots(context);
     }
@@ -1272,8 +1383,10 @@ function calculateEndTime(startTime, durationMinutes) {
 function findSlot(slotId, context) {
     if (context === 'daily') {
         return dailySchedule.find(s => s.id === slotId);
+    } else if (context === 'monthly') {
+        return monthlySchedule.slots.find(s => s.id === slotId);
     } else {
-        // Context is a day name
+        // Context is a day name (weekly)
         return weeklySchedule[context]?.find(s => s.id === slotId);
     }
 }
@@ -1281,6 +1394,8 @@ function findSlot(slotId, context) {
 function removeTimeSlot(slotId, context) {
     if (context === 'daily') {
         removeDailyTimeSlot(slotId);
+    } else if (context === 'monthly') {
+        removeMonthlyTimeSlot(slotId);
     } else {
         removeWeeklyTimeSlot(context, slotId);
     }
@@ -1320,6 +1435,8 @@ function addStaffToSlot(slotId, staffId, context) {
             // Re-render
             if (context === 'daily') {
                 renderDailySlots();
+            } else if (context === 'monthly') {
+                renderMonthlySlots();
             } else {
                 renderDaySlots(context);
             }
@@ -1347,6 +1464,8 @@ function removeStaffFromSlot(slotId, staffId, context) {
     // Re-render
     if (context === 'daily') {
         renderDailySlots();
+    } else if (context === 'monthly') {
+        renderMonthlySlots();
     } else {
         renderDaySlots(context);
     }

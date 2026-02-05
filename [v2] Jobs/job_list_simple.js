@@ -138,6 +138,23 @@ const jobs = [
         paymentStatus: 'good',
         staff: 'Mr. Rock',
         enrollmentDate: '2024-11-06'
+    },
+    {
+        id: 'JOB-2024-010',
+        customerName: 'Jane Martinez',
+        customerEmail: 'jane.m@email.com',
+        serviceName: 'English Literature - Advanced',
+        sessionsName: null,
+        serviceType: 'subscription',
+        schedulePattern: 'Not yet scheduled',
+        nextSession: null,
+        status: 'incomplete',
+        paymentStatus: 'not_setup',
+        staff: null,
+        enrollmentDate: '2024-11-08',
+        incompleteReason: 'not_linked', // Not linked to any sessions yet
+        linkedService: null,
+        paymentSetup: false // Payment method not configured
     }
 ];
 
@@ -381,8 +398,7 @@ function changePage(direction) {
 // View job
 function viewJob(jobId) {
     // Navigate to job detail page
-    console.log('View job:', jobId);
-    alert(`View job details for ${jobId}`);
+    window.location.href = `job_detail_simple.html?id=${jobId}`;
 }
 
 // Initialize on page load
