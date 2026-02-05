@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Service Details - FMS</title>
+    <title>Session Details - FMS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -169,8 +169,7 @@
 
                 <div class="nav-section-label" style="margin-top: 20px;">SESSIONS MANAGEMENT</div>
                 <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
-                        class="fas fa-graduation-cap"></i><span>Sessions
-                        Management</span></a>
+                        class="fas fa-graduation-cap"></i><span>Sessions</span></a>
                 <a href="session_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
                         class="fas fa-calendar-day"></i><span>Sessions</span></a>
 
@@ -227,8 +226,8 @@
                                 </button>
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
-                                        <h1 class="text-xl font-bold text-gray-900" id="serviceNameHeader">Learning
-                                            Service Details</h1>
+                                        <h1 class="text-xl font-bold text-gray-900" id="serviceNameHeader">Session
+                                            Details</h1>
                                         <span id="serviceIdBadge"
                                             class="px-2 py-0.5 text-xs font-medium rounded bg-gray-100 text-gray-600">LS-001</span>
                                         <span id="typeBadge"
@@ -242,8 +241,8 @@
                                             ● Unsaved changes
                                         </span>
                                     </div>
-                                    <p class="text-sm text-gray-500" id="serviceSubtitle">View and manage learning
-                                        service details</p>
+                                    <p class="text-sm text-gray-500" id="serviceSubtitle">View and manage session
+                                        details</p>
                                 </div>
                             </div>
 
@@ -627,6 +626,82 @@
                                             </div>
                                         </div>
 
+                                        <!-- Monthly Schedule Builder (for monthly frequency) -->
+                                        <div id="monthlyScheduleBuilder" class="hidden">
+                                            <p class="text-sm text-gray-600 mb-4">Configure monthly recurrence pattern
+                                                and time slots</p>
+
+                                            <!-- Pattern Type Selector -->
+                                            <div class="mb-4">
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Recurrence
+                                                    Pattern</label>
+                                                <div class="flex gap-2 mb-3">
+                                                    <button type="button" id="monthlyPatternTypeDate"
+                                                        onclick="setMonthlyPatternType('date')"
+                                                        class="px-4 py-2 text-sm rounded-lg border-2 transition-colors bg-indigo-100 border-indigo-500 text-indigo-700 font-medium">
+                                                        Specific Date
+                                                    </button>
+                                                    <button type="button" id="monthlyPatternTypeDayOfWeek"
+                                                        onclick="setMonthlyPatternType('day_of_week')"
+                                                        class="px-4 py-2 text-sm rounded-lg border-2 transition-colors border-gray-300 text-gray-600 hover:border-indigo-300">
+                                                        Relative Day
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Specific Date Configuration -->
+                                            <div id="monthlySpecificDateConfig" class="mb-4">
+                                                <div class="flex items-center gap-2">
+                                                    <label class="text-sm font-medium text-gray-700">Day of
+                                                        Month:</label>
+                                                    <select id="monthlyDateValue"
+                                                        onchange="updateMonthlyPatternConfig()"
+                                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                        <!-- Options 1-31 will be populated by JS -->
+                                                    </select>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Session repeats on this date every
+                                                    month</p>
+                                            </div>
+
+                                            <!-- Relative Day Configuration -->
+                                            <div id="monthlyRelativeDayConfig" class="mb-4 hidden">
+                                                <div class="flex items-center gap-2">
+                                                    <select id="monthlyWeekValue"
+                                                        onchange="updateMonthlyPatternConfig()"
+                                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                        <option value="first">First</option>
+                                                        <option value="second">Second</option>
+                                                        <option value="third">Third</option>
+                                                        <option value="fourth">Fourth</option>
+                                                        <option value="last">Last</option>
+                                                    </select>
+                                                    <select id="monthlyDayOfWeekValue"
+                                                        onchange="updateMonthlyPatternConfig()"
+                                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                        <option value="monday">Monday</option>
+                                                        <option value="tuesday">Tuesday</option>
+                                                        <option value="wednesday">Wednesday</option>
+                                                        <option value="thursday">Thursday</option>
+                                                        <option value="friday">Friday</option>
+                                                        <option value="saturday">Saturday</option>
+                                                        <option value="sunday">Sunday</option>
+                                                    </select>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-1">Example: "First Monday of every
+                                                    month"</p>
+                                            </div>
+
+                                            <div id="monthlySlotsList" class="space-y-3 mb-4">
+                                                <!-- Monthly time slots will be rendered here -->
+                                            </div>
+
+                                            <button type="button" onclick="addMonthlyTimeSlot()"
+                                                class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-gray-600 hover:text-indigo-600 font-medium">
+                                                + Add Time Slot
+                                            </button>
+                                        </div>
+
                                         <!-- Custom/Simple Schedule Builder (Fallback) -->
                                         <div id="customScheduleBuilder" class="hidden space-y-4">
                                             <div>
@@ -682,7 +757,69 @@
 
                                 <!-- Type-Specific Edit Fields -->
                                 <div id="typeSpecificEditFields" class="edit-only hidden">
-                                    <!-- Will be populated based on type -->
+                                    <!-- Class Type Edit Fields -->
+                                    <div id="classTypeEdit"
+                                        class="hidden bg-purple-50 rounded-lg p-4 border border-purple-200 mb-4">
+                                        <h3 class="text-sm font-semibold text-purple-900 mb-3">Class Details</h3>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Curriculum</label>
+                                                <input type="text" id="editCurriculum"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cohort
+                                                        Start</label>
+                                                    <input type="date" id="editCohortStartDate"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">Cohort
+                                                        End</label>
+                                                    <input type="date" id="editCohortEndDate"
+                                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Cohort
+                                                    Size</label>
+                                                <input type="number" id="editCohortSize" min="1"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Group Type Edit Fields -->
+                                    <!-- Group specific fields (Min/Max Capacity) are handled in the general Capacity section below, 
+                                         but if there were specific Group-only fields not about capacity, they would go here.
+                                         Currently Group only has Min/Max Capacity which is handled in "Capacity Settings". -->
+
+                                    <!-- One-to-One Type Edit Fields -->
+                                    <div id="oneToOneTypeEdit"
+                                        class="hidden bg-cyan-50 rounded-lg p-4 border border-cyan-200 mb-4">
+                                        <h3 class="text-sm font-semibold text-cyan-900 mb-3">One-to-One Details</h3>
+                                        <div class="space-y-3">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Focus
+                                                    Area</label>
+                                                <input type="text" id="editFocusArea"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-gray-700 mb-1">Personalization
+                                                    Level</label>
+                                                <select id="editPersonalizationLevel"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                                                    <option value="Standard">Standard</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Very High">Very High</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Capacity Settings Card -->
@@ -798,8 +935,8 @@
                                         </button>
                                         <button
                                             onclick="window.location.href='session_list.html?serviceId=' + currentService.id"
-                                            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                                            View All Sessions
+                                            class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">
+                                            View Session Slots
                                         </button>
                                         <button onclick="archiveService()"
                                             class="w-full px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors text-sm">

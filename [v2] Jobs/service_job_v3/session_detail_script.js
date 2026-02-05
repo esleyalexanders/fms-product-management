@@ -69,10 +69,16 @@ function generateSlotsFromService(service) {
         }
         else if (service.schedule.frequency === 'weekly' && config.weeklySlots) {
             Object.keys(config.weeklySlots).forEach(day => {
+                if (day === 'selectedDays') return; // Skip non-schedule key
                 const daySlots = config.weeklySlots[day];
                 daySlots.forEach(slot => {
                     slots.push(createSlotObject(service, capitalize(day), slot.startTime, slot.endTime, slot.duration));
                 });
+            });
+        }
+        else if (service.schedule.frequency === 'monthly' && config.monthlySlots) {
+            config.monthlySlots.slots.forEach(slot => {
+                slots.push(createSlotObject(service, 'Monthly', slot.startTime, slot.endTime, slot.duration));
             });
         }
     } else if (service.schedule.daysOfWeek) {
@@ -126,7 +132,7 @@ function renderSlotDetails() {
     statusBadge.className = 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700';
 
     // Link
-    const lsLink = document.getElementById('learningServiceLink');
+    const lsLink = document.getElementById('sessionLink');
     if (lsLink) lsLink.textContent = currentService.name;
 
     // Slot Info (Overview Tab)
@@ -134,7 +140,7 @@ function renderSlotDetails() {
     setText('viewTime', `${formatTime(currentSlot.startTime)} - ${formatTime(currentSlot.endTime)}`);
     setText('viewDuration', `${currentSlot.duration} minutes`);
     setText('viewStatus', 'Recurring');
-    setText('viewLearningService', currentService.name);
+    setText('viewSession', currentService.name);
 
     // Hide Edit Mode inputs/buttons
     document.querySelectorAll('.edit-only').forEach(el => el.classList.add('hidden'));
@@ -145,7 +151,7 @@ function renderSlotDetails() {
     setText('capacityInfo', 'Max enrollment per instance');
 
     // Sidebar Info
-    setText('sidebarServiceName', currentService.name);
+    setText('sidebarSessionName', currentService.name);
     setText('sidebarTypeBadge', currentService.type);
     document.getElementById('sidebarTypeBadge').className = `px-2 py-0.5 text-xs font-medium rounded-full ${getTypeStyles(currentService.type).badgeClass}`;
     setText('sidebarSchedule', `${currentService.schedule.frequency === 'daily' ? 'Daily' : 'Weekly'} (${currentService.sessionsCount || 0} sessions)`);
@@ -210,6 +216,10 @@ function renderStaff() {
     const container = document.getElementById('defaultStaffList');
     if (!container) return;
 
+    console.log('=== renderStaff DEBUG ===');
+    console.log('currentService:', currentService);
+    console.log('currentService.staff:', currentService.staff);
+
     container.innerHTML = '';
 
     if (currentService.staff && currentService.staff.length > 0) {
@@ -224,6 +234,7 @@ function renderStaff() {
         });
         document.getElementById('defaultStaffSection').classList.remove('hidden');
     } else {
+        console.warn('No staff found on currentService');
         container.innerHTML = '<span class="text-gray-500 text-sm">No default staff assigned</span>';
     }
 
@@ -272,36 +283,8 @@ function renderSessionInstances() {
     const list = document.getElementById('sessionsList');
     const empty = document.getElementById('emptySessions');
 
-    // Mock generating next 4 instances based on day
-    const instances = [];
-    const daysMap = { 'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6 };
-
-    // Handle 'Daily' case
-    if (currentSlot.day === 'Daily') {
-        // Just start from today
-        // No loop needed
-    } else {
-        const targetDay = daysMap[currentSlot.day.trim().toLowerCase()];
-        if (targetDay !== undefined) {
-            // Advance to next occurrence
-            while (date.getDay() !== targetDay) {
-                date.setDate(date.getDate() + 1);
-            }
-        }
-    }
-
-    // Generate 4 weeks (safeguard loop count)
-    for (let i = 0; i < 4; i++) {
-        instances.push({
-            date: new Date(date),
-            startTime: currentSlot.startTime,
-            endTime: currentSlot.endTime,
-            enrolled: currentService.totalEnrolled || 0,
-            capacity: currentService.maxCapacity || 20,
-            staff: currentService.staff?.[0]?.name || 'Staff'
-        });
-        date.setDate(date.getDate() + 7);
-    }
+    // Generate instances based on schedule
+    const instances = generateSlotInstances();
 
     console.log('Generated instances:', instances); // Debug logging
 
@@ -317,60 +300,149 @@ function renderSessionInstances() {
         const month = session.date.toLocaleDateString('en-US', { month: 'short' });
         const dayNum = session.date.getDate();
 
+        // Check if slot is past or upcoming
+        const now = new Date();
+        const slotDateTime = new Date(session.date);
+        slotDateTime.setHours(parseInt(session.startTime.split(':')[0]), parseInt(session.startTime.split(':')[1]));
+        const isPast = slotDateTime < now;
+
+        // Format date for URL
+        const dateForUrl = session.date.toISOString().split('T')[0];
+
+        // Build URL to session slot instance - pass both slotId and serviceId
+        const instanceUrl = `session_slot_instance.html?slotId=${currentSlot.id}&serviceId=${currentService.id}&date=${dateForUrl}&startTime=${session.startTime}`;
+
+        // Styling based on past/upcoming
+        const cardClass = isPast
+            ? 'bg-gray-50 border-gray-200 opacity-75'
+            : 'bg-white border-indigo-100 hover:border-indigo-300 hover:bg-indigo-50';
+        const badgeClass = isPast
+            ? 'bg-gray-200 text-gray-600'
+            : 'bg-blue-100 text-blue-700';
+        const badgeText = isPast ? '✓ Past' : '📅 Upcoming';
+        const textClass = isPast ? 'text-gray-600' : 'text-gray-900';
+        const subtextClass = isPast ? 'text-gray-400' : 'text-gray-500';
+
         return `
-        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 cursor-pointer transition-colors">
-            <div class="flex items-center gap-4">
-                <div class="text-center min-w-16">
-                    <p class="text-lg font-bold text-gray-900">${dayNum}</p>
-                    <p class="text-xs text-gray-500">${month}</p>
+        <a href="${instanceUrl}" class="block">
+            <div class="flex items-center justify-between p-3 ${cardClass} rounded-lg border transition-all cursor-pointer">
+                <div class="flex items-center gap-4">
+                    <div class="text-center min-w-16 ${isPast ? 'opacity-60' : ''}">
+                        <p class="text-lg font-bold ${textClass}">${dayNum}</p>
+                        <p class="text-xs ${subtextClass}">${month}</p>
+                    </div>
+                    <div class="border-l border-gray-300 pl-4">
+                        <p class="font-medium ${textClass}">${formatTime(session.startTime)} - ${formatTime(session.endTime)}</p>
+                        <p class="text-sm ${subtextClass}">Staff: ${session.staff} • Duration: ${currentSlot.duration} min</p>
+                    </div>
                 </div>
-                <div class="border-l border-gray-300 pl-4">
-                    <p class="font-medium text-gray-900">${formatTime(session.startTime)} - ${formatTime(session.endTime)}</p>
-                    <p class="text-sm text-gray-500">Staff: ${session.staff} • Duration: ${currentSlot.duration} min</p>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="text-sm font-medium ${textClass}">${session.enrolled}/${session.capacity}</p>
+                        <p class="text-xs ${subtextClass}">${isPast ? 'Attended' : 'Enrolled'}</p>
+                    </div>
+                    <span class="px-2 py-0.5 text-xs font-medium rounded-full ${badgeClass}">${badgeText}</span>
+                    <svg class="w-5 h-5 ${subtextClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p class="text-sm font-medium text-gray-900">${session.enrolled}/${session.capacity}</p>
-                    <p class="text-xs text-gray-500">Enrolled</p>
-                </div>
-                <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700">Scheduled</span>
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </div>
-        </div>
+        </a>
         `;
     }).join('');
 }
 
-function generateSessions() {
-    // In a real app, this would make an API call to generate concrete instance records
-    // For this prototype, we will just ensure the view is rendered
+function generateSlotInstances() {
+    const instances = [];
+    const daysMap = { 'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6 };
 
-    // Show loading state
-    const btn = document.getElementById('generateSlotsBtn');
-    if (btn) {
-        const originalText = btn.innerHTML;
-        // Keep width constant to prevent jumpiness
-        const width = btn.offsetWidth;
-        btn.style.width = `${width}px`;
+    let date = new Date();
 
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        btn.disabled = true;
+    // Handle 'Daily' case
+    if (currentSlot.day === 'Daily') {
+        // Generate next 10 days
+        for (let i = 0; i < 10; i++) {
+            instances.push({
+                date: new Date(date),
+                startTime: currentSlot.startTime,
+                endTime: currentSlot.endTime,
+                enrolled: currentService.totalEnrolled || 0,
+                capacity: currentService.maxCapacity || 20,
+                staff: currentService.staff?.[0]?.name || 'Staff'
+            });
+            date.setDate(date.getDate() + 1);
+        }
+    } else if (currentSlot.day === 'Monthly') {
+        // Handle Monthly case
+        const config = currentService.schedule?.config?.monthlySlots || { type: 'date', date: 1 };
 
-        setTimeout(() => {
-            renderSessionInstances();
-            btn.innerHTML = '<i class="fas fa-check"></i>';
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-                btn.style.width = ''; // Reset width
-                btn.disabled = false;
-            }, 1000);
-        }, 600);
+        // Generate next 6 occurrences
+        // Start from current month
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        for (let i = 0; i < 6; i++) {
+            let instanceDate = new Date(currentYear, currentMonth + i, 1);
+
+            if (config.type === 'date') {
+                // Fixed date (e.g., 15th)
+                instanceDate.setDate(config.date || 1);
+            } else {
+                // Relative day (e.g., First Monday)
+                const targetDay = daysMap[(config.dayOfWeek || 'monday').toLowerCase()];
+                const weekMap = { 'first': 0, 'second': 1, 'third': 2, 'fourth': 3, 'last': 4 }; // Simplified 'last'
+                const weekOffset = weekMap[config.week || 'first'] || 0;
+
+                // Find first occurrence of day in month
+                while (instanceDate.getDay() !== targetDay) {
+                    instanceDate.setDate(instanceDate.getDate() + 1);
+                }
+
+                // Add weeks
+                instanceDate.setDate(instanceDate.getDate() + (weekOffset * 7));
+            }
+
+            instances.push({
+                date: instanceDate,
+                startTime: currentSlot.startTime,
+                endTime: currentSlot.endTime,
+                enrolled: currentService.totalEnrolled || 0,
+                capacity: currentService.maxCapacity || 20,
+                staff: currentService.staff?.[0]?.name || 'Staff'
+            });
+        }
     } else {
-        renderSessionInstances();
+        // Weekly schedule - find target day
+        const targetDay = daysMap[currentSlot.day.trim().toLowerCase()];
+
+        if (targetDay !== undefined) {
+            // Advance to next occurrence
+            while (date.getDay() !== targetDay) {
+                date.setDate(date.getDate() + 1);
+            }
+
+            // Generate next 8 weeks
+            for (let i = 0; i < 8; i++) {
+                instances.push({
+                    date: new Date(date),
+                    startTime: currentSlot.startTime,
+                    endTime: currentSlot.endTime,
+                    enrolled: currentService.totalEnrolled || 0,
+                    capacity: currentService.maxCapacity || 20,
+                    staff: currentService.staff?.[0]?.name || 'Staff'
+                });
+                date.setDate(date.getDate() + 7);
+            }
+        }
     }
+
+    return instances;
+}
+
+function generateSessions() {
+    // Auto-generate and render session instances
+    renderSessionInstances();
+    showNotification('success', 'Slots generated successfully');
 }
 
 // ===== ENROLLMENT MANAGEMENT =====
@@ -518,7 +590,7 @@ function saveToStorage() {
 }
 
 // Navigation
-function viewLearningService() {
+function viewSession() {
     window.location.href = `learning_service_detail.html?id=${currentService.id}`;
 }
 

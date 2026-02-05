@@ -49,13 +49,33 @@ function generateSlotsFromServices(services) {
                 });
             }
             // 2. Weekly Slots (Complex)
+
             else if (service.schedule.frequency === 'weekly' && config.weeklySlots) {
-                Object.keys(config.weeklySlots).forEach(day => {
+                Object.keys(config.weeklySlots).filter(k => k !== 'selectedDays').forEach(day => {
                     const daySlots = config.weeklySlots[day];
-                    daySlots.forEach(slot => {
-                        slots.push(createSlotObject(service, capitalize(day), slot.startTime, slot.endTime, slot.duration));
-                    });
+                    if (Array.isArray(daySlots)) {
+                        daySlots.forEach(slot => {
+                            slots.push(createSlotObject(service, capitalize(day), slot.startTime, slot.endTime, slot.duration));
+                        });
+                    }
                 });
+            }
+            // 3. Monthly Slots
+            else if (service.schedule.frequency === 'monthly' && config.monthlySlots) {
+                const mConfig = config.monthlySlots;
+                let dayLabel = '';
+
+                if (mConfig.type === 'date') {
+                    dayLabel = `Day ${mConfig.date || 1}`;
+                } else {
+                    dayLabel = `${capitalize(mConfig.week || 'first')} ${capitalize(mConfig.dayOfWeek || 'monday')}`;
+                }
+
+                if (mConfig.slots && Array.isArray(mConfig.slots)) {
+                    mConfig.slots.forEach(slot => {
+                        slots.push(createSlotObject(service, dayLabel, slot.startTime, slot.endTime, slot.duration));
+                    });
+                }
             }
         }
         // B. Simple/Legacy Schedule
@@ -78,7 +98,7 @@ function generateSlotsFromServices(services) {
 function createSlotObject(service, day, startTime, endTime, duration) {
     // Create a unique ID for this slot pattern
     // ID format: lsId_day_startTime
-    const slotId = `${service.id}_${day.toLowerCase()}_${startTime.replace(':', '')}`;
+    const slotId = `${service.id}_${day.toLowerCase().replace(/\s+/g, '_')}_${startTime.replace(':', '')}`;
 
     return {
         id: slotId,
@@ -238,31 +258,26 @@ function clearFilters() {
 
 // ===== STATS =====
 function updateStats() {
-    // Total Slots
-    document.getElementById('totalSessions').textContent = filteredSlots.length;
+    // 1. Weekly Sessions (Count)
+    if (document.getElementById('weeklyClasses')) {
+        document.getElementById('weeklyClasses').textContent = filteredSlots.length;
+    }
 
-    // Unique Services
-    const uniqueServices = new Set(filteredSlots.map(s => s.serviceId)).size;
-    document.getElementById('upcomingSessions').textContent = uniqueServices; // Reusing ID for "Unique Services"
-    document.getElementById('upcomingSessions').previousElementSibling.textContent = "Unique Services";
+    // 2. Active Jobs (Unique Services)
+    if (document.getElementById('activeStudents')) {
+        const uniqueServices = new Set(filteredSlots.map(s => s.serviceId)).size;
+        document.getElementById('activeStudents').textContent = uniqueServices;
+    }
 
-    // Most Common Day
-    const dayCounts = {};
-    filteredSlots.forEach(s => dayCounts[s.day] = (dayCounts[s.day] || 0) + 1);
-    let topDay = '-';
-    let max = 0;
-    Object.keys(dayCounts).forEach(day => {
-        if (dayCounts[day] > max) {
-            max = dayCounts[day];
-            topDay = day;
-        }
-    });
-    document.getElementById('todaySessions').textContent = topDay; // Reusing ID
-    document.getElementById('todaySessions').previousElementSibling.textContent = "Most Active Day";
+    // 3. Est. Revenue (Mock Calculation)
+    if (document.getElementById('estRevenue')) {
+        // Just a mock calculation based on slots count * arbitrary rate
+        const totalRev = filteredSlots.length * 70;
+        document.getElementById('estRevenue').textContent = `$${totalRev.toLocaleString()}`;
+    }
 
-    // Hide other stats cards that aren't relevant for now if needed, 
-    // or just leave them with placeholders? 
-    // For now I'll just set them to '-' to avoid confusion or repurpose them.
-    document.getElementById('avgEnrollment').textContent = '-';
-    document.getElementById('sessionsByType').textContent = '-';
+    // 4. Percentage Fill (Mock)
+    if (document.getElementById('percentageFill')) {
+        document.getElementById('percentageFill').textContent = '85%'; // keeping static for now
+    }
 }

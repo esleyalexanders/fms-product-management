@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Slot Instance - FMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../home-styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .app-container {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-content {
+            overflow-y: auto;
+            height: 100vh;
+            flex: 1;
+        }
+
+        /* Type badge styles */
+        .type-badge-class {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            border: 1px solid #c4b5fd;
+        }
+
+        .type-badge-group {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fcd34d;
+        }
+
+        .type-badge-one-to-one {
+            background-color: #cffafe;
+            color: #0891b2;
+            border: 1px solid #67e8f9;
+        }
+
+        /* Past/Upcoming session cards */
+        .past-session-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            opacity: 0.85;
+        }
+
+        .past-session-card h3,
+        .past-session-card h4 {
+            color: #6b7280;
+        }
+
+        .past-session-card p {
+            color: #9ca3af;
+        }
+
+        .upcoming-session-card {
+            background: #ffffff;
+            border: 1px solid #e0e7ff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Sidebar - Match session_detail.html -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text">FMS</span>
+                        <span class="logo-subtext">Field Management</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-label">MAIN</div>
+                <a href="../../home.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-home"></i><span>Home</span></a>
+                <a href="../../Dashboard/home-dashboard.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-chart-line"></i><span>Dashboard</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SALES</div>
+                <a href="../../[v2] Quotes/quote_simple/quote_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-contract"></i><span>Quotes</span></a>
+                <a href="../../[v2] Quotes/quote_simple/invoice_list_simple.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-file-invoice-dollar"></i><span>Invoices</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">JOBS</div>
+                <a href="../job_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-briefcase"></i><span>Jobs</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SESSIONS MANAGEMENT</div>
+                <a href="learning_service_list.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-graduation-cap"></i><span>Sessions</span></a>
+                <a href="session_list.html" class="nav-item active" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-day"></i><span>Session Slots</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">SCHEDULE</div>
+                <a href="schedule_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar-check"></i><span>Schedule Calendar</span></a>
+                <a href="my_calendar.html" class="nav-item" style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-calendar"></i><span>My Calendar</span></a>
+
+                <div class="nav-section-label" style="margin-top: 20px;">MANAGEMENT</div>
+                <a href="../../manage-team/manage-team.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-users"></i><span>Manage
+                        team</span></a>
+                <a href="../../pricebook/pricebook.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-book"></i><span>My
+                        pricebook</span></a>
+                <a href="../../Customer Management/customer-list.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i
+                        class="fas fa-user-friends"></i><span>Customers</span></a>
+                <a href="../../Timesheet_manager/staff-timesheets.html" class="nav-item"
+                    style="text-decoration: none; color: inherit;"><i class="fas fa-clock"></i><span>Staff
+                        Timesheets</span></a>
+
+                <div class="sidebar-footer">
+                    <a href="../../manage-team/manage-team-roles.html" class="nav-item"
+                        style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Manage roles</span>
+                    </a>
+                    <div class="nav-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Get Set Up</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="p-4">
+                <div class="max-w-7xl mx-auto">
+
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="flex items-center gap-3 mb-1">
+                                    <h1 class="text-2xl font-bold text-gray-900" id="slotTitle">Slot Instance Details
+                                    </h1>
+                                    <span id="timeBadge"
+                                        class="px-3 py-1 text-xs font-medium rounded-full">Loading...</span>
+                                    <span id="typeBadge" class="px-2 py-1 text-xs font-medium rounded-full">-</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-600 mt-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                        </path>
+                                    </svg>
+                                    <span id="slotSubtitle">Loading...</span>
+                                    <span class="mx-2">•</span>
+                                    <a href="#" id="sessionLink" onclick="viewSession(event)"
+                                        class="text-indigo-600 hover:text-indigo-700 font-medium">-</a>
+                                </div>
+                            </div>
+                            <div id="actionButtons" class="flex gap-2">
+                                <!-- Populated by JS based on past/upcoming -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid Layout -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <!-- Left Column - Main Content (2 columns) -->
+                        <div class="lg:col-span-2 space-y-4">
+
+                            <!-- Instance Details -->
+                            <div class="bg-white rounded-lg shadow-sm p-4" id="instanceDetailsCard">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Slot Details</h2>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                        <p class="text-sm text-gray-900" id="viewDate">-</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                        <p class="text-sm text-gray-900" id="viewTime">-</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                                        <p class="text-sm text-gray-900" id="viewDuration">-</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Recurrence
+                                            Session</label>
+                                        <a href="#" id="viewSession" onclick="viewSession(event)"
+                                            class="text-indigo-600 hover:text-indigo-700 font-medium text-sm">-</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Attendance -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h2 class="text-lg font-semibold text-gray-900">Attendance</h2>
+                                    <div class="flex items-center gap-2">
+                                        <div id="enrollmentOverrideIndicator" class="hidden">
+                                            <span
+                                                class="px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs font-medium text-amber-700 flex items-center gap-2">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                Override Active
+                                            </span>
+                                        </div>
+                                        <div id="attendanceActions" class="hidden">
+                                            <button onclick="openEnrollmentOverrideModal()"
+                                                class="px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:border-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 text-xs font-medium transition-colors bg-white">
+                                                <i class="fas fa-edit mr-1"></i> Manage Enrollment
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="attendanceList" class="space-y-3">
+                                    <!-- Populated by JS -->
+                                </div>
+
+                                <div id="emptyAttendance" class="hidden text-center py-8 text-gray-500">
+                                    <i class="fas fa-users text-4xl mb-2"></i>
+                                    <p>No students enrolled</p>
+                                </div>
+
+                                <!-- Old action button location removed -->
+                            </div>
+
+                            <!-- Staff -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h2 class="text-lg font-semibold text-gray-900">Staff Assignment</h2>
+                                    <div class="flex items-center gap-2">
+                                        <div id="staffOverrideIndicator" class="hidden">
+                                            <span
+                                                class="px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs font-medium text-amber-700 flex items-center gap-2">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                Override Active
+                                            </span>
+                                        </div>
+                                        <div id="staffActions" class="hidden">
+                                            <button onclick="openStaffOverrideModal()"
+                                                class="px-3 py-1.5 border border-gray-200 text-gray-700 rounded-lg hover:border-indigo-500 hover:text-indigo-600 hover:bg-indigo-50 text-xs font-medium transition-colors bg-white">
+                                                <i class="fas fa-edit mr-1"></i> Override Staff
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="staffList" class="space-y-3">
+                                    <!-- Populated by JS -->
+                                </div>
+
+                                <div id="emptyStaff" class="hidden text-center py-8 text-gray-500">
+                                    <i class="fas fa-chalkboard-teacher text-4xl mb-2"></i>
+                                    <p>No staff assigned</p>
+                                </div>
+
+                                <!-- Old action button location removed -->
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="bg-white rounded-lg shadow-sm p-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Notes</h2>
+
+                                <div id="notesList" class="space-y-3 mb-4">
+                                    <!-- Populated by JS -->
+                                </div>
+
+                                <div id="emptyNotes" class="hidden text-center py-8 text-gray-500">
+                                    <i class="fas fa-sticky-note text-4xl mb-2"></i>
+                                    <p>No notes yet</p>
+                                </div>
+
+                                <div class="pt-4 border-t border-gray-200">
+                                    <textarea id="newNoteContent" rows="3" placeholder="Add a note for this slot..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"></textarea>
+                                    <div class="flex justify-end gap-2 mt-2">
+                                        <button onclick="addNote()"
+                                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                                            Add Note
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Column - Sidebar (1 column) -->
+                        <div class="space-y-4">
+                            <!-- Recurrence Session Summary -->
+                            <div class="bg-white rounded-lg shadow-sm p-4 sticky top-4">
+                                <h2 class="text-lg font-semibold text-gray-900 mb-4">Recurrence Session</h2>
+
+                                <div class="space-y-3 mb-4">
+                                    <div class="p-3 bg-indigo-50 rounded-lg">
+                                        <div class="text-xs text-indigo-600 mb-1">Session Name</div>
+                                        <div class="text-sm font-bold text-indigo-700" id="sidebarSessionName">-</div>
+                                        <div class="mt-2">
+                                            <span id="sidebarTypeBadge"
+                                                class="px-2 py-0.5 text-xs font-medium rounded-full">-</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-sm space-y-2">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Schedule:</span>
+                                            <span class="font-medium text-gray-900" id="sidebarSchedule">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">Default Staff:</span>
+                                            <span class="font-medium text-gray-900" id="sidebarDefaultStaff">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Links -->
+                                <div class="border-t border-gray-200 pt-4 space-y-2">
+                                    <button onclick="viewSession()"
+                                        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
+                                        <i class="fas fa-arrow-right text-xs"></i>
+                                        View Recurrence Session
+                                    </button>
+                                    <button onclick="viewAllSlots()"
+                                        class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm text-left flex items-center gap-2">
+                                        <i class="fas fa-calendar-day text-xs"></i>
+                                        View All Slots
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Staff Override Modal -->
+    <div id="staffOverrideModal" class="modal">
+        <div class="modal-content">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Override Staff for This Slot</h3>
+                    <button onclick="closeStaffOverrideModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">
+                    This will replace the default staff assignment for <span id="modalSlotDate" class="font-medium">this
+                        slot</span> only.
+                </p>
+
+                <div class="p-4 bg-gray-50 rounded-lg mb-4">
+                    <p class="text-xs text-gray-600 mb-2">Current Default Staff:</p>
+                    <div id="modalDefaultStaffList" class="text-sm text-gray-900">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Staff for This Slot:</label>
+                        <div id="staffSelectionList" class="space-y-2">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Reason for Override
+                            (optional):</label>
+                        <input type="text" id="staffOverrideReason" placeholder="e.g., Dr. Smith is on leave"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-2">
+                <button onclick="closeStaffOverrideModal()"
+                    class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    Cancel
+                </button>
+                <button onclick="applyStaffOverride()"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                    Apply Override
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrollment Override Modal -->
+    <div id="enrollmentOverrideModal" class="modal">
+        <div class="modal-content">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Manage Enrollment for This Slot</h3>
+                    <button onclick="closeEnrollmentOverrideModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">
+                    Customize who attends <span id="modalEnrollmentSlotDate" class="font-medium">this slot</span>.
+                </p>
+
+                <div class="mb-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Default Enrolled Students:</p>
+                    <div id="enrollmentCheckboxList" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <p class="text-sm text-blue-800" id="enrollmentSummary">Summary: 0 attending</p>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-2">
+                <button onclick="closeEnrollmentOverrideModal()"
+                    class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium">
+                    Cancel
+                </button>
+                <button onclick="applyEnrollmentOverride()"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium">
+                    Apply Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="session_slot_instance_script.js"></script>
+</body>
+
+</html>

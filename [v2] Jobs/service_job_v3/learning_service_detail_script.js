@@ -13,7 +13,12 @@ let originalData = null; // Store original data for cancel/reset
 // ===== SCHEDULE BUILDER STATE =====
 let dailySchedule = [];
 let weeklySchedule = { selectedDays: [] };
+let monthlySchedule = { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
 let slotIdCounter = 0;
+
+function generateSlotId() {
+    return 'slot_' + Date.now() + '_' + (++slotIdCounter);
+}
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function () {
@@ -72,7 +77,15 @@ function getSampleService() {
             daysOfWeek: ['Monday', 'Wednesday', 'Friday'],
             startTime: '15:00',
             endTime: '16:30',
-            duration: 90
+            duration: 90,
+            config: {
+                weeklySlots: {
+                    selectedDays: ['monday', 'wednesday', 'friday'],
+                    monday: [{ id: 'slot_demo_1', startTime: '15:00', endTime: '16:30', duration: 90 }],
+                    wednesday: [{ id: 'slot_demo_2', startTime: '15:00', endTime: '16:30', duration: 90 }],
+                    friday: [{ id: 'slot_demo_3', startTime: '15:00', endTime: '16:30', duration: 90 }]
+                }
+            }
         },
         staff: [
             { id: 'staff1', name: 'John Smith', role: 'Senior Tutor', skills: 'Math', hourlyRate: 45.00, assignedRate: 50.00 },
@@ -172,6 +185,53 @@ function renderServiceData() {
 
     // Render enrollment list
     renderEnrollmentList();
+
+    // Render staff assignment
+    renderStaffAssignment();
+}
+
+function renderStaffAssignment() {
+    const container = document.getElementById('assignedStaffList');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (currentService.staff && currentService.staff.length > 0) {
+        currentService.staff.forEach(staff => {
+            const initials = staff.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200';
+            item.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <span class="text-indigo-600 font-medium">${initials}</span>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">${staff.name}</p>
+                        <p class="text-xs text-gray-500">${staff.role || 'Staff'} ${staff.skills ? '• ' + staff.skills : ''}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-medium text-gray-900">$${(staff.assignedRate || 0).toFixed(2)}/hr</p>
+                    <p class="text-xs text-gray-500">Assigned Rate</p>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+
+        // Update summary count
+        const summaryCount = document.getElementById('summaryStaffCount');
+        if (summaryCount) summaryCount.textContent = `${currentService.staff.length} staff`;
+
+    } else {
+        container.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+                <p>No staff assigned to this service.</p>
+                <p class="text-xs mt-1">Switch to Edit Mode to assign staff.</p>
+            </div>
+        `;
+    }
 }
 
 // function updateTabVisibility(type) {
@@ -258,6 +318,7 @@ function populateEditFields() {
     if (currentService.schedule?.config) {
         dailySchedule = currentService.schedule.config.dailySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.dailySlots)) : [];
         weeklySchedule = currentService.schedule.config.weeklySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.weeklySlots)) : { selectedDays: [] };
+        monthlySchedule = currentService.schedule.config.monthlySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.monthlySlots)) : { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
 
         // Reconstruct selectedDays if missing (from keys)
         if (!weeklySchedule.selectedDays) {
@@ -267,9 +328,7 @@ function populateEditFields() {
         // Fallback for legacy data
         dailySchedule = [];
         weeklySchedule = { selectedDays: currentService.schedule?.daysOfWeek || [] };
-
-        // If legacy data exists, we might want to try to populate the builders roughly?
-        // For now, respect the 'frequency' and leave builders empty if switching to new mode
+        monthlySchedule = { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
     }
 
     // Toggle appropriate builder
@@ -292,6 +351,7 @@ function populateEditFields() {
 
     // Render builders
     renderDailySlots();
+
     // Render weekly builder days
     if (weeklySchedule.selectedDays) {
         // Clear existing Day selection in Weekly Builder
@@ -299,9 +359,6 @@ function populateEditFields() {
             const day = btn.dataset.day;
             if (weeklySchedule.selectedDays.map(d => d.toLowerCase()).includes(day.toLowerCase())) {
                 btn.classList.add('selected');
-                // Ensure section exists (careful not to dupe)
-                // renderDaySection checks via ID, but we should probably clear first or handle re-render
-                // The easiest way is to re-render the whole container
             } else {
                 btn.classList.remove('selected');
             }
@@ -316,33 +373,86 @@ function populateEditFields() {
         });
     }
 
+    // Render Monthly Builder
+    if (frequency === 'monthly') {
+        const type = monthlySchedule.type || 'date';
+        setMonthlyPatternType(type);
+
+        if (type === 'date') {
+            const dateSelect = document.getElementById('monthlyDateValue');
+            if (dateSelect) dateSelect.value = monthlySchedule.date || 1;
+        } else {
+            document.getElementById('monthlyWeekValue').value = monthlySchedule.week || 'first';
+            document.getElementById('monthlyDayOfWeekValue').value = monthlySchedule.dayOfWeek || 'monday';
+        }
+        renderMonthlySlots();
+    }
+
     // Capacity
 
+    // Capacity
     // Capacity
     if (currentService.type === 'One-to-One') {
         document.getElementById('capacityEditStandard').classList.add('hidden');
         document.getElementById('capacityEditOneToOne').classList.remove('hidden');
+
+        // Populate One-to-One specific fields
+        document.getElementById('oneToOneTypeEdit').classList.remove('hidden');
+        document.getElementById('classTypeEdit').classList.add('hidden');
+        document.getElementById('editFocusArea').value = currentService.focusArea || '';
+        document.getElementById('editPersonalizationLevel').value = currentService.personalizationLevel || 'Standard';
+
     } else {
         document.getElementById('capacityEditStandard').classList.remove('hidden');
         document.getElementById('capacityEditOneToOne').classList.add('hidden');
         document.getElementById('editMaxCapacity').value = currentService.maxCapacity || '';
         document.getElementById('editMinCapacity').value = currentService.minCapacity || '';
 
-        // Show/hide min capacity based on type
+        // Hide One-to-One fields
+        document.getElementById('oneToOneTypeEdit').classList.add('hidden');
+
+        if (currentService.type === 'Class') {
+            document.getElementById('classTypeEdit').classList.remove('hidden');
+            document.getElementById('editCurriculum').value = currentService.curriculum || '';
+            document.getElementById('editCohortStartDate').value = currentService.cohortStartDate || '';
+            document.getElementById('editCohortEndDate').value = currentService.cohortEndDate || '';
+            document.getElementById('editCohortSize').value = currentService.cohortSize || '';
+        } else {
+            document.getElementById('classTypeEdit').classList.add('hidden');
+        }
+
         if (currentService.type === 'Group') {
             document.getElementById('minCapacityField').classList.remove('hidden');
         } else {
             document.getElementById('minCapacityField').classList.add('hidden');
         }
     }
+
+    // Initialize staff search and list
+    initializeStaffSearch();
+    renderEditableStaffList();
 }
 
 function updateSummary() {
-    document.getElementById('summaryPricebook').textContent = currentService.pricebookItemName || '-';
-    document.getElementById('summarySessions').textContent = currentService.sessionsCount || '0';
-    document.getElementById('summaryFill').textContent = `${currentService.avgEnrollment || 0}%`;
-    document.getElementById('summaryEnrolled').textContent = currentService.totalEnrolled || '0';
-    document.getElementById('summaryStaff').textContent = currentService.staff?.length || '0';
+    // Helper to safe update
+    const updateText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    updateText('summaryPricebook', currentService.pricebookItemName || '-');
+
+    // Map to available IDs in HTML
+    updateText('summaryActiveStudents', `${currentService.totalEnrolled || 0} Active`);
+    updateText('summaryUpcomingSessions', `${currentService.sessionsCount || 0} Sessions`);
+
+    // Some IDs from script don't exist in HTML, skipping or mapping:
+    // summaryFill -> Not in HTML
+    // summaryStaff -> Not in main summary, handled by renderStaffAssignment for specific tab
+
+    // Revenue (using price * enrolled as estimate?)
+    const estRevenue = (currentService.pricebookPrice || 0) * (currentService.totalEnrolled || 0);
+    updateText('summaryRevenue', `$${estRevenue.toLocaleString()}`);
 }
 
 // ===== TAB NAVIGATION =====
@@ -466,67 +576,90 @@ function exitEditMode() {
 }
 
 function saveChanges() {
-    // Collect data from form
-    const updatedData = {
-        ...currentService,
-        name: document.getElementById('editName').value.trim(),
-        description: document.getElementById('editDescription').value.trim(),
-        skillLevel: document.getElementById('editSkillLevel').value,
-        status: document.getElementById('editStatus').value,
-        status: document.getElementById('editStatus').value,
-        schedule: {
-            ...currentService.schedule,
-            frequency: document.getElementById('editFrequency').value,
-            // Complex config
-            config: {
-                dailySlots: document.getElementById('editFrequency').value === 'daily' ? dailySchedule : [],
-                weeklySlots: document.getElementById('editFrequency').value === 'weekly' ? weeklySchedule : {}
+    try {
+        console.log('Saving changes...', currentService);
+
+        // Collect data from form
+        const frequency = document.getElementById('editFrequency').value;
+
+        const updatedData = {
+            ...currentService,
+            name: document.getElementById('editName').value.trim(),
+            description: document.getElementById('editDescription').value.trim(),
+            skillLevel: document.getElementById('editSkillLevel').value,
+            status: document.getElementById('editStatus').value,
+            schedule: {
+                ...currentService.schedule,
+                frequency: frequency,
+                // Complex config
+                config: {
+                    dailySlots: frequency === 'daily' ? dailySchedule : [],
+                    weeklySlots: frequency === 'weekly' ? weeklySchedule : {},
+                    monthlySlots: frequency === 'monthly' ? monthlySchedule : {}
+                },
+                // Legacy/Custom support
+                daysOfWeek: frequency === 'custom' ? getSelectedDays() :
+                    (frequency === 'weekly' ? weeklySchedule.selectedDays : []),
+                startTime: frequency === 'custom' ? document.getElementById('editStartTime').value : null,
+                endTime: frequency === 'custom' ? document.getElementById('editEndTime').value : null,
+                duration: parseInt(document.getElementById('editDuration').value) || 0
             },
-            // Legacy/Custom support
-            daysOfWeek: document.getElementById('editFrequency').value === 'custom' ? getSelectedDays() :
-                (document.getElementById('editFrequency').value === 'weekly' ? weeklySchedule.selectedDays : []),
-            startTime: document.getElementById('editFrequency').value === 'custom' ? document.getElementById('editStartTime').value : null,
-            endTime: document.getElementById('editFrequency').value === 'custom' ? document.getElementById('editEndTime').value : null,
-            duration: parseInt(document.getElementById('editDuration').value) || 0
+            // Explicitly preserve staff just in case
+            staff: currentService.staff || []
+        };
+
+        // Update capacity
+        // Update capacity
+        if (currentService.type !== 'One-to-One') {
+            updatedData.maxCapacity = parseInt(document.getElementById('editMaxCapacity').value) || currentService.maxCapacity;
+            if (currentService.type === 'Group') {
+                updatedData.minCapacity = parseInt(document.getElementById('editMinCapacity').value) || null;
+            }
+            if (currentService.type === 'Class') {
+                updatedData.curriculum = document.getElementById('editCurriculum').value.trim();
+                updatedData.cohortStartDate = document.getElementById('editCohortStartDate').value;
+                updatedData.cohortEndDate = document.getElementById('editCohortEndDate').value;
+                updatedData.cohortSize = parseInt(document.getElementById('editCohortSize').value) || null;
+            }
+        } else {
+            // One-to-One updates
+            updatedData.focusArea = document.getElementById('editFocusArea').value.trim();
+            updatedData.personalizationLevel = document.getElementById('editPersonalizationLevel').value;
         }
-    };
 
-    // Update capacity
-    if (currentService.type !== 'One-to-One') {
-        updatedData.maxCapacity = parseInt(document.getElementById('editMaxCapacity').value) || currentService.maxCapacity;
-        if (currentService.type === 'Group') {
-            updatedData.minCapacity = parseInt(document.getElementById('editMinCapacity').value) || null;
+        // Validate
+        if (!updatedData.name) {
+            alert('Name is required');
+            return;
         }
+
+        // Check if schedule changed
+        const scheduleChanged = JSON.stringify(originalData.schedule) !== JSON.stringify(updatedData.schedule);
+        if (scheduleChanged && currentService.sessionsCount > 0) {
+            const applyTo = confirm('Schedule changes detected. Apply to future sessions only?\n\nOK = Future only\nCancel = All sessions');
+            // In real implementation, handle this logic
+        }
+
+        // Save
+        currentService = updatedData;
+        originalData = JSON.parse(JSON.stringify(currentService));
+
+        // Save to localStorage
+        saveToStorage();
+
+        // Update display
+        renderServiceData();
+
+        // Exit edit mode
+        exitEditMode();
+
+        // Show success
+        showToast('Changes saved successfully!');
+
+    } catch (error) {
+        console.error('Error saving changes:', error);
+        alert('Failed to save changes: ' + error.message);
     }
-
-    // Validate
-    if (!updatedData.name) {
-        alert('Name is required');
-        return;
-    }
-
-    // Check if schedule changed
-    const scheduleChanged = JSON.stringify(originalData.schedule) !== JSON.stringify(updatedData.schedule);
-    if (scheduleChanged && currentService.sessionsCount > 0) {
-        const applyTo = confirm('Schedule changes detected. Apply to future sessions only?\n\nOK = Future only\nCancel = All sessions');
-        // In real implementation, handle this logic
-    }
-
-    // Save
-    currentService = updatedData;
-    originalData = JSON.parse(JSON.stringify(currentService));
-
-    // Save to localStorage
-    saveToStorage();
-
-    // Update display
-    renderServiceData();
-
-    // Exit edit mode
-    exitEditMode();
-
-    // Show success
-    showToast('Changes saved successfully!');
 }
 
 function saveToStorage() {
@@ -600,6 +733,137 @@ function markUnsaved() {
     }
 }
 
+// ===== STAFF MANAGEMENT =====
+const availableStaff = [
+    { id: 'staff1', name: 'John Smith', role: 'Senior Tutor', skills: 'Math, Physics, SAT Prep', hourlyRate: 45.00 },
+    { id: 'staff2', name: 'Emily Davis', role: 'Math Specialist', skills: 'Algebra, Calculus, AP Math', hourlyRate: 40.00 },
+    { id: 'staff3', name: 'Michael Chen', role: 'Science Teacher', skills: 'Chemistry, Biology, Lab Work', hourlyRate: 38.00 },
+    { id: 'staff4', name: 'Sarah Wilson', role: 'English Tutor', skills: 'Essay Writing, Literature, Grammar', hourlyRate: 35.00 },
+    { id: 'staff5', name: 'David Brown', role: 'Test Prep Coach', skills: 'SAT, ACT, GRE', hourlyRate: 50.00 },
+    { id: 'staff6', name: 'Maestro Giovanni', role: 'Instructor', skills: 'Violin, Orchestra', hourlyRate: 80.00 },
+    { id: 'staff7', name: 'Clara Schumann', role: 'Teacher', skills: 'Piano, Theory', hourlyRate: 60.00 }
+];
+
+function initializeStaffSearch() {
+    const searchInput = document.getElementById('staffSearchInput');
+    const autocomplete = document.getElementById('staffAutocomplete');
+
+    if (!searchInput || !autocomplete) return;
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        if (query.length < 1) {
+            autocomplete.classList.add('hidden');
+            return;
+        }
+
+        const matches = availableStaff.filter(staff =>
+            !currentService.staff?.some(s => s.id === staff.id) && // Exclude already assigned
+            (staff.name.toLowerCase().includes(query) ||
+                staff.role.toLowerCase().includes(query) ||
+                staff.skills.toLowerCase().includes(query))
+        );
+
+        if (matches.length > 0) {
+            autocomplete.innerHTML = matches.map(staff => `
+                <div class="p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0" onclick="addStaff('${staff.id}')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium text-sm text-gray-900">${staff.name}</p>
+                            <p class="text-xs text-gray-500">${staff.role} • ${staff.skills}</p>
+                        </div>
+                        <div class="text-right">
+                             <p class="text-xs font-medium text-gray-900">$${staff.hourlyRate}/hr</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            autocomplete.classList.remove('hidden');
+        } else {
+            autocomplete.classList.add('hidden');
+        }
+    });
+
+    // Close on toggle
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target) && !autocomplete.contains(e.target)) {
+            autocomplete.classList.add('hidden');
+        }
+    });
+}
+
+function addStaff(staffId) {
+    const staff = availableStaff.find(s => s.id === staffId);
+    if (!staff) return;
+
+    if (!currentService.staff) currentService.staff = [];
+
+    // Add with assigned rate (default to hourly rate)
+    currentService.staff.push({
+        ...staff,
+        assignedRate: staff.hourlyRate
+    });
+
+    renderEditableStaffList();
+    renderStaffAssignment(); // Update view mode as well
+    markUnsaved();
+
+    // Clear search
+    document.getElementById('staffSearchInput').value = '';
+    document.getElementById('staffAutocomplete').classList.add('hidden');
+}
+
+function removeStaff(staffId) {
+    if (!currentService.staff) return;
+
+    currentService.staff = currentService.staff.filter(s => s.id !== staffId);
+
+    renderEditableStaffList();
+    renderStaffAssignment(); // Update view mode
+    markUnsaved();
+}
+
+function renderEditableStaffList() {
+    const container = document.getElementById('editableStaffList');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (currentService.staff && currentService.staff.length > 0) {
+        currentService.staff.forEach(staff => {
+            const initials = staff.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            const item = document.createElement('div');
+            item.className = 'flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 shadow-sm';
+            item.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <span class="text-indigo-600 font-medium">${initials}</span>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">${staff.name}</p>
+                        <p class="text-xs text-gray-500">${staff.role}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <label class="text-xs text-gray-500 block">Rate</label>
+                        <span class="text-sm font-medium">$${(staff.assignedRate || 0).toFixed(2)}/hr</span>
+                    </div>
+                    <button onclick="removeStaff('${staff.id}')" class="text-red-500 hover:text-red-700 p-1">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    } else {
+        container.innerHTML = '<p class="text-sm text-gray-500 italic p-2">No active staff assignments.</p>';
+    }
+}
+
 // ===== HELPER FUNCTIONS =====
 function formatDate(dateStr) {
     if (!dateStr) return '-';
@@ -626,12 +890,16 @@ function toggleScheduleBuilder() {
 
     document.getElementById('dailyScheduleBuilder').classList.add('hidden');
     document.getElementById('weeklyScheduleBuilder').classList.add('hidden');
+    document.getElementById('monthlyScheduleBuilder').classList.add('hidden');
     document.getElementById('customScheduleBuilder').classList.add('hidden');
 
     if (frequency === 'daily') {
         document.getElementById('dailyScheduleBuilder').classList.remove('hidden');
     } else if (frequency === 'weekly') {
         document.getElementById('weeklyScheduleBuilder').classList.remove('hidden');
+    } else if (frequency === 'monthly') {
+        document.getElementById('monthlyScheduleBuilder').classList.remove('hidden');
+        initializeMonthlyScheduleUI(); // Setup UI on first show
     } else {
         document.getElementById('customScheduleBuilder').classList.remove('hidden');
     }
@@ -764,6 +1032,83 @@ function removeWeeklyTimeSlot(dayName, slotId) {
     markUnsaved();
 }
 
+// ===== MONTHLY SCHEDULE FUNCTIONS =====
+function initializeMonthlyScheduleUI() {
+    // Populate date dropdown (1-31)
+    const dateSelect = document.getElementById('monthlyDateValue');
+    if (dateSelect && dateSelect.options.length === 0) {
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            if (i === 1) option.selected = true;
+            dateSelect.appendChild(option);
+        }
+    }
+}
+
+function setMonthlyPatternType(type) {
+    monthlySchedule.type = type;
+
+    // Update button styles
+    const dateBtn = document.getElementById('monthlyPatternTypeDate');
+    const dayOfWeekBtn = document.getElementById('monthlyPatternTypeDayOfWeek');
+
+    if (type === 'date') {
+        dateBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors bg-indigo-100 border-indigo-500 text-indigo-700 font-medium';
+        dayOfWeekBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors border-gray-300 text-gray-600 hover:border-indigo-300';
+        document.getElementById('monthlySpecificDateConfig').classList.remove('hidden');
+        document.getElementById('monthlyRelativeDayConfig').classList.add('hidden');
+    } else {
+        dateBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors border-gray-300 text-gray-600 hover:border-indigo-300';
+        dayOfWeekBtn.className = 'px-4 py-2 text-sm rounded-lg border-2 transition-colors bg-indigo-100 border-indigo-500 text-indigo-700 font-medium';
+        document.getElementById('monthlySpecificDateConfig').classList.add('hidden');
+        document.getElementById('monthlyRelativeDayConfig').classList.remove('hidden');
+    }
+    markUnsaved();
+}
+
+function updateMonthlyPatternConfig() {
+    if (monthlySchedule.type === 'date') {
+        monthlySchedule.date = parseInt(document.getElementById('monthlyDateValue').value);
+    } else {
+        monthlySchedule.week = document.getElementById('monthlyWeekValue').value;
+        monthlySchedule.dayOfWeek = document.getElementById('monthlyDayOfWeekValue').value;
+    }
+    markUnsaved();
+}
+
+function addMonthlyTimeSlot() {
+    const slot = {
+        id: generateSlotId(),
+        startTime: '',
+        endTime: '',
+        duration: currentService.schedule?.duration || 60,
+        staffIds: []
+    };
+
+    monthlySchedule.slots.push(slot);
+    renderMonthlySlots();
+    markUnsaved();
+}
+
+function removeMonthlyTimeSlot(slotId) {
+    monthlySchedule.slots = monthlySchedule.slots.filter(s => s.id !== slotId);
+    renderMonthlySlots();
+    markUnsaved();
+}
+
+function renderMonthlySlots() {
+    const container = document.getElementById('monthlySlotsList');
+
+    if (monthlySchedule.slots.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 italic">No time slots configured. Click "+ Add Time Slot" to begin.</p>';
+        return;
+    }
+
+    container.innerHTML = monthlySchedule.slots.map(slot => renderTimeSlotCard(slot, 'monthly')).join('');
+}
+
 function renderDaySlots(dayName) {
     const container = document.getElementById(`${dayName}SlotsList`);
     const dayLower = dayName.toLowerCase();
@@ -824,6 +1169,7 @@ function updateSlotStartTime(slotId, startTime, context) {
     slot.endTime = calculateEndTime(startTime, slot.duration);
 
     if (context === 'daily') renderDailySlots();
+    else if (context === 'monthly') renderMonthlySlots();
     else renderDaySlots(context);
 
     markUnsaved();
@@ -837,6 +1183,7 @@ function updateSlotDuration(slotId, duration, context) {
     slot.endTime = calculateEndTime(slot.startTime, slot.duration);
 
     if (context === 'daily') renderDailySlots();
+    else if (context === 'monthly') renderMonthlySlots();
     else renderDaySlots(context);
 
     markUnsaved();
@@ -853,13 +1200,18 @@ function calculateEndTime(startTime, durationMinutes) {
 function findSlot(slotId, context) {
     if (context === 'daily') {
         return dailySchedule.find(s => s.id === slotId);
+    } else if (context === 'monthly') {
+        return monthlySchedule.slots.find(s => s.id === slotId);
     } else {
-        return weeklySchedule[context]?.find(s => s.id === slotId);
+        // Weekly (context is day name)
+        const dayLower = context.toLowerCase();
+        return weeklySchedule[dayLower]?.find(s => s.id === slotId);
     }
 }
 
 function removeTimeSlot(slotId, context) {
     if (context === 'daily') removeDailyTimeSlot(slotId);
+    else if (context === 'monthly') removeMonthlyTimeSlot(slotId);
     else removeWeeklyTimeSlot(context, slotId);
 }
 
@@ -1385,6 +1737,7 @@ function renderEnrollmentList() {
     const hasAttendee = enrollments.length >= 1;
 
     // Show/hide elements based on type
+    // Show/hide elements based on type
     if (isOneToOne) {
         // Hide search bar and buttons for One-to-One
         if (searchBar) searchBar.classList.add('hidden');
@@ -1410,62 +1763,49 @@ function renderEnrollmentList() {
     }
 
     if (enrollments.length === 0) {
-        container.innerHTML = '';
+        if (container) container.innerHTML = '';
         if (!isOneToOne) {
             if (emptyState) emptyState.classList.remove('hidden');
         }
-        countEl.textContent = '0 attendees enrolled';
+        if (countEl) countEl.textContent = '0 attendees enrolled';
         return;
     }
 
-    emptyState.classList.add('hidden');
-    countEl.textContent = `${enrollments.length} attendee${enrollments.length !== 1 ? 's' : ''} enrolled`;
+    if (emptyState) emptyState.classList.add('hidden');
+    if (countEl) countEl.textContent = `${enrollments.length} attendee${enrollments.length !== 1 ? 's' : ''} enrolled`;
 
-    container.innerHTML = enrollments.map(e => {
-        const statusConfig = {
-            confirmed: { text: 'Confirmed', class: 'bg-green-100 text-green-700' },
-            cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
-        };
-        const status = statusConfig[e.status] || statusConfig.confirmed;
+    if (container) {
+        container.innerHTML = enrollments.map(e => {
+            const statusConfig = {
+                confirmed: { text: 'Confirmed', class: 'bg-green-100 text-green-700' },
+                cancelled: { text: 'Cancelled', class: 'bg-gray-100 text-gray-700' }
+            };
+            const status = statusConfig[e.status] || statusConfig.confirmed;
 
-        const paymentBadge = e.paymentStatus === 'paid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>' :
-            e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
-                e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
+            const paymentBadge = e.paymentStatus === 'paid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>' :
+                e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
+                    e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
 
-        return `
-            <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
-                <div class="flex items-start justify-between mb-2">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <h4 class="font-semibold text-gray-900">${e.attendeeName}</h4>
-                            <span class="px-2 py-0.5 text-xs rounded ${status.class}">${status.text}</span>
-                            ${paymentBadge}
-                        </div>
-                        <div class="text-xs text-gray-500 space-y-0.5">
-                            <div class="flex items-center gap-3">
-                                <span>Customer: ${e.customerName}</span>
-                                <span>Quote: ${e.quoteId || '-'}</span>
+            // Using simplified card content to be safe
+            return `
+                <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold text-gray-900">${e.attendeeName}</h4>
+                                <span class="px-2 py-0.5 text-xs rounded ${status.class}">${status.text}</span>
+                                ${paymentBadge}
                             </div>
-                            ${e.notes ? `<p class="text-gray-600 italic mt-1">"${e.notes}"</p>` : ''}
+                            <div class="text-xs text-gray-500 space-y-0.5">
+                                <p>${e.customerName}</p>
+                                <p>${e.attendeeEmail || '-'}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex gap-2 pt-2 border-t border-gray-100">
-                    <button onclick="openTransferModal('${e.id}')" 
-                        class="flex-1 px-3 py-1.5 text-xs font-medium text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 flex items-center justify-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                        </svg>
-                        Transfer
-                    </button>
-                    <button onclick="openRemoveModal('${e.id}')" 
-                        class="flex-1 px-3 py-1.5 text-xs font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
-                        Remove
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
+    }
 
     // Update stats
     updateEnrollmentStats();
@@ -1476,12 +1816,17 @@ function updateEnrollmentStats() {
     // One-to-One always has max capacity of 1
     const maxCapacity = currentService?.type === 'One-to-One' ? 1 : (currentService.maxCapacity || 1);
 
-    document.getElementById('statTotalBookings').textContent = enrollments.length;
-    document.getElementById('statConfirmed').textContent = enrollments.filter(e => e.status === 'confirmed').length;
-    document.getElementById('statAvailable').textContent = Math.max(0, maxCapacity - enrollments.length);
+    const updateText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    updateText('statTotalBookings', enrollments.length);
+    updateText('statConfirmed', enrollments.filter(e => e.status === 'confirmed').length);
+    updateText('statAvailable', Math.max(0, maxCapacity - enrollments.length));
 
     const fillRate = maxCapacity > 0 ? Math.round((enrollments.length / maxCapacity) * 100) : 0;
-    document.getElementById('statAvgEnrollment').textContent = `${fillRate}%`;
+    updateText('statAvgEnrollment', `${fillRate}%`);
 }
 
 function filterEnrolledAttendees(query) {
@@ -1517,7 +1862,7 @@ function filterEnrolledAttendees(query) {
                 e.paymentStatus === 'unpaid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>' : '';
 
         return `
-            <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors">
+        < div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors" >
                 <div class="flex items-start justify-between mb-2">
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-1">
@@ -1547,7 +1892,7 @@ function filterEnrolledAttendees(query) {
                         Remove
                     </button>
                 </div>
-            </div>
+            </div >
         `;
     }).join('');
 }
@@ -1567,7 +1912,7 @@ function openTransferModal(enrollmentId) {
     const initials = enrollment.attendeeName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
     document.getElementById('transferAttendeeInitials').textContent = initials;
     document.getElementById('transferAttendeeName').textContent = enrollment.attendeeName;
-    document.getElementById('transferAttendeeCustomer').textContent = `Customer: ${enrollment.customerName}`;
+    document.getElementById('transferAttendeeCustomer').textContent = `Customer: ${enrollment.customerName} `;
 
     // Reset UI
     setTransferType('service');
@@ -1628,7 +1973,7 @@ function populateTransferTargets() {
         select.innerHTML = '<option value="">No compatible learning services found</option>';
     } else {
         select.innerHTML = '<option value="">Select a learning service...</option>' +
-            compatible.map(s => `<option value="${s.id}">${s.name} (${s.type})</option>`).join('');
+            compatible.map(s => `< option value = "${s.id}" > ${s.name} (${s.type})</option > `).join('');
     }
 
     updateTransferButtonState();
@@ -1689,7 +2034,7 @@ function confirmTransfer() {
 
         closeTransferModal();
         renderEnrollmentList();
-        showToast(`${attendeeToTransfer.attendeeName} transferred to ${targetService.name}`);
+        showToast(`${attendeeToTransfer.attendeeName} transferred to ${targetService.name} `);
     } else {
         // Transfer to session (temporary)
         if (!selectedTransferSession) {
@@ -1725,7 +2070,7 @@ function confirmTransfer() {
 
         // Create temporary booking in target session
         const temporaryBooking = {
-            id: `booking_temp_${Date.now()}`,
+            id: `booking_temp_${Date.now()} `,
             sessionId: targetSession.id,
             customerId: attendeeToTransfer.customerId,
             customerName: attendeeToTransfer.customerName,
@@ -1754,7 +2099,7 @@ function confirmTransfer() {
         // Note: Attendee remains in original learning service (not removed)
         closeTransferModal();
         renderEnrollmentList();
-        showToast(`${attendeeToTransfer.attendeeName} transferred to session (temporary). They remain enrolled in ${currentService.name}.`);
+        showToast(`${attendeeToTransfer.attendeeName} transferred to session(temporary).They remain enrolled in ${currentService.name}.`);
     }
 }
 
@@ -1772,7 +2117,7 @@ function searchSessionsForTransferLS(query) {
     const lowerQuery = query.toLowerCase();
     const matching = sessions.filter(session => {
         const dateStr = formatDate(session.date);
-        const timeStr = `${formatTime(session.startTime)} - ${formatTime(session.endTime)}`;
+        const timeStr = `${formatTime(session.startTime)} - ${formatTime(session.endTime)} `;
         return dateStr.toLowerCase().includes(lowerQuery) ||
             session.learningServiceName.toLowerCase().includes(lowerQuery) ||
             timeStr.toLowerCase().includes(lowerQuery);
@@ -2118,92 +2463,119 @@ document.getElementById('transferTargetService')?.addEventListener('change', fun
 
 
 // ===== COMPLEX SCHEDULE RENDERING =====
+// function renderScheduleDetails(schedule) { ... } // Removed duplicate/dead code
+// ===== VIEW RENDERERS =====
+
 function renderScheduleDetails(schedule) {
     const container = document.getElementById('scheduleDetailsContainer');
-    const header = document.getElementById('simpleScheduleHeader');
+    if (!container) return;
 
-    // Frequency Display
-    const freqEl = document.getElementById('viewFrequency');
-    if (freqEl) {
-        freqEl.textContent = schedule?.frequency ?
-            schedule.frequency.charAt(0).toUpperCase() + schedule.frequency.slice(1) : '-';
-    }
-
-    if (!schedule || !schedule.config) {
-        // Fallback / Simple Legacy
-        if (header) header.classList.remove('hidden');
-        if (container) {
-            container.innerHTML = `
-                <div class="grid grid-cols-2 gap-4">
-                   <div>
-                       <p class="text-xs text-gray-500 mb-1">Days</p>
-                       <p class="text-sm font-medium text-gray-900">${schedule?.daysOfWeek?.map(d => d.substring(0, 3)).join(', ') || '-'}</p>
-                   </div>
-                   <div>
-                       <p class="text-xs text-gray-500 mb-1">Time</p>
-                       <p class="text-sm font-medium text-gray-900">${schedule?.startTime || '-'} - ${schedule?.endTime || '-'}</p>
-                   </div>
-                </div>
-            `;
-        }
+    if (!schedule) {
+        container.innerHTML = '<p class="text-xs text-gray-500 italic">No schedule configured</p>';
         return;
     }
 
-    // Complex Schedule
-    if (header) header.classList.add('hidden');
+    const frequency = schedule.frequency || 'weekly';
+    const freqLabel = document.getElementById('viewFrequency');
+    if (freqLabel) freqLabel.textContent = frequency.charAt(0).toUpperCase() + frequency.slice(1);
 
-    if (!container) return;
+    // Duration
+    const duration = schedule.duration || (schedule.config?.slots?.[0]?.duration) || 60;
+    const durLabel = document.getElementById('viewDuration');
+    if (durLabel) durLabel.textContent = `${duration} minutes`;
 
     let html = '';
 
-    if (schedule.frequency === 'daily') {
-        html = '<div class="space-y-2">';
-        html += '<p class="text-xs font-semibold text-gray-500">Daily Slots:</p>';
-        const slots = schedule.config.dailySlots || [];
-        if (slots.length === 0) {
-            html += '<p class="text-sm text-gray-400 italic">No slots configured</p>';
-        } else {
-            html += slots.map(slot => `
-                <div class="flex items-center gap-3 p-2 bg-white border border-gray-200 rounded text-sm">
-                    <span class="font-medium text-gray-900">${slot.startTime || '?'} - ${slot.endTime || '?'}</span>
-                    <span class="text-xs text-gray-500">(${slot.duration}m)</span>
-                </div>
-             `).join('');
+    if (frequency === 'daily') {
+        const slots = schedule.config?.dailySlots || [];
+        html = `<p class="text-sm text-gray-900">Daily: ${slots.length} time slots</p>`;
+        if (slots.length > 0) {
+            html += `<div class="mt-2 space-y-1">` +
+                slots.map(s => {
+                    const slotId = `${currentService.id}_daily_${s.startTime.replace(':', '')}`;
+                    const url = `session_detail.html?serviceId=${currentService.id}&slotId=${slotId}`;
+                    return `<a href="${url}" class="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded inline-block mr-1 border border-indigo-200 transition-colors" title="View Session Details">
+                        ${s.startTime} - ${s.endTime}
+                    </a>`;
+                }).join('') +
+                `</div>`;
         }
-        html += '</div>';
+    } else if (frequency === 'weekly') {
+        let slots = schedule.config?.weeklySlots || {};
 
-    } else if (schedule.frequency === 'weekly') {
-        html = '<div class="space-y-3">';
-        const days = schedule.config.weeklySlots || {};
-        const daysList = Object.keys(days);
+        // Handle legacy array format if exists or object format
+        // Ensure we iterate correctly
+        const days = Object.keys(slots).filter(k => k !== 'selectedDays' && slots[k]?.length > 0);
 
         // Sort days
         const sorter = { 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6, 'sunday': 7 };
-        daysList.sort((a, b) => sorter[a.toLowerCase()] - sorter[b.toLowerCase()]);
+        days.sort((a, b) => sorter[a.toLowerCase()] - sorter[b.toLowerCase()]);
 
-        if (daysList.length === 0) {
-            html += '<p class="text-sm text-gray-400 italic">No days configured</p>';
+        if (days.length === 0) {
+            html = `<p class="text-sm text-gray-500 italic">No days configured</p>`;
         } else {
-            daysList.forEach(day => {
-                const slots = days[day] || [];
+            html = `<div class="space-y-2">`;
+            days.forEach(day => {
+                const daySlots = slots[day];
+                const dayName = day.charAt(0).toUpperCase() + day.slice(1);
                 html += `
                     <div>
-                        <p class="text-xs font-bold text-gray-700 mb-1 uppercase bg-gray-100 p-1 rounded inline-block">${day}</p>
-                        <div class="space-y-1 mt-1 pl-2 border-l-2 border-indigo-100">
-                            ${slots.length ? slots.map(slot => `
-                                <div class="flex items-center gap-3 p-2 bg-white border border-gray-200 rounded text-sm">
-                                    <span class="font-medium text-gray-900">${slot.startTime} - ${slot.endTime}</span>
-                                    <span class="text-xs text-gray-500">(${slot.duration}m)</span>
-                                </div>
-                            `).join('') : '<p class="text-xs text-gray-400 italic px-2">No slots</p>'}
+                        <span class="text-xs font-semibold text-gray-700">${dayName}:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${daySlots.map(s => {
+                    const slotId = `${currentService.id}_${day.toLowerCase()}_${s.startTime.replace(':', '')}`;
+                    const url = `session_detail.html?serviceId=${currentService.id}&slotId=${slotId}`;
+                    return `<a href="${url}" class="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded border border-indigo-200 transition-colors" title="View Session Details">
+                                    ${s.startTime}-${s.endTime}
+                                </a>`;
+                }).join('')}
                         </div>
                     </div>
-                `;
+                 `;
             });
+            html += `</div>`;
         }
-        html += '</div>';
+    } else if (frequency === 'monthly') {
+        const config = schedule.config?.monthlySlots || {};
+        const type = config.type || 'date';
+        let patternDesc = '';
+        if (type === 'date') {
+            patternDesc = `Day ${config.date || 1} of every month`;
+        } else {
+            patternDesc = `${config.week || 'First'} ${config.dayOfWeek || 'Monday'} of every month`;
+        }
+
+        const slots = config.slots || [];
+        html = `
+            <div class="text-sm text-indigo-700 font-medium mb-2">${patternDesc}</div>
+            <p class="text-xs text-gray-600 mb-1">${slots.length} Time Slots:</p>
+            <div class="flex flex-wrap gap-1">
+                ${slots.map(s => {
+            // For monthly, session_detail_script.js doesn't explicitly handle 'monthly' in createSlotObject loop logic seen in generateSlotsFromService
+            // It only had if(daily) ... else if(weekly) ... else if (daysOfWeek).
+            // This implies monthly slots MIGHT NOT BE SUPPORTED in session_detail_script.js yet.
+            // However, we should still link them, assuming a consistent ID format: serviceId_monthly_time?
+            // Let's check session_detail_script.js again properly.
+            const slotId = `${currentService.id}_monthly_${s.startTime.replace(':', '')}`;
+            // Note: session_detail_script.js might need update for monthly.
+            const url = `session_detail.html?serviceId=${currentService.id}&slotId=${slotId}`;
+            return `<a href="${url}" class="text-xs text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 rounded border border-indigo-200 transition-colors">
+                        ${s.startTime}-${s.endTime}
+                    </a>`;
+        }).join('')}
+            </div>
+        `;
     } else {
-        html = '<p class="text-sm text-gray-500">Custom schedule configuration</p>';
+        // Custom
+        html = `<p class="text-sm text-gray-900">Custom Schedule</p>`;
+        if (schedule.daysOfWeek) {
+            html += `<p class="text-xs text-gray-500 mt-1">${schedule.daysOfWeek.join(', ')}</p>`;
+        }
+        if (schedule.startTime) {
+            const slotId = `${currentService.id}_custom_${schedule.startTime.replace(':', '')}`; // Approximation with 'custom'?
+            // session_detail_script.js handles daysOfWeek in the 'else' block
+            html += `<p class="text-xs text-gray-500">${schedule.startTime} - ${schedule.endTime}</p>`;
+        }
     }
 
     container.innerHTML = html;

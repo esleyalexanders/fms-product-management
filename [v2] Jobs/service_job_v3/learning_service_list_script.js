@@ -18,9 +18,26 @@ document.addEventListener('DOMContentLoaded', function () {
 function loadServices() {
     const storageKey = 'fms_learning_services';
     const stored = localStorage.getItem(storageKey);
+    let services = [];
 
     if (stored) {
-        allServices = JSON.parse(stored);
+        services = JSON.parse(stored);
+
+        // Refresh sample data to match latest structure
+        const samples = getSampleServices();
+        samples.forEach(sample => {
+            const index = services.findIndex(s => s.id === sample.id);
+            if (index >= 0) {
+                // Update existing sample
+                services[index] = sample;
+            } else {
+                // Add missing sample (optional, but good for consistency)
+                services.push(sample);
+            }
+        });
+
+        allServices = services;
+        localStorage.setItem(storageKey, JSON.stringify(allServices));
     } else {
         // Load sample data for demo
         allServices = getSampleServices();
@@ -46,7 +63,15 @@ function getSampleServices() {
                 daysOfWeek: ['Monday', 'Wednesday', 'Friday'],
                 startTime: '15:00',
                 endTime: '16:30',
-                duration: 90
+                duration: 90,
+                config: {
+                    weeklySlots: {
+                        selectedDays: ['monday', 'wednesday', 'friday'],
+                        monday: [{ id: 's1', startTime: '15:00', endTime: '16:30', duration: 90 }],
+                        wednesday: [{ id: 's2', startTime: '15:00', endTime: '16:30', duration: 90 }],
+                        friday: [{ id: 's3', startTime: '15:00', endTime: '16:30', duration: 90 }]
+                    }
+                }
             },
             staff: [
                 { id: 'staff1', name: 'John Smith', role: 'Senior Tutor', assignedRate: 50.00 }
@@ -58,7 +83,18 @@ function getSampleServices() {
             cohortSize: 20,
             sessionsCount: 45,
             avgEnrollment: 85,
-            createdAt: '2024-11-01T10:00:00Z'
+            totalEnrolled: 8,
+            createdAt: '2024-11-01T10:00:00Z',
+            enrollments: [
+                { id: 'enr_001', attendeeName: 'Alice Johnson', attendeeEmail: 'alice@example.com', customerId: 'CUST-001', customerName: 'Sarah Johnson', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-10T09:00:00Z', quoteId: 'Q-2025-001' },
+                { id: 'enr_002', attendeeName: 'Bob Chen', attendeeEmail: 'bob@example.com', customerId: 'CUST-002', customerName: 'Michael Chen', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-11T14:30:00Z', quoteId: 'Q-2025-011' },
+                { id: 'enr_003', attendeeName: 'Charlie Wilson', attendeeEmail: 'charlie@example.com', customerId: 'CUST-003', customerName: 'Emma Wilson', status: 'confirmed', paymentStatus: 'unpaid', enrolledAt: '2025-01-12T10:15:00Z', quoteId: 'Q-2025-004' },
+                { id: 'enr_004', attendeeName: 'Diana Thompson', attendeeEmail: 'diana@example.com', customerId: 'CUST-004', customerName: 'David Thompson', status: 'confirmed', paymentStatus: 'partial', enrolledAt: '2025-01-13T16:45:00Z', quoteId: 'Q-2025-013' },
+                { id: 'enr_005', attendeeName: 'Evan Anderson', attendeeEmail: 'evan@example.com', customerId: 'CUST-005', customerName: 'Lisa Anderson', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-14T11:20:00Z', quoteId: 'Q-2025-014' },
+                { id: 'enr_006', attendeeName: 'Fiona Martinez', attendeeEmail: 'fiona@example.com', customerId: 'CUST-006', customerName: 'James Martinez', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-15T08:50:00Z', quoteId: 'Q-2025-007' },
+                { id: 'enr_007', attendeeName: 'George MissA', attendeeEmail: 'george@example.com', customerId: 'CUST-007', customerName: 'Miss A', status: 'confirmed', paymentStatus: 'partial', enrolledAt: '2025-01-16T13:10:00Z', quoteId: 'Q-2025-016' },
+                { id: 'enr_008', attendeeName: 'Hannah Kim', attendeeEmail: 'hannah@example.com', customerId: 'CUST-008', customerName: 'Robert Kim', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-17T15:00:00Z', quoteId: 'Q-2025-009' }
+            ]
         },
         {
             id: 'ls_sample_002',
@@ -74,7 +110,14 @@ function getSampleServices() {
                 daysOfWeek: ['Tuesday', 'Thursday'],
                 startTime: '17:00',
                 endTime: '18:30',
-                duration: 90
+                duration: 90,
+                config: {
+                    weeklySlots: {
+                        selectedDays: ['tuesday', 'thursday'],
+                        tuesday: [{ id: 's4', startTime: '17:00', endTime: '18:30', duration: 90 }],
+                        thursday: [{ id: 's5', startTime: '17:00', endTime: '18:30', duration: 90 }]
+                    }
+                }
             },
             staff: [
                 { id: 'staff2', name: 'Emily Davis', role: 'Math Specialist', assignedRate: 45.00 }
@@ -83,7 +126,14 @@ function getSampleServices() {
             minCapacity: 2,
             sessionsCount: 24,
             avgEnrollment: 72,
-            createdAt: '2024-11-05T14:00:00Z'
+            totalEnrolled: 4,
+            createdAt: '2024-11-05T14:00:00Z',
+            enrollments: [
+                { id: 'enr_009', attendeeName: 'Ian Garcia', attendeeEmail: 'ian@example.com', customerId: 'CUST-009', customerName: 'Maria Garcia', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-02-01T10:00:00Z', quoteId: 'Q-2025-019' },
+                { id: 'enr_010', attendeeName: 'Jack Brown', attendeeEmail: 'jack@example.com', customerId: 'CUST-010', customerName: 'Thomas Brown', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-02-02T11:30:00Z', quoteId: 'Q-2025-022' },
+                { id: 'enr_011', attendeeName: 'Kelly Lee', attendeeEmail: 'kelly@example.com', customerId: 'CUST-011', customerName: 'Jennifer Lee', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-02-03T09:45:00Z', quoteId: 'Q-2025-024' },
+                { id: 'enr_012', attendeeName: 'Liam White', attendeeEmail: 'liam@example.com', customerId: 'CUST-012', customerName: 'Christopher White', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-02-04T14:15:00Z', quoteId: 'Q-2025-026' } // Actually pb1, but using for demo
+            ]
         },
         {
             id: 'ls_sample_003',
@@ -99,7 +149,17 @@ function getSampleServices() {
                 daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
                 startTime: '14:00',
                 endTime: '15:00',
-                duration: 60
+                duration: 60,
+                config: {
+                    weeklySlots: {
+                        selectedDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+                        monday: [{ id: 's6', startTime: '14:00', endTime: '15:00', duration: 60 }],
+                        tuesday: [{ id: 's7', startTime: '14:00', endTime: '15:00', duration: 60 }],
+                        wednesday: [{ id: 's8', startTime: '14:00', endTime: '15:00', duration: 60 }],
+                        thursday: [{ id: 's9', startTime: '14:00', endTime: '15:00', duration: 60 }],
+                        friday: [{ id: 's10', startTime: '14:00', endTime: '15:00', duration: 60 }]
+                    }
+                }
             },
             staff: [
                 { id: 'staff1', name: 'John Smith', role: 'Senior Tutor', assignedRate: 75.00 }
@@ -109,7 +169,11 @@ function getSampleServices() {
             personalizationLevel: 'High',
             sessionsCount: 120,
             avgEnrollment: 100,
-            createdAt: '2024-10-15T09:00:00Z'
+            totalEnrolled: 1,
+            createdAt: '2024-10-15T09:00:00Z',
+            enrollments: [
+                { id: 'enr_013', attendeeName: 'Sarah Johnson Jr', attendeeEmail: 'sarah.jr@example.com', customerId: 'CUST-002', customerName: 'Michael Chen', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2024-11-01T08:00:00Z', quoteId: 'Q-2025-003' }
+            ]
         },
         {
             id: 'ls_sample_004',
@@ -125,7 +189,14 @@ function getSampleServices() {
                 daysOfWeek: ['Monday', 'Wednesday'],
                 startTime: '10:00',
                 endTime: '11:30',
-                duration: 90
+                duration: 90,
+                config: {
+                    weeklySlots: {
+                        selectedDays: ['monday', 'wednesday'],
+                        monday: [{ id: 's11', startTime: '10:00', endTime: '11:30', duration: 90 }],
+                        wednesday: [{ id: 's12', startTime: '10:00', endTime: '11:30', duration: 90 }]
+                    }
+                }
             },
             staff: [
                 { id: 'staff3', name: 'Michael Chen', role: 'Science Teacher', assignedRate: 42.00 }
@@ -137,32 +208,48 @@ function getSampleServices() {
             cohortSize: 15,
             sessionsCount: 32,
             avgEnrollment: 90,
-            createdAt: '2024-11-10T11:00:00Z'
+            totalEnrolled: 3,
+            createdAt: '2024-11-10T11:00:00Z',
+            enrollments: [
+                { id: 'enr_014', attendeeName: 'Mike Martinez', attendeeEmail: 'mike@example.com', customerId: 'CUST-006', customerName: 'James Martinez', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-05T16:00:00Z', quoteId: 'Q-2025-007' },
+                { id: 'enr_015', attendeeName: 'Nancy Lee', attendeeEmail: 'nancy@example.com', customerId: 'CUST-011', customerName: 'Jennifer Lee', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2025-01-06T09:30:00Z', quoteId: 'Q-2025-023' },
+                { id: 'enr_016', attendeeName: 'Oscar White', attendeeEmail: 'oscar@example.com', customerId: 'CUST-012', customerName: 'Christopher White', status: 'confirmed', paymentStatus: 'unpaid', enrolledAt: '2025-01-07T14:45:00Z', quoteId: 'Q-2025-026' } // Using non-pb4 quote for demo variety
+            ]
         },
         {
             id: 'ls_sample_005',
-            name: 'Essay Writing Workshop',
+            name: 'Monthly Writing Workshop',
             type: 'Group',
-            description: 'Collaborative workshop for improving essay writing skills',
+            description: 'Intensive monthly workshop for improving essay writing skills',
             skillLevel: 'Intermediate',
             status: 'paused',
             pricebookItemId: 'pb5',
             pricebookItemName: 'Writing Workshop',
             schedule: {
-                frequency: 'weekly',
+                frequency: 'monthly',
                 daysOfWeek: ['Saturday'],
                 startTime: '10:00',
-                endTime: '12:00',
-                duration: 120
+                endTime: '13:00',
+                duration: 180,
+                config: {
+                    monthlySlots: {
+                        type: 'day_of_week',
+                        week: 'first',
+                        dayOfWeek: 'saturday',
+                        slots: [{ id: 's13', startTime: '10:00', endTime: '13:00', duration: 180 }]
+                    }
+                }
             },
             staff: [
                 { id: 'staff4', name: 'Sarah Wilson', role: 'English Tutor', assignedRate: 40.00 }
             ],
             maxCapacity: 8,
             minCapacity: 3,
-            sessionsCount: 12,
+            sessionsCount: 6,
             avgEnrollment: 65,
-            createdAt: '2024-09-01T08:00:00Z'
+            totalEnrolled: 0,
+            createdAt: '2024-09-01T08:00:00Z',
+            enrollments: []
         },
         {
             id: 'ls_sample_006',
@@ -178,7 +265,15 @@ function getSampleServices() {
                 daysOfWeek: ['Tuesday', 'Thursday', 'Saturday'],
                 startTime: '16:00',
                 endTime: '17:30',
-                duration: 90
+                duration: 90,
+                config: {
+                    weeklySlots: {
+                        selectedDays: ['tuesday', 'thursday', 'saturday'],
+                        tuesday: [{ id: 's14', startTime: '16:00', endTime: '17:30', duration: 90 }],
+                        thursday: [{ id: 's15', startTime: '16:00', endTime: '17:30', duration: 90 }],
+                        saturday: [{ id: 's16', startTime: '09:00', endTime: '10:30', duration: 90 }] // Varies on saturday
+                    }
+                }
             },
             staff: [
                 { id: 'staff5', name: 'David Brown', role: 'Test Prep Coach', assignedRate: 65.00 }
@@ -188,7 +283,11 @@ function getSampleServices() {
             personalizationLevel: 'Very High',
             sessionsCount: 48,
             avgEnrollment: 100,
-            createdAt: '2024-10-20T15:00:00Z'
+            totalEnrolled: 1,
+            createdAt: '2024-10-20T15:00:00Z',
+            enrollments: [
+                { id: 'enr_017', attendeeName: 'Paul Thompson', attendeeEmail: 'paul@example.com', customerId: 'CUST-004', customerName: 'David Thompson', status: 'confirmed', paymentStatus: 'paid', enrolledAt: '2024-12-01T10:00:00Z', quoteId: 'Q-2025-005' }
+            ]
         }
     ];
 }
@@ -341,8 +440,12 @@ function formatSchedule(schedule) {
             return `Daily (${slotCount} slot${slotCount !== 1 ? 's' : ''})`;
         } else if (schedule.frequency === 'weekly') {
             const days = schedule.config.weeklySlots ? Object.keys(schedule.config.weeklySlots) : [];
-            const dayStr = days.map(d => d.charAt(0).toUpperCase() + d.slice(1, 3)).join(', ');
+            const dayStr = days.filter(k => k !== 'selectedDays').map(d => d.charAt(0).toUpperCase() + d.slice(1, 3)).join(', ');
             return dayStr ? `${dayStr} (Varied)` : 'Weekly (Configuring)';
+        } else if (schedule.frequency === 'monthly') {
+            const config = schedule.config.monthlySlots;
+            if (config.type === 'date') return `Monthly (Day ${config.date})`;
+            return `Monthly (${config.week} ${config.dayOfWeek})`;
         }
     }
 
