@@ -810,6 +810,24 @@
                                 <span class="text-red-500">*</span>
                             </div>
 
+                            <!-- Non-Subscription Requirement Banner -->
+                            <div id="scheduleRequirementBanner"
+                                class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
+                                <svg class="w-5 h-5 text-amber-500 mt-0.5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-medium text-amber-800" id="scheduleRequirementText">
+                                        Requirement: Schedule 2 days per week
+                                    </p>
+                                    <p class="text-xs text-amber-700 mt-1">
+                                        The Pricebook item specifies a fixed recurrence pattern.
+                                    </p>
+                                </div>
+                            </div>
+
                             <!-- Daily Schedule Builder (for daily frequency) -->
                             <div id="dailyScheduleBuilder" class="hidden">
                                 <p class="text-sm text-gray-600 mb-4">Configure time slots that will repeat every day
@@ -893,13 +911,32 @@
 
                                 <!-- Specific Date Configuration -->
                                 <div id="monthlySpecificDateConfig" class="mb-4">
-                                    <div class="flex items-center gap-2">
-                                        <label class="text-sm font-medium text-gray-700">Day of Month:</label>
-                                        <select id="monthlyDateValue" onchange="updateMonthlyPatternConfig()"
-                                            class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <!-- Options 1-31 will be populated by JS -->
-                                        </select>
-                                        <span class="text-sm text-gray-500">of every month</span>
+                                    <div class="flex items-start gap-4">
+                                        <div>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <label class="text-sm font-medium text-gray-700">Add Date:</label>
+                                                <select id="monthlyDateValue"
+                                                    class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                    <!-- Options 1-31 will be populated by JS -->
+                                                </select>
+                                                <button type="button" onclick="addMonthlyDate()"
+                                                    class="px-3 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    id="btnAddMonthlyDate">
+                                                    Add
+                                                </button>
+                                            </div>
+                                            <p class="text-xs text-gray-500">Select day of month (e.g., 1st, 15th)</p>
+                                        </div>
+
+                                        <!-- Selected Dates List -->
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                            <p class="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+                                                Selected Dates</p>
+                                            <div id="monthlySelectedDatesList" class="flex flex-wrap gap-2">
+                                                <!-- Selected dates badges will appear here -->
+                                                <span class="text-sm text-gray-400 italic">No dates selected</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -14,6 +14,10 @@ let originalData = null; // Store original data for cancel/reset
 let dailySchedule = [];
 let weeklySchedule = { selectedDays: [] };
 let monthlySchedule = { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
+// NEW: Non-subscription Logic State
+let daysRequired = 0;
+let isNonSubscription = false;
+
 let slotIdCounter = 0;
 
 function generateSlotId() {
@@ -314,6 +318,33 @@ function populateEditFields() {
     const frequency = currentService.schedule?.frequency || 'weekly';
     document.getElementById('editFrequency').value = frequency;
 
+    // Initialize Recurrence Requirement State
+    if (currentService.recurrenceRequirement) {
+        isNonSubscription = currentService.recurrenceRequirement.isNonSubscription;
+        daysRequired = currentService.recurrenceRequirement.daysRequired;
+
+        // Show/Hide Banner
+        const banner = document.getElementById('scheduleRequirementBanner');
+        const bannerText = document.getElementById('scheduleRequirementText');
+
+        if (isNonSubscription && daysRequired > 0) {
+            bannerText.innerHTML = `Requirement: Schedule ${daysRequired} day${daysRequired > 1 ? 's' : ''} per ${frequency}`;
+            banner.classList.remove('hidden');
+
+            // Lock frequency if needed (optional for edit mode, but good for consistency)
+            const freqSelect = document.getElementById('editFrequency');
+            if (freqSelect && freqSelect.value === currentService.recurrenceRequirement.frequency) {
+                // freqSelect.disabled = true; // Maybe safer not to lock entirely in edit mode unless we want to force it
+            }
+        } else {
+            banner.classList.add('hidden');
+        }
+    } else {
+        isNonSubscription = false;
+        daysRequired = 0;
+        document.getElementById('scheduleRequirementBanner').classList.add('hidden');
+    }
+
     // Initialize builder state from saved config or defaults
     if (currentService.schedule?.config) {
         dailySchedule = currentService.schedule.config.dailySlots ? JSON.parse(JSON.stringify(currentService.schedule.config.dailySlots)) : [];
@@ -380,7 +411,16 @@ function populateEditFields() {
 
         if (type === 'date') {
             const dateSelect = document.getElementById('monthlyDateValue');
-            if (dateSelect) dateSelect.value = monthlySchedule.date || 1;
+            if (dateSelect) dateSelect.value = 1; // Default
+
+            // Render multi-dates if available
+            if (monthlySchedule.dates && monthlySchedule.dates.length > 0) {
+                renderMonthlyDates();
+            } else if (monthlySchedule.date) {
+                // Migrate single date to array if needed for UI consistency
+                // monthlySchedule.dates = [monthlySchedule.date];
+                // renderMonthlyDates();
+            }
         } else {
             document.getElementById('monthlyWeekValue').value = monthlySchedule.week || 'first';
             document.getElementById('monthlyDayOfWeekValue').value = monthlySchedule.dayOfWeek || 'monday';
@@ -631,6 +671,29 @@ function saveChanges() {
         if (!updatedData.name) {
             alert('Name is required');
             return;
+        }
+
+        // Validate Non-Subscription Requirements
+        if (isNonSubscription && daysRequired > 0) {
+            let selectedCount = 0;
+            if (frequency === 'weekly') {
+                selectedCount = weeklySchedule.selectedDays.length;
+            } else if (frequency === 'monthly') {
+                // Check dates array (new) or fall back to single date
+                if (monthlySchedule.type === 'date') {
+                    selectedCount = (monthlySchedule.dates && monthlySchedule.dates.length > 0) ? monthlySchedule.dates.length : (monthlySchedule.date ? 1 : 0);
+                } else {
+                    // Day of week pattern (e.g. 1st Monday) = 1 day per month
+                    // This implies 1 day. If constraint is > 1 and frequency is monthly, this pattern might not support it unless we allow multiple patterns?
+                    // For now, assuming monthly requirement usually implies specific dates.
+                    selectedCount = 1;
+                }
+            }
+
+            if (selectedCount !== daysRequired) {
+                alert(`Requirement not met: You must select exactly ${daysRequired} day${daysRequired > 1 ? 's' : ''} for this ${frequency} schedule.`);
+                return;
+            }
         }
 
         // Check if schedule changed
@@ -2463,7 +2526,132 @@ document.getElementById('transferTargetService')?.addEventListener('change', fun
 
 
 // ===== COMPLEX SCHEDULE RENDERING =====
-// function renderScheduleDetails(schedule) { ... } // Removed duplicate/dead code
+
+// ===== MONTHLY SCHEDULE HELPERS (Multi-Date) =====
+
+function addMonthlyDate() {
+    const dateSelect = document.getElementById('monthlyDateValue');
+    const date = parseInt(dateSelect.value);
+
+    if (!monthlySchedule.dates) monthlySchedule.dates = [];
+
+    if (!monthlySchedule.dates.includes(date)) {
+        monthlySchedule.dates.push(date);
+        monthlySchedule.dates.sort((a, b) => a - b);
+        renderMonthlyDates();
+        renderMonthlySlots(); // Update slots context if needed
+        markUnsaved();
+    }
+}
+
+function removeMonthlyDate(date) {
+    if (!monthlySchedule.dates) return;
+
+    monthlySchedule.dates = monthlySchedule.dates.filter(d => d !== date);
+    renderMonthlyDates();
+    renderMonthlySlots();
+    markUnsaved();
+}
+
+function renderMonthlyDates() {
+    const container = document.getElementById('monthlySelectedDatesList');
+    if (!container) return;
+
+    if (!monthlySchedule.dates || monthlySchedule.dates.length === 0) {
+        container.innerHTML = '<span class="text-sm text-gray-400 italic">No dates selected</span>';
+        return;
+    }
+
+    container.innerHTML = monthlySchedule.dates.map(date => `
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            ${date}${getOrdinal(date)}
+            <button type="button" onclick="removeMonthlyDate(${date})" class="ml-1.5 inline-flex items-center justify-center text-indigo-400 hover:text-indigo-600 focus:outline-none">
+                <span class="sr-only">Remove</span>
+                <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </span>
+    `).join('');
+
+    // Update requirement validation visual state (optional)
+    const banner = document.getElementById('scheduleRequirementBanner');
+    if (isNonSubscription && daysRequired > 0 && !banner.classList.contains('hidden')) {
+        const currentCount = monthlySchedule.dates.length;
+        const text = document.getElementById('scheduleRequirementText');
+        if (currentCount === daysRequired) {
+            text.innerHTML = `Requirement: Schedule ${daysRequired} days per month <span class="text-emerald-600 font-bold ml-2">✓ Met</span>`;
+            banner.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3';
+            banner.querySelector('svg').className = 'w-5 h-5 text-emerald-500 mt-0.5';
+        } else {
+            text.innerHTML = `Requirement: Schedule ${daysRequired} days per month (${currentCount}/${daysRequired} selected)`;
+            banner.className = 'p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3';
+            banner.querySelector('svg').className = 'w-5 h-5 text-amber-500 mt-0.5';
+        }
+    }
+}
+
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function setMonthlyPatternType(type) {
+    monthlySchedule.type = type;
+
+    // UI Toggles
+    const dateConfig = document.getElementById('monthlySpecificDateConfig');
+    const relativeConfig = document.getElementById('monthlyRelativeDayConfig');
+
+    if (type === 'date') {
+        if (dateConfig) dateConfig.classList.remove('hidden');
+        if (relativeConfig) relativeConfig.classList.add('hidden');
+
+        // Update toggles styling
+        const typeDate = document.getElementById('monthlyPatternTypeDate');
+        const typeDay = document.getElementById('monthlyPatternTypeDay');
+        if (typeDate) {
+            typeDate.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+            typeDate.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+        if (typeDay) {
+            typeDay.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+            typeDay.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+
+    } else {
+        if (dateConfig) dateConfig.classList.add('hidden');
+        if (relativeConfig) relativeConfig.classList.remove('hidden');
+
+        const typeDate = document.getElementById('monthlyPatternTypeDate');
+        const typeDay = document.getElementById('monthlyPatternTypeDay');
+        if (typeDate) {
+            typeDate.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+            typeDate.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+        if (typeDay) {
+            typeDay.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+            typeDay.classList.remove('bg-white', 'text-gray-700', 'border-gray-300');
+        }
+    }
+
+    markUnsaved();
+}
+
+function initializeMonthlyScheduleUI() {
+    // Populate date dropdown
+    const dateSelect = document.getElementById('monthlyDateValue');
+    if (dateSelect && dateSelect.options.length === 0) {
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i + getOrdinal(i);
+            dateSelect.appendChild(option);
+        }
+    }
+}
+
 // ===== VIEW RENDERERS =====
 
 function renderScheduleDetails(schedule) {

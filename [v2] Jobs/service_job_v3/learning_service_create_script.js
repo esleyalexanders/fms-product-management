@@ -28,6 +28,10 @@ let monthlySchedule = {
     dayOfWeek: 'monday', // 'monday' - 'sunday'
     slots: []
 }; // For monthly frequency - single pattern object
+// NEW: Non-subscription Logic State
+let daysRequired = 0;
+let isNonSubscription = false;
+
 let slotIdCounter = 0;
 
 // GLOBAL ENTRY POINT (Debugging)
@@ -170,6 +174,52 @@ const samplePricebookItems = [
         minStaffCount: 1,
         requiredSkills: ['Supervision', 'Tutoring'],
         equipmentNeeded: 'Study Materials'
+    },
+    {
+        id: 'pb8',
+        name: 'Robotics Workshop - Term 1',
+        price: 150.00,
+        unit: 'term',
+        category: 'Workshops',
+        type: 'service',
+        packageModel: 'non-subscription',
+        serviceType: 'class',
+        sessionFrequency: 'weekly',
+        capacity: { minimum: 5, maximum: 12 },
+        sessionDuration: 120,
+        minStaffCount: 1,
+        requiredSkills: ['Robotics', 'Coding'],
+        equipmentNeeded: 'Robotics Kits',
+        recurrence: {
+            frequency: 'week',
+            count: 10,
+            daysRequired: 1,
+            commitmentType: 'term',
+            totalSessionSlots: null
+        }
+    },
+    {
+        id: 'pb9',
+        name: 'Full Stack Web Dev Bootcamp',
+        price: 500.00,
+        unit: 'course',
+        category: 'Bootcamps',
+        type: 'service',
+        packageModel: 'non-subscription',
+        serviceType: 'class',
+        sessionFrequency: 'weekly',
+        capacity: { minimum: 10, maximum: 30 },
+        sessionDuration: 180,
+        minStaffCount: 2,
+        requiredSkills: ['Web Dev', 'JavaScript'],
+        equipmentNeeded: 'Laptops, Projector',
+        recurrence: {
+            frequency: 'week',
+            count: 12, // Ignored in course mode but kept for data integrity
+            daysRequired: 2,
+            commitmentType: 'course',
+            totalSessionSlots: 36 // 36 sessions / 2 days = 18 weeks
+        }
     }
 ];
 
@@ -644,6 +694,15 @@ function renderPricebookList(query) {
             const typeLabel = item.serviceType === 'one-to-one' ? 'One-to-One' :
                 item.serviceType.charAt(0).toUpperCase() + item.serviceType.slice(1);
 
+            // Package Model badge styling
+            const packageColors = {
+                'subscription': 'bg-teal-100 text-teal-700 border-teal-200',
+                'non-subscription': 'bg-orange-100 text-orange-700 border-orange-200'
+            };
+            const packageModel = item.packageModel || (item.recurrence && item.recurrence.daysRequired > 0 ? 'non-subscription' : 'subscription');
+            const packageBadgeClass = packageColors[packageModel] || 'bg-gray-100 text-gray-700 border-gray-200';
+            const packageLabel = packageModel === 'non-subscription' ? 'Non-Subscription' : 'Subscription';
+
             // Frequency label
             const frequencyLabel = item.sessionFrequency ?
                 item.sessionFrequency.charAt(0).toUpperCase() + item.sessionFrequency.slice(1) : '';
@@ -662,7 +721,10 @@ function renderPricebookList(query) {
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-1">
                                 <p class="font-medium text-gray-900">${item.name}</p>
-                                <span class="px-2 py-0.5 text-xs font-medium rounded border ${typeBadgeClass}">${typeLabel}</span>
+                                <div class="flex gap-2">
+                                    <span class="px-2 py-0.5 text-xs font-medium rounded border ${packageBadgeClass}">${packageLabel}</span>
+                                    <span class="px-2 py-0.5 text-xs font-medium rounded border ${typeBadgeClass}">${typeLabel}</span>
+                                </div>
                             </div>
                             <p class="text-sm text-gray-500">${item.category}</p>
                         </div>
@@ -747,6 +809,156 @@ function autoFillFromPricebook(item) {
 
     // 7. Initialize the schedule builder based on frequency
     initializeScheduleBuilder();
+
+    // 8. Apply Non-subscription Schedule Logic
+    updateScheduleUIBasedOnPricebook(item);
+}
+
+function updateScheduleUIBasedOnPricebook(item) {
+    const frequencySelect = document.getElementById('frequency');
+    const banner = document.getElementById('scheduleRequirementBanner');
+    const bannerText = document.getElementById('scheduleRequirementText');
+
+    // Reset state
+    daysRequired = 0;
+    isNonSubscription = false;
+    banner.classList.add('hidden');
+
+    // Enable frequency select by default
+    if (frequencySelect) {
+        frequencySelect.disabled = false;
+        frequencySelect.style.background = '';
+        frequencySelect.style.cursor = '';
+    }
+
+    // CHECK: Is this a Non-subscription item?
+    // Logic: packageModel === 'non-subscription' OR (recurrence specified AND daysRequired > 0)
+    // We'll use the presence of 'recurrence' object from the sample data structure if available, 
+    // or infer from the item properties if they were flat. 
+    // Based on previous chats, non-sub items have 'recurrence' object or flat recurrence fields.
+    // For this script, we'll assume the item object passed here has these properties.
+
+    // Mocking check based on sample data structure or expected fields
+    // If the item has 'daysRequired' property (custom added in previous steps to pricebook item)
+    if (item.recurrence && item.recurrence.daysRequired > 0) {
+        isNonSubscription = true;
+        daysRequired = parseInt(item.recurrence.daysRequired);
+        const requiredFreq = item.recurrence.frequency || 'weekly';
+
+        // 1. Lock Frequency
+        if (frequencySelect) {
+            frequencySelect.value = requiredFreq;
+            frequencySelect.disabled = true;
+            frequencySelect.style.background = '#f3f4f6';
+            frequencySelect.style.cursor = 'not-allowed';
+
+            // Trigger change to show correct builder
+            handleFrequencyChange();
+        }
+
+        // 2. Show Banner
+        let bannerMsg = `Requirement: Schedule ${daysRequired} day${daysRequired > 1 ? 's' : ''} per ${requiredFreq}`;
+
+        // Course Mode Check
+        const isCourse = item.recurrence.commitmentType === 'course' || !!item.recurrence.totalSessionSlots;
+        const totalSlots = item.recurrence.totalSessionSlots;
+
+        if (isCourse && totalSlots) {
+            bannerMsg += `. Total Course: ${totalSlots} sessions.`;
+
+            // Calculate estimated duration
+            if (requiredFreq === 'week' && daysRequired > 0) {
+                const weeks = Math.ceil(totalSlots / daysRequired);
+                bannerMsg += ` (Approx. ${weeks} weeks)`;
+            }
+        }
+
+        bannerText.textContent = bannerMsg;
+        banner.classList.remove('hidden');
+
+        // 3. Configure Builders
+        if (requiredFreq === 'monthly') {
+            // Force "Specific Date" mode for multi-date selection
+            setMonthlyPatternType('date');
+            // Hide the pattern toggles to enforce this mode
+            document.getElementById('monthlyPatternTypeDate').parentElement.classList.add('hidden');
+        } else {
+            document.getElementById('monthlyPatternTypeDate').parentElement.classList.remove('hidden');
+        }
+    }
+}
+
+// ===== MULTI-DATE MONTHLY SCHEDULER =====
+
+function addMonthlyDate() {
+    const dateSelect = document.getElementById('monthlyDateValue');
+    const date = parseInt(dateSelect.value);
+
+    if (!monthlySchedule.dates) monthlySchedule.dates = [];
+
+    if (!monthlySchedule.dates.includes(date)) {
+        monthlySchedule.dates.push(date);
+        monthlySchedule.dates.sort((a, b) => a - b); // Keep sorted
+
+        // Init slots for this date if not exists
+        if (!monthlySchedule.slots) monthlySchedule.slots = {};
+        // Note: For multi-date, we might want shared slots or per-date slots. 
+        // For simplicity/requirement, we usually apply the SAME time slots to ALL selected dates.
+        // But the data structure in implementation plan suggested: slots: { 1: [...], 15: [...] }
+        // Let's stick to a simpler model first: One set of slots applied to multiple dates, 
+        // OR distinct slots per date.
+        // Given the UI in 'weekly' allows distinct slots per day, 'monthly' multi-date should probably allow the same.
+        // However, the `monthlySchedule` structure initialized at top was: { type: 'date', date: 1, slots: [] }
+        // We need to adapt it. 
+
+        // Let's use a simpler approach for now: One set of slots for the pattern, applied to all dates.
+        // Because the UI for 'Monthly' (existing) only has one "Time Slots" list at the bottom.
+        // To support distinct slots per date, we'd need a UI like the Weekly builder (tabs/sections).
+        // Let's stick to "Single Pattern, Multiple Dates" for this iteration unless requested otherwise.
+
+        renderMonthlyDates();
+    }
+}
+
+function removeMonthlyDate(date) {
+    if (monthlySchedule.dates) {
+        monthlySchedule.dates = monthlySchedule.dates.filter(d => d !== date);
+        renderMonthlyDates();
+    }
+}
+
+function renderMonthlyDates() {
+    const container = document.getElementById('monthlySelectedDatesList');
+    if (!monthlySchedule.dates || monthlySchedule.dates.length === 0) {
+        container.innerHTML = '<span class="text-sm text-gray-400 italic">No dates selected</span>';
+        return;
+    }
+
+    container.innerHTML = monthlySchedule.dates.map(date => `
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+            ${getOrdinal(date)}
+            <button type="button" onclick="removeMonthlyDate(${date})" class="hover:text-indigo-900 ml-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </span>
+    `).join('');
+
+    // Validation visual cue
+    if (isNonSubscription && daysRequired > 0) {
+        const currentCount = monthlySchedule.dates.length;
+        const bannerText = document.getElementById('scheduleRequirementText');
+        if (currentCount === daysRequired) {
+            bannerText.innerHTML = `Requirement: Schedule ${daysRequired} days per month <span class="ml-2 text-green-600 font-bold">✓ Satisfied</span>`;
+        } else {
+            bannerText.innerHTML = `Requirement: Schedule ${daysRequired} days per month <span class="ml-2 text-amber-600 font-bold">(${currentCount}/${daysRequired} selected)</span>`;
+        }
+    }
+}
+
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
 function autoCalculateEndTime() {
@@ -811,9 +1023,16 @@ function clearPricebookSelection() {
     document.getElementById('selectedPricebookDisplay').classList.add('hidden');
 
     // Reset schedule state
+    // Reset schedule state
     dailySchedule = [];
     weeklySchedule = { selectedDays: [], monday: [], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: [] };
-    monthlySchedule = { type: 'date', date: 1, week: 'first', dayOfWeek: 'monday', slots: [] };
+    monthlySchedule = { type: 'date', date: 1, dates: [], week: 'first', dayOfWeek: 'monday', slots: [] };
+
+    // Reset Non-subscription state
+    daysRequired = 0;
+    isNonSubscription = false;
+    document.getElementById('scheduleRequirementBanner').classList.add('hidden');
+    document.getElementById('monthlyPatternTypeDate').parentElement.classList.remove('hidden');
 
     // Re-enable all fields
     document.querySelectorAll('.type-card').forEach(card => {
@@ -905,16 +1124,30 @@ function validateForm() {
     // Can be assigned later before generating sessions
 
     // Validate schedule times
-    const startTime = document.getElementById('startTime').value;
-    const endTime = document.getElementById('endTime').value;
-    if (!startTime || !endTime) {
-        errors.push('Start and end time are required');
-        isValid = false;
+    const startTime = (selectedPricebookItem?.packageModel === 'non-subscription' && selectedPricebookItem?.recurrence?.frequency === 'monthly') ? '09:00' : document.getElementById('startTime').value;
+    // Note: For complex builders, startTime/endTime inputs might be hidden/unused.
+    // We should rely on the specific builder's state.
+
+    // NEW: Non-subscription Recurrence Validation
+    if (isNonSubscription && daysRequired > 0) {
+        const frequency = document.getElementById('frequency').value;
+        let selectedCount = 0;
+
+        if (frequency === 'weekly') {
+            selectedCount = weeklySchedule.selectedDays.length;
+        } else if (frequency === 'monthly') {
+            selectedCount = monthlySchedule.dates ? monthlySchedule.dates.length : 0;
+        }
+
+        if (selectedCount !== daysRequired) {
+            errors.push(`Requirement not met: You must schedule exactly ${daysRequired} days per ${frequency}. (Selected: ${selectedCount})`);
+            isValid = false;
+        }
     }
 
     // Show validation errors
     if (!isValid) {
-        showNotification('error', 'Validation Error', errors.join('. '));
+        showNotification('error', 'Validation Error', errors.join('<br>'));
     }
 
     return isValid;
@@ -938,6 +1171,11 @@ function handleSubmit(event) {
         status: 'active', // Default to active on creation
         pricebookItemId: selectedPricebookItem?.id || null,
         pricebookItemName: selectedPricebookItem?.name || null,
+        recurrenceRequirement: {
+            isNonSubscription: isNonSubscription,
+            daysRequired: daysRequired,
+            frequency: selectedPricebookItem?.recurrence?.frequency || 'weekly'
+        },
         schedule: {
             frequency: selectedPricebookItem?.sessionFrequency || document.getElementById('frequency')?.value || 'weekly',
             // Complex schedule data config

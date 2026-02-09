@@ -518,6 +518,24 @@
                             <div class="info-text" style="margin-bottom: 16px;">Set up how often this service repeats
                             </div>
 
+                            <!-- Commitment Type Toggle -->
+                            <div class="form-group">
+                                <label>Commitment Type</label>
+                                <div class="toggle-group">
+                                    <div class="toggle-option active" data-value="term"
+                                        onclick="selectCommitmentType(this)">
+                                        <input type="radio" name="commitmentType" id="commitmentType_term" value="term"
+                                            checked style="display: none;">
+                                        <span>Term-based (Fixed Occurrences)</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="course" onclick="selectCommitmentType(this)">
+                                        <input type="radio" name="commitmentType" id="commitmentType_course"
+                                            value="course" style="display: none;">
+                                        <span>Course-based (Total Sessions)</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="recurrenceFrequency">Repeat every</label>
@@ -529,16 +547,36 @@
                                     <input type="hidden" id="recurrenceInterval" value="1">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="recurrenceOccurrences">After</label>
-                                    <div style="display: flex; gap: 12px; align-items: center;">
-                                        <input type="number" id="recurrenceOccurrences" min="1" value="12"
-                                            style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                        <span style="color: #6b7280;">occurrences</span>
-                                    </div>
+                                <!-- Term-based: Occurrences -->
+                                <div id="termBasedFields" style="display: flex; gap: 12px; align-items: center;">
+                                    <input type="number" id="recurrenceOccurrences" min="1" value="12"
+                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                    <span style="color: #6b7280;">occurrences</span>
+                                </div>
+
+                                <!-- Course-based: Total Slots -->
+                                <div id="courseBasedFields" style="display: none; gap: 12px; align-items: center;">
+                                    <input type="number" id="totalSessionSlots" min="1" value="36"
+                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                    <span style="color: #6b7280;">total sessions</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="recurrenceDaysRequired">Required Days</label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <input type="number" id="recurrenceDaysRequired" min="1" value="1"
+                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                    <span style="color: #6b7280;" id="recurrenceDaysLabel">day(s) / week</span>
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            document.getElementById('recurrenceFrequency').addEventListener('change', function () {
+                                const label = document.getElementById('recurrenceDaysLabel');
+                                label.textContent = `day(s) / ${this.value}`;
+                            });
+                        </script>
 
                         <!-- Pricing -->
                         <div class="section-title">Pricing</div>
@@ -737,6 +775,32 @@
             radio.checked = true;
 
             updatePreview();
+        }
+
+        function selectCommitmentType(element) {
+            // Remove active from all commitment type options
+            document.querySelectorAll('[name="commitmentType"]').forEach(el => {
+                el.closest('.toggle-option').classList.remove('active');
+                el.checked = false;
+            });
+
+            // Set active on clicked element
+            element.classList.add('active');
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            // Update UI
+            const isCourse = radio.value === 'course';
+            const termFields = document.getElementById('termBasedFields');
+            const courseFields = document.getElementById('courseBasedFields');
+
+            if (isCourse) {
+                termFields.style.display = 'none';
+                courseFields.style.display = 'flex';
+            } else {
+                termFields.style.display = 'flex';
+                courseFields.style.display = 'none';
+            }
         }
 
         function updatePackageModelUI() {
@@ -1045,8 +1109,6 @@
                 code: document.getElementById('code').value,
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value,
-                sku: document.getElementById('sku').value,
-                tags: document.getElementById('tags').value,
                 currency: document.getElementById('currency').value,
                 price: parseFloat(document.getElementById('price').value),
                 taxCategory: document.getElementById('tax').value,
@@ -1075,7 +1137,6 @@
                 } else {
                     // Non-subscription service fields
                     data.moq = parseFloat(document.getElementById('moq')?.value || 1);
-                    data.totalAmount = parseFloat(document.getElementById('totalAmount')?.value || 0);
                     const unitSelect = document.getElementById('unit');
                     const customUnit = document.getElementById('serviceCustomUnit')?.value;
                     data.unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
@@ -1088,6 +1149,24 @@
                     data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
                     data.requiredSkills = requiredSkills;
                     data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
+
+                    // Recurrence
+                    const recurrenceFreq = document.getElementById('recurrenceFrequency');
+                    const recurrenceOccur = document.getElementById('recurrenceOccurrences');
+                    const recurrenceDays = document.getElementById('recurrenceDaysRequired');
+                    const commitmentType = document.querySelector('input[name="commitmentType"]:checked')?.value || 'term';
+                    const totalSessionSlots = document.getElementById('totalSessionSlots');
+
+                    if (recurrenceFreq) {
+                        data.recurrence = {
+                            frequency: recurrenceFreq.value,
+                            step: 1,
+                            count: parseInt(recurrenceOccur?.value) || 12,
+                            daysRequired: parseInt(recurrenceDays?.value) || 1,
+                            commitmentType: commitmentType,
+                            totalSessionSlots: commitmentType === 'course' ? parseInt(totalSessionSlots?.value) : null
+                        };
+                    }
                 }
             }
             // Product-specific fields

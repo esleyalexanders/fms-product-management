@@ -393,7 +393,7 @@
                             </div>
 
                             <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
-                                <label>Subscription Frequency <span class="required">*</span></label>
+                                <label>Session Frequency <span class="required">*</span></label>
                                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
                                     <div class="toggle-option active" data-value="weekly"
                                         onclick="selectFrequency(this)">
@@ -420,15 +420,118 @@
                                 <div class="info-text">Select billing frequency for subscription services</div>
                             </div>
 
+                            <!-- Service Configuration Fields (for all services) -->
+                            <div id="serviceConfigFields" style="display: block;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="minCapacity">Min Capacity <span class="required">*</span></label>
+                                        <input type="number" id="minCapacity" min="1" value="1">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="maxCapacity">Max Capacity <span class="required">*</span></label>
+                                        <input type="number" id="maxCapacity" min="1" value="20">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sessionDuration">Session Duration <span
+                                                class="required">*</span></label>
+                                        <input type="number" id="sessionDuration" min="15" step="15" value="60">
+                                    </div>
+
+                                    <div class="form-group" style="max-width: 150px;">
+                                        <label for="minStaffCount">Min Staff <span class="required">*</span></label>
+                                        <input type="number" id="minStaffCount" min="1" value="1">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Required Skills <span class="required">*</span></label>
+                                    <input type="text" id="skillInput" placeholder="Type skill and press Enter"
+                                        style="margin-bottom: 8px;">
+                                    <div id="requiredSkillsContainer"
+                                        style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 32px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb;">
+                                        <!-- Skill tags will appear here -->
+                                    </div>
+                                </div>
+
+                                <label for="equipmentNeeded">Equipment Needed</label>
+                                <input type="text" id="equipmentNeeded"
+                                    placeholder="e.g., Whiteboard, Projector, Calculators">
+                                <div class="info-text">Comma-separated list (optional)</div>
+                            </div>
+                        </div>
+
+                        <!-- Recurrence Configuration (for non-subscription services) -->
+                        <div id="recurrenceSection" style="display: none;">
+                            <div class="section-title">Configure Recurrence</div>
+                            <div class="info-text" style="margin-bottom: 16px;">Set up how often this service
+                                repeats
+                            </div>
+
+                            <!-- Commitment Type Toggle -->
+                            <div class="form-group">
+                                <label>Commitment Type</label>
+                                <div class="toggle-group">
+                                    <div class="toggle-option active" data-value="term"
+                                        onclick="selectCommitmentType(this)">
+                                        <input type="radio" name="commitmentType" id="commitmentType_term" value="term"
+                                            checked style="display: none;">
+                                        <span>Term-based (Fixed Occurrences)</span>
+                                    </div>
+                                    <div class="toggle-option" data-value="course" onclick="selectCommitmentType(this)">
+                                        <input type="radio" name="commitmentType" id="commitmentType_course"
+                                            value="course" style="display: none;">
+                                        <span>Course-based (Total Sessions)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="recurrenceFrequency">Repeat every</label>
+                                    <select id="recurrenceFrequency"
+                                        style="padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                        <option value="week" selected>week</option>
+                                        <option value="month">month</option>
+                                    </select>
+                                    <input type="hidden" id="recurrenceInterval" value="1">
+                                </div>
+
+                                <!-- Term-based: Occurrences -->
+                                <div id="termBasedFields" style="display: flex; gap: 12px; align-items: center;">
+                                    <input type="number" id="recurrenceOccurrences" min="1" value="12"
+                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                    <span style="color: #6b7280;">occurrences</span>
+                                </div>
+
+                                <!-- Course-based: Total Slots -->
+                                <div id="courseBasedFields" style="display: none; gap: 12px; align-items: center;">
+                                    <input type="number" id="totalSessionSlots" min="1" value="36"
+                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                                    <span style="color: #6b7280;">total sessions</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="recurrenceDaysRequired">Required Days</label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <span style="color: #6b7280;" id="recurrenceDaysLabel">day(s) / week</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MOQ & Unit (for non-subscription services) -->
+                        <div id="moqUnitSection" style="display: none;">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="moq" id="moqLabel">MOQ (Minimum Order Quantity)</label>
-                                    <input type="number" id="moq" value="1" min="0" step="0.5">
+                                    <input type="number" id="moq" placeholder="1" min="0" step="0.5">
                                 </div>
                                 <div class="form-group">
                                     <label for="unit">Unit</label>
                                     <select id="unit">
-                                        <option value="hour" selected>Hour</option>
+                                        <option value="hour">Hour</option>
                                         <option value="each">Each</option>
                                         <option value="sqft">Square Foot</option>
                                         <option value="sqm">Square Meter</option>
@@ -444,6 +547,7 @@
                                 <div class="info-text">Enter a custom unit name</div>
                             </div>
                         </div>
+
 
                         <!-- Product-Specific Fields -->
                         <div id="productFields" style="display: none;">
@@ -512,7 +616,8 @@
                                 <option value="">Select Tax Category</option>
                                 <option value="taxable_gst" selected>Taxable — GST applies (standard 10%)</option>
                                 <option value="gst_free">GST-free — 0% (e.g., some health, basic food)</option>
-                                <option value="input_taxed">Input-taxed — no GST charged but special reporting</option>
+                                <option value="input_taxed">Input-taxed — no GST charged but special reporting
+                                </option>
                             </select>
                         </div>
 
@@ -528,8 +633,10 @@
                                         <div id="imagePlaceholder" style="display: none;">
                                             <i class="fas fa-image"
                                                 style="font-size: 32px; color: #9ca3af; margin-bottom: 8px;"></i>
-                                            <p style="color: #6b7280; margin: 0; font-size: 11px;">Click to upload</p>
-                                            <p style="font-size: 10px; color: #9ca3af; margin: 4px 0 0 0;">PNG, JPG</p>
+                                            <p style="color: #6b7280; margin: 0; font-size: 11px;">Click to upload
+                                            </p>
+                                            <p style="font-size: 10px; color: #9ca3af; margin: 4px 0 0 0;">PNG, JPG
+                                            </p>
                                         </div>
                                         <img id="previewImage" src="https://placehold.co/400x250?text=Cleaning+Service"
                                             style="display: block; width: 100%; max-height: 150px; border-radius: 6px; object-fit: cover;"
@@ -540,7 +647,8 @@
                                 </div>
                                 <div style="flex: 1;">
                                     <div id="previewContent">
-                                        <p style="color: #6b7280; margin: 0;">Changes will appear in the preview below
+                                        <p style="color: #6b7280; margin: 0;">Changes will appear in the preview
+                                            below
                                         </p>
                                     </div>
                                 </div>
@@ -561,7 +669,50 @@
     </div>
 
     <script>
+        // ============================================================================
+        // SERVICE CONFIGURATION: Skills Management
+        // ============================================================================
+
+        let requiredSkills = [];
+
+        function initializeSkillsInput() {
+            const skillInput = document.getElementById('skillInput');
+            if (!skillInput) return;
+
+            skillInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const skill = skillInput.value.trim();
+                    if (skill && !requiredSkills.includes(skill)) {
+                        requiredSkills.push(skill);
+                        renderSkillTags();
+                        skillInput.value = '';
+                    }
+                }
+            });
+        }
+
+        function renderSkillTags() {
+            const container = document.getElementById('requiredSkillsContainer');
+            if (!container) return;
+
+            container.innerHTML = requiredSkills.map(skill => `
+                <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #6366f1; color: white; border-radius: 16px; font-size: 13px;">
+                    <span>${skill}</span>
+                    <button type="button" onclick="removeSkill('${skill}')" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px; line-height: 1; padding: 0;">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeSkill(skill) {
+            requiredSkills = requiredSkills.filter(s => s !== skill);
+            renderSkillTags();
+        }
+
+        // ============================================================================
         // Radio button selection functions (single-select)
+        // ============================================================================
+
         function selectPackageModel(element) {
             // Remove active from all package model options
             document.querySelectorAll('[name="packageModel"]').forEach(el => {
@@ -616,29 +767,49 @@
             const priceLabel = document.getElementById('priceLabel');
             const priceInfo = document.getElementById('priceInfo');
 
+            // Service configuration fields are always shown for services
+            const serviceConfigFields = document.getElementById('serviceConfigFields');
+            const moqUnitSection = document.getElementById('moqUnitSection');
+            const recurrenceSection = document.getElementById('recurrenceSection');
+
             if (subscriptionRadio && subscriptionRadio.checked) {
                 // Subscription mode
                 frequencyGroup.style.display = 'block';
 
                 // Lock unit to "hour"
-                unitSelect.value = 'hour';
-                unitSelect.disabled = true;
+                if (unitSelect) {
+                    unitSelect.value = 'hour';
+                    unitSelect.disabled = true;
+                }
 
                 priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
                 priceInfo.textContent = 'Price will be calculated per hour';
+
+                // Hide MOQ/Unit section and recurrence for subscription
+                if (moqUnitSection) moqUnitSection.style.display = 'none';
+                if (recurrenceSection) recurrenceSection.style.display = 'none';
             } else {
                 // Non-subscription mode
                 frequencyGroup.style.display = 'none';
 
                 // Enable unit selection
-                unitSelect.disabled = false;
+                if (unitSelect) {
+                    unitSelect.disabled = false;
+                }
 
                 // Update price label based on selected unit
-                const unit = unitSelect.value;
+                const unit = unitSelect ? unitSelect.value : 'unit';
                 const unitText = unit === 'custom' ? 'unit' : unit;
                 priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
                 priceInfo.textContent = `Price will be per ${unitText}`;
+
+                // Show MOQ/Unit section and recurrence for non-subscription
+                if (moqUnitSection) moqUnitSection.style.display = 'block';
+                if (recurrenceSection) recurrenceSection.style.display = 'block';
             }
+
+            // Service config fields are always visible for services
+            if (serviceConfigFields) serviceConfigFields.style.display = 'block';
         }
 
         // Global updatePreview function (needs to be accessible from event handlers)
@@ -720,6 +891,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // CONSTANTS
+            const STORAGE_KEY = 'fms_pricebook';
+
+            // DOM ELEMENTS
             const typeSelect = document.getElementById('typeSelect');
             const serviceFields = document.getElementById('serviceFields');
             const productFields = document.getElementById('productFields');
@@ -733,10 +908,15 @@
             const priceInput = document.getElementById('price');
             const currencySelect = document.getElementById('currency');
             const descriptionInput = document.getElementById('description');
-            const previewContent = document.getElementById('previewContent');
 
-            // Initialize package model UI
-            updatePackageModelUI();
+            // Initialize new features
+            initializeSkillsInput();
+
+            // Load Data
+            loadItemData();
+
+            // Initialize UI state
+            updatePackageModelUI(); // ensure UI matches loaded data
 
             // Type selection toggle
             typeSelect.addEventListener('change', function () {
@@ -829,83 +1009,17 @@
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         previewImage.src = e.target.result;
+                        previewImage.style.display = 'block';
+                        imagePlaceholder.style.display = 'none';
                         updatePreview();
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // Update preview
-            function updatePreview() {
-                const name = nameInput.value || '[Item Name]';
-                const code = codeInput.value || '[SKU/Code]';
-                const currency = currencySelect.value;
-                const price = priceInput.value ? `${Number(priceInput.value).toFixed(2)}` : '0.00';
-                const displayPrice = `${currency} ${price}`;
-                const description = descriptionInput.value || '[Description]';
-                const type = typeSelect.value || 'service';
-
-                // Get MOQ and unit
-                let moq, unit, moqDisplay = '';
-                if (type === 'service') {
-                    moq = document.getElementById('moq')?.value || '';
-                    const unitSelect = document.getElementById('unit');
-                    const customUnit = document.getElementById('serviceCustomUnit')?.value;
-                    unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
-
-                    // Check if subscription
-                    const subscriptionRadio = document.getElementById('packageModel_subscription');
-                    if (subscriptionRadio && subscriptionRadio.checked) {
-                        // Get selected frequency
-                        const selectedFrequency = document.querySelector('[name="frequency"]:checked');
-                        const frequency = selectedFrequency ? selectedFrequency.value : 'weekly';
-                        moqDisplay = moq ? `MOQ: ${moq} ${unit}/${frequency}` : '';
-                    } else {
-                        moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
-                    }
-                } else if (type === 'product') {
-                    moq = document.getElementById('productMOQ')?.value || '';
-                    const productUnitSelect = document.getElementById('productUnit');
-                    const customProductUnit = document.getElementById('productCustomUnit')?.value;
-                    unit = productUnitSelect?.value === 'custom' && customProductUnit ? customProductUnit : productUnitSelect?.value || 'each';
-                    moqDisplay = moq ? `MOQ: ${moq} ${unit}` : '';
-                }
-
-                // Get service type if applicable
-                let serviceTypeDisplay = '';
-                if (type === 'service') {
-                    const selectedServiceType = document.querySelector('[name="serviceType"]:checked');
-                    if (selectedServiceType) {
-                        const serviceTypeValue = selectedServiceType.value;
-                        const serviceTypeText = serviceTypeValue === 'one-to-one' ? 'One-to-One' :
-                            serviceTypeValue.charAt(0).toUpperCase() + serviceTypeValue.slice(1);
-                        serviceTypeDisplay = ` • ${serviceTypeText}`;
-                    }
-                }
-
-                const unitText = type === 'service' ? '/ hour' : '/ unit';
-
-                previewContent.innerHTML = `
-                    <div style="padding:12px;background:#fff;border-radius:6px;">
-                        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
-                            <div>
-                                <div style="font-weight:600;font-size:16px;color:#111827;">${name}</div>
-                                <div style="font-size:13px;color:#6b7280;">${code} • ${type === 'service' ? 'Service' : 'Product'}${serviceTypeDisplay}</div>
-                                ${moqDisplay ? `<div style="font-size:12px;color:#8b5cf6;margin-top:4px;font-weight:500;">${moqDisplay}</div>` : ''}
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-weight:700;color:#6366f1;font-size:20px;">${displayPrice}</div>
-                                <div style="font-size:11px;color:#9ca3af;">${unitText}</div>
-                            </div>
-                        </div>
-                        <div style="color:#6b7280;font-size:14px;line-height:1.5;">${description}</div>
-                    </div>
-                `;
-            }
-
             // Add event listeners for preview updates
             document.getElementById('name').addEventListener('input', updatePreview);
-            document.getElementById('code').addEventListener('input', updatePreview);
+            // code is disabled in edit mode
             document.getElementById('price').addEventListener('input', updatePreview);
             document.getElementById('currency').addEventListener('change', updatePreview);
             document.getElementById('description').addEventListener('input', updatePreview);
@@ -916,21 +1030,307 @@
             if (moqInput) moqInput.addEventListener('input', updatePreview);
             if (productMOQInput) productMOQInput.addEventListener('input', updatePreview);
 
-            // Initial preview on load
-            updatePreview();
+            // Recurrence Label Update
+            const recurrenceFreq = document.getElementById('recurrenceFrequency');
+            if (recurrenceFreq) {
+                recurrenceFreq.addEventListener('change', function () {
+                    const label = document.getElementById('recurrenceDaysLabel');
+                    if (label) label.textContent = `day(s) / ${this.value}`;
+                });
+            }
 
             // Form submission
             document.getElementById('pricebookForm').addEventListener('submit', function (e) {
                 e.preventDefault();
-                alert('Item updated successfully! (Demo)');
-                // In real implementation, send data to server
+                const formData = collectFormData();
+                console.log('Update Data:', formData);
+
+                // Save to localStorage
+                savePricebookItem(formData);
+
+                alert('Item updated successfully!');
+                window.location.href = 'pricebook.html';
             });
 
             // Save draft
             document.getElementById('saveDraftBtn').addEventListener('click', function () {
-                alert('Draft saved! (Demo)');
-                // In real implementation, save to server
+                const formData = collectFormData();
+                formData.status = 'draft';
+                savePricebookItem(formData);
+                alert('Draft saved!');
             });
+
+            // ============================================================================
+            // DATA LOADING & SAVING
+            // ============================================================================
+
+            function loadItemData() {
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('id');
+
+                if (!id) {
+                    alert('No item ID provided!');
+                    window.location.href = 'pricebook.html';
+                    return;
+                }
+
+                // Read from localStorage
+                let pricebookItems = [];
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    pricebookItems = raw ? JSON.parse(raw) : [];
+                } catch (e) {
+                    console.error('Error reading pricebook data', e);
+                }
+
+                const item = pricebookItems.find(i => i.id === id);
+                if (!item) {
+                    alert('Item not found!');
+                    window.location.href = 'pricebook.html';
+                    return;
+                }
+
+                // Store ID for update
+                document.getElementById('pricebookForm').dataset.itemId = id;
+
+                // Populate Form
+                populateForm(item);
+                updatePreview();
+            }
+
+            function selectCommitmentType(element) {
+                // Remove active from all commitment type options
+                document.querySelectorAll('[name="commitmentType"]').forEach(el => {
+                    el.closest('.toggle-option').classList.remove('active');
+                    el.checked = false;
+                });
+
+                // Set active on clicked element
+                element.classList.add('active');
+                const radio = element.querySelector('input[type="radio"]');
+                radio.checked = true;
+
+                // Update UI
+                const isCourse = radio.value === 'course';
+                const termFields = document.getElementById('termBasedFields');
+                const courseFields = document.getElementById('courseBasedFields');
+
+                if (isCourse) {
+                    termFields.style.display = 'none';
+                    courseFields.style.display = 'flex';
+                } else {
+                    termFields.style.display = 'flex';
+                    courseFields.style.display = 'none';
+                }
+            }
+
+            function populateForm(data) {
+                // Basic Fields
+                document.getElementById('typeSelect').value = data.type || 'service';
+                document.getElementById('code').value = data.code || data.sku || ''; // support both code and sku
+                document.getElementById('name').value = data.name || '';
+                document.getElementById('description').value = data.description || '';
+                document.getElementById('currency').value = data.currency || 'AUD';
+                document.getElementById('price').value = data.price || 0;
+                document.getElementById('tax').value = data.taxCategory || '';
+
+                // Trigger type change to show correct sections
+                document.getElementById('typeSelect').dispatchEvent(new Event('change'));
+
+                if (data.type === 'service') {
+                    // Package Model
+                    const packageModel = data.packageModel || 'non-subscription';
+                    const modelOption = document.querySelector(`.toggle-option[data-value="${packageModel}"]`);
+                    if (modelOption) selectPackageModel(modelOption);
+
+                    // Service Type
+                    const serviceType = data.serviceType || 'class';
+                    const typeOption = document.querySelector(`.toggle-option[data-value="${serviceType}"]`);
+                    if (typeOption) selectServiceType(typeOption);
+
+                    // Subscription specific
+                    if (packageModel === 'subscription') {
+                        const frequency = data.sessionFrequency || 'weekly';
+                        const wOption = document.querySelector(`.toggle-option[data-value="${frequency}"]`);
+                        if (wOption) selectFrequency(wOption);
+                    }
+                    // Non-subscription specific
+                    else {
+                        document.getElementById('moq').value = data.moq || 1;
+
+                        // Handle Unit
+                        const unitSelect = document.getElementById('unit');
+                        const customUnitInput = document.getElementById('serviceCustomUnit');
+                        const knownUnits = Array.from(unitSelect.options).map(o => o.value);
+
+                        if (knownUnits.includes(data.unit)) {
+                            unitSelect.value = data.unit;
+                            unitSelect.dispatchEvent(new Event('change'));
+                        } else {
+                            unitSelect.value = 'custom';
+                            unitSelect.dispatchEvent(new Event('change'));
+                            customUnitInput.value = data.unit || '';
+                        }
+
+                        // Recurrence configuration for non-subscription
+                        if (data.recurrence) {
+                            const recurrenceFreq = document.getElementById('recurrenceFrequency');
+                            const recurrenceOccur = document.getElementById('recurrenceOccurrences');
+                            const recurrenceDays = document.getElementById('recurrenceDaysRequired');
+                            const totalSessionSlots = document.getElementById('totalSessionSlots');
+
+                            if (recurrenceFreq) {
+                                recurrenceFreq.value = data.recurrence.frequency || 'week';
+                                recurrenceFreq.dispatchEvent(new Event('change')); // Update label
+                            }
+
+                            // Handle Commitment Type
+                            const commitmentType = data.recurrence.commitmentType || (data.recurrence.totalSessionSlots ? 'course' : 'term');
+                            const commitOption = document.querySelector(`.toggle-option input[value="${commitmentType}"]`)?.closest('.toggle-option');
+                            if (commitOption) selectCommitmentType(commitOption);
+
+                            if (recurrenceOccur) recurrenceOccur.value = data.recurrence.count || 12;
+                            if (totalSessionSlots) totalSessionSlots.value = data.recurrence.totalSessionSlots || 36;
+                            if (recurrenceDays) recurrenceDays.value = data.recurrence.daysRequired || 1;
+                        }
+                    }
+
+                    // Common Service Config
+                    if (data.capacity) {
+                        document.getElementById('minCapacity').value = data.capacity.minimum || 1;
+                        document.getElementById('maxCapacity').value = data.capacity.maximum || 20;
+                    }
+                    document.getElementById('sessionDuration').value = data.sessionDuration || 60;
+                    document.getElementById('minStaffCount').value = data.minStaffCount || 1;
+                    document.getElementById('equipmentNeeded').value = data.equipmentNeeded || '';
+
+                    // Skills
+                    if (data.requiredSkills && Array.isArray(data.requiredSkills)) {
+                        requiredSkills = data.requiredSkills;
+                        renderSkillTags();
+                    }
+                }
+                else if (data.type === 'product') {
+                    document.getElementById('productMOQ').value = data.moq || 1;
+
+                    // Handle Unit
+                    const unitSelect = document.getElementById('productUnit');
+                    const customUnitInput = document.getElementById('productCustomUnit');
+                    const knownUnits = Array.from(unitSelect.options).map(o => o.value);
+
+                    if (knownUnits.includes(data.unit)) {
+                        unitSelect.value = data.unit;
+                        unitSelect.dispatchEvent(new Event('change'));
+                    } else {
+                        unitSelect.value = 'custom';
+                        unitSelect.dispatchEvent(new Event('change'));
+                        customUnitInput.value = data.unit || '';
+                    }
+                }
+            }
+
+            function collectFormData() {
+                const typeSelect = document.getElementById('typeSelect');
+                const type = typeSelect.value;
+                const id = document.getElementById('pricebookForm').dataset.itemId;
+
+                // Basic fields (same as create, but preserving ID)
+                const data = {
+                    id: id,
+                    type: type,
+                    code: document.getElementById('code').value,
+                    name: document.getElementById('name').value,
+                    description: document.getElementById('description').value,
+                    currency: document.getElementById('currency').value,
+                    price: parseFloat(document.getElementById('price').value),
+                    taxCategory: document.getElementById('tax').value,
+                    status: 'active', // or keep existing status if we loaded it? simplifying to active/draft
+                    updatedAt: new Date().toISOString()
+                };
+
+                // Service-specific fields
+                if (type === 'service') {
+                    const packageModel = document.querySelector('input[name="packageModel"]:checked')?.value || 'non-subscription';
+                    data.packageModel = packageModel;
+                    data.serviceType = document.querySelector('input[name="serviceType"]:checked')?.value || 'class';
+
+                    if (packageModel === 'subscription') {
+                        // Subscription service fields
+                        data.sessionFrequency = document.querySelector('input[name="frequency"]:checked')?.value || 'weekly';
+                        data.capacity = {
+                            minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
+                            maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
+                        };
+                        data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+                        data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
+                        data.requiredSkills = requiredSkills; // From global variable
+                        data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
+                        data.unit = 'hour'; // Fixed for subscription
+                    } else {
+                        // Non-subscription service fields
+                        data.moq = parseFloat(document.getElementById('moq')?.value || 1);
+                        const unitSelect = document.getElementById('unit');
+                        const customUnit = document.getElementById('serviceCustomUnit')?.value;
+                        data.unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
+                        // Include service config fields for non-subscription too
+                        data.capacity = {
+                            minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
+                            maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
+                        };
+                        data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+                        data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
+                        data.requiredSkills = requiredSkills;
+                        data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
+
+                        // Recurrence
+                        const recurrenceFreq = document.getElementById('recurrenceFrequency');
+                        const recurrenceOccur = document.getElementById('recurrenceOccurrences');
+                        const recurrenceDays = document.getElementById('recurrenceDaysRequired');
+                        const commitmentType = document.querySelector('input[name="commitmentType"]:checked')?.value || 'term';
+                        const totalSessionSlots = document.getElementById('totalSessionSlots');
+
+                        if (recurrenceFreq) {
+                            data.recurrence = {
+                                frequency: recurrenceFreq.value,
+                                step: 1, // Defaulting to 1 as per create page
+                                count: parseInt(recurrenceOccur?.value) || 12,
+                                daysRequired: parseInt(recurrenceDays?.value) || 1,
+                                commitmentType: commitmentType,
+                                totalSessionSlots: commitmentType === 'course' ? parseInt(totalSessionSlots?.value) : null
+                            };
+                        }
+                    }
+                }
+                // Product-specific fields
+                else if (type === 'product') {
+                    data.moq = parseFloat(document.getElementById('productMOQ')?.value || 1);
+                    const productUnitSelect = document.getElementById('productUnit');
+                    const productCustomUnit = document.getElementById('productCustomUnit')?.value;
+                    data.unit = productUnitSelect?.value === 'custom' && productCustomUnit ? productCustomUnit : productUnitSelect?.value || 'each';
+                }
+
+                return data;
+            }
+
+            function savePricebookItem(itemData) {
+                // Get existing pricebook items
+                let pricebookItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+                // Check if updating existing item
+                const existingIndex = pricebookItems.findIndex(item => item.id === itemData.id);
+
+                if (existingIndex >= 0) {
+                    // Update existing, merge to keep any fields we don't touch
+                    pricebookItems[existingIndex] = { ...pricebookItems[existingIndex], ...itemData };
+                } else {
+                    // Fail safe, shouldn't happen in edit
+                    pricebookItems.push(itemData);
+                }
+
+                // Save back to localStorage
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(pricebookItems));
+            }
+
         });
     </script>
 </body>
