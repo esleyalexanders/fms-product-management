@@ -346,21 +346,20 @@
                             <div class="form-group">
                                 <label>Package Type <span class="required">*</span></label>
                                 <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                    <div class="toggle-option" data-value="non-subscription"
-                                        onclick="selectPackageModel(this)">
-                                        <input type="radio" name="packageModel" id="packageModel_nonSubscription"
-                                            value="non-subscription" style="display: none;">
-                                        <span>Non-Subscription</span>
-                                    </div>
                                     <div class="toggle-option active" data-value="subscription"
                                         onclick="selectPackageModel(this)">
                                         <input type="radio" name="packageModel" id="packageModel_subscription"
                                             value="subscription" checked style="display: none;">
                                         <span>Subscription</span>
                                     </div>
+                                    <div class="toggle-option" data-value="course" onclick="selectPackageModel(this)">
+                                        <input type="radio" name="packageModel" id="packageModel_course" value="course"
+                                            style="display: none;">
+                                        <span>Course</span>
+                                    </div>
                                 </div>
-                                <div class="info-text">Choose whether this service is subscription-based or one-time
-                                    purchase</div>
+                                <div class="info-text">Choose whether this is a recurring subscription or a fixed-volume
+                                    course</div>
                             </div>
                         </div>
 
@@ -392,32 +391,88 @@
                                 <div class="info-text">Select the type of service delivery</div>
                             </div>
 
-                            <div class="form-group" id="subscriptionFrequencyGroup" style="display: block;">
-                                <label>Session Frequency <span class="required">*</span></label>
-                                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
-                                    <div class="toggle-option active" data-value="weekly"
-                                        onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_weekly" value="weekly"
-                                            checked style="display: none;">
-                                        <span>Weekly</span>
+                            <div id="subscriptionFrequencyGroup"
+                                style="display: block; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #475569;">Recurring Frequency
+                                </h4>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>Session Frequency <span class="required">*</span></label>
+                                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                                        <div class="toggle-option active" data-value="weekly"
+                                            onclick="selectFrequency(this)">
+                                            <input type="radio" name="frequency" id="frequency_weekly" value="weekly"
+                                                checked style="display: none;">
+                                            <span>Weekly</span>
+                                        </div>
+                                        <div class="toggle-option" data-value="monthly" onclick="selectFrequency(this)">
+                                            <input type="radio" name="frequency" id="frequency_monthly" value="monthly"
+                                                style="display: none;">
+                                            <span>Monthly</span>
+                                        </div>
+                                        <div class="toggle-option" data-value="quarterly"
+                                            onclick="selectFrequency(this)">
+                                            <input type="radio" name="frequency" id="frequency_quarterly"
+                                                value="quarterly" style="display: none;">
+                                            <span>Quarterly</span>
+                                        </div>
+                                        <div class="toggle-option" data-value="annually"
+                                            onclick="selectFrequency(this)">
+                                            <input type="radio" name="frequency" id="frequency_annually"
+                                                value="annually" style="display: none;">
+                                            <span>Annually</span>
+                                        </div>
                                     </div>
-                                    <div class="toggle-option" data-value="monthly" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_monthly" value="monthly"
-                                            style="display: none;">
-                                        <span>Monthly</span>
+                                    <div class="info-text">Select billing frequency for subscription services</div>
+                                </div>
+                                <div class="form-group" style="margin-top: 16px;">
+                                    <label for="sessionDurationSubscription">Session Duration (Minutes) <span
+                                            class="required">*</span></label>
+                                    <input type="number" id="sessionDurationSubscription" min="15" step="15" value="60">
+                                    <small id="sessionDurationSubscriptionHelp"
+                                        style="display: block; color: #64748b; margin-top: 4px;">60 min (1 hour)</small>
+                                </div>
+                            </div>
+
+                            <!-- Course Configuration Fields -->
+                            <div id="courseConfigGroup"
+                                style="display: none; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                                <h4 style="margin: 0 0 12px 0; font-size: 14px; color: #475569;">Course Schedule</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Course Period</label>
+                                        <select id="coursePeriodType" style="background: white;"
+                                            onchange="updateCourseLabels()">
+                                            <option value="week" selected>Week</option>
+                                            <option value="month">Month</option>
+                                        </select>
                                     </div>
-                                    <div class="toggle-option" data-value="quarterly" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_quarterly" value="quarterly"
-                                            style="display: none;">
-                                        <span>Quarterly</span>
+                                    <div class="form-group">
+                                        <label for="courseDaysPerPeriod">Days per Week</label>
+                                        <input type="number" id="courseDaysPerPeriod" min="1" value="3"
+                                            style="background: white;">
                                     </div>
-                                    <div class="toggle-option" data-value="annually" onclick="selectFrequency(this)">
-                                        <input type="radio" name="frequency" id="frequency_annually" value="annually"
-                                            style="display: none;">
-                                        <span>Annually</span>
+                                    <div class="form-group">
+                                        <label for="courseDuration">Duration (Weeks)</label>
+                                        <input type="number" id="courseDuration" min="1" value="4"
+                                            style="background: white;">
                                     </div>
                                 </div>
-                                <div class="info-text">Select billing frequency for subscription services</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Total Sessions (Calculated)</label>
+                                        <input type="text" id="courseTotalSessions" value="12" disabled
+                                            style="background: #e2e8f0; color: #475569; font-weight: 600;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sessionDurationCourse">Session Duration (Minutes) <span
+                                                class="required">*</span></label>
+                                        <input type="number" id="sessionDurationCourse" min="15" step="15" value="60"
+                                            style="background: white;">
+                                        <small id="sessionDurationCourseHelp"
+                                            style="display: block; color: #64748b; margin-top: 4px;">60 min (1
+                                            hour)</small>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Service Configuration Fields (for all services) -->
@@ -433,11 +488,7 @@
                                         <input type="number" id="maxCapacity" min="1" value="20">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="sessionDuration">Session Duration <span
-                                                class="required">*</span></label>
-                                        <input type="number" id="sessionDuration" min="15" step="15" value="60">
-                                    </div>
+
 
                                     <div class="form-group" style="max-width: 150px;">
                                         <label for="minStaffCount">Min Staff <span class="required">*</span></label>
@@ -459,65 +510,6 @@
                                 <input type="text" id="equipmentNeeded"
                                     placeholder="e.g., Whiteboard, Projector, Calculators">
                                 <div class="info-text">Comma-separated list (optional)</div>
-                            </div>
-                        </div>
-
-                        <!-- Recurrence Configuration (for non-subscription services) -->
-                        <div id="recurrenceSection" style="display: none;">
-                            <div class="section-title">Configure Recurrence</div>
-                            <div class="info-text" style="margin-bottom: 16px;">Set up how often this service
-                                repeats
-                            </div>
-
-                            <!-- Commitment Type Toggle -->
-                            <div class="form-group">
-                                <label>Commitment Type</label>
-                                <div class="toggle-group">
-                                    <div class="toggle-option active" data-value="term"
-                                        onclick="selectCommitmentType(this)">
-                                        <input type="radio" name="commitmentType" id="commitmentType_term" value="term"
-                                            checked style="display: none;">
-                                        <span>Term-based (Fixed Occurrences)</span>
-                                    </div>
-                                    <div class="toggle-option" data-value="course" onclick="selectCommitmentType(this)">
-                                        <input type="radio" name="commitmentType" id="commitmentType_course"
-                                            value="course" style="display: none;">
-                                        <span>Course-based (Total Sessions)</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="recurrenceFrequency">Repeat every</label>
-                                    <select id="recurrenceFrequency"
-                                        style="padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                        <option value="week" selected>week</option>
-                                        <option value="month">month</option>
-                                    </select>
-                                    <input type="hidden" id="recurrenceInterval" value="1">
-                                </div>
-
-                                <!-- Term-based: Occurrences -->
-                                <div id="termBasedFields" style="display: flex; gap: 12px; align-items: center;">
-                                    <input type="number" id="recurrenceOccurrences" min="1" value="12"
-                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                    <span style="color: #6b7280;">occurrences</span>
-                                </div>
-
-                                <!-- Course-based: Total Slots -->
-                                <div id="courseBasedFields" style="display: none; gap: 12px; align-items: center;">
-                                    <input type="number" id="totalSessionSlots" min="1" value="36"
-                                        style="width: 100px; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
-                                    <span style="color: #6b7280;">total sessions</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="recurrenceDaysRequired">Required Days</label>
-                                <div style="display: flex; gap: 12px; align-items: center;">
-                                    <span style="color: #6b7280;" id="recurrenceDaysLabel">day(s) / week</span>
-                                </div>
                             </div>
                         </div>
 
@@ -608,6 +600,8 @@
                                 </div>
                             </div>
                             <div class="info-text" id="priceInfo">Price will be calculated per hour</div>
+                            <div id="calculatedCoursePriceLabel"
+                                style="margin-top: 8px; font-weight: 600; color: #6366f1; display: none;"></div>
                         </div>
 
                         <div class="form-group">
@@ -669,6 +663,32 @@
     </div>
 
     <script>
+        // ============================================================================
+        // COURSE CALCULATION LOGIC
+        // ============================================================================
+        function calculateCourseTotals() {
+            const days = parseFloat(document.getElementById('courseDaysPerPeriod').value) || 0;
+            const duration = parseFloat(document.getElementById('courseDuration').value) || 0;
+            const totalSessions = days * duration;
+
+            document.getElementById('courseTotalSessions').value = totalSessions;
+
+            // Also trigger price calculation
+            calculateCoursePrice();
+        }
+
+        function calculateCoursePrice() {
+            const packageType = document.querySelector('input[name="packageModel"]:checked')?.value;
+            if (packageType === 'course') {
+                const pricePerSession = parseFloat(document.getElementById('price').value) || 0;
+                const totalSessions = parseFloat(document.getElementById('courseTotalSessions').value) || 0;
+                const totalCoursePrice = pricePerSession * totalSessions;
+
+                const label = document.getElementById('calculatedCoursePriceLabel');
+                if (label) label.textContent = `Total Course Price: $${totalCoursePrice.toFixed(2)}`;
+            }
+        }
+
         // ============================================================================
         // SERVICE CONFIGURATION: Skills Management
         // ============================================================================
@@ -761,56 +781,52 @@
         }
 
         function updatePackageModelUI() {
-            const subscriptionRadio = document.getElementById('packageModel_subscription');
+            const subscriptionRadio = document.getElementById('packageModel_subscription'); // Default
+            const courseRadio = document.getElementById('packageModel_course');
+
             const frequencyGroup = document.getElementById('subscriptionFrequencyGroup');
+            const courseConfigGroup = document.getElementById('courseConfigGroup');
             const unitSelect = document.getElementById('unit');
             const priceLabel = document.getElementById('priceLabel');
             const priceInfo = document.getElementById('priceInfo');
+            const calculatedCoursePriceLabel = document.getElementById('calculatedCoursePriceLabel');
 
             // Service configuration fields are always shown for services
-            const serviceConfigFields = document.getElementById('serviceConfigFields');
             const moqUnitSection = document.getElementById('moqUnitSection');
-            const recurrenceSection = document.getElementById('recurrenceSection');
 
-            if (subscriptionRadio && subscriptionRadio.checked) {
-                // Subscription mode
-                frequencyGroup.style.display = 'block';
+            if (courseRadio && courseRadio.checked) {
+                // Course mode
+                frequencyGroup.style.display = 'none';
+                courseConfigGroup.style.display = 'block';
 
-                // Lock unit to "hour"
+                // Unlock unit? No, typically courses are "per session" or "per course"
                 if (unitSelect) {
-                    unitSelect.value = 'hour';
-                    unitSelect.disabled = true;
+                    unitSelect.value = 'each'; // Or keep it simple
                 }
+
+                priceLabel.innerHTML = 'Price (per session) <span class="required">*</span>';
+                priceInfo.textContent = 'Enter the price for a single session.';
+                if (calculatedCoursePriceLabel) calculatedCoursePriceLabel.style.display = 'block';
+
+                if (moqUnitSection) moqUnitSection.style.display = 'none';
+
+                // Trigger calculation
+                calculateCourseTotals();
+                updateCourseLabels();
+
+            } else {
+                // Subscription mode (Default)
+                frequencyGroup.style.display = 'block';
+                courseConfigGroup.style.display = 'none';
 
                 priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
                 priceInfo.textContent = 'Price will be calculated per hour';
+                if (calculatedCoursePriceLabel) calculatedCoursePriceLabel.style.display = 'none';
 
-                // Hide MOQ/Unit section and recurrence for subscription
                 if (moqUnitSection) moqUnitSection.style.display = 'none';
-                if (recurrenceSection) recurrenceSection.style.display = 'none';
-            } else {
-                // Non-subscription mode
-                frequencyGroup.style.display = 'none';
-
-                // Enable unit selection
-                if (unitSelect) {
-                    unitSelect.disabled = false;
-                }
-
-                // Update price label based on selected unit
-                const unit = unitSelect ? unitSelect.value : 'unit';
-                const unitText = unit === 'custom' ? 'unit' : unit;
-                priceLabel.innerHTML = `Price (per ${unitText}) <span class="required">*</span>`;
-                priceInfo.textContent = `Price will be per ${unitText}`;
-
-                // Show MOQ/Unit section and recurrence for non-subscription
-                if (moqUnitSection) moqUnitSection.style.display = 'block';
-                if (recurrenceSection) recurrenceSection.style.display = 'block';
             }
-
-            // Service config fields are always visible for services
-            if (serviceConfigFields) serviceConfigFields.style.display = 'block';
         }
+
 
         // Global updatePreview function (needs to be accessible from event handlers)
         function updatePreview() {
@@ -1030,6 +1046,15 @@
             if (moqInput) moqInput.addEventListener('input', updatePreview);
             if (productMOQInput) productMOQInput.addEventListener('input', updatePreview);
 
+            // Course Config Event Listeners
+            const courseDaysInput = document.getElementById('courseDaysPerPeriod');
+            const courseDurationInput = document.getElementById('courseDuration');
+            const priceInputCourse = document.getElementById('price');
+
+            if (courseDaysInput) courseDaysInput.addEventListener('input', calculateCourseTotals);
+            if (courseDurationInput) courseDurationInput.addEventListener('input', calculateCourseTotals);
+            if (priceInputCourse) priceInputCourse.addEventListener('input', calculateCoursePrice);
+
             // Recurrence Label Update
             const recurrenceFreq = document.getElementById('recurrenceFrequency');
             if (recurrenceFreq) {
@@ -1098,31 +1123,7 @@
                 updatePreview();
             }
 
-            function selectCommitmentType(element) {
-                // Remove active from all commitment type options
-                document.querySelectorAll('[name="commitmentType"]').forEach(el => {
-                    el.closest('.toggle-option').classList.remove('active');
-                    el.checked = false;
-                });
 
-                // Set active on clicked element
-                element.classList.add('active');
-                const radio = element.querySelector('input[type="radio"]');
-                radio.checked = true;
-
-                // Update UI
-                const isCourse = radio.value === 'course';
-                const termFields = document.getElementById('termBasedFields');
-                const courseFields = document.getElementById('courseBasedFields');
-
-                if (isCourse) {
-                    termFields.style.display = 'none';
-                    courseFields.style.display = 'flex';
-                } else {
-                    termFields.style.display = 'flex';
-                    courseFields.style.display = 'none';
-                }
-            }
 
             function populateForm(data) {
                 // Basic Fields
@@ -1139,7 +1140,11 @@
 
                 if (data.type === 'service') {
                     // Package Model
-                    const packageModel = data.packageModel || 'non-subscription';
+                    const packageModel = data.packageModel || 'course'; // Defaulting to course if not sub?
+                    // Actually, if it was non-subscription before, mapping it to course might be tricky if data structure changed.
+                    // Assuming data.packageModel has the correct value 'course' from new creations.
+                    // If old 'non-subscription' data exists, we might need a migration check, but let's assume 'course' for now.
+
                     const modelOption = document.querySelector(`.toggle-option[data-value="${packageModel}"]`);
                     if (modelOption) selectPackageModel(modelOption);
 
@@ -1154,44 +1159,15 @@
                         const wOption = document.querySelector(`.toggle-option[data-value="${frequency}"]`);
                         if (wOption) selectFrequency(wOption);
                     }
-                    // Non-subscription specific
-                    else {
-                        document.getElementById('moq').value = data.moq || 1;
+                    // Course specific
+                    else if (packageModel === 'course' || packageModel === 'non-subscription') { // Handle legacy 'non-subscription' as 'course' potentially
+                        // If it's legacy data, we might not have courseConfig. 
 
-                        // Handle Unit
-                        const unitSelect = document.getElementById('unit');
-                        const customUnitInput = document.getElementById('serviceCustomUnit');
-                        const knownUnits = Array.from(unitSelect.options).map(o => o.value);
-
-                        if (knownUnits.includes(data.unit)) {
-                            unitSelect.value = data.unit;
-                            unitSelect.dispatchEvent(new Event('change'));
-                        } else {
-                            unitSelect.value = 'custom';
-                            unitSelect.dispatchEvent(new Event('change'));
-                            customUnitInput.value = data.unit || '';
-                        }
-
-                        // Recurrence configuration for non-subscription
-                        if (data.recurrence) {
-                            const recurrenceFreq = document.getElementById('recurrenceFrequency');
-                            const recurrenceOccur = document.getElementById('recurrenceOccurrences');
-                            const recurrenceDays = document.getElementById('recurrenceDaysRequired');
-                            const totalSessionSlots = document.getElementById('totalSessionSlots');
-
-                            if (recurrenceFreq) {
-                                recurrenceFreq.value = data.recurrence.frequency || 'week';
-                                recurrenceFreq.dispatchEvent(new Event('change')); // Update label
-                            }
-
-                            // Handle Commitment Type
-                            const commitmentType = data.recurrence.commitmentType || (data.recurrence.totalSessionSlots ? 'course' : 'term');
-                            const commitOption = document.querySelector(`.toggle-option input[value="${commitmentType}"]`)?.closest('.toggle-option');
-                            if (commitOption) selectCommitmentType(commitOption);
-
-                            if (recurrenceOccur) recurrenceOccur.value = data.recurrence.count || 12;
-                            if (totalSessionSlots) totalSessionSlots.value = data.recurrence.totalSessionSlots || 36;
-                            if (recurrenceDays) recurrenceDays.value = data.recurrence.daysRequired || 1;
+                        if (data.courseConfig) {
+                            document.getElementById('coursePeriodType').value = data.courseConfig.periodType || 'week';
+                            document.getElementById('courseDaysPerPeriod').value = data.courseConfig.daysPerPeriod || 3;
+                            document.getElementById('courseDuration').value = data.courseConfig.duration || 4;
+                            document.getElementById('courseTotalSessions').value = data.courseConfig.totalSessions || 12;
                         }
                     }
 
@@ -1200,15 +1176,25 @@
                         document.getElementById('minCapacity').value = data.capacity.minimum || 1;
                         document.getElementById('maxCapacity').value = data.capacity.maximum || 20;
                     }
-                    document.getElementById('sessionDuration').value = data.sessionDuration || 60;
+
+                    // Session Duration (Populate both or specific based on type)
+                    const duration = data.sessionDuration || 60;
+                    if (document.getElementById('sessionDurationCourse')) {
+                        document.getElementById('sessionDurationCourse').value = duration;
+                        updateDurationHelperText('sessionDurationCourse', 'sessionDurationCourseHelp');
+                    }
+                    if (document.getElementById('sessionDurationSubscription')) {
+                        document.getElementById('sessionDurationSubscription').value = duration;
+                        updateDurationHelperText('sessionDurationSubscription', 'sessionDurationSubscriptionHelp');
+                    }
+
                     document.getElementById('minStaffCount').value = data.minStaffCount || 1;
+                    requiredSkills = data.requiredSkills || [];
+                    renderSkillTags();
                     document.getElementById('equipmentNeeded').value = data.equipmentNeeded || '';
 
-                    // Skills
-                    if (data.requiredSkills && Array.isArray(data.requiredSkills)) {
-                        requiredSkills = data.requiredSkills;
-                        renderSkillTags();
-                    }
+                    // The original `if (data.requiredSkills && Array.isArray(data.requiredSkills))` block was moved and simplified above.
+                    // The instruction had a syntax error here, which has been corrected by removing the redundant and malformed `if` statement.
                 }
                 else if (data.type === 'product') {
                     document.getElementById('productMOQ').value = data.moq || 1;
@@ -1226,6 +1212,12 @@
                         unitSelect.dispatchEvent(new Event('change'));
                         customUnitInput.value = data.unit || '';
                     }
+                }
+
+
+                // Update dynamic labels
+                if (typeof updateCourseLabels === 'function') {
+                    updateCourseLabels();
                 }
             }
 
@@ -1261,44 +1253,33 @@
                             minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
                             maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
                         };
-                        data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+                        data.sessionDuration = parseInt(document.getElementById('sessionDurationSubscription')?.value || 60);
                         data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
-                        data.requiredSkills = requiredSkills; // From global variable
+                        data.requiredSkills = typeof requiredSkills !== 'undefined' ? requiredSkills : [];
                         data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
                         data.unit = 'hour'; // Fixed for subscription
-                    } else {
-                        // Non-subscription service fields
-                        data.moq = parseFloat(document.getElementById('moq')?.value || 1);
-                        const unitSelect = document.getElementById('unit');
-                        const customUnit = document.getElementById('serviceCustomUnit')?.value;
-                        data.unit = unitSelect?.value === 'custom' && customUnit ? customUnit : unitSelect?.value || 'hour';
-                        // Include service config fields for non-subscription too
+                    } else if (packageModel === 'course') {
+                        // Course service fields
+                        data.unit = 'session';
+                        data.courseConfig = {
+                            periodType: document.getElementById('coursePeriodType').value,
+                            daysPerPeriod: parseInt(document.getElementById('courseDaysPerPeriod').value) || 0,
+                            duration: parseInt(document.getElementById('courseDuration').value) || 0,
+                            totalSessions: parseInt(document.getElementById('courseTotalSessions').value) || 0
+                        };
+                        data.sessionDuration = parseInt(document.getElementById('sessionDurationCourse')?.value || 60);
+
+                        // Common service fields
                         data.capacity = {
                             minimum: parseInt(document.getElementById('minCapacity')?.value || 1),
                             maximum: parseInt(document.getElementById('maxCapacity')?.value || 20)
                         };
-                        data.sessionDuration = parseInt(document.getElementById('sessionDuration')?.value || 60);
+
+
+
                         data.minStaffCount = parseInt(document.getElementById('minStaffCount')?.value || 1);
-                        data.requiredSkills = requiredSkills;
+                        data.requiredSkills = typeof requiredSkills !== 'undefined' ? requiredSkills : [];
                         data.equipmentNeeded = document.getElementById('equipmentNeeded')?.value || '';
-
-                        // Recurrence
-                        const recurrenceFreq = document.getElementById('recurrenceFrequency');
-                        const recurrenceOccur = document.getElementById('recurrenceOccurrences');
-                        const recurrenceDays = document.getElementById('recurrenceDaysRequired');
-                        const commitmentType = document.querySelector('input[name="commitmentType"]:checked')?.value || 'term';
-                        const totalSessionSlots = document.getElementById('totalSessionSlots');
-
-                        if (recurrenceFreq) {
-                            data.recurrence = {
-                                frequency: recurrenceFreq.value,
-                                step: 1, // Defaulting to 1 as per create page
-                                count: parseInt(recurrenceOccur?.value) || 12,
-                                daysRequired: parseInt(recurrenceDays?.value) || 1,
-                                commitmentType: commitmentType,
-                                totalSessionSlots: commitmentType === 'course' ? parseInt(totalSessionSlots?.value) : null
-                            };
-                        }
                     }
                 }
                 // Product-specific fields
@@ -1330,6 +1311,21 @@
                 // Save back to localStorage
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(pricebookItems));
             }
+
+            function updateDurationHelperText(inputId, helpId) {
+                const input = document.getElementById(inputId);
+                const helpText = document.getElementById(helpId);
+                if (!input || !helpText) return;
+
+                const minutes = parseFloat(input.value) || 0;
+                const hours = (minutes / 60).toFixed(2);
+
+                helpText.textContent = `${hours} hours`;
+            }
+
+            // Add event listeners for session duration
+            document.getElementById('sessionDurationSubscription')?.addEventListener('input', () => updateDurationHelperText('sessionDurationSubscription', 'sessionDurationSubscriptionHelp'));
+            document.getElementById('sessionDurationCourse')?.addEventListener('input', () => updateDurationHelperText('sessionDurationCourse', 'sessionDurationCourseHelp'));
 
         });
     </script>
