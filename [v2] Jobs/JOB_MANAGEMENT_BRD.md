@@ -134,9 +134,3 @@ To provide a detailed view of a specific job, allowing management of its lifecyc
 *   **Purpose**: Manually link a quote if not done during creation.
 *   **Input**: Quote ID.
 
----
-
-## 4. Technical Assumptions (Frontend)
-*   **Framework**: Simple HTML/JS with Tailwind CSS.
-*   **Data Source**: Currently uses mock data objects (`jobs` array in `job_list_simple.js`, `jobData` in `job_detail_simple.js`).
-*   **Routing**: URL parameter-based navigation (e.g., `?id=JOB-2024-001`).
