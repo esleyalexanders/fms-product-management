@@ -64,16 +64,83 @@
                     <div class="bg-white rounded-lg shadow-sm p-6">
                         <h2 class="text-lg font-semibold mb-4">Customer & Service Information</h2>
 
+                        <!-- Job Source Highlights -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div
+                                class="p-4 bg-blue-50 rounded-lg border border-blue-200 relative overflow-hidden group">
+                                <div
+                                    class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <svg class="w-16 h-16 text-blue-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="relative z-10">
+                                    <div class="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Source
+                                        Quote</div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="text-xl font-bold text-gray-900" id="highlightQuoteId">--</div>
+                                        <button onclick="viewQuote()"
+                                            class="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-100 transition-colors"
+                                            title="View Quote">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="text-xs text-blue-500 mt-1 flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                            </path>
+                                        </svg>
+                                        Linked & Locked
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="p-4 bg-purple-50 rounded-lg border border-purple-200 relative overflow-hidden group">
+                                <div
+                                    class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <svg class="w-16 h-16 text-purple-600" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="relative z-10">
+                                    <div class="text-xs text-purple-600 font-bold uppercase tracking-wider mb-1">
+                                        Pricebook Item</div>
+                                    <div class="text-xl font-bold text-gray-900 truncate" id="highlightPricebookItem">--
+                                    </div>
+                                    <div class="text-xs text-purple-500 mt-1 flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Configuration Applied
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Customer Details -->
-                        <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                             <div class="flex items-center justify-between mb-2">
                                 <div>
-                                    <div class="text-xs text-blue-600 font-medium">Customer</div>
-                                    <div class="text-lg font-bold text-blue-900" id="customerName">Alice Johnson</div>
-                                    <div class="text-sm text-blue-700" id="customerEmail">alice.j@email.com</div>
+                                    <div class="text-xs text-gray-500 font-medium uppercase tracking-wide">Customer
+                                    </div>
+                                    <div class="text-lg font-bold text-gray-900" id="customerName">Alice Johnson</div>
+                                    <div class="text-sm text-gray-600" id="customerEmail">alice.j@email.com</div>
                                 </div>
                                 <button onclick="viewCustomer()"
-                                    class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium">
+                                    class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-xs font-medium">
                                     View Profile
                                 </button>
                             </div>
@@ -81,10 +148,7 @@
 
                         <!-- Service Details -->
                         <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <div class="text-xs text-gray-500">Service Name</div>
-                                <div class="text-sm font-medium" id="serviceName">Advanced Math - Semester 1</div>
-                            </div>
+                            <!-- Service Name removed, promoted to Pricebook Item above -->
                             <div>
                                 <div class="text-xs text-gray-500">Enrollment Date</div>
                                 <div class="text-sm font-medium" id="enrollmentDate">Nov 1, 2024</div>
@@ -186,42 +250,18 @@
                         </div>
                     </div>
 
-                    <!-- Related Quote & Invoice -->
+                    <!-- Invoice History -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <h2 class="text-lg font-semibold mb-4">Related Documents</h2>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold">Invoice History</h2>
+                            <button onclick="viewInvoiceHistory()"
+                                class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                View All
+                            </button>
+                        </div>
 
-                        <div class="space-y-3">
-                            <!-- Quote -->
-                            <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-xs text-blue-600 font-medium">Original Quote</div>
-                                        <div class="text-sm font-semibold text-blue-800" id="relatedQuote">Q-2024-001
-                                        </div>
-                                    </div>
-                                    <button onclick="viewQuote()"
-                                        class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs font-medium">
-                                        View Quote
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Invoice -->
-                            <div class="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-xs text-purple-600 font-medium">Latest Invoice</div>
-                                        <div class="text-sm font-semibold text-purple-800" id="relatedInvoice">
-                                            INV-2024-001</div>
-                                        <div class="text-xs text-purple-600 mt-1" id="invoiceStatus">Paid on Nov 15,
-                                            2024</div>
-                                    </div>
-                                    <button onclick="viewInvoice()"
-                                        class="px-3 py-1.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-xs font-medium">
-                                        View Invoice
-                                    </button>
-                                </div>
-                            </div>
+                        <div id="invoiceHistoryList" class="space-y-3">
+                            <!-- Populated by JS -->
                         </div>
                     </div>
                 </div>
@@ -253,10 +293,7 @@
                                     <div class="text-xs text-red-600 mt-1" id="overdueMessage">Payment is overdue</div>
                                 </div>
                             </div>
-                            <button onclick="sendPaymentReminder()"
-                                class="mt-3 w-full px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
-                                Send Payment Reminder
-                            </button>
+
                         </div>
 
                         <!-- Auto-Deactivation Warning -->
@@ -277,39 +314,7 @@
                             </div>
                         </div>
 
-                        <!-- Quick Actions -->
-                        <div class="border-t border-gray-200 pt-4">
-                            <h3 class="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h3>
-                            <div class="space-y-2">
-                                <button onclick="contactCustomer()"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 text-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    Contact Customer
-                                </button>
-                                <button onclick="viewInvoiceHistory()"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 text-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                    Invoice History
-                                </button>
-                                <button onclick="rescheduleSession()"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 text-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                    Reschedule Session
-                                </button>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- Job Activity Log -->
@@ -365,6 +370,37 @@
                     class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                     Deactivate Job
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Quote Modal -->
+    <div id="linkQuoteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full mx-4 max-w-md">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">Link Quote</h3>
+                <button onclick="closeLinkQuoteModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-gray-600 mb-4">Enter a Quote ID to link to this job.</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quote ID</label>
+                        <input type="text" id="linkQuoteIdInput" placeholder="Q-2024-XXX"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex justify-end gap-3">
+                <button onclick="closeLinkQuoteModal()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button onclick="confirmLinkQuote()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Link Quote</button>
             </div>
         </div>
     </div>

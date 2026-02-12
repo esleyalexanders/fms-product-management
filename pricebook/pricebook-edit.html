@@ -583,7 +583,8 @@
                         <div class="section-title">Pricing</div>
 
                         <div class="form-group">
-                            <label for="price" id="priceLabel">Price (per hour) <span class="required">*</span></label>
+                            <label for="price" id="priceLabel">Price (per session) <span
+                                    class="required">*</span></label>
                             <div class="price-section">
                                 <div class="currency-wrapper">
                                     <select id="currency" class="currency-select">
@@ -819,8 +820,8 @@
                 frequencyGroup.style.display = 'block';
                 courseConfigGroup.style.display = 'none';
 
-                priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
-                priceInfo.textContent = 'Price will be calculated per hour';
+                priceLabel.innerHTML = 'Price (per session) <span class="required">*</span>';
+                priceInfo.textContent = 'Price per single session';
                 if (calculatedCoursePriceLabel) calculatedCoursePriceLabel.style.display = 'none';
 
                 if (moqUnitSection) moqUnitSection.style.display = 'none';

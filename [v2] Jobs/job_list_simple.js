@@ -42,7 +42,7 @@ const jobs = [
         customerEmail: 'charlie.d@email.com',
         serviceName: 'Piano Basics',
         sessionsName: 'Piano Beginner Course - Nov 2024',
-        serviceType: 'one-off',
+        serviceType: 'course',
         schedulePattern: 'Wed 10:00 AM (4 Sessions)',
         nextSession: '2024-12-04',
         status: 'active',
@@ -131,7 +131,7 @@ const jobs = [
         customerEmail: 'henry.h@email.com',
         serviceName: 'Guitar Lessons',
         sessionsName: 'Guitar Intensive - Weekend',
-        serviceType: 'one-off',
+        serviceType: 'course',
         schedulePattern: 'Sat 2:00 PM (6 Sessions)',
         nextSession: '2024-12-07',
         status: 'active',
@@ -213,7 +213,7 @@ function getStatusBadge(status) {
 function getServiceTypeBadge(type) {
     const badges = {
         subscription: '<span class="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded">Subscription</span>',
-        'one-off': '<span class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded">One-off</span>'
+        course: '<span class="text-xs px-2 py-1 bg-purple-50 text-purple-700 rounded">Course</span>'
     };
     return badges[type] || '';
 }
@@ -353,8 +353,8 @@ function filterByServiceType(type) {
         document.getElementById('filterAllTypes').classList.add('bg-blue-50', 'border-blue-300', 'text-blue-700');
     } else if (type === 'subscription') {
         document.getElementById('filterSubscription').classList.add('bg-blue-50', 'border-blue-300', 'text-blue-700');
-    } else if (type === 'one-off') {
-        document.getElementById('filterOneOff').classList.add('bg-blue-50', 'border-blue-300', 'text-blue-700');
+    } else if (type === 'course') {
+        document.getElementById('filterCourse').classList.add('bg-blue-50', 'border-blue-300', 'text-blue-700');
     }
 
     applyFilters();

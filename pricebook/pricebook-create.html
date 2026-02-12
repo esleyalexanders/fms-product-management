@@ -597,7 +597,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="price" id="priceLabel">Price (per hour) <span class="required">*</span></label>
+                            <label for="price" id="priceLabel">Price (per session) <span
+                                    class="required">*</span></label>
                             <div class="price-section">
                                 <div class="currency-wrapper">
                                     <select id="currency" class="currency-select">
@@ -791,31 +792,7 @@
             updatePreview();
         }
 
-        function selectCommitmentType(element) {
-            // Remove active from all commitment type options
-            document.querySelectorAll('[name="commitmentType"]').forEach(el => {
-                el.closest('.toggle-option').classList.remove('active');
-                el.checked = false;
-            });
 
-            // Set active on clicked element
-            element.classList.add('active');
-            const radio = element.querySelector('input[type="radio"]');
-            radio.checked = true;
-
-            // Update UI
-            const isCourse = radio.value === 'course';
-            const termFields = document.getElementById('termBasedFields');
-            const courseFields = document.getElementById('courseBasedFields');
-
-            if (isCourse) {
-                termFields.style.display = 'none';
-                courseFields.style.display = 'flex';
-            } else {
-                termFields.style.display = 'flex';
-                courseFields.style.display = 'none';
-            }
-        }
 
         function updatePackageModelUI() {
             const subscriptionRadio = document.getElementById('packageModel_subscription'); // Default
@@ -855,8 +832,8 @@
                 frequencyGroup.style.display = 'block';
                 courseConfigGroup.style.display = 'none';
 
-                priceLabel.innerHTML = 'Price (per hour) <span class="required">*</span>';
-                priceInfo.textContent = 'Price will be calculated per hour';
+                priceLabel.innerHTML = 'Price (per session) <span class="required">*</span>';
+                priceInfo.textContent = 'Price per single session';
                 if (calculatedCoursePriceLabel) calculatedCoursePriceLabel.style.display = 'none';
                 if (moqUnitSection) moqUnitSection.style.display = 'none';
             }

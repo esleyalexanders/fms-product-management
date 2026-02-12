@@ -62,6 +62,35 @@ const jobData = {
             icon: 'briefcase',
             color: 'gray'
         }
+    ],
+    invoices: [
+        {
+            id: 'INV-2024-001',
+            date: '2024-11-15',
+            dueDate: '2024-11-29',
+            amount: 150.00,
+            paidAmount: 150.00,
+            status: 'paid',
+            type: 'subscription'
+        },
+        {
+            id: 'INV-2024-002',
+            date: '2024-10-15',
+            dueDate: '2024-10-29',
+            amount: 150.00,
+            paidAmount: 150.00,
+            status: 'paid',
+            type: 'subscription'
+        },
+        {
+            id: 'INV-2024-003',
+            date: '2024-09-15',
+            dueDate: '2024-09-29',
+            amount: 150.00,
+            paidAmount: 150.00,
+            status: 'paid',
+            type: 'subscription'
+        },
     ]
 };
 
@@ -142,6 +171,26 @@ const jobDataExamples = {
         overdueAmount: 150.00,
         autoDeactivated: true,
         deactivationReason: 'Overdue payment exceeds $100',
+        invoices: [
+            {
+                id: 'INV-2024-002',
+                date: '2024-11-01',
+                dueDate: '2024-11-15',
+                amount: 150.00,
+                paidAmount: 0.00,
+                status: 'overdue',
+                type: 'subscription'
+            },
+            {
+                id: 'INV-2024-001',
+                date: '2024-10-01',
+                dueDate: '2024-10-15',
+                amount: 150.00,
+                paidAmount: 150.00,
+                status: 'paid',
+                type: 'subscription'
+            }
+        ],
         activityLog: [
             {
                 date: '2024-11-20',
@@ -269,7 +318,7 @@ function populateJobDetails(job) {
     const serviceTypeBadge = document.getElementById('serviceTypeBadge');
     const typeConfig = {
         subscription: { text: 'Subscription', class: 'bg-purple-100 text-purple-700' },
-        'one-off': { text: 'One-off', class: 'bg-blue-100 text-blue-700' }
+        course: { text: 'Course', class: 'bg-blue-100 text-blue-700' }
     };
     const type = typeConfig[job.serviceType] || typeConfig.subscription;
     serviceTypeBadge.textContent = type.text;
@@ -280,7 +329,10 @@ function populateJobDetails(job) {
     document.getElementById('customerEmail').textContent = job.customerEmail;
 
     // Service details
-    document.getElementById('serviceName').textContent = job.serviceName;
+    // Note: Service Name is now Pricebook Item Name in the highlighted section
+    document.getElementById('highlightPricebookItem').textContent = job.serviceName;
+    document.getElementById('highlightPricebookItem').title = job.serviceName;
+
     document.getElementById('enrollmentDate').textContent = new Date(job.enrollmentDate).toLocaleDateString();
     document.getElementById('assignedStaff').textContent = job.staff || 'Not assigned';
     document.getElementById('serviceTypeDisplay').textContent = type.text;
@@ -331,20 +383,17 @@ function populateJobDetails(job) {
     }
 
     // Related documents
-    document.getElementById('relatedQuote').textContent = job.quoteId;
-
-    if (job.invoiceId) {
-        document.getElementById('relatedInvoice').textContent = job.invoiceId;
-
-        if (job.invoiceStatus === 'paid' && job.invoicePaidDate) {
-            document.getElementById('invoiceStatus').textContent = `Paid on ${new Date(job.invoicePaidDate).toLocaleDateString()}`;
-        } else if (job.invoiceStatus === 'unpaid') {
-            document.getElementById('invoiceStatus').textContent = 'Unpaid';
-        }
+    // Quote Source Information
+    if (job.quoteId) {
+        document.getElementById('highlightQuoteId').textContent = job.quoteId;
     } else {
-        document.getElementById('relatedInvoice').textContent = 'Not created yet';
-        document.getElementById('invoiceStatus').textContent = 'Invoice pending';
+        document.getElementById('highlightQuoteId').textContent = 'No Quote Linked';
+        document.getElementById('highlightQuoteId').classList.add('text-gray-400', 'text-base');
     }
+
+    // Render Invoice History
+    renderInvoiceHistory(job.invoices);
+
 
     // Payment status
     const paymentStatusCard = document.getElementById('paymentStatusCard');
@@ -384,10 +433,10 @@ function populateJobDetails(job) {
     const deactivateBtn = document.getElementById('deactivateJobBtn');
     if (job.status === 'inactive') {
         deactivateBtn.style.display = 'none';
-    } else {
         deactivateBtn.style.display = 'flex';
     }
 }
+
 
 // Render activity log
 function renderActivityLog(activities) {
@@ -461,9 +510,14 @@ function viewQuote() {
     window.location.href = `../[v2] Quotes/quote_simple/quote_edit_simple.html?id=${job.quoteId}`;
 }
 
-function viewInvoice() {
-    const job = getJobData(getJobIdFromUrl());
-    window.location.href = `../[v2] Quotes/quote_simple/invoice_detail_simple.html?id=${job.invoiceId}`;
+function viewInvoice(invoiceId) {
+    // If invoiceId is provided, use it. Otherwise use from URL/Job Data (legacy support)
+    const idToView = invoiceId || getJobData(getJobIdFromUrl()).invoiceId;
+    if (idToView) {
+        window.location.href = `../[v2] Quotes/quote_simple/invoice_detail_simple.html?id=${idToView}`;
+    } else {
+        alert('Invoice ID not found');
+    }
 }
 
 function viewInvoiceHistory() {
@@ -535,6 +589,132 @@ function confirmDeactivate() {
 
     // In production: update job status and reload page
     window.location.reload();
+}
+
+// Link/Unlink Quote Functions Removed - Quote link is permanent
+
+// Render Invoice History
+function renderInvoiceHistory(invoices) {
+    const container = document.getElementById('invoiceHistoryList');
+    if (!container) return;
+
+    if (!invoices || invoices.length === 0) {
+        container.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">No invoice history found</div>';
+        return;
+    }
+
+    const typeLabels = {
+        'subscription': 'Subscription Invoice',
+        'deposit': 'Deposit Invoice',
+        'partial': 'Balance Invoice',
+        'full': 'Full Invoice'
+    };
+
+    container.innerHTML = invoices.map(invoice => {
+        // Status Colors & Labels
+        let statusColor = 'bg-gray-100 text-gray-700';
+        let statusLabel = invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1);
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const dueDate = invoice.dueDate ? new Date(invoice.dueDate) : new Date();
+        dueDate.setHours(0, 0, 0, 0);
+
+        let isOverdue = false;
+
+        if (invoice.status === 'paid') {
+            statusColor = 'bg-green-100 text-green-700';
+            statusLabel = 'Paid';
+        } else if (invoice.status === 'partially_paid') {
+            statusColor = 'bg-yellow-100 text-yellow-700';
+            statusLabel = 'Partial';
+        } else {
+            // Unpaid or Overdue
+            if (dueDate < now && invoice.status !== 'unpaid') { // If status is explicitly overdue or effective overdue
+                // If the data says 'overdue', use that. Or if date is past.
+                // In our mock data we use 'overdue' status explicitly sometimes.
+            }
+
+            if (invoice.status === 'overdue' || (invoice.status === 'unpaid' && dueDate < now)) {
+                isOverdue = true;
+                statusColor = 'bg-red-100 text-red-700';
+                statusLabel = 'Unpaid';
+            } else {
+                statusColor = 'bg-red-100 text-red-700'; // Default unpaid color
+                statusLabel = 'Unpaid';
+            }
+        }
+
+        // Calculate progress
+        const paid = invoice.paidAmount || 0;
+        const total = invoice.amount || 0;
+        let progress = total > 0 ? (paid / total) * 100 : 0;
+        progress = Math.min(100, Math.max(0, progress)); // Clamp 0-100
+        const outstanding = total - paid;
+
+        // Date Display
+        const dateStr = new Date(invoice.date).toLocaleDateString();
+        const dueDateStr = invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : 'N/A';
+
+        // Overdue badge logic
+        const overdueBadge = isOverdue ?
+            `<span class="ml-2 px-2 py-0.5 text-xs rounded-full font-bold bg-red-600 text-white flex items-center gap-1">OVERDUE</span>` : '';
+
+        return `
+        <div class="bg-white border ${isOverdue ? 'border-red-300' : 'border-gray-200'} rounded-lg p-4 hover:shadow-md transition-shadow">
+            <!-- Header -->
+            <div class="flex items-start justify-between mb-3 pb-3 border-b border-gray-100">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <span class="text-lg font-semibold text-gray-900">${invoice.id}</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full font-medium ${statusColor}">${statusLabel}</span>
+                        ${overdueBadge}
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-gray-600">
+                        <span class="font-medium">${typeLabels[invoice.type] || 'Invoice'}</span>
+                        <span class="text-gray-400">•</span>
+                        <span class="${isOverdue ? 'text-red-600 font-bold' : ''}">Due: ${dueDateStr}</span>
+                    </div>
+                </div>
+                <div class="text-right ml-4">
+                    <div class="text-2xl font-bold text-gray-900">$${total.toFixed(2)}</div>
+                    ${paid > 0 ? `<div class="text-sm text-green-600 font-medium">Paid: $${paid.toFixed(2)}</div>` : ''}
+                    ${outstanding > 0.01 ? `<div class="text-sm text-red-600 font-medium">Due: $${outstanding.toFixed(2)}</div>` : ''}
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-4">
+                <div class="flex items-center justify-between text-xs text-gray-600 mb-1">
+                    <span>Payment Progress</span>
+                    <span class="font-semibold">${Math.round(progress)}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div 
+                        class="h-2 rounded-full transition-all duration-500 ${progress >= 100 ? 'bg-green-600' : progress > 0 ? 'bg-yellow-500' : 'bg-gray-300'}" 
+                        style="width: ${progress}%"
+                    ></div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2 pt-2">
+                <button onclick="viewInvoice('${invoice.id}')" 
+                    class="w-full px-3 py-2 text-sm font-medium border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 transition-colors">
+                    <i class="fas fa-eye text-gray-500"></i> View Invoice
+                </button>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+function downloadInvoice(id) {
+    alert(`Downloading PDF for invoice ${id}...`);
+}
+
+function sendInvoiceReminder(id) {
+    alert(`Sending payment reminder for invoice ${id} to customer...`);
 }
 
 // Initialize on page load
