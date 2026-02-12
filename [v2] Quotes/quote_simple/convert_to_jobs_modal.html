@@ -46,54 +46,78 @@
                 </div>
             </div>
 
-            <!-- Items to Convert -->
-            <div class="mb-6">
-                <h4 class="text-sm font-semibold text-gray-900 mb-3">Quote Items to Convert:</h4>
-                <div id="jobConversionItemsList" class="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2">
-                    <!-- Items will be populated by JavaScript -->
+            <!-- Job Details & Items -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <h4 class="text-sm font-semibold text-gray-900 mb-4">Job Details Confirmation</h4>
+
+                <!-- Customer -->
+                <div class="mb-5">
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
+                    <input type="text" id="jobCustomerName" readonly
+                        class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 cursor-not-allowed">
+                </div>
+
+                <!-- Items -->
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-2">Quote Items to Convert</label>
+                    <div id="jobConversionItemsList" class="space-y-2">
+                        <!-- Items will be populated by JavaScript -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Enrollment Question -->
-            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-lg p-5 mb-4">
-                <div class="flex items-start gap-3 mb-4">
-                    <svg class="w-6 h-6 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                        </path>
-                    </svg>
-                    <div class="flex-1">
-                        <h4 class="text-base font-bold text-purple-900 mb-2">Do you want to enroll in Learning Services?
-                        </h4>
-                        <p class="text-xs text-purple-800 mb-4">If you select "Yes", you can link jobs to existing
-                            learning services or create new ones. If "No", jobs will be created without linking to
-                            sessions.</p>
-
-                        <div class="space-y-2">
-                            <label
-                                class="flex items-center gap-3 p-3 bg-white border-2 border-purple-300 rounded-lg cursor-pointer hover:bg-purple-50 transition-colors">
-                                <input type="radio" name="enrollmentOption" value="yes" checked
-                                    class="text-purple-600 focus:ring-purple-500" />
-                                <div>
-                                    <span class="font-semibold text-gray-900">Yes, enroll in Learning Services</span>
-                                    <p class="text-xs text-gray-600 mt-0.5">Link jobs to sessions for scheduling and
-                                        tracking</p>
-                                </div>
-                            </label>
-
-                            <label
-                                class="flex items-center gap-3 p-3 bg-white border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                                <input type="radio" name="enrollmentOption" value="no"
-                                    class="text-purple-600 focus:ring-purple-500" />
-                                <div>
-                                    <span class="font-semibold text-gray-900">No, just create jobs</span>
-                                    <p class="text-xs text-gray-600 mt-0.5">Jobs will be created without session links
-                                    </p>
-                                </div>
-                            </label>
+            <!-- Conversion Options -->
+            <div class="mb-6">
+                <h4 class="text-sm font-semibold text-gray-900 mb-3">How would you like to proceed?</h4>
+                <div class="space-y-3">
+                    <!-- Button 1: Continue to Enroll -->
+                    <button onclick="proceedToEnrollment()"
+                        class="w-full flex items-start gap-4 p-4 bg-white border-2 border-purple-200 rounded-xl hover:bg-purple-50 hover:border-purple-400 hover:shadow-md transition-all group">
+                        <div
+                            class="flex-shrink-0 w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
                         </div>
-                    </div>
+                        <div class="flex-1 text-left">
+                            <span
+                                class="block text-lg font-bold text-gray-900 group-hover:text-purple-700 mb-1">Continue
+                                to enroll</span>
+                            <p class="text-sm text-gray-600">Create jobs AND enroll the customer in sessions
+                                immediately.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-purple-600 mt-3" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- Button 2: Create Jobs Only -->
+                    <button onclick="createJobsWithoutSessions()"
+                        class="w-full flex items-start gap-4 p-4 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-400 hover:shadow-md transition-all group">
+                        <div
+                            class="flex-shrink-0 w-12 h-12 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center group-hover:bg-gray-600 group-hover:text-white transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <span class="block text-lg font-bold text-gray-900 group-hover:text-gray-800 mb-1">Create
+                                jobs</span>
+                            <p class="text-sm text-gray-600">Only create the job records now. You can link them to
+                                sessions later.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-gray-600 mt-3" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -107,7 +131,7 @@
                     <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                             </path>
                         </svg>
                     </div>
@@ -116,18 +140,10 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+        <div class="p-6 border-t border-gray-200 flex items-center justify-center">
             <button onclick="closeConvertToJobsModal()"
-                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
                 Cancel
-            </button>
-            <button onclick="proceedWithJobConversion()"
-                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center gap-2 shadow-md hover:shadow-lg transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6">
-                    </path>
-                </svg>
-                Continue
             </button>
         </div>
     </div>
@@ -167,6 +183,12 @@
             </div>
         `).join('');
 
+        // Populate Job Settings
+        const customerName = state.selectedCustomer?.name || 'Customer';
+        const customerEl = document.getElementById('jobCustomerName');
+        if (customerEl) customerEl.value = customerName;
+
+
         // Update summary
         document.getElementById('jobConversionSummaryText').textContent =
             `${totalJobs} Job${totalJobs > 1 ? 's' : ''}`;
@@ -180,34 +202,27 @@
         document.getElementById('convertToJobsModal').classList.add('hidden');
     }
 
-    // Proceed with job conversion
-    function proceedWithJobConversion() {
-        const enrollmentOption = document.querySelector('input[name="enrollmentOption"]:checked').value;
+    // Proceed to enrollment flow
+    function proceedToEnrollment() {
+        // Close this modal and open the sessions modal
+        closeConvertToJobsModal();
 
-        if (enrollmentOption === 'yes') {
-            // Close this modal and open the sessions modal
-            closeConvertToJobsModal();
-
-            // Small delay for smooth transition
-            setTimeout(() => {
-                // Open the existing convert to sessions modal
-                if (typeof openConvertToSessionsModal === 'function') {
-                    openConvertToSessionsModal();
+        // Small delay for smooth transition
+        setTimeout(() => {
+            // Open the existing convert to sessions modal
+            if (typeof openConvertToSessionsModal === 'function') {
+                openConvertToSessionsModal();
+            } else {
+                // If function doesn't exist, show the modal directly
+                const sessionsModal = document.getElementById('convertToSessionsModal');
+                if (sessionsModal) {
+                    sessionsModal.classList.remove('hidden');
                 } else {
-                    // If function doesn't exist, show the modal directly
-                    const sessionsModal = document.getElementById('convertToSessionsModal');
-                    if (sessionsModal) {
-                        sessionsModal.classList.remove('hidden');
-                    } else {
-                        // Fallback: create jobs without sessions
-                        createJobsWithoutSessions();
-                    }
+                    // Fallback: create jobs without sessions
+                    createJobsWithoutSessions();
                 }
-            }, 200);
-        } else {
-            // Create jobs without linking to sessions
-            createJobsWithoutSessions();
-        }
+            }
+        }, 200);
     }
 
     // Create jobs without session linking
@@ -215,6 +230,8 @@
         const quoteItems = state.lineItems || [];
         const quoteId = getQuoteIdFromUrl();
         const quoteData = state;
+
+
 
         let totalJobsCreated = 0;
         const jobsCreated = [];
@@ -237,11 +254,12 @@
                     subscriptionFrequency: item.subscriptionFrequency,
                     unitPrice: item.unitPrice || 0,
                     quoteId: quoteId,
-                    status: 'incomplete',
+                    status: 'incomplete', // Default status
                     paymentStatus: 'not_setup',
                     sessionsName: null,
                     sessionsId: null,
                     linkedService: null,
+                    nextSession: null,
                     nextSession: null,
                     staff: null,
                     schedulePattern: 'Not yet scheduled',
