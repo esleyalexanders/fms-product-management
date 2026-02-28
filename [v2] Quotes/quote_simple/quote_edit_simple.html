@@ -33,6 +33,102 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* Calendar Day Styling */
+        .calendar-day {
+            min-height: 100px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background-color: #f8f9fa;
+        }
+
+        .calendar-day.today {
+            background-color: #eef2ff;
+        }
+
+        .calendar-day.today .calendar-day-number {
+            background-color: #4f46e5;
+            color: white;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+            background-color: #f9fafb;
+        }
+
+        .calendar-day-number {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #6b7280;
+        }
+
+        /* Session Event Styling */
+        .calendar-event {
+            padding: 3px 5px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border-left: 3px solid;
+            transition: all 0.15s ease;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            line-height: 1.2;
+        }
+
+        .calendar-event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            position: relative;
+        }
+
+        .calendar-event.selected {
+            border: 2px solid #4f46e5 !important;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        /* Type-based event colors */
+        .event-type-class {
+            background-color: #f3e8ff;
+            border-left-color: #9333ea;
+            color: #7c3aed;
+        }
+
+        .event-type-group {
+            background-color: #fef3c7;
+            border-left-color: #f59e0b;
+            color: #d97706;
+        }
+
+        .event-type-one-to-one {
+            background-color: #cffafe;
+            border-left-color: #0891b2;
+            color: #0891b2;
+        }
+
+        .event-preview {
+            opacity: 0.6;
+            border-left-style: dashed !important;
+        }
     </style>
 </head>
 
@@ -9615,57 +9711,46 @@
 
         // Open Convert to Jobs Modal
         function openConvertToJobsModal() {
-            // Get quote items from DOM (since they're already rendered on the page)
-            const quoteItemCards = document.querySelectorAll('#quoteItemsContainer > div');
-
-            if (quoteItemCards.length === 0) {
+            if (!state.quoteItems || state.quoteItems.length === 0) {
                 alert('⚠️ No quote items to convert. Please add items to the quote first.');
                 return;
             }
 
-            // Extract item data from DOM
-            const quoteItems = [];
+            // Use state.quoteItems as source of truth to preserve all metadata
+            const quoteItems = state.quoteItems;
             let totalJobs = 0;
 
-            quoteItemCards.forEach((card, index) => {
-                // Try to extract data from the card structure
-                // This is a simplified approach - gets visible text content
-                const itemNameEl = card.querySelector('h3, .font-medium, [class*="font-semibold"]');
-                const quantityInput = card.querySelector('input[type="number"]');
-                const priceEl = card.querySelector('[class*="text-2xl"], [class*="price"]');
-
-                const itemName = itemNameEl ? itemNameEl.textContent.trim() : `Item ${index + 1}`;
-                const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
-                const unitPrice = priceEl ? parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) || 0 : 0;
-
-                quoteItems.push({
-                    name: itemName,
-                    quantity: quantity,
-                    unitPrice: unitPrice,
-                    packageType: 'Standard',
-                    serviceType: 'Service'
-                });
-
-                totalJobs += quantity;
+            quoteItems.forEach(item => {
+                totalJobs += parseInt(item.quantity) || 0;
             });
 
-            // Populate items list in modal
+            // Populate items list in modal with more details
             const itemsList = document.getElementById('jobConversionItemsList');
             if (itemsList) {
-                itemsList.innerHTML = quoteItems.map(item => `
-                    <div class="flex justify-between items-center p-3 bg-white rounded border border-gray-200">
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900">${item.name}</p>
-                            <p class="text-xs text-gray-500 mt-0.5">${item.packageType || 'Standard'} • ${item.serviceType || 'Service'}</p>
+                itemsList.innerHTML = quoteItems.map(item => {
+                    const packageLabel = item.packageType === 'subscription' ? 'Subscription' : 'Course';
+                    const serviceLabel = item.serviceType ?
+                        (item.serviceType.charAt(0).toUpperCase() + item.serviceType.slice(1).replace(/-/g, ' ')) :
+                        'Service';
+
+                    return `
+                        <div class="flex justify-between items-center p-3 bg-white rounded border border-gray-200">
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">${item.name}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 uppercase tracking-wider">${packageLabel}</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-600 uppercase tracking-wider">${serviceLabel}</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-semibold text-blue-600">
+                                    ${item.quantity || 1} Job${(item.quantity || 1) > 1 ? 's' : ''}
+                                </p>
+                                <p class="text-xs text-gray-500">@ $${item.customPrice ? item.customPrice.toFixed(2) : '0.00'} each</p>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-sm font-semibold text-blue-600">
-                                ${item.quantity || 1} Job${(item.quantity || 1) > 1 ? 's' : ''}
-                            </p>
-                            <p class="text-xs text-gray-500">@ $${item.unitPrice ? item.unitPrice.toFixed(2) : '0.00'} each</p>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
 
                 // Update summary
                 const summaryText = document.getElementById('jobConversionSummaryText');
@@ -9691,36 +9776,32 @@
             }
         }
 
-        // Close Convert to Jobs Modal
+        // Close Convert to Jobs Modal (and reset to confirm view)
         function closeConvertToJobsModal() {
             const modal = document.getElementById('convertToJobsModal');
             if (modal) {
                 modal.classList.add('hidden');
             }
+            // Reset to confirmation view for next time
+            const confirmView = document.getElementById('convertJobsConfirmView');
+            const successView = document.getElementById('convertJobsSuccessView');
+            if (confirmView) confirmView.classList.remove('hidden');
+            if (successView) successView.classList.add('hidden');
+
+            // Reset header
+            const title = document.getElementById('convertJobsTitle');
+            const subtitle = document.getElementById('convertJobsSubtitle');
+            const icon = document.getElementById('convertJobsHeaderIcon');
+            if (title) title.textContent = 'Convert to Jobs';
+            if (subtitle) subtitle.textContent = 'Create jobs from quote items';
+            if (icon) {
+                icon.className = 'w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg';
+            }
         }
 
-        // Open Sessions Modal from Jobs Modal
-        function openSessionsModalFromJobs() {
-            // Close the Convert to Jobs modal first
-            closeConvertToJobsModal();
-
-            // Wait a moment for smooth transition
-            setTimeout(() => {
-                const sessionsModal = document.getElementById('convertToSessionsModal');
-                if (sessionsModal) {
-                    // Open the sessions modal
-                    sessionsModal.classList.remove('hidden');
-                } else {
-                    // Fallback: create jobs without sessions
-                    alert('Sessions modal not found. Creating jobs without session links.');
-                    createJobsWithoutSessions();
-                }
-            }, 200);
-        }
-
-        // Create jobs without session linking
-        function createJobsWithoutSessions() {
-            const quoteItems = window.currentQuoteItems || [];
+        // Create Jobs and show results in the same modal
+        function createJobsAndShowResults() {
+            const quoteItems = window.currentQuoteItems || state.quoteItems || [];
             const quoteId = getQuoteIdFromUrl();
 
             // Get customer info from DOM
@@ -9734,21 +9815,21 @@
 
             // Create jobs based on quantity
             quoteItems.forEach(item => {
-                const quantity = item.quantity || 1;
+                const quantity = parseInt(item.quantity) || 1;
 
                 for (let i = 0; i < quantity; i++) {
-                    const jobId = generateJobId();
+                    const jobId = generateJobId() + (quantity > 1 ? `-${i + 1}` : '');
                     const newJob = {
                         id: jobId,
                         customerId: 'CUST-001',
                         customerName: customerName,
                         customerEmail: customerEmail,
                         serviceName: item.name,
-                        pricebookItemId: item.itemId || '',
-                        serviceType: item.serviceType || 'subscription',
-                        packageType: item.packageType || 'Standard',
+                        pricebookItemId: item.id || '',
+                        serviceType: item.serviceType || 'group',
+                        packageType: item.packageType || 'non-subscription',
                         subscriptionFrequency: item.subscriptionFrequency || '',
-                        unitPrice: item.unitPrice || 0,
+                        unitPrice: item.customPrice || item.unitPrice || 0,
                         quoteId: quoteId,
                         status: 'incomplete',
                         paymentStatus: 'not_setup',
@@ -9774,18 +9855,72 @@
             const allJobs = [...existingJobs, ...jobsCreated];
             localStorage.setItem('jobs', JSON.stringify(allJobs));
 
-            // Close modal
-            closeConvertToJobsModal();
+            // Transition modal to success view
+            const confirmView = document.getElementById('convertJobsConfirmView');
+            const successView = document.getElementById('convertJobsSuccessView');
+            if (confirmView) confirmView.classList.add('hidden');
+            if (successView) successView.classList.remove('hidden');
 
-            // Show success message
-            setTimeout(() => {
-                alert(`✅ Success!\n\n${totalJobsCreated} job(s) created successfully!\n\nWhat's next:\n• Link jobs to sessions\n• Configure payment for each job\n• Assign staff to jobs\n• Schedule sessions`);
+            // Update header for success state
+            const title = document.getElementById('convertJobsTitle');
+            const subtitle = document.getElementById('convertJobsSubtitle');
+            const icon = document.getElementById('convertJobsHeaderIcon');
+            if (title) title.textContent = 'Jobs Created';
+            if (subtitle) subtitle.textContent = `${totalJobsCreated} job${totalJobsCreated > 1 ? 's' : ''} created successfully`;
+            if (icon) {
+                icon.className = 'w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg';
+            }
 
-                // Ask if user wants to go to job list
-                if (confirm('Go to Job List to view created jobs?')) {
-                    window.location.href = '../../[v2] Jobs/job_list_simple.html';
-                }
-            }, 200);
+            // Populate created jobs list
+            const jobsList = document.getElementById('createdJobsList');
+            if (jobsList) {
+                jobsList.innerHTML = jobsCreated.map((job, index) => {
+                    // Labels for package and session types
+                    const packageLabel = job.packageType === 'subscription' ? 'Subscription' : 'Course';
+                    const serviceLabel = job.serviceType ?
+                        (job.serviceType.charAt(0).toUpperCase() + job.serviceType.slice(1).replace(/-/g, ' ')) :
+                        'Service';
+
+                    // Colors for session types (synced with calendar)
+                    let serviceColorClass = 'bg-blue-50 text-blue-700';
+                    if (job.serviceType === 'class') serviceColorClass = 'bg-purple-100 text-purple-700';
+                    else if (job.serviceType === 'group') serviceColorClass = 'bg-amber-100 text-amber-700';
+                    else if (job.serviceType === 'one-to-one') serviceColorClass = 'bg-cyan-100 text-cyan-700';
+
+                    return `
+                        <div class="group flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+                             onclick="enrollJob('${job.id}')">
+                            <div class="flex items-center gap-3 flex-1">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm">
+                                    ${index + 1}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <p class="font-semibold text-gray-900 text-sm">${job.id}</p>
+                                        <span class="px-2 py-0.5 text-[10px] rounded-full bg-amber-100 text-amber-700 font-medium">Incomplete</span>
+                                        <span class="px-2 py-0.5 text-[10px] rounded-full font-medium ${job.packageType === 'subscription' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700'}">
+                                            ${packageLabel}
+                                        </span>
+                                        <span class="px-2 py-0.5 text-[10px] rounded-full font-medium ${serviceColorClass}">
+                                            ${serviceLabel}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-0.5 truncate font-medium">${job.serviceName}</p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">${job.customerName} • $${job.unitPrice.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium group-hover:bg-blue-700 transition-colors flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                    Enroll
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
 
         // Generate unique job ID
@@ -9795,6 +9930,11 @@
             const nextNumber = (existingJobs.length + 1).toString().padStart(3, '0');
             return `JOB-${year}-${nextNumber}`;
         }
+
+        function getQuoteIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || 'Q-2024-001';
+        }
     </script>
 
     <!-- Convert to Jobs Modal -->
@@ -9802,10 +9942,10 @@
         class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
             <!-- Modal Header -->
-            <div class="p-6 border-b border-gray-200">
+            <div id="convertJobsHeader" class="p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div
+                        <div id="convertJobsHeaderIcon"
                             class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -9814,8 +9954,9 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900">Convert to Jobs</h3>
-                            <p class="text-sm text-gray-600 mt-1">Create jobs from quote items</p>
+                            <h3 id="convertJobsTitle" class="text-xl font-bold text-gray-900">Convert to Jobs</h3>
+                            <p id="convertJobsSubtitle" class="text-sm text-gray-600 mt-1">Create jobs from quote items
+                            </p>
                         </div>
                     </div>
                     <button onclick="closeConvertToJobsModal()" class="text-gray-400 hover:text-gray-600">
@@ -9827,129 +9968,452 @@
                 </div>
             </div>
 
-            <!-- Modal Body -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <!-- Info Banner -->
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <div class="flex items-start gap-3">
-                        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        <div>
-                            <h4 class="text-sm font-semibold text-blue-900 mb-1">What will happen?</h4>
-                            <p class="text-xs text-blue-800">The system will create jobs for each quote item based on
-                                quantity. Each job will be linked to the customer and can be configured independently.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Job Details & Items -->
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-                    <h4 class="text-sm font-semibold text-gray-900 mb-4">Job Details Confirmation</h4>
-
-                    <!-- Customer -->
-                    <div class="mb-5">
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
-                        <input type="text" id="jobCustomerName" readonly
-                            class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 cursor-not-allowed">
-                    </div>
-
-                    <!-- Items -->
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-2">Quote Items to Convert</label>
-                        <div id="jobConversionItemsList" class="space-y-2">
-                            <!-- Items will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Conversion Options -->
-                <div class="mb-6">
-                    <h4 class="text-sm font-semibold text-gray-900 mb-3">How would you like to proceed?</h4>
-                    <div class="space-y-3">
-                        <!-- Button 1: Continue to Enroll -->
-                        <button onclick="openSessionsModalFromJobs()"
-                            class="w-full flex items-start gap-4 p-4 bg-white border-2 border-purple-200 rounded-xl hover:bg-purple-50 hover:border-purple-400 hover:shadow-md transition-all group">
-                            <div
-                                class="flex-shrink-0 w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                    </path>
-                                </svg>
-                            </div>
-                            <div class="flex-1 text-left">
-                                <span
-                                    class="block text-lg font-bold text-gray-900 group-hover:text-purple-700 mb-1">Continue
-                                    to enroll</span>
-                                <p class="text-sm text-gray-600">Create jobs AND enroll the customer in sessions
-                                    immediately.</p>
-                            </div>
-                            <svg class="w-6 h-6 text-gray-400 group-hover:text-purple-600 mt-3" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
+            <!-- STATE 1: Confirmation View (before creating jobs) -->
+            <div id="convertJobsConfirmView">
+                <!-- Modal Body -->
+                <div class="flex-1 overflow-y-auto p-6">
+                    <!-- Info Banner -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                        </button>
+                            <div>
+                                <h4 class="text-sm font-semibold text-blue-900 mb-1">What will happen?</h4>
+                                <p class="text-xs text-blue-800">The system will create jobs for each quote item based
+                                    on
+                                    quantity. Each job will be linked to the customer and can be configured
+                                    independently.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Button 2: Create Jobs Only -->
-                        <button onclick="createJobsWithoutSessions(); closeConvertToJobsModal();"
-                            class="w-full flex items-start gap-4 p-4 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-400 hover:shadow-md transition-all group">
-                            <div
-                                class="flex-shrink-0 w-12 h-12 bg-gray-100 text-gray-600 rounded-lg flex items-center justify-center group-hover:bg-gray-600 group-hover:text-white transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Job Details & Items -->
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                        <h4 class="text-sm font-semibold text-gray-900 mb-4">Job Details Confirmation</h4>
+
+                        <!-- Customer -->
+                        <div class="mb-5">
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Customer</label>
+                            <input type="text" id="jobCustomerName" readonly
+                                class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 cursor-not-allowed">
+                        </div>
+
+                        <!-- Items -->
+                        <div>
+                            <label class="block text-xs font-medium text-gray-700 mb-2">Quote Items to Convert</label>
+                            <div id="jobConversionItemsList" class="space-y-2">
+                                <!-- Items will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">Total Jobs to Create:</p>
+                                <p id="jobConversionSummaryText" class="text-lg font-bold text-gray-900">0 Jobs</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                     </path>
                                 </svg>
                             </div>
-                            <div class="flex-1 text-left">
-                                <span
-                                    class="block text-lg font-bold text-gray-900 group-hover:text-gray-800 mb-1">Create
-                                    jobs</span>
-                                <p class="text-sm text-gray-600">Only create the job records now. You can link them to
-                                    sessions later.</p>
-                            </div>
-                            <svg class="w-6 h-6 text-gray-400 group-hover:text-gray-600 mt-3" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                </path>
-                            </svg>
-                        </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Summary -->
-                <div class="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Total Jobs to Create:</p>
-                            <p id="jobConversionSummaryText" class="text-lg font-bold text-gray-900">0 Jobs</p>
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+                    <button onclick="closeConvertToJobsModal()"
+                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                        Cancel
+                    </button>
+                    <button onclick="createJobsAndShowResults()"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Create Jobs
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATE 2: Success View (after creating jobs) -->
+            <div id="convertJobsSuccessView" class="hidden">
+                <!-- Modal Body -->
+                <div class="flex-1 overflow-y-auto p-6">
+                    <!-- Success Banner -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <div
+                                class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-green-900 mb-1">Jobs Created Successfully!</h4>
+                                <p class="text-xs text-green-800">Click on any job below to open it and start enrolling
+                                    the customer into sessions.</p>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                    </div>
+
+                    <!-- Created Jobs List -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-semibold text-gray-900 mb-3">Created Jobs</h4>
+                        <div id="createdJobsList" class="space-y-2">
+                            <!-- Created job cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 flex items-center justify-between">
+                    <button onclick="goToJobList()"
+                        class="px-4 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg font-medium text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                        View All Jobs
+                    </button>
+                    <button onclick="closeConvertToJobsModal()"
+                        class="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium">
+                        Done
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enroll into Sessions Modal -->
+    <div id="enrollSessionModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4"
+        onclick="if(event.target === this) closeEnrollModal()">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col"
+            onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
                         </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Enroll into Sessions</h3>
+                            <div class="flex items-center gap-4 mt-1">
+                                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                                    <button onclick="navigateEnrollCalendar('prev')"
+                                        class="p-1 hover:bg-white hover:shadow-sm rounded transition-all">
+                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 19l-7-7 7-7"></path>
+                                        </svg>
+                                    </button>
+                                    <span id="enrollCalendarMonth"
+                                        class="px-3 text-sm font-semibold text-gray-700 min-w-[120px] text-center">December
+                                        2025</span>
+                                    <button onclick="navigateEnrollCalendar('next')"
+                                        class="p-1 hover:bg-white hover:shadow-sm rounded transition-all">
+                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <button onclick="navigateEnrollCalendar('today')"
+                                    class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Today</button>
+                            </div>
+                        </div>
                     </div>
+                    <button onclick="closeEnrollModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Job Info Bar -->
+            <div class="px-6 py-3 bg-gray-50 border-b border-gray-200 flex items-center gap-3">
+                <span class="px-2.5 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold"
+                    id="enrollJobIdBadge">JOB-XXX</span>
+                <span class="text-sm text-gray-700 font-medium" id="enrollJobServiceName">Service Name</span>
+                <span class="text-xs text-gray-400">•</span>
+                <span class="text-sm text-gray-500" id="enrollJobCustomerName">Customer</span>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex-1 overflow-hidden flex flex-col">
+                <!-- Calendar Header -->
+                <div class="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Sun</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Mon</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Tue</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Wed</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Thu</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Fri</div>
+                    <div class="py-2 text-center text-[10px] font-bold text-gray-400 uppercase">Sat</div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div id="enrollCalendarGrid" class="flex-1 grid grid-cols-7 overflow-y-auto custom-scrollbar">
+                    <!-- Days will be populated here -->
                 </div>
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-6 border-t border-gray-200 flex items-center justify-center">
-                <button onclick="closeConvertToJobsModal()"
-                    class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+            <div class="p-6 border-t border-gray-200 flex items-center justify-between">
+                <button onclick="closeEnrollModal()"
+                    class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">
                     Cancel
+                </button>
+                <button id="enrollConfirmBtn" onclick="confirmEnrollment()" disabled
+                    class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium text-sm flex items-center gap-2 opacity-50 cursor-not-allowed transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Enroll in Selected Session
                 </button>
             </div>
         </div>
     </div>
 
+    <script>
+        // Navigate to the job list page
+        function goToJobList() {
+            window.location.href = '../../[v2] Jobs/job_list_simple.html';
+        }
+
+        // ============================================
+        // ENROLLMENT MODAL LOGIC (CALENDAR VIEW)
+        // ============================================
+        let currentEnrollJobId = null;
+        let selectedEnrollSessionId = null;
+        let enrollCalendarDate = new Date(2025, 11, 15); // Default to December 2025 as in current flow
+
+        // Open enrollment modal for a specific job
+        function enrollJob(jobId) {
+            currentEnrollJobId = jobId;
+            selectedEnrollSessionId = null;
+
+            // Get job data
+            const jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+            const job = jobs.find(j => j.id === jobId);
+
+            if (!job) {
+                alert('Job not found: ' + jobId);
+                return;
+            }
+
+            // Update modal info bar
+            document.getElementById('enrollJobIdBadge').textContent = job.id;
+            document.getElementById('enrollJobServiceName').textContent = job.serviceName;
+            document.getElementById('enrollJobCustomerName').textContent = job.customerName;
+
+            // Reset confirm button
+            const confirmBtn = document.getElementById('enrollConfirmBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Render calendar
+            renderEnrollCalendar();
+
+            // Show modal
+            document.getElementById('enrollSessionModal').classList.remove('hidden');
+        }
+
+        // Navigate calendar
+        function navigateEnrollCalendar(direction) {
+            if (direction === 'today') {
+                enrollCalendarDate = new Date();
+            } else if (direction === 'prev') {
+                enrollCalendarDate.setMonth(enrollCalendarDate.getMonth() - 1);
+            } else if (direction === 'next') {
+                enrollCalendarDate.setMonth(enrollCalendarDate.getMonth() + 1);
+            }
+            renderEnrollCalendar();
+        }
+
+        // Render the calendar grid
+        function renderEnrollCalendar() {
+            const grid = document.getElementById('enrollCalendarGrid');
+            const monthDisplay = document.getElementById('enrollCalendarMonth');
+            if (!grid || !monthDisplay) return;
+
+            grid.innerHTML = '';
+            monthDisplay.textContent = enrollCalendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const year = enrollCalendarDate.getFullYear();
+            const month = enrollCalendarDate.getMonth();
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDay = firstDay.getDay();
+
+            // Padding days from prev month
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                const date = new Date(year, month - 1, prevMonthLastDay - i);
+                grid.appendChild(createEnrollDayElement(date, true));
+            }
+
+            // Current month days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const date = new Date(year, month, i);
+                grid.appendChild(createEnrollDayElement(date, false));
+            }
+
+            // Padding days for next month
+            const remaining = 42 - grid.children.length;
+            for (let i = 1; i <= remaining; i++) {
+                const date = new Date(year, month + 1, i);
+                grid.appendChild(createEnrollDayElement(date, true));
+            }
+        }
+
+        function createEnrollDayElement(date, isOtherMonth) {
+            const div = document.createElement('div');
+            div.className = `calendar-day ${isOtherMonth ? 'other-month' : ''}`;
+
+            const today = new Date();
+            if (!isOtherMonth && date.toDateString() === today.toDateString()) {
+                div.classList.add('today');
+            }
+
+            const dateStr = date.toISOString().split('T')[0];
+            const dayNum = date.getDate();
+
+            div.innerHTML = `
+                <div class="calendar-day-number">${dayNum}</div>
+                <div class="space-y-1">
+                    ${getEnrollSessionsForDate(dateStr)}
+                </div>
+            `;
+            return div;
+        }
+
+        function getEnrollSessionsForDate(dateStr) {
+            const sessions = JSON.parse(localStorage.getItem('fms_sessions') || '[]');
+            const learningServices = JSON.parse(localStorage.getItem('fms_learning_services') || '[]');
+
+            const daySessions = sessions.filter(s => s.date === dateStr);
+            if (daySessions.length === 0) return '';
+
+            return daySessions.map(session => {
+                const ls = learningServices.find(l => l.id === session.learningServiceId);
+                const type = ls ? ls.type : (session.sessionType || 'Class');
+                const typeClass = `event-type-${type.toLowerCase().replace('-', '')}`;
+                const isSelected = selectedEnrollSessionId === session.id;
+
+                return `
+                    <div class="calendar-event ${typeClass} ${isSelected ? 'selected' : ''}"
+                        onclick="selectEnrollSession('${session.id}')">
+                        <span class="font-bold">${formatTimeShort(session.startTime)}</span>
+                        <span class="truncate">${session.learningServiceName || 'Session'}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatTimeShort(time24) {
+            if (!time24) return '';
+            const [h, m] = time24.split(':');
+            let hour = parseInt(h);
+            const ampm = hour >= 12 ? 'p' : 'a';
+            hour = hour % 12 || 12;
+            return `${hour}${ampm}`;
+        }
+
+        function selectEnrollSession(sessionId) {
+            selectedEnrollSessionId = sessionId;
+            renderEnrollCalendar();
+
+            // Enable confirm button
+            const confirmBtn = document.getElementById('enrollConfirmBtn');
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function confirmEnrollment() {
+            if (!currentEnrollJobId || !selectedEnrollSessionId) return;
+
+            const sessions = JSON.parse(localStorage.getItem('fms_sessions') || '[]');
+            const session = sessions.find(s => s.id === selectedEnrollSessionId);
+
+            if (!session) return;
+
+            // Update job in localStorage
+            const jobs = JSON.parse(localStorage.getItem('jobs') || '[]');
+            const jobIndex = jobs.findIndex(j => j.id === currentEnrollJobId);
+            if (jobIndex !== -1) {
+                jobs[jobIndex].status = 'active';
+                jobs[jobIndex].incompleteReason = null;
+                jobs[jobIndex].sessionsName = session.learningServiceName;
+                jobs[jobIndex].sessionsId = session.id;
+                jobs[jobIndex].linkedService = session.learningServiceName;
+                localStorage.setItem('jobs', JSON.stringify(jobs));
+            }
+
+            // Update UI in created jobs list
+            const jobCards = document.querySelectorAll(`[onclick="enrollJob('${currentEnrollJobId}')"]`);
+            jobCards.forEach(card => {
+                const badge = card.querySelector('.bg-amber-100');
+                if (badge) {
+                    badge.textContent = 'Enrolled';
+                    badge.classList.remove('bg-amber-100', 'text-amber-700');
+                    badge.classList.add('bg-green-100', 'text-green-700');
+                }
+                const enrollBtn = card.querySelector('.bg-blue-600');
+                if (enrollBtn) {
+                    enrollBtn.innerHTML = `
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Enrolled
+                    `;
+                    enrollBtn.classList.remove('bg-blue-600');
+                    enrollBtn.classList.add('bg-green-600');
+                }
+                card.onclick = null;
+                card.classList.remove('cursor-pointer');
+                card.classList.add('cursor-default');
+            });
+
+            closeEnrollModal();
+            if (typeof showToast === 'function') {
+                showToast('Successfully enrolled in selected session', 'success');
+            }
+        }
+
+        function closeEnrollModal() {
+            const modal = document.getElementById('enrollSessionModal');
+            if (modal) modal.classList.add('hidden');
+            currentEnrollJobId = null;
+            selectedEnrollSessionId = null;
+        }
+    </script>
 </body>
 
 </html>
