@@ -768,7 +768,7 @@
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-900">Add Attendee</h3>
-                    <p class="text-sm text-gray-500 mt-1">Search customer and enroll an attendee for this slot</p>
+                    <p class="text-sm text-gray-500 mt-1">Search for a job and enroll an attendee for this slot</p>
                 </div>
                 <button onclick="closeBookCustomerModal()" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -778,88 +778,67 @@
                 </button>
             </div>
 
-            <!-- Customer Search (outside scrollable area) -->
+            <!-- Job Search (outside scrollable area) -->
             <div class="px-6 pt-6 pb-2 flex-shrink-0">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Search Customer</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Search Job</label>
                 <div class="relative">
-                    <input type="text" id="customerSearchInput" placeholder="Type to search customers with quotes..."
-                        autocomplete="off" oninput="searchCustomersForBooking(this.value)"
+                    <input type="text" id="jobSearchInput" placeholder="Search by Job ID or customer name..."
+                        autocomplete="off" oninput="searchJobsForBooking(this.value)"
                         class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     <svg class="absolute left-3 top-3 text-gray-400 w-5 h-5" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    <div id="customerAutocomplete"
+                    <div id="jobAutocomplete"
                         class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-80 overflow-y-auto custom-scrollbar">
-                        <!-- Customer search results -->
+                        <!-- Job search results -->
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-1" id="customerSearchHint">
-                    Search for customers who have purchased slots for the linked price book item
+                <p class="text-xs text-gray-500 mt-1" id="jobSearchHint">
+                    Search for jobs that have not been linked to a session yet
                 </p>
             </div>
 
             <div class="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar" style="min-height: 200px;">
-                <!-- Slot Booking Form (shown when customer selected) -->
+                <!-- Slot Booking Form (shown when job selected) -->
                 <div id="slotBookingForm" class="hidden">
-                    <!-- Customer & Inventory Header -->
+                    <!-- Selected Job Card -->
                     <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-4">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <p class="text-xs uppercase tracking-wide text-indigo-600 font-semibold mb-1">Selected
-                                    Customer</p>
-                                <h4 class="text-lg font-semibold text-gray-900" id="slotBookCustomerName">-</h4>
-                                <p class="text-sm text-gray-600" id="slotBookCustomerEmail">-</p>
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <p class="text-xs uppercase tracking-wide text-indigo-600 font-semibold mb-2">Selected
+                                    Job</p>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-base font-bold text-gray-900" id="slotBookJobId">-</span>
+                                    <span id="slotBookJobTypeBadge"
+                                        class="px-2 py-0.5 text-xs font-medium rounded-full bg-purple-100 text-purple-700">-</span>
+                                </div>
+                                <p class="text-sm text-gray-700 font-medium" id="slotBookJobService">-</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                                        </path>
+                                    </svg>
+                                    <p class="text-xs text-gray-500" id="slotBookJobCustomer">-</p>
+                                </div>
                             </div>
                             <button onclick="clearSlotBooking()"
-                                class="text-gray-400 hover:text-red-500 transition-colors" title="Clear selection">
+                                class="text-gray-400 hover:text-red-500 transition-colors ml-2" title="Clear selection">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </button>
                         </div>
+                    </div>
 
-                        <!-- Slot Inventory Summary -->
-                        <div class="grid grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-indigo-100">
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-indigo-700" id="inventoryTotal">0</p>
-                                <p class="text-xs text-gray-500">Total Purchased</p>
-                            </div>
-                            <div class="text-center border-x border-indigo-100">
-                                <p class="text-2xl font-bold text-blue-600" id="inventoryBooked">0</p>
-                                <p class="text-xs text-gray-500">Booked</p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-2xl font-bold text-gray-900" id="inventoryAvailable">0</p>
-                                <p class="text-xs text-gray-500">Available</p>
-                            </div>
-                        </div>
-
-                        <!-- Quote Selection -->
-                        <div class="mt-3">
-                            <label class="text-xs text-gray-500 block mb-1">Quote</label>
-                            <div id="slotBookQuoteDisplay"
-                                class="p-2 border border-indigo-200 rounded bg-white text-sm">
-                                <!-- Quote info will be populated here -->
-                            </div>
-                        </div>
-
-                        <!-- Payment Status Warning -->
-                        <div id="paymentWarning" class="hidden mt-3 p-2 bg-amber-50 border border-amber-200 rounded-lg">
-                            <div class="flex items-center gap-2 text-xs text-amber-800">
-                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                                    </path>
-                                </svg>
-                                <span id="paymentWarningText">This quote is not fully paid.</span>
-                            </div>
-                        </div>
-                        <!-- Attendee Name Input -->
-                        <div class="mt-4 mb-4">
+                    <!-- Attendee Details -->
+                    <div class="space-y-4">
+                        <!-- Attendee Name -->
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Attendee Name <span
                                     class="text-red-500">*</span></label>
                             <input type="text" id="attendeeName"
@@ -867,11 +846,27 @@
                                 placeholder="Who is attending?" oninput="updateBookingButtonState()">
                         </div>
 
+                        <!-- Relationship to Customer -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Relationship with Customer <span
+                                    class="text-red-500">*</span></label>
+                            <select id="attendeeRelationship"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                                onchange="updateBookingButtonState()">
+                                <option value="">Select relationship...</option>
+                                <option value="Self">Self (the customer)</option>
+                                <option value="Child">Child</option>
+                                <option value="Spouse">Spouse / Partner</option>
+                                <option value="Parent">Parent</option>
+                                <option value="Sibling">Sibling</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Add Attendee Button -->
                     <button onclick="confirmEnrollment()" id="confirmBookingBtn" disabled
-                        class="w-full px-4 py-3 text-white rounded-lg hover:opacity-90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:opacity-100"
+                        class="w-full mt-6 px-4 py-3 text-white rounded-lg hover:opacity-90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:opacity-100"
                         style="background-color: #5C40E6;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">

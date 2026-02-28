@@ -448,26 +448,59 @@ function generateSessions() {
 // ===== ENROLLMENT MANAGEMENT =====
 // Copied and adapted from learning_service_detail_script.js
 
-let selectedCustomer = null;
-let selectedQuote = null;
-let slotUsage = {};
+let selectedJob = null;
 
-// Sample customers (Simplified for this view)
-const sampleCustomers = [
-    { id: 'CUST-001', name: 'Sarah Johnson', email: 'sarah.j@email.com', quotes: [{ id: 'Q-2025-001', pricebookItemId: 'pb1', slots: 5, total: 100, status: 'approved', paymentStatus: 'paid', amountPaid: 100 }] },
-    { id: 'CUST-002', name: 'Michael Chen', email: 'm.chen@email.com', quotes: [{ id: 'Q-2025-011', pricebookItemId: 'pb1', slots: 6, total: 1080, status: 'approved', paymentStatus: 'partial', amountPaid: 540 }] }
+// Mock jobs that have NOT been linked to a session yet
+const sampleJobs = [
+    {
+        id: 'JOB-2024-001',
+        customerName: 'Sarah Johnson',
+        customerEmail: 'sarah.j@email.com',
+        serviceType: 'Subscription',
+        serviceName: 'Chemistry Lab Program',
+        quoteId: 'Q-2025-001',
+        linkedSession: null  // null = not yet linked
+    },
+    {
+        id: 'JOB-2024-004',
+        customerName: 'Michael Chen',
+        customerEmail: 'm.chen@email.com',
+        serviceType: 'Subscription',
+        serviceName: 'Chemistry Lab Program',
+        quoteId: 'Q-2025-011',
+        linkedSession: null
+    },
+    {
+        id: 'JOB-2024-007',
+        customerName: 'Emily Torres',
+        customerEmail: 'emily.t@email.com',
+        serviceType: 'Course',
+        serviceName: 'Advanced Chemistry Course',
+        quoteId: 'Q-2025-019',
+        linkedSession: null
+    },
+    {
+        id: 'JOB-2024-009',
+        customerName: 'David Park',
+        customerEmail: 'd.park@email.com',
+        serviceType: 'Subscription',
+        serviceName: 'Chemistry Lab Program',
+        quoteId: 'Q-2025-022',
+        linkedSession: null
+    }
 ];
+
 
 function renderEnrollmentList() {
     const enrollments = currentService.enrollments || [];
-    const container = document.getElementById('attendeesList'); // Fixed ID mismatch
+    const container = document.getElementById('attendeesList');
     const emptyState = document.getElementById('emptyAttendeesState');
     const countEl = document.getElementById('enrolledCount');
 
     if (enrollments.length === 0) {
         container.innerHTML = '';
         if (emptyState) emptyState.classList.remove('hidden');
-        if (countEl) countEl.textContent = '0'; // Stats number
+        if (countEl) countEl.textContent = '0';
         updateEnrollmentStats();
         return;
     }
@@ -477,21 +510,24 @@ function renderEnrollmentList() {
     container.innerHTML = enrollments.map(e => {
         const paymentBadge = e.paymentStatus === 'paid' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">Paid</span>' :
             e.paymentStatus === 'partial' ? '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700">Partial</span>' :
-                '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700">Unpaid</span>';
+                '<span class="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-600">–</span>';
+
+        const relationshipLabel = e.relationship ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>${e.relationship}</span>` : '';
 
         return `
             <div class="border border-gray-200 rounded-lg p-3 hover:border-emerald-300 transition-colors bg-white">
-                <div class="flex items-start justify-between mb-2">
+                <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
                             <h4 class="font-semibold text-gray-900">${e.attendeeName}</h4>
                             <span class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-700">Confirmed</span>
+                            ${relationshipLabel}
                             ${paymentBadge}
                         </div>
                         <div class="text-xs text-gray-500 space-y-0.5">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-3 flex-wrap">
                                 <span>Customer: ${e.customerName}</span>
-                                <span>Quote: ${e.quoteId || '-'}</span>
+                                ${e.jobId ? `<span class="font-medium text-indigo-600">Job: ${e.jobId}</span>` : ''}
                             </div>
                             ${e.notes ? `<p class="text-gray-600 italic mt-1">"${e.notes}"</p>` : ''}
                         </div>
@@ -518,56 +554,112 @@ function updateEnrollmentStats() {
 }
 
 function openBookCustomerModal() {
-    document.getElementById('bookCustomerModal').classList.remove('hidden');
-    // Simplified specific implementation would go here
-    // For now reusing the HTML structure but hiding search for simplicity in this demo
+    selectedJob = null;
+    const modal = document.getElementById('bookCustomerModal');
+    modal.classList.remove('hidden');
+    // Reset form state
+    const jobSearchInput = document.getElementById('jobSearchInput');
+    if (jobSearchInput) jobSearchInput.value = '';
+    document.getElementById('jobAutocomplete').classList.add('hidden');
+    document.getElementById('slotBookingForm').classList.add('hidden');
+    const attendeeName = document.getElementById('attendeeName');
+    if (attendeeName) attendeeName.value = '';
+    const relationship = document.getElementById('attendeeRelationship');
+    if (relationship) relationship.value = '';
+    document.getElementById('confirmBookingBtn').disabled = true;
 }
 
 function closeBookCustomerModal() {
     document.getElementById('bookCustomerModal').classList.add('hidden');
 }
 
-function searchCustomersForBooking(query) {
-    // Mock search
-    const autocomplete = document.getElementById('customerAutocomplete');
+function searchJobsForBooking(query) {
+    const autocomplete = document.getElementById('jobAutocomplete');
     if (!query || query.length < 2) {
         autocomplete.classList.add('hidden');
         return;
     }
 
-    autocomplete.innerHTML = `
-        <div class="p-3 border-b border-gray-200 hover:bg-gray-50 cursor-pointer" onclick="selectMockCustomer()">
-            <p class="font-medium">Sarah Johnson</p>
-            <p class="text-xs text-gray-500">sarah.j@email.com</p>
+    // Filter mock jobs — only unlinked ones
+    const q = query.toLowerCase();
+    const filtered = sampleJobs.filter(j =>
+        j.linkedSession === null &&
+        (j.id.toLowerCase().includes(q) ||
+            j.customerName.toLowerCase().includes(q) ||
+            j.serviceName.toLowerCase().includes(q))
+    );
+
+    if (filtered.length === 0) {
+        autocomplete.innerHTML = `<div class="p-3 text-sm text-gray-500 text-center">No unlinked jobs found</div>`;
+        autocomplete.classList.remove('hidden');
+        return;
+    }
+
+    autocomplete.innerHTML = filtered.map(job => `
+        <div class="p-3 border-b border-gray-100 last:border-0 hover:bg-indigo-50 cursor-pointer transition-colors"
+             onclick="selectJobForBooking('${job.id}')">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <p class="font-semibold text-gray-900 text-sm">${job.id}</p>
+                        <span class="px-1.5 py-0.5 text-xs font-medium rounded bg-purple-100 text-purple-700">${job.serviceType}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-0.5">${job.serviceName}</p>
+                    <p class="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        ${job.customerName}
+                    </p>
+                </div>
+                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </div>
         </div>
-    `;
+    `).join('');
+
     autocomplete.classList.remove('hidden');
 }
 
-function selectMockCustomer() {
-    document.getElementById('customerAutocomplete').classList.add('hidden');
-    document.getElementById('slotBookingForm').classList.remove('hidden');
-    document.getElementById('slotBookCustomerName').innerHTML = 'Sarah Johnson';
-    document.getElementById('inventoryAvailable').innerHTML = '5';
+function selectJobForBooking(jobId) {
+    selectedJob = sampleJobs.find(j => j.id === jobId);
+    if (!selectedJob) return;
 
-    selectedCustomer = sampleCustomers[0];
-    selectedQuote = sampleCustomers[0].quotes[0];
+    // Close autocomplete and clear input
+    document.getElementById('jobAutocomplete').classList.add('hidden');
+    document.getElementById('jobSearchInput').value = selectedJob.id;
+
+    // Populate the booking form
+    document.getElementById('slotBookJobId').textContent = selectedJob.id;
+    document.getElementById('slotBookJobService').textContent = selectedJob.serviceName;
+    document.getElementById('slotBookJobCustomer').textContent = selectedJob.customerName + ' · ' + selectedJob.customerEmail;
+
+    const typeBadge = document.getElementById('slotBookJobTypeBadge');
+    typeBadge.textContent = selectedJob.serviceType;
+    typeBadge.className = 'px-2 py-0.5 text-xs font-medium rounded-full ' +
+        (selectedJob.serviceType === 'Subscription' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700');
+
+    // Show the form
+    document.getElementById('slotBookingForm').classList.remove('hidden');
     updateBookingButtonState();
 }
 
 function updateBookingButtonState() {
     const attendeeName = document.getElementById('attendeeName').value.trim();
-    document.getElementById('confirmBookingBtn').disabled = !attendeeName;
+    const relationship = document.getElementById('attendeeRelationship').value;
+    const isValid = attendeeName.length > 0 && relationship !== '' && selectedJob !== null;
+    document.getElementById('confirmBookingBtn').disabled = !isValid;
 }
 
 function confirmEnrollment() {
     const attendeeName = document.getElementById('attendeeName').value.trim();
-    if (!attendeeName) return;
+    const relationship = document.getElementById('attendeeRelationship').value;
+    if (!attendeeName || !relationship || !selectedJob) return;
 
     const enrollment = {
         id: `enroll_${Date.now()}`,
         attendeeName,
-        customerName: selectedCustomer ? selectedCustomer.name : 'Unknown',
+        customerName: selectedJob.customerName,
+        jobId: selectedJob.id,
+        serviceType: selectedJob.serviceType,
+        relationship,
         status: 'confirmed',
         paymentStatus: 'paid',
         enrolledAt: new Date().toISOString()
@@ -579,6 +671,7 @@ function confirmEnrollment() {
     saveToStorage();
     renderEnrollmentList();
     closeBookCustomerModal();
+    showNotification('success', `Attendee "${attendeeName}" added successfully`);
 }
 
 function saveToStorage() {
@@ -600,4 +693,28 @@ function viewAllSessions() {
 
 function openStaffOverrideModal() {
     alert('Staff override logic coming soon');
+}
+
+function clearSlotBooking() {
+    selectedJob = null;
+    document.getElementById('slotBookingForm').classList.add('hidden');
+    document.getElementById('jobSearchInput').value = '';
+    const attendeeName = document.getElementById('attendeeName');
+    if (attendeeName) attendeeName.value = '';
+    const relationship = document.getElementById('attendeeRelationship');
+    if (relationship) relationship.value = '';
+    document.getElementById('confirmBookingBtn').disabled = true;
+}
+
+function showNotification(type, message) {
+    const colors = {
+        success: { bg: '#D1FAE5', text: '#065F46', border: '#6EE7B7' },
+        error: { bg: '#FEE2E2', text: '#991B1B', border: '#FCA5A5' }
+    };
+    const c = colors[type] || colors.success;
+    const notif = document.createElement('div');
+    notif.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;border-radius:10px;background:${c.bg};border:1px solid ${c.border};color:${c.text};font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:opacity 0.3s;`;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+    setTimeout(() => { notif.style.opacity = '0'; setTimeout(() => notif.remove(), 300); }, 3000);
 }
