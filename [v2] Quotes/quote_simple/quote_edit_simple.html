@@ -2307,7 +2307,19 @@
                     switchTab('invoices');
                     break;
                 case 'convertToSessions':
-                    showConvertToSessionsModal();
+                    openConvertToJobsModal();
+                    break;
+                case 'createInvoice':
+                    alert('Create Invoice functionality - To be implemented');
+                    break;
+                case 'download':
+                    previewQuotePDF();
+                    break;
+                case 'clone':
+                    cloneQuote();
+                    break;
+                case 'archive':
+                    archiveQuote();
                     break;
                 case 'viewJob':
                     viewJob();
@@ -2396,83 +2408,7 @@
             }
         }
 
-        // ============================================================================
-        // CONVERT TO SESSIONS FUNCTIONALITY (Solution 2)
-        // ============================================================================
-        function showConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-
-                // Populate modal with quote items that will be converted
-                const itemsList = document.getElementById('convertItemsList');
-                if (itemsList) {
-                    itemsList.innerHTML = state.quoteItems.map(item => `
-                        <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                            <div class="flex-1">
-                                <div class="font-medium text-gray-900">${item.name}</div>
-                                <div class="text-sm text-gray-600 mt-1">
-                                    <span class="inline-flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        ${item.quantity} ${item.unit}(s) purchased
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="font-semibold text-gray-900">$${(item.customPrice * item.quantity).toFixed(2)}</div>
-                                <div class="text-xs text-green-600 font-medium mt-1">→ Will create ${item.quantity} session(s)</div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                // Update summary
-                const totalItems = state.quoteItems.length;
-                const totalSessions = state.quoteItems.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById('conversionSummaryText').textContent =
-                    `${totalItems} Learning Service(s) • ${totalSessions} Session(s)`;
-            }
-        }
-
-        function closeConvertToSessionsModal() {
-            const modal = document.getElementById('convertToSessionsModal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
-
-        function executeConvertToSessions() {
-            const totalItems = state.quoteItems.length;
-            const totalSessions = state.quoteItems.reduce((sum, item) => sum + item.quantity, 0);
-
-            closeConvertToSessionsModal();
-
-            // Show success message
-            showToast(`✅ Conversion Successful! Created ${totalItems} Learning Service(s) and ${totalSessions} Session(s)`, 'success');
-
-            // Update status to converted
-            existingQuote.status = 'converted';
-            state.quoteStatus = 'converted';
-            renderStatusActions();
-
-            // Simulate conversion process with detailed alert
-            setTimeout(() => {
-                alert(`🎓 Quote Converted to Learning Services!\n\n` +
-                    `✅ ${totalItems} Learning Service(s) created\n` +
-                    `✅ ${totalSessions} Session(s) generated\n` +
-                    `✅ Sessions linked to customer: ${state.selectedCustomer.name}\n` +
-                    `✅ Quote status updated to "Converted"\n\n` +
-                    `Next Steps:\n` +
-                    `• View sessions in Learning Services module\n` +
-                    `• Schedule session dates and times\n` +
-                    `• Assign staff to sessions\n` +
-                    `• Customer can now book available slots`);
-            }, 500);
-        }
-
-
+        // CONVERT TO JOBS REDIRECT
         function viewJob() {
             // Navigate to job detail page (mock)
             window.location.href = '../../[v2] Jobs/job_detail_simple.html';
@@ -9683,27 +9619,7 @@
         // STATUS ACTION HANDLER
         // ============================================
 
-        function handleStatusAction(actionId) {
-            switch (actionId) {
-                case 'convertToSessions':
-                    openConvertToJobsModal();
-                    break;
-                case 'createInvoice':
-                    alert('Create Invoice functionality - To be implemented');
-                    break;
-                case 'download':
-                    alert('Download PDF functionality - To be implemented');
-                    break;
-                case 'clone':
-                    alert('Clone Quote functionality - To be implemented');
-                    break;
-                case 'archive':
-                    alert('Archive functionality - To be implemented');
-                    break;
-                default:
-                    console.log('Unknown action:', actionId);
-            }
-        }
+        // Redundant status action handler removed (merged with main handler above)
 
         // ============================================
         // CONVERT TO JOBS MODAL FUNCTIONS
@@ -9810,6 +9726,12 @@
             const customerName = customerNameEl ? customerNameEl.textContent.trim() : 'Customer';
             const customerEmail = customerEmailEl ? customerEmailEl.textContent.trim() : 'customer@email.com';
 
+            return { quoteItems, quoteId, customerName, customerEmail };
+        }
+
+        // Shared job creation logic
+        function performJobCreation() {
+            const { quoteItems, quoteId, customerName, customerEmail } = getJobCreationData();
             let totalJobsCreated = 0;
             const jobsCreated = [];
 
@@ -9855,6 +9777,13 @@
             const allJobs = [...existingJobs, ...jobsCreated];
             localStorage.setItem('jobs', JSON.stringify(allJobs));
 
+            return { totalJobsCreated, jobsCreated };
+        }
+
+        // Create Jobs and show results in the same modal (Continue to Enroll Flow)
+        function createJobsAndShowResults() {
+            const { totalJobsCreated, jobsCreated } = performJobCreation();
+
             // Transition modal to success view
             const confirmView = document.getElementById('convertJobsConfirmView');
             const successView = document.getElementById('convertJobsSuccessView');
@@ -9868,7 +9797,7 @@
             if (title) title.textContent = 'Jobs Created';
             if (subtitle) subtitle.textContent = `${totalJobsCreated} job${totalJobsCreated > 1 ? 's' : ''} created successfully`;
             if (icon) {
-                icon.className = 'w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg';
+                icon.className = 'w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg';
             }
 
             // Populate created jobs list
@@ -9921,6 +9850,24 @@
                     `;
                 }).join('');
             }
+        }
+
+        // Path 2: Create Jobs and Redirect (Job List Flow)
+        function createJobsAndRedirect() {
+            const { totalJobsCreated } = performJobCreation();
+
+            closeConvertToJobsModal();
+
+            // Show toast and redirect
+            if (typeof showToast === 'function') {
+                showToast(`✅ ${totalJobsCreated} jobs created successfully! Redirecting to Job List...`, 'success');
+            } else {
+                alert(`✅ ${totalJobsCreated} jobs created successfully!`);
+            }
+
+            setTimeout(() => {
+                goToJobList();
+            }, 1000);
         }
 
         // Generate unique job ID
@@ -10035,13 +9982,18 @@
                         class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
                         Cancel
                     </button>
+                    <button onclick="createJobsAndRedirect()"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                        Create Jobs Only
+                    </button>
                     <button onclick="createJobsAndShowResults()"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm flex items-center gap-2">
+                        class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold shadow-md flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
                         </svg>
-                        Create Jobs
+                        Create & Continue to Enroll
                     </button>
                 </div>
             </div>

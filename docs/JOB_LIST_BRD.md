@@ -35,8 +35,8 @@ The core logic for defining a job's status is as follows:
 
 | Status | Condition | Description |
 | :--- | :--- | :--- |
-| **Incomplete** | 1. Job is **not linked** to any Learning Service (Student not in "Attendees" list).<br>OR<br>2. Job is Subscription-based AND **First Charge** is not successful/paid. | The job is not ready for delivery. Either operational setup is missing (not enrolled) or financial commitment is missing. |
-| **Active** | 1. Job **is enrolled** in a Learning Service.<br>AND<br>2. **First Charge** is successful. | The job is fully setup and active. The customer has paid the initial requirement and is on the attendance list. |
+| **Incomplete** | 1. Job is **not linked** to any Learning Service (Student not in "Attendees" list).<br>OR<br>2. Job is Subscription-based AND **no invoices** have been paid. | The job is not ready for delivery. Either operational setup is missing (not enrolled) or financial commitment is missing. |
+| **Active** | 1. Job **is enrolled** in a Learning Service.<br>AND<br>2. **At least one invoice** has been PAID. | The job is fully setup and active. The customer has paid the initial requirement and is on the attendance list. |
 | **Inactive** | Manually deactivated by the Manager. | Job is paused or cancelled. Student is effectively "unenrolled" or "paused" in the Learning Service. |
 
 ### 4.3. Payment Health & Alerts

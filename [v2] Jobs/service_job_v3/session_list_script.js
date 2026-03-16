@@ -23,13 +23,44 @@ function loadData() {
     if (storedServices) {
         allLearningServices = JSON.parse(storedServices);
     } else {
-        // Fallback or empty if not found (usually should be there)
         allLearningServices = [];
     }
 
     // 2. Generate Slots from Services
     allSlots = generateSlotsFromServices(allLearningServices);
-    filteredSlots = [...allSlots];
+
+    // 3. Phase 4.1: Auto-filter by serviceId URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    const serviceIdParam = urlParams.get('serviceId');
+    if (serviceIdParam) {
+        filteredSlots = allSlots.filter(s => s.serviceId === serviceIdParam);
+
+        // Update header to show which service is being viewed
+        const service = allLearningServices.find(s => s.id === serviceIdParam);
+        if (service) {
+            const h1 = document.querySelector('h1');
+            const subtitle = document.querySelector('h1 + p');
+            if (h1) h1.textContent = `Schedule: ${service.name}`;
+            if (subtitle) subtitle.textContent = `Showing recurring slots for this service only`;
+
+            // Add a 'Back to Catalog' breadcrumb
+            const headerDiv = h1?.parentElement;
+            if (headerDiv && !document.getElementById('backToCatalog')) {
+                const backLink = document.createElement('a');
+                backLink.id = 'backToCatalog';
+                backLink.href = 'learning_service_list.html';
+                backLink.className = 'text-sm text-indigo-600 hover:underline flex items-center gap-1 mt-1';
+                backLink.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Back to Service Catalog`;
+                headerDiv.appendChild(backLink);
+            }
+        }
+    } else {
+        filteredSlots = [...allSlots];
+    }
 }
 
 function generateSlotsFromServices(services) {
@@ -153,7 +184,10 @@ function renderSlots() {
                     </div>
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <h3 class="font-semibold text-gray-900">${slot.serviceName}</h3>
+                            <h3 class="font-semibold text-gray-900 hover:text-indigo-600 cursor-pointer"
+                                onclick="event.stopPropagation(); window.location.href='learning_service_detail.html?id=${slot.serviceId}'">
+                                ${slot.serviceName}
+                            </h3>
                             <span class="px-2 py-0.5 text-xs font-medium rounded-full ${typeStyles.badgeClass}">
                                 ${slot.serviceType}
                             </span>
@@ -168,7 +202,7 @@ function renderSlots() {
                             </div>
                             <div class="flex items-center gap-1">
                                 <i class="fas fa-users"></i>
-                                <span>Mask Cap: ${slot.capacity || '-'}</span>
+                                <span>Max Cap: ${slot.capacity || '-'}</span>
                             </div>
                         </div>
                     </div>
@@ -258,26 +292,41 @@ function clearFilters() {
 
 // ===== STATS =====
 function updateStats() {
-    // 1. Weekly Sessions (Count)
+    // 1. Weekly Sessions (Slot count)
     if (document.getElementById('weeklyClasses')) {
         document.getElementById('weeklyClasses').textContent = filteredSlots.length;
     }
 
-    // 2. Active Jobs (Unique Services)
+    // 2. Active Services (Unique services in filtered slots)
+    const uniqueServiceIds = new Set(filteredSlots.map(s => s.serviceId));
     if (document.getElementById('activeStudents')) {
-        const uniqueServices = new Set(filteredSlots.map(s => s.serviceId)).size;
-        document.getElementById('activeStudents').textContent = uniqueServices;
+        document.getElementById('activeStudents').textContent = uniqueServiceIds.size;
     }
 
-    // 3. Est. Revenue (Mock Calculation)
-    if (document.getElementById('estRevenue')) {
-        // Just a mock calculation based on slots count * arbitrary rate
-        const totalRev = filteredSlots.length * 70;
-        document.getElementById('estRevenue').textContent = `$${totalRev.toLocaleString()}`;
-    }
-
-    // 4. Percentage Fill (Mock)
+    // 3. Fill Rate: calculated from real enrollment data
     if (document.getElementById('percentageFill')) {
-        document.getElementById('percentageFill').textContent = '85%'; // keeping static for now
+        const relevantServices = allLearningServices.filter(s => uniqueServiceIds.has(s.id) && s.maxCapacity > 0);
+        if (relevantServices.length > 0) {
+            const avgFill = Math.round(
+                relevantServices.reduce((sum, s) => {
+                    const enrolled = (s.enrollments || []).filter(e => e.status === 'confirmed').length;
+                    return sum + Math.min(100, Math.round((enrolled / s.maxCapacity) * 100));
+                }, 0) / relevantServices.length
+            );
+            const fillEl = document.getElementById('percentageFill');
+            fillEl.textContent = `${avgFill}%`;
+            fillEl.className = avgFill >= 70
+                ? 'text-2xl font-bold text-emerald-600'
+                : avgFill >= 40
+                    ? 'text-2xl font-bold text-amber-500'
+                    : 'text-2xl font-bold text-red-500';
+        } else {
+            document.getElementById('percentageFill').textContent = '-';
+        }
+    }
+
+    // 4. Weekly Revenue: placeholder (no real data yet)
+    if (document.getElementById('estRevenue')) {
+        document.getElementById('estRevenue').textContent = '-';
     }
 }

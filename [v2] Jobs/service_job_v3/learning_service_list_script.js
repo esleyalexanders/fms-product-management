@@ -322,14 +322,31 @@ function createServiceCard(service) {
     const statusBadge = getStatusBadge(service.status);
     const scheduleText = formatSchedule(service.schedule);
     const staffNames = service.staff?.map(s => s.name).join(', ') || 'No staff assigned';
-    const capacityText = service.type === 'One-to-One' ? '1:1 Ratio' : `Max ${service.maxCapacity} students`;
+
+    // --- Slot-aware capacity and fill rate ---
+    const confirmedEnrolled = (service.enrollments || []).filter(e => e.status === 'confirmed').length;
+    const slotCount = countSlotsForService(service);
+    const totalCapacity = service.type === 'One-to-One' ? slotCount : (service.maxCapacity || 0) * slotCount;
+    const fillRate = totalCapacity > 0
+        ? Math.min(100, Math.round((confirmedEnrolled / totalCapacity) * 100))
+        : 0;
+    const fillColor = fillRate >= 70 ? 'bg-emerald-500' : fillRate >= 40 ? 'bg-amber-500' : 'bg-red-400';
+    const fillTextColor = fillRate >= 70 ? 'text-emerald-600' : fillRate >= 40 ? 'text-amber-500' : 'text-red-500';
+
+    // Capacity label: show "20 × 3 = 60" when multiple slots, so user can see the math
+    const capacityText = service.type === 'One-to-One'
+        ? `${slotCount} slot${slotCount !== 1 ? 's' : ''}`
+        : slotCount > 1
+            ? `${service.maxCapacity} × ${slotCount} = ${totalCapacity}`
+            : `Max ${service.maxCapacity}`;
 
     return `
         <div class="service-card rounded-lg border ${typeStyles.borderClass} ${typeStyles.bgClass} p-4 cursor-pointer hover:shadow-md transition-all" 
              onclick="viewServiceDetail('${service.id}')">
             <div class="grid grid-cols-12 gap-4 items-center">
-                <!-- Column 1: Main Info (5 cols) -->
-                <div class="col-span-12 lg:col-span-5 min-w-0">
+
+                <!-- Column 1: Main Info (4 cols on lg) -->
+                <div class="col-span-12 lg:col-span-4 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="px-2 py-0.5 text-xs font-medium rounded-full ${typeStyles.badgeClass}">
                             ${typeStyles.icon} ${service.type}
@@ -340,8 +357,8 @@ function createServiceCard(service) {
                     <p class="text-sm text-gray-500 truncate">${service.description || 'No description'}</p>
                 </div>
 
-                <!-- Column 2: Schedule & Staff (3 cols) -->
-                <div class="hidden lg:block col-span-3">
+                <!-- Column 2: Schedule & Staff (4 cols, desktop only) -->
+                <div class="hidden lg:block col-span-4">
                     <div class="flex items-center gap-2 text-sm text-gray-600 mb-1">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -356,41 +373,50 @@ function createServiceCard(service) {
                     </div>
                 </div>
 
-                <!-- Column 3: Sessions (1 col) -->
-                <div class="hidden sm:block col-span-1 text-center">
-                    <p class="text-lg font-semibold text-gray-900">${service.sessionsCount || 0}</p>
-                    <p class="text-xs text-gray-500">Sessions</p>
+                <!-- Column 3: Enrolled (2 cols) -->
+                ${service.type === 'One-to-One' ? `
+                <div class="hidden sm:block col-span-2 text-center">
+                    ${confirmedEnrolled > 0 ? `
+                    <p class="text-lg font-semibold text-cyan-600">1</p>
+                    <p class="text-xs text-gray-400">Enrolled</p>
+                    ` : `
+                    <p class="text-lg font-semibold text-gray-400">1</p>
+                    <p class="text-xs text-gray-400">Available</p>
+                    `}
+                </div>
+                ` : `
+                <div class="hidden sm:block col-span-2 text-center">
+                    <p class="text-lg font-semibold text-gray-900">${confirmedEnrolled}</p>
+                    <p class="text-xs text-gray-400">of ${totalCapacity} seats</p>
+                </div>
+                `}
+
+                <!-- Column 4: Fill Rate + Actions (2 cols) -->
+                <div class="hidden sm:flex col-span-2 items-center justify-between gap-2">
+                    <div class="flex-1 text-center">
+                        <p class="text-sm font-semibold ${fillTextColor}">${fillRate}%</p>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                            <div class="${fillColor} h-1.5 rounded-full transition-all" style="width: ${fillRate}%"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                        <button onclick="event.stopPropagation(); viewServiceSchedule('${service.id}')" 
+                                class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" 
+                                title="View Weekly Schedule">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="event.stopPropagation(); viewServiceDetail('${service.id}')" 
+                                class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" 
+                                title="View Details">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Column 4: Capacity (1 col) -->
-                <div class="hidden sm:block col-span-1 text-center">
-                    <p class="text-sm font-medium text-gray-700">${capacityText}</p>
-                    <p class="text-xs text-gray-500">Capacity</p>
-                </div>
-
-                <!-- Column 5: Avg Fill (1 col) -->
-                <div class="hidden sm:block col-span-1 text-center">
-                    <p class="text-lg font-semibold ${service.avgEnrollment >= 70 ? 'text-emerald-600' : 'text-amber-600'}">${service.avgEnrollment || 0}%</p>
-                    <p class="text-xs text-gray-500">Avg Fill</p>
-                </div>
-
-                <!-- Column 6: Actions (1 col) -->
-                <div class="hidden lg:flex col-span-1 justify-center items-center gap-1">
-                    <button onclick="event.stopPropagation(); generateSessions('${service.id}')" 
-                            class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" 
-                            title="Generate Sessions">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </button>
-                    <button onclick="event.stopPropagation(); viewServiceDetail('${service.id}')" 
-                            class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" 
-                            title="View Details">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
             </div>
         </div>
     `;
@@ -457,23 +483,80 @@ function formatSchedule(schedule) {
 }
 
 // ===== STATS UPDATE =====
+
+/**
+ * Count the number of distinct time slots configured for a service.
+ * e.g. Mon 5pm + Mon 7pm + Mon 9pm = 3 slots
+ * Total Capacity = maxCapacity × slotCount
+ */
+function countSlotsForService(service) {
+    const schedule = service.schedule;
+    if (!schedule) return 1;
+
+    // Complex config format
+    if (schedule.config) {
+        const config = schedule.config;
+        if (schedule.frequency === 'daily' && config.dailySlots) {
+            return Math.max(1, config.dailySlots.length);
+        }
+        if (schedule.frequency === 'weekly' && config.weeklySlots) {
+            let count = 0;
+            Object.keys(config.weeklySlots)
+                .filter(k => k !== 'selectedDays')
+                .forEach(day => {
+                    const daySlots = config.weeklySlots[day];
+                    if (Array.isArray(daySlots)) count += daySlots.length;
+                });
+            return Math.max(1, count);
+        }
+        if (schedule.frequency === 'monthly' && config.monthlySlots?.slots) {
+            return Math.max(1, config.monthlySlots.slots.length);
+        }
+        return 1;
+    }
+
+    // Legacy simple format: one slot per day
+    if (schedule.daysOfWeek) {
+        return Math.max(1, schedule.daysOfWeek.length);
+    }
+
+    return 1;
+}
+
+function calcServiceFillRate(service) {
+    const enrolled = (service.enrollments || []).filter(e => e.status === 'confirmed').length;
+    const slotCount = countSlotsForService(service);
+    const totalCapacity = (service.maxCapacity || 1) * slotCount;
+    return Math.min(100, Math.round((enrolled / totalCapacity) * 100));
+}
+
 function updateStats() {
     const total = allServices.length;
-    const active = allServices.filter(s => s.status === 'active').length;
     const paused = allServices.filter(s => s.status === 'paused').length;
-    const totalSessions = allServices.reduce((sum, s) => sum + (s.sessionsCount || 0), 0);
+
+    const activeServices = allServices.filter(s => s.status === 'active');
+
+    // Total confirmed enrollments across all active services
+    const totalEnrolled = activeServices.reduce((sum, s) => {
+        return sum + (s.enrollments || []).filter(e => e.status === 'confirmed').length;
+    }, 0);
+
+    // Average fill rate from real enrollment data
+    const avgFillRate = activeServices.length > 0
+        ? Math.round(activeServices.reduce((sum, s) => sum + calcServiceFillRate(s), 0) / activeServices.length)
+        : 0;
 
     const classCount = allServices.filter(s => s.type === 'Class').length;
     const groupCount = allServices.filter(s => s.type === 'Group').length;
     const oneToOneCount = allServices.filter(s => s.type === 'One-to-One').length;
 
     document.getElementById('totalServices').textContent = total;
-    document.getElementById('activeServices').textContent = active;
-    document.getElementById('pausedServices').textContent = paused;
-    document.getElementById('totalSessions').textContent = totalSessions;
-    document.getElementById('classCount').textContent = classCount;
-    document.getElementById('groupCount').textContent = groupCount;
-    document.getElementById('oneToOneCount').textContent = oneToOneCount;
+    if (document.getElementById('totalEnrolled')) document.getElementById('totalEnrolled').textContent = totalEnrolled;
+    if (document.getElementById('avgFillRate')) document.getElementById('avgFillRate').textContent = avgFillRate + '%';
+    if (document.getElementById('pausedServices')) document.getElementById('pausedServices').textContent = paused;
+    if (document.getElementById('classCount')) document.getElementById('classCount').textContent = classCount;
+    if (document.getElementById('groupCount')) document.getElementById('groupCount').textContent = groupCount;
+    if (document.getElementById('oneToOneCount')) document.getElementById('oneToOneCount').textContent = oneToOneCount;
 }
 
 // ===== FILTERING =====
@@ -584,6 +667,11 @@ function updateActiveFiltersDisplay() {
 // ===== ACTIONS =====
 function viewServiceDetail(id) {
     window.location.href = `learning_service_detail.html?id=${id}`;
+}
+
+// Phase 3.3: Deep-link to Weekly Schedule filtered by this service
+function viewServiceSchedule(id) {
+    window.location.href = `session_list.html?serviceId=${id}`;
 }
 
 function generateSessions(id) {

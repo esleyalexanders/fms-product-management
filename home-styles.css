@@ -221,22 +221,19 @@ body {
     padding: 1rem 0.75rem;
 }
 
-.nav-section-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 0.75rem 0.75rem 0.5rem;
-    margin-top: 0.5rem;
+.nav-divider {
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.25rem 0.75rem;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.625rem 0.75rem;
-    margin-bottom: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.125rem;
     border-radius: var(--radius-md);
     cursor: pointer;
     color: var(--text-secondary);

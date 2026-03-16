@@ -22,10 +22,10 @@ To provide a centralized dashboard for staff to view, filter, and manage all stu
     *   **All Jobs**: Complete list.
     *   **Active**: Currently running services. A job is **ONLY** considered Active if:
         1.  It has valid links (Sessions, Schedule).
-        2.  **AND** The first invoice has been **PAID**.
-    *   **Incomplete**: Jobs missing critical links (Sessions, Schedule) **OR** the first invoice is unpaid.
+        2.  **AND** Have at least one invoice **PAID**.
+    *   **Incomplete**: Jobs missing critical links (Sessions, Schedule) **OR** no invoices have been paid.
     *   **Inactive**: Paused or deactivated jobs.
-    *   **Payment Issues**: Jobs with overdue invoices (but may still be active if not the first invoice).
+    *   **Payment Issues**: Jobs with any overdue invoices. Focus: Alerts manager to review payment health for both Active and Incomplete jobs.
 *   **Service Type Filter**:
     *   **All Types**
     *   **Subscription**: Recurring services.
@@ -47,7 +47,7 @@ Each job is displayed as a card containing:
     *   **Overdue**: Red text indicating payment amount due.
     *   **Incomplete**: Amber text indicating missing criteria:
         *   "Not linked to Sessions yet"
-        *   "First invoice pending payment"
+        *   "No paid invoices found"
     *   **Payment Warning**: Red text advising manual deactivation if payment issues persist (No auto-deactivation).
 
 #### 2.2.4. Functionality
@@ -113,7 +113,7 @@ To provide a detailed view of a specific job, allowing management of its lifecyc
 *   **Status Card**:
     *   **Good Standing**: Green indicator if all payments are up to date.
     *   **Payment Issues**: Red indicator if invoices are overdue.
-    *   **First Invoice Pending**: Yellow indicator if job is Incomplete due to unpaid first invoice.
+    *   **Invoice Pending**: Yellow indicator if job is Incomplete due to no payments recorded.
 *   **Overdue Layout**:
     *   Displays total overdue amount.
     *   Displays warning: "Payment is overdue. Please check invoice details."
