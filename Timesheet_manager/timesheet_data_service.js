@@ -21,7 +21,9 @@ class TimesheetDataService {
     }
 
     init() {
-        if (!localStorage.getItem(this.STORAGE_KEY)) {
+        const stored = localStorage.getItem(this.STORAGE_KEY);
+        const parsed = stored ? JSON.parse(stored) : null;
+        if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
             const initialData = this.generateMockData();
             this.saveData(initialData);
         }

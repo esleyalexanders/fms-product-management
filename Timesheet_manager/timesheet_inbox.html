@@ -508,6 +508,25 @@
   <script src="../manage-team/staff_store.js"></script>
   <script src="seed_data.js"></script>
   <script src="payroll_store.js"></script>
+  <script>
+    // Auto-seed on first load if no data exists in localStorage
+    // Must run BEFORE timesheet_inbox.js so render() sees the data
+    (function () {
+      const entries = JSON.parse(localStorage.getItem('fms_time_entries') || '[]');
+      const sessions = JSON.parse(localStorage.getItem('fms_sessions') || '[]');
+      // If either store is empty, seed with demo data automatically
+      if (!entries.length || !sessions.length) {
+        if (typeof window.seedFmsData === 'function') {
+          // Suppress the confirm/alert popup from seedFmsData
+          const origAlert = window.alert;
+          window.alert = function () {};
+          window.seedFmsData();
+          window.alert = origAlert;
+          console.log('[Auto-Seed] Demo data loaded into localStorage on first run.');
+        }
+      }
+    })();
+  </script>
   <script src="timesheet_inbox.js"></script>
 </body>
 
